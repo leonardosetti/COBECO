@@ -1,4 +1,3 @@
-```markdown
 # 🛒 COBECO - Cotação de Bens de Consumo (MVP)
 
 **Sistema de Comparação de Preços para Listas de Compras**  
@@ -109,12 +108,12 @@ Para garantir a entrega dentro do prazo (até **13 de Novembro de 2026**) e a qu
 ```text
 ┌─────────────────────────────────────────────────────────────┐
 │                      DOCKER NETWORK                         │
-├─────────────────┬─────────────────┬───────────────────────┤
-│   FRONTEND      │    BACKEND      │   POSTGRESQL          │
-│   (UI - UI/UX)  │ (API - Lógica)  │   (Persistência)      │
-│   Porta: 8080   │   Porta: 3000   │   Porta: 5432         │
-├─────────────────┴─────────────────┴───────────────────────┤
-│               Comunicação via API REST (OpenAPI)           │
+├─────────────────┬─────────────────┬─────────────────────────┤
+│   FRONTEND      │    BACKEND      │   POSTGRESQL            │
+│   (UI - UI/UX)  │ (API - Lógica)  │   (Persistência)        │
+│   Porta: 8080   │   Porta: 3000   │   Porta: 5432           │
+├─────────────────┴─────────────────┴─────────────────────────┤
+│               Comunicação via API REST (OpenAPI)            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -181,9 +180,8 @@ Projeto desenvolvido como requisito avaliativo para a disciplina de **Laboratór
 
 - **Início do Desenvolvimento:** 🟢 Em andamento.
 - **Data Limite para Entrega:** 🚩 13 de Novembro de 2026.
-- **Metodologia de Gestão:** Kanban (Quadro no GitHub Projects ou Trello).
+- **Metodologia de Gestão:** Kanban (GitHub Projects).
 
 ---
 
 *Este README é um documento vivo e será atualizado conforme o progresso do desenvolvimento.*
-```
