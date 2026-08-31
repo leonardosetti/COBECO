@@ -1,187 +1,251 @@
 # 🛒 COBECO - Cotação de Bens de Consumo (MVP)
 
 **Sistema de Comparação de Preços para Listas de Compras**  
-*Projeto acadêmico da disciplina de Laboratório de Engenharia de Software*  
-**FATEC Taquariting - Análise e Desenvolvimento de Sistemas**
+_Projeto acadêmico da disciplina de Laboratório de Engenharia de Software_  
+_FATEC Taquaritinga - Análise e Desenvolvimento de Sistemas_
 
 ---
 
-## 📖 1. Sobre o Projeto
+## 📖 Sobre o Projeto
 
-### O Contexto
-Em um mundo com múltiplas opções de fornecedores (supermercados, lojas de departamento, eletrônicos, etc.), comparar preços manualmente item a item é uma tarefa demorada, repetitiva e sujeita a erros. Para piorar, nem sempre um único fornecedor possui todos os produtos desejados, forçando o consumidor a fracionar suas compras.
+### O Problema
 
-### A Solução (MVP)
-O **COBECO** surge como um **MVP (Produto Mínimo Viável)** acadêmico para resolver exatamente esse problema. Trata-se de uma aplicação *web-based* (focada em desktop) que permite ao usuário:
+Comparar preços manualmente entre múltiplos fornecedores é uma tarefa demorada, repetitiva e propensa a erros. Para piorar, nem sempre um único fornecedor possui todos os produtos desejados, forçando o consumidor a fracionar suas compras e perder tempo recalculando totais.
 
-1. **Criar listas de compras** personalizadas com itens, quantidades e categorias;
-2. **Submeter essas listas** a um motor de comparação que cruza os dados com um catálogo interno de fornecedores (populado via *seed*);
-3. **Visualizar orçamentos consolidados**, agrupados por fornecedores com paridade de disponibilidade;
-4. **Identificar lacunas** — o sistema gera sub-listas destacando quais produtos estão faltando em cada fornecedor, além de exibir o orçamento parcial para os itens disponíveis;
-5. **Tomar a melhor decisão** com base no menor custo consolidado e na cobertura de itens.
+### A Solução
+
+O **COBECO** é um MVP (Produto Mínimo Viável) que automatiza esse processo. Trata-se de uma aplicação web desktop-first que permite ao usuário:
+
+1. **Criar listas de compras** personalizadas com itens, quantidades e categorias
+2. **Submeter essas listas** a um motor de comparação que cruza os dados com um catálogo interno de fornecedores (populado via seed)
+3. **Visualizar orçamentos consolidados** em uma tabela comparativa clara e objetiva
+4. **Identificar lacunas** — o sistema destaca quais produtos estão faltando em cada fornecedor
+5. **Tomar a melhor decisão** com base no menor custo consolidado
 
 ### Por que esse MVP é único?
-Diferente de ferramentas complexas que dependem de *web scraping* ou APIs externas em tempo real, o COBECO adota uma abordagem **pragmática e realista** para o prazo estipulado: todos os dados de fornecedores, produtos e preços são **mockados via scripts de seed** no banco de dados. Isso nos permite focar 100% da energia no desenvolvimento da **lógica de negócio** (cálculo de paridade e sub-listas), na **qualidade da arquitetura** (Clean Architecture + ACID) e na **experiência do usuário** (UI/UX Desktop-first), sem as dores de cabeça de integrações externas instáveis.
+
+Diferente de ferramentas complexas que dependem de web scraping ou APIs externas em tempo real, o COBECO adota uma abordagem **pragmática e realista**:
+
+- ✅ **Dados mockados via seed** — foco 100% na lógica de negócio
+- ✅ **Motor de comparação simplificado** — tabela flat ao invés de agrupamentos complexos
+- ✅ **Stack moderna e FOSS** — React, NestJS, PostgreSQL, Docker
+- ✅ **Clean Architecture** — separação clara de responsabilidades
+- ✅ **SDD (Specification-Driven Development)** — API-first com OpenAPI
 
 ---
 
-## 🎯 2. Objetivos do Projeto
+## 🎯 Objetivos do Projeto
 
-**Objetivo Geral:**  
+### Objetivo Geral
+
 Desenvolver um MVP funcional e minimalista que automatize a comparação de preços entre fornecedores a partir de listas de compras criadas pelo usuário, fornecendo orçamentos claros e evidenciando produtos ausentes em cada cenário.
 
-**Objetivos Específicos (Entregáveis do MVP):**
-- Implementar autenticação segura (cadastro, login, recuperação de senha);
-- Permitir CRUD completo de listas de compras (criar, editar, excluir, duplicar);
-- Manter um cadastro interno de fornecedores, categorias e produtos (via *seed*);
-- Desenvolver o "Motor de Paridade" que agrupa fornecedores por percentual de itens disponíveis e gera sub-listas;
-- Exibir comparativos destacando o melhor orçamento e os produtos faltantes;
-- Garantir a persistência dos dados (listas e históricos) em banco relacional (PostgreSQL);
-- Estabelecer comunicação robusta entre Frontend e Backend via API RESTful documentada (OpenAPI).
+### Objetivos Específicos (Entregáveis do MVP)
+
+- ✅ Implementar autenticação segura (cadastro, login, recuperação de senha)
+- ✅ Permitir CRUD completo de listas de compras (criar, editar, excluir, listar)
+- ✅ Manter um cadastro interno de fornecedores, categorias e produtos (via seed)
+- ✅ Desenvolver o motor de comparação que gera tabela flat com disponibilidade e preços
+- ✅ Exibir comparativos destacando o melhor orçamento e os produtos faltantes
+- ✅ Garantir a persistência dos dados em banco relacional (PostgreSQL)
+- ✅ Estabelecer comunicação robusta entre Frontend e Backend via API RESTful (OpenAPI)
 
 ---
 
-## ⚙️ 3. Premissas e Restrições Fundamentais
+## ⚙️ Premissas e Restrições Fundamentais
 
-Para garantir a entrega dentro do prazo (até **13 de Novembro de 2026**) e a qualidade esperada, o projeto está rigidamente ancorado nos seguintes pilares:
-
-| Pilar | Aplicação no Projeto |
-| :--- | :--- |
-| **🧼 KISS (Keep It Simple)** | Escopo enxuto: dados mockados (sem APIs externas), UI exclusiva para desktop (sem complexidade mobile), lógica de negócio direta e objetiva. |
-| **🏛️ Clean Architecture** | Separação rígida entre Domínio (regras de paridade), Casos de Uso, Adaptadores (Controllers/Repositories) e Frameworks (UI e DB). |
-| **⚡ ACID** | Operações no banco de dados (criação de listas, salvamento de cotações) garantem Atomicidade, Consistência, Isolamento e Durabilidade. |
-| **📐 SDD (Spec-Driven Development)** | Desenvolvimento orientado a contrato: a API RESTful é definida via OpenAPI antes da implementação (API-First). |
-| **🧪 SQA & BDD** | Qualidade assegurada desde o início com cenários em Gherkin (Cucumber), testes unitários (Jest/Vitest) e testes E2E (Playwright/Cypress). |
-| **📦 Containerização (Docker)** | Os três pilares do sistema (Frontend, Backend, Banco de Dados) rodam em contêineres Docker isolados, orquestrados por Docker Compose. |
-| **📊 Metodologia Ágil** | Desenvolvimento guiado por quadro **Kanban** para visualizar o fluxo de tarefas e priorizar entregas contínuas. |
+| Pilar                        | Aplicação no Projeto                                                                                   |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------ |
+| 🧼 **KISS (Keep It Simple)** | Escopo enxuto: dados mockados (sem APIs externas), UI exclusiva para desktop, lógica de negócio direta |
+| 🏛️ **Clean Architecture**    | Separação rígida entre Domínio, Casos de Uso, Adaptadores e Frameworks                                 |
+| ⚡ **ACID**                  | Operações no banco de dados garantem Atomicidade, Consistência, Isolamento e Durabilidade              |
+| 📐 **SDD (Spec-Driven)**     | API RESTful definida via OpenAPI antes da implementação (API-First)                                    |
+| 🧪 **Qualidade**             | Testes unitários críticos com cobertura >80%, CI/CD básico no GitHub Actions                           |
+| 📦 **Containerização**       | Frontend, Backend e Banco de Dados rodam em containers Docker isolados                                 |
+| 📊 **Metodologia Ágil**      | Desenvolvimento guiado por quadro Kanban para visualizar o fluxo de tarefas                            |
 
 ---
 
-## 🧩 4. Principais Funcionalidades (Escopo MVP)
+## 🧩 Principais Funcionalidades (Escopo MVP)
 
 ### Módulo de Autenticação
-- Cadastro de novos usuários (nome, e-mail, senha criptografada com hash).
-- Login/Logout seguro.
-- Recuperação de senha via e-mail.
+
+- Cadastro de novos usuários (username, nome, email, senha)
+- Login/Logout seguro com JWT + refresh tokens
+- Recuperação de senha via email (token de 15min)
 
 ### Módulo de Listas de Compras
-- **CRUD completo**: Criação, edição (nome e itens), exclusão e duplicação.
-- Adição de itens com campos: *Nome do Produto*, *Categoria* (ex: Alimentos, Limpeza) e *Quantidade*.
-- Visualização de todas as listas salvas pelo usuário.
+
+- CRUD completo: Criação, edição, exclusão e listagem
+- Adição de itens com campos: Produto (autocomplete), Quantidade
+- Busca por nome de lista com paginação
 
 ### Módulo de Fornecedores e Catálogo (Seed)
-- Dados populados automaticamente na inicialização do sistema.
-- Fornecedores associados a uma ou mais categorias (ex: Supermercado, Informática, Eletrodomésticos).
-- Catálogo de produtos com preços e *flag* de disponibilidade em estoque.
 
-### Módulo de Cotação e Comparação (Motor de Paridade)
-- Submissão de uma lista para cotação.
-- Agrupamento de fornecedores por **paridade de disponibilidade**:
-  - Ex: Grupo 100% (possuem todos os itens), Grupo ≥80%, Grupo ≥60%, etc.
-- Cálculo do valor total para cada sub-lista (considerando apenas os itens disponíveis).
-- **Destaque visual** para o menor orçamento consolidado.
-- Listagem explícita dos **produtos ausentes** em cada agrupamento (essencial para a decisão de compra).
+- Dados populados automaticamente na inicialização do sistema
+- 10 fornecedores + 50 produtos com preços variáveis
+- Fornecedores associados a categorias (Supermercado, Informática, etc.)
 
-### Módulo de Histórico
-- Persistência de todas as cotações realizadas.
-- Possibilidade de reabrir e reexibir cotações antigas.
+### Módulo de Comparação de Preços
 
----
+- Submissão de uma lista para cotação
+- Geração de tabela flat com: Fornecedor, Itens Disponíveis, Itens Ausentes, Preço Total
+- Destaque visual para o menor orçamento consolidado
+- Listagem explícita dos produtos ausentes em cada fornecedor
 
-## 🛠️ 5. Stack Tecnológica (FOSS - Gratuita e Open Source)
+### Módulo de Exportação
 
-| Camada | Tecnologias | Motivo da Escolha |
-| :--- | :--- | :--- |
-| **Frontend** | HTML5, CSS3, TypeScript / **Alpine.js** ou **Vue.js** (leve) | Foco em simplicidade e renderização rápida. *Evitamos React + jQuery (anti-pattern)*. |
-| **Backend** | Node.js + **Fastify** (ou Express) / **NestJS** | NestJS oferece tipagem forte e arquitetura modular, ideal para Clean Architecture. |
-| **Banco de Dados** | **PostgreSQL** | Suporte robusto a ACID, excelente performance para queries matemáticas e integração com ORMs modernos. |
-| **ORM/Migrations** | **Prisma** ou **Drizzle** | Facilita o versionamento do schema e a execução de seeds. |
-| **API** | RESTful + **OpenAPI (Swagger)** | Garante contratos claros entre Front e Back (SDD). |
-| **Infraestrutura** | **Docker** + **Docker Compose** | Isolamento dos serviços (Front, Back, DB) e reprodutibilidade do ambiente. |
-| **Versionamento/CI** | **GitHub** + **GitHub Actions** | CI/CD básico para rodar testes e validar código a cada *push*. |
-| **Testes** | **Gherkin/Cucumber** (BDD), **Jest/Vitest** (Unitário), **Playwright/Cypress** (E2E) | Cobertura total da pirâmide de testes, validando regras de negócio e interface. |
+- Exportação para CSV (UTF-8 com BOM, delimitador `;`)
+- Impressão otimizada via navegador (CSS `@media print`)
 
 ---
 
-## 🏗️ 6. Arquitetura Geral (Docker Compose)
+## 🛠️ Stack Tecnológica (FOSS - Gratuita e Open Source)
 
-```text
+| Camada             | Tecnologias                                             | Motivo da Escolha                                                |
+| ------------------ | ------------------------------------------------------- | ---------------------------------------------------------------- |
+| **Frontend**       | React 18 + TypeScript + Vite + Tailwind CSS + shadcn/ui | Padrão de mercado, build ultra-rápido, componentes acessíveis    |
+| **Backend**        | Node.js 20 + NestJS 10 + TypeScript                     | Clean Architecture por padrão, OpenAPI automático, tipagem forte |
+| **Banco de Dados** | PostgreSQL 16 + Prisma ORM 5                            | ACID, JSON support, type-safe queries, migrations                |
+| **API**            | RESTful + OpenAPI (Swagger)                             | Contratos claros entre Front e Back (SDD)                        |
+| **Infraestrutura** | Docker 24 + Docker Compose 2                            | Isolamento dos serviços, reprodutibilidade de ambiente           |
+| **CI/CD**          | GitHub Actions                                          | Pipeline automatizado para testes e validação de código          |
+| **Testes**         | Jest (backend) + Vitest (frontend)                      | Cobertura de casos de uso críticos (>80%)                        |
+| **Email**          | Resend (free tier) + Mailhog (dev)                      | Envio de emails para recuperação de senha                        |
+
+---
+
+## 🏗️ Arquitetura Geral (Docker Compose)
+
+```
 ┌─────────────────────────────────────────────────────────────┐
 │                      DOCKER NETWORK                         │
 ├─────────────────┬─────────────────┬─────────────────────────┤
 │   FRONTEND      │    BACKEND      │   POSTGRESQL            │
-│   (UI - UI/UX)  │ (API - Lógica)  │   (Persistência)        │
+│   (React + TS)  │ (NestJS + TS)   │   (Database)            │
 │   Porta: 8080   │   Porta: 3000   │   Porta: 5432           │
 ├─────────────────┴─────────────────┴─────────────────────────┤
 │               Comunicação via API REST (OpenAPI)            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-- **Frontend** consome a API do Backend.
-- **Backend** aplica as regras de negócio (paridade) e acessa o Banco via ORM.
-- **Banco de Dados** armazena usuários, listas, fornecedores, produtos e histórico.
-- O *Seed* é executado automaticamente na subida do container do Banco, populando fornecedores e produtos mockados.
+- **Frontend** consome a API do Backend via TanStack Query
+- **Backend** aplica as regras de negócio e acessa o Banco via Prisma ORM
+- **Banco de Dados** armazena usuários, listas, fornecedores, produtos e preços
+- **Seed** é executado automaticamente na subida do container do Banco
 
 ---
 
-## 🚀 7. Como Executar o Projeto (Passos Rápidos)
+## 🚀 Como Executar o Projeto (Passos Rápidos)
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/seu-usuario/cobeco-mvp.git
+git clone https://github.com/leonardosetti/COBECO.git
 
 # 2. Acesse o diretório
-cd cobeco-mvp
+cd COBECO
 
-# 3. Suba os containers via Docker Compose
+# 3. Copie o arquivo de variáveis de ambiente
+cp .env.example .env
+
+# 4. Suba os containers via Docker Compose
 docker-compose up -d --build
 
-# 4. Acesse a aplicação no navegador
-http://localhost:8080
+# 5. Acesse a aplicação no navegador
+# Frontend: http://localhost:8080
+# Backend API: http://localhost:3000
+# Swagger Docs: http://localhost:3000/api/docs
 
-# 5. (Opcional) Execute os testes
+# 6. (Opcional) Execute os testes
 docker-compose exec backend npm run test
-docker-compose exec frontend npm run test:e2e
+docker-compose exec frontend npm run test
 ```
 
-> **Nota:** O banco de dados já será populado com fornecedores, categorias e produtos de exemplo assim que subir.
+**Nota:** O banco de dados já será populado com fornecedores, categorias e produtos de exemplo assim que subir (via seed automático).
 
 ---
 
-## 📋 8. Escopo: O que NÃO está incluso (Out of Scope)
+## 📋 Escopo: O que NÃO está incluso (Out of Scope)
 
-Para manter o **KISS** e entregar dentro do prazo, os seguintes itens estão deliberadamente fora do escopo desta versão:
+Para manter o KISS e entregar dentro do prazo (30 dias), os seguintes itens estão deliberadamente fora do escopo desta versão:
 
-- ❌ Integração com APIs reais de e-commerce ou *web scraping*.
-- ❌ Desenvolvimento de aplicativos mobile nativos (Android/iOS).
-- ❌ Processamento de pagamentos ou intermediação financeira.
-- ❌ Cálculo de fretes ou roteirização logística.
-- ❌ Suporte a múltiplos idiomas ou moedas (apenas moeda local).
-- ❌ Autenticação via OAuth (Google/Facebook).
-
----
-
-## 🧠 9. Princípios de Desenvolvimento Adotados
-
-- **UI/UX e IHC**: Interface Desktop-first com foco em usabilidade, feedback visual claro (spinners, skeletons) e acessibilidade básica (contraste, navegação por teclado).
-- **Clean Code**: Código legível, nomenclatura significativa, funções com responsabilidade única.
-- **CI/CD**: Pipeline automatizada no GitHub Actions para validar builds e execução de testes.
-- **Melhoria Contínua**: Adoção de BDD desde o dia 1, garantindo que os requisitos sejam testáveis e rastreáveis.
+- ❌ Integração com APIs reais de e-commerce ou web scraping
+- ❌ Desenvolvimento de aplicativos mobile nativos (Android/iOS)
+- ❌ Processamento de pagamentos ou intermediação financeira
+- ❌ Cálculo de fretes ou roteirização logística
+- ❌ Geração de PDF nativo (apenas CSV + impressão via navegador)
+- ❌ Suporte a múltiplos idiomas ou moedas (apenas BRL)
+- ❌ Autenticação via OAuth (Google/Facebook)
+- ❌ BDD/E2E tests completos (apenas unitários críticos)
 
 ---
 
-## 👥 Equipe e Contexto Acadêmico
+## 🧠 Princípios de Desenvolvimento Adotados
 
-Projeto desenvolvido como requisito avaliativo para a disciplina de **Laboratório de Engenharia de Software** do curso de **Análise e Desenvolvimento de Sistemas** na **FATEC Taquariting**.
+| Princípio               | Aplicação no Projeto                                                                        |
+| ----------------------- | ------------------------------------------------------------------------------------------- |
+| **UI/UX Desktop-First** | Interface otimizada para telas ≥1024px, feedback visual claro (spinners, skeletons, toasts) |
+| **Clean Code**          | Código legível, nomenclatura significativa, funções com responsabilidade única              |
+| **Clean Architecture**  | Separação entre Domínio, Casos de Uso, Adaptadores e Frameworks                             |
+| **ACID**                | Garantia de atomicidade, consistência, isolamento e durabilidade nas operações de banco     |
+| **SDD (Spec-Driven)**   | Contratos OpenAPI definidos antes do desenvolvimento                                        |
+| **CI/CD**               | Pipeline automatizado no GitHub Actions para validar builds e execução de testes            |
+| **Kanban**              | Gestão do projeto com quadro Kanban (GitHub Projects) para visualização do fluxo            |
 
 ---
 
 ## 📅 Cronograma e Status Atual
 
-- **Início do Desenvolvimento:** 🟢 Em andamento.
-- **Data Limite para Entrega:** 🚩 13 de Novembro de 2026.
-- **Metodologia de Gestão:** Kanban (GitHub Projects).
+| Fase                             | Duração     | Status                                     |
+| -------------------------------- | ----------- | ------------------------------------------ |
+| **Fase 1: Setup e Infra**        | 3 dias      | 🟢 Em andamento                            |
+| **Fase 2: Backend Core**         | 10 dias     | ⏳ Aguardando                              |
+| **Fase 3: Frontend Core**        | 10 dias     | ⏳ Aguardando                              |
+| **Fase 4: Testes e Refinamento** | 5 dias      | ⏳ Aguardando                              |
+| **Fase 5: Deploy e Validação**   | 2 dias      | ⏳ Aguardando                              |
+| **TOTAL**                        | **30 dias** | 🚩 **Data Limite: 13 de Novembro de 2026** |
+
+**Metodologia de Gestão:** Kanban (GitHub Projects)  
+**Rituais:** Daily Standup (19:00), Sprint Planning/Review/Retrospectiva (sextas-feiras)
 
 ---
 
-*Este README é um documento vivo e será atualizado conforme o progresso do desenvolvimento.*
+## 📞 Contato e Governança
+
+**Canais de Comunicação:**
+
+- **WhatsApp:** [#COBECO-MVP](https://chat.whatsapp.com/LV33cRZKwFAAoaPljTcvLx)
+- **Documentação:** [GitHub](https://github.com/leonardosetti/COBECO)
+- **Email:** TBD
+
+**Equipe:**
+
+- **Product Owner:** [Nome do Stakeholder]
+- **Tech Lead:** [Nome do Desenvolvedor Sênior]
+- **Arquiteto de Software:** [Nome do Arquiteto]
+
+---
+
+## 📝 Licenças e Compliance
+
+Todas as tecnologias utilizadas são **FOSS** (Free and Open Source Software) ou possuem free tiers adequados:
+
+- **Resend:** Free tier (3000 emails/mês)
+- **GitHub Actions:** Free para repos públicos, 2000 min/mês para privados
+- **PostgreSQL, Node.js, React:** Licenças MIT/Apache
+
+---
+
+## 🚀 Próximos Passos
+
+1. ✅ Aprovação deste README e especificação do MVP
+2. ⏳ Geração dos artefatos UML (Casos de Uso, Transição de Estados, DER)
+3. ⏳ Protótipo de baixa fidelidade no Figma/Excalidraw
+4. ⏳ Setup inicial dos repositórios (frontend + backend + infra)
+5. ⏳ Desenvolvimento iterativo em sprints de 1 semana
+
+---
+
+**Este README é um documento vivo e será atualizado conforme o progresso do desenvolvimento.**
+
+**Última atualização:** 31 de Agosto de 2026
