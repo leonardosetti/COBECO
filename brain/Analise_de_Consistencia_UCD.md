@@ -463,3 +463,5 @@ Com base nas mudanças de escopo, criei um novo diagrama que reflete:
 - UC06 → UC05 (Editar Perfil)
 
 ---
+
+**Última atualização:** 31 de Agosto de 2026
