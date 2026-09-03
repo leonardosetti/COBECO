@@ -1,0 +1,199 @@
+openapi: 3.0.3
+info:
+  title: COBECO API
+  version: 1.0.0
+  description: Contrato REST do MVP de cotação por paridade de cobertura.
+servers:
+  - url: /api
+paths:
+  /auth/sign-up:
+    post:
+      tags: [Autenticação]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/SignUp' } } }
+      responses: { '201': { description: Usuário criado }, '400': { $ref: '#/components/responses/Error' }, '429': { $ref: '#/components/responses/Error' } }
+  /auth/login:
+    post:
+      tags: [Autenticação]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/Login' } } }
+      responses: { '200': { description: Sessão iniciada }, '401': { $ref: '#/components/responses/Error' }, '429': { description: 'Rate limit: 5 tentativas por 15 minutos (RNF13)' } }
+  /auth/refresh:
+    post:
+      tags: [Autenticação]
+      responses: { '200': { description: Tokens rotacionados }, '401': { $ref: '#/components/responses/Error' } }
+  /auth/forgot-password:
+    post:
+      tags: [Autenticação]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [email], properties: { email: { type: string, format: email } } } } } }
+      responses: { '200': { description: Solicitação aceita } }
+  /auth/reset-password:
+    post:
+      tags: [Autenticação]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [token, password], properties: { token: { type: string }, password: { type: string, minLength: 8 } } } } } }
+      responses: { '200': { description: Senha redefinida }, '400': { $ref: '#/components/responses/Error' } }
+  /platform/categories:
+    get:
+      security: [{ bearerAuth: [] }]
+      tags: [Catálogo]
+      responses: { '200': { description: Categorias, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Category' } } } } } }
+  /platform/categories/{id}/suppliers:
+    get:
+      security: [{ bearerAuth: [] }]
+      tags: [Catálogo]
+      parameters: [{ in: path, name: id, required: true, schema: { type: string } }]
+      responses: { '200': { description: Fornecedores ativos } }
+  /platform/categories/{id}/products:
+    get:
+      security: [{ bearerAuth: [] }]
+      tags: [Catálogo]
+      parameters: [{ in: path, name: id, required: true, schema: { type: string } }]
+      responses: { '200': { description: Produtos normalizados } }
+  /platform/lists:
+    get:
+      security: [{ bearerAuth: [] }]
+      tags: [Listas]
+      responses: { '200': { description: Listas do usuário } }
+    post:
+      security: [{ bearerAuth: [] }]
+      tags: [Listas]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/CreateList' } } } }
+      responses: { '201': { description: Lista criada }, '400': { $ref: '#/components/responses/Error' } }
+  /platform/lists/{listId}:
+    patch:
+      security: [{ bearerAuth: [] }]
+      tags: [Listas]
+      parameters: [{ $ref: '#/components/parameters/ListId' }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [name], properties: { name: { type: string } } } } } }
+      responses: { '200': { description: Lista atualizada }, '404': { $ref: '#/components/responses/Error' } }
+    delete:
+      security: [{ bearerAuth: [] }]
+      tags: [Listas]
+      parameters: [{ $ref: '#/components/parameters/ListId' }]
+      responses: { '200': { description: Lista excluída } }
+  /platform/lists/{listId}/items:
+    post:
+      security: [{ bearerAuth: [] }]
+      tags: [Listas]
+      parameters: [{ $ref: '#/components/parameters/ListId' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/ListItemInput' } } } }
+      responses: { '201': { description: Item incluído } }
+  /platform/lists/{listId}/suppliers:
+    get:
+      security: [{ bearerAuth: [] }]
+      tags: [Cotação]
+      summary: Disponibilidade de cada fornecedor perante os itens da lista (RF12)
+      parameters: [{ $ref: '#/components/parameters/ListId' }]
+      responses:
+        '200':
+          description: Fornecedores da categoria, ordenados por nome
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/SupplierAvailability' } }
+        '404': { $ref: '#/components/responses/Error' }
+  /platform/lists/{listId}/quote:
+    post:
+      security: [{ bearerAuth: [] }]
+      tags: [Cotação]
+      parameters: [{ $ref: '#/components/parameters/ListId' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [supplierIds]
+              properties:
+                supplierIds:
+                  type: array
+                  minItems: 2
+                  maxItems: 10
+                  description: RF11 — de 2 a 10 fornecedores por comparação.
+                  items: { type: string }
+      responses:
+        '200': { description: Grupos de paridade, content: { application/json: { schema: { $ref: '#/components/schemas/ParityQuotation' } } } }
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+  /platform/quotations/history:
+    get:
+      security: [{ bearerAuth: [] }]
+      tags: [Cotação]
+      responses: { '200': { description: Histórico paginado } }
+  /platform/quotations/{quotationId}:
+    get:
+      security: [{ bearerAuth: [] }]
+      tags: [Cotação]
+      parameters: [{ in: path, name: quotationId, required: true, schema: { type: string } }]
+      responses: { '200': { description: Cotação persistida }, '404': { $ref: '#/components/responses/Error' } }
+    delete:
+      security: [{ bearerAuth: [] }]
+      tags: [Cotação]
+      parameters: [{ in: path, name: quotationId, required: true, schema: { type: string } }]
+      responses: { '200': { description: Cotação excluída } }
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }
+  parameters:
+    ListId: { in: path, name: listId, required: true, schema: { type: string } }
+  responses:
+    Error:
+      description: Erro estruturado
+      content: { application/json: { schema: { type: object, properties: { error: { type: object, properties: { code: { type: string }, message: { type: string } } } } } } }
+  schemas:
+    SignUp:
+      type: object
+      required: [name, username, email, password, consent]
+      properties:
+        name: { type: string, minLength: 2, maxLength: 100 }
+        username: { type: string, minLength: 3, maxLength: 30, pattern: '^[A-Za-z0-9_]+$' }
+        email: { type: string, format: email, maxLength: 255 }
+        password:
+          type: string
+          minLength: 8
+          description: Exige maiúscula, minúscula, número e caractere especial (RF01).
+        consent: { type: boolean }
+    Login:
+      type: object
+      required: [password]
+      description: Informe `identifier` (e-mail ou username, RF02). `email` segue aceito por compatibilidade.
+      properties:
+        identifier: { type: string }
+        email: { type: string }
+        password: { type: string }
+    SupplierAvailability:
+      type: object
+      required: [id, name, availableItems, totalItems, availability]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        availableItems: { type: integer }
+        totalItems: { type: integer }
+        availability: { type: number, format: double, minimum: 0, maximum: 100 }
+    Category: { type: object, required: [id, name], properties: { id: { type: string }, name: { type: string } } }
+    CreateList:
+      type: object
+      required: [name]
+      properties: { name: { type: string, maxLength: 80 }, categoryId: { type: string, nullable: true } }
+    ListItemInput:
+      type: object
+      required: [description, quantity]
+      properties: { description: { type: string }, quantity: { type: integer, minimum: 1 }, productId: { type: string, nullable: true } }
+    ParityQuotation:
+      type: object
+      required: [groups, bestGroupId, meta]
+      properties:
+        bestGroupId: { type: string, nullable: true }
+        meta: { type: object, properties: { totalItems: { type: integer }, selectedSuppliers: { type: integer } } }
+        groups:
+          type: array
+          items:
+            type: object
+            properties:
+              groupId: { type: string }
+              supplierIds: { type: array, items: { type: string } }
+              availableItems: { type: array, items: { type: string } }
+              missingItems: { type: array, items: { type: string } }
+              total: { type: number, format: double }
+              coverage: { type: number, format: double }

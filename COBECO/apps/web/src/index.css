@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-gray-900 antialiased;
+  }
+
+  html.dark body {
+    @apply bg-gray-900 text-gray-100;
+  }
+
+  /* Overrides por classe utilitária. Só alcançam elementos que realmente
+     carregam a classe no HTML — componentes montados com @apply são
+     tratados na seção de componentes abaixo. */
+  html.dark .bg-white { @apply bg-gray-800; }
+  html.dark .bg-gray-50 { @apply bg-gray-900; }
+  html.dark .bg-gray-100 { @apply bg-gray-700; }
+  html.dark .text-gray-900 { @apply text-gray-100; }
+  html.dark .text-gray-800 { @apply text-gray-100; }
+  html.dark .text-gray-700 { @apply text-gray-200; }
+  html.dark .text-gray-600,
+  html.dark .text-gray-500 { @apply text-gray-300; }
+  html.dark .border-gray-100,
+  html.dark .border-gray-200,
+  html.dark .border-gray-300 { @apply border-gray-600; }
+
+  /* Os wrappers de página usam `bg-gradient-to-br from-primary-50 to-white`.
+     Gradiente não é background-color, então precisa ter os stops trocados. */
+  html.dark .from-primary-50 { @apply from-gray-900; }
+  html.dark .to-white { @apply to-gray-900; }
+  html.dark .via-white { @apply via-gray-900; }
+
+  /* Faixas de destaque em tom claro usadas na landing page. */
+  html.dark .bg-primary-50 { @apply bg-gray-800; }
+
+  a {
+    @apply text-primary-600 hover:text-primary-700 underline;
+  }
+
+  /* Botões podem ser <a> (ex.: "Cadastro" no cabeçalho). Excluí-los aqui evita
+     que a cor de link sobrescreva a cor própria do botão. */
+  html.dark a:not(.btn-primary):not(.btn-outline):not(.btn-secondary) {
+    @apply text-primary-400 hover:text-primary-500;
+  }
+
+  button:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary-500;
+  }
+
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary-500;
+  }
+}
+
+@layer components {
+  /* Base comum aos botões: alvo de toque de 40px, alinhamento centralizado,
+     foco visível por teclado e estados de hover/active/disabled explícitos.
+     `no-underline` e `text-decoration-none` cobrem o caso de <a> estilizado
+     como botão, que herdaria o sublinhado da regra base de link. */
+  .btn-primary,
+  .btn-outline,
+  .btn-secondary {
+    @apply inline-flex min-h-10 select-none items-center justify-center gap-2 whitespace-nowrap rounded-lg border px-4 py-2 font-medium no-underline transition-colors duration-150;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2;
+    @apply disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-inherit;
+    text-decoration: none;
+  }
+
+  /* Ação primária: preenchida. */
+  .btn-primary {
+    @apply border-primary-600 bg-primary-600 text-white shadow-sm hover:border-primary-700 hover:bg-primary-700 active:bg-primary-700;
+  }
+
+  /* Mesma cor da ação primária, com ênfase menor. Usada para pares como
+     "Login" ao lado de "Cadastro": lê como um conjunto, sem duas chamadas
+     de mesmo peso competindo pela atenção. */
+  .btn-outline {
+    @apply border-primary-600 bg-transparent text-primary-700 hover:bg-primary-50 active:bg-primary-100;
+  }
+
+  /* Ação neutra, sem cor de marca. */
+  .btn-secondary {
+    @apply border-gray-300 bg-white text-gray-900 hover:bg-gray-100 active:bg-gray-200;
+  }
+
+  .input-field {
+    @apply w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500;
+  }
+
+  .form-group {
+    @apply mb-4;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+
+  .card {
+    @apply bg-white text-gray-900 rounded-lg shadow-md p-6;
+  }
+
+  .page-container {
+    @apply max-w-7xl mx-auto px-4 py-8;
+  }
+
+  /* Contrapartes escuras. Necessárias porque as regras acima usam @apply:
+     a cor vira declaração própria do componente e não é alcançada pelos
+     overrides de classe utilitária. */
+  html.dark .btn-secondary {
+    @apply border-gray-600 bg-gray-700 text-gray-100 hover:bg-gray-600 active:bg-gray-600;
+  }
+
+  html.dark .btn-outline {
+    @apply border-primary-500 bg-transparent text-primary-400 hover:bg-primary-900/40 active:bg-primary-900/60;
+  }
+
+  /* O anel de foco usa um recuo na cor do fundo; sem isto fica um halo branco. */
+  html.dark .btn-primary,
+  html.dark .btn-outline,
+  html.dark .btn-secondary {
+    @apply focus-visible:ring-offset-gray-900;
+  }
+
+  html.dark .input-field {
+    @apply bg-gray-900 text-gray-100 border-gray-600 placeholder:text-gray-400;
+  }
+
+  html.dark .form-label {
+    @apply text-gray-200;
+  }
+
+  html.dark .card {
+    @apply bg-gray-800 text-gray-100 shadow-lg shadow-black/30;
+  }
+}

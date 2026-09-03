@@ -1,0 +1,198 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  username     String    @unique
+  email        String    @unique
+  passwordHash String
+  consentedAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  productLists        ProductList[]
+  quotations          Quotation[]
+  testimonials        Testimonial[]
+  passwordResetTokens PasswordResetToken[]
+
+  @@index([email])
+  @@index([username])
+  @@index([deletedAt])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model ProductList {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  listItems  ListItem[]
+  quotations Quotation[]
+  shares     ListShare[]
+
+  @@index([userId])
+  @@index([categoryId])
+  @@index([deletedAt])
+}
+
+model ListItem {
+  id          String      @id @default(cuid())
+  listId      String
+  list        ProductList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Int         @default(1)
+  productId   String?
+  product     Product?    @relation(fields: [productId], references: [id], onDelete: SetNull)
+  createdAt   DateTime    @default(now())
+
+  quotationResults QuotationResult[]
+
+  @@index([listId])
+  @@index([productId])
+}
+
+model Category {
+  id        String        @id @default(cuid())
+  name      String        @unique
+  products  Product[]
+  suppliers Supplier[]
+  lists     ProductList[]
+}
+
+model Supplier {
+  id         String            @id @default(cuid())
+  name       String
+  categoryId String
+  category   Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  active     Boolean           @default(true)
+  offers     SupplierProduct[]
+
+  @@index([categoryId, active])
+}
+
+model Product {
+  id         String            @id @default(cuid())
+  name       String
+  categoryId String
+  category   Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  unit       String            @default("unidade")
+  active     Boolean           @default(true)
+  offers     SupplierProduct[]
+  listItems  ListItem[]
+
+  @@unique([categoryId, name])
+  @@index([categoryId, active])
+}
+
+model SupplierProduct {
+  supplierId String
+  productId  String
+  supplier   Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  price      Decimal  @db.Decimal(10, 2)
+  active     Boolean  @default(true)
+
+  @@id([supplierId, productId])
+  @@index([productId, active])
+}
+
+model ListShare {
+  id        String      @id @default(cuid())
+  listId    String
+  list      ProductList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  token     String      @unique
+  createdAt DateTime    @default(now())
+
+  @@index([listId])
+}
+
+model Retailer {
+  id         String @id @default(cuid())
+  name       String
+  slug       String @unique
+  websiteUrl String
+
+  quotationResults QuotationResult[]
+}
+
+model Quotation {
+  id           String       @id @default(cuid())
+  userId       String
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listId       String?
+  list         ProductList? @relation(fields: [listId], references: [id], onDelete: SetNull)
+  listName     String?
+  mode         String       @default("list") // item ou list
+  requestedAt  DateTime     @default(now())
+  status       String       @default("completed") // completed, failed, pending
+  parityGroups Json?
+  parityMeta   Json?
+  bestGroupId  String?
+
+  quotationResults QuotationResult[]
+
+  @@index([userId])
+  @@index([userId, requestedAt])
+  @@index([listId])
+}
+
+model QuotationResult {
+  id           String    @id @default(cuid())
+  quotationId  String
+  quotation    Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  listItemId   String?
+  listItem     ListItem? @relation(fields: [listItemId], references: [id], onDelete: SetNull)
+  retailerId   String
+  retailer     Retailer  @relation(fields: [retailerId], references: [id])
+  productName  String
+  price        Float?
+  currency     String    @default("BRL")
+  deliveryDays Int?
+  redirectUrl  String
+  providerSlug String
+  fetchedAt    DateTime  @default(now())
+
+  @@index([quotationId])
+  @@index([listItemId])
+  @@index([retailerId])
+  @@index([providerSlug, fetchedAt])
+}
+
+model Testimonial {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  authorName String
+  content    String   @db.Text
+  approved   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([approved])
+}

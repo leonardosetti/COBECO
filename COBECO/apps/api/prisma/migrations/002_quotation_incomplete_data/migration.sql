@@ -1,0 +1,6 @@
+ALTER TABLE "Quotation" ADD COLUMN "listName" TEXT;
+ALTER TABLE "Quotation" ADD COLUMN "mode" TEXT NOT NULL DEFAULT 'list';
+
+ALTER TABLE "QuotationResult" ALTER COLUMN "price" DROP NOT NULL;
+ALTER TABLE "QuotationResult" ADD COLUMN "currency" TEXT NOT NULL DEFAULT 'BRL';
+ALTER TABLE "QuotationResult" ALTER COLUMN "deliveryDays" DROP NOT NULL;

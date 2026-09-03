@@ -1,0 +1,27 @@
+AJUSTES.md
+CONTEXT.md
+README.local.md
+
+# Dependências e artefatos gerados
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+coverage/
+**/coverage/
+test-results/
+**/test-results/
+playwright-report/
+**/playwright-report/
+
+# Configuração e logs locais
+.env
+**/.env
+!.env.example
+!**/.env.example
+*.log
+
+# Sistema operacional e editores
+.DS_Store
+Thumbs.db
+.vscode/

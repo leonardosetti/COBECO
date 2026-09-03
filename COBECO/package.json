@@ -1,0 +1,35 @@
+{
+  "name": "cobeco-monorepo",
+  "version": "0.1.0",
+  "description": "Cotação de Bens de Consumo - Monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/api",
+    "apps/web",
+    "packages/shared"
+  ],
+  "overrides": {
+    "esbuild": "^0.28.2"
+  },
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace apps/api\" \"npm run dev --workspace apps/web\"",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "db:migrate": "npm exec --workspace apps/api -- prisma migrate deploy --schema prisma/schema.prisma",
+    "db:seed": "npm exec --workspace apps/api -- tsx prisma/seed.ts"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "concurrently": "^8.0.1",
+    "eslint": "^8.44.0",
+    "jsdom": "^30.0.1",
+    "prettier": "^2.8.8",
+    "typescript": "^5.9.2",
+    "vitest": "^4.0.0"
+  }
+}
