@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COBECO — Protótipo Alta Fidelidade v3.2 (Live Demo)</title>
+<style>
+:root{
+  --pri:#4f46e5; --pri-d:#4338ca; --pri-bg:#eef2ff;
+  --ok:#16a34a; --ok-d:#15803d; --ok-bg:#ecfdf5; --ok-line:#86efac;
+  --warn:#b45309; --warn-bg:#fffbeb; --warn-line:#fcd34d;
+  --err:#dc2626; --err-bg:#fef2f2;
+  --ink:#0f172a; --mut:#64748b; --soft:#94a3b8; --line:#e2e8f0; --bg:#f5f6fa; --card:#fff;
+  --r:12px; --sh:0 1px 3px rgba(15,23,42,.08),0 4px 14px rgba(15,23,42,.05);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.5}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit;font-size:14px}
+:focus-visible{outline:3px solid #a5b4fc;outline-offset:2px;border-radius:6px}
+.app-shell{min-height:100vh;display:flex;flex-direction:column}
+.container{max-width:1180px;margin:0 auto;padding:0 24px;width:100%}
+
+/* ---------- Header ---------- */
+header.top{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line)}
+.top-in{display:flex;align-items:center;gap:28px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;color:var(--ink);text-decoration:none;letter-spacing:.3px}
+.logo .mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--pri),#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px}
+.logo small{display:block;font-size:10px;font-weight:600;color:var(--mut);letter-spacing:.4px}
+nav.main{display:flex;gap:4px;flex:1}
+nav.main a{padding:8px 13px;border-radius:8px;color:#334155;text-decoration:none;font-weight:600;font-size:14px}
+nav.main a:hover{background:#f1f5f9}
+nav.main a.on{background:var(--pri-bg);color:var(--pri)}
+.auth-zone{display:flex;align-items:center;gap:10px}
+.userchip{display:flex;align-items:center;gap:8px;background:var(--ok-bg);border:1px solid var(--ok-line);color:var(--ok-d);border-radius:99px;padding:6px 12px;font-weight:700;font-size:13px}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:10px;padding:11px 18px;font-weight:700;font-size:14px;transition:background .15s,transform .05s;text-decoration:none}
+.btn:active{transform:translateY(1px)}
+.btn-pri{background:var(--pri);color:#fff}.btn-pri:hover{background:var(--pri-d)}
+.btn-ok{background:var(--ok);color:#fff}.btn-ok:hover{background:var(--ok-d)}
+.btn-ghost{background:#fff;border-color:var(--line);color:#334155}.btn-ghost:hover{background:#f8fafc}
+.btn-danger{background:#fff;border-color:#fecaca;color:var(--err)}.btn-danger:hover{background:var(--err-bg)}
+.btn-sm{padding:7px 12px;font-size:13px;border-radius:8px}
+.btn-lg{padding:14px 24px;font-size:15px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn .lk{font-size:12px}
+.linklike{background:none;border:none;color:var(--pri);font-weight:600;font-size:13px;padding:4px;text-decoration:underline}
+.hint-disabled{font-size:12.5px;color:var(--mut);margin-top:8px;display:flex;gap:6px;align-items:center}
+
+/* ---------- Layout cards ---------- */
+main{flex:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+.card-pad{padding:26px}
+.page{padding:34px 0 90px}
+.page-head{margin-bottom:22px}
+.page-head .kicker{font-size:12px;font-weight:800;letter-spacing:1.2px;color:var(--pri);text-transform:uppercase}
+.page-head h1{font-size:26px;margin:6px 0 4px}
+.page-head p{color:var(--mut);max-width:760px}
+
+/* ---------- Stepper ---------- */
+.stepper{display:flex;align-items:flex-start;gap:0;margin:8px 0 26px}
+.stp{display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 auto;width:150px}
+.stp .dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;background:#e2e8f0;color:#64748b;border:2px solid transparent}
+.stp .lb{font-size:12px;font-weight:700;color:var(--mut);text-align:center}
+.stp.active .dot{background:var(--pri);color:#fff}
+.stp.active .lb{color:var(--pri)}
+.stp.done .dot{background:var(--ok-bg);color:var(--ok-d);border-color:var(--ok-line)}
+.stp.done{cursor:pointer}
+.stp-bar{flex:1;height:2px;background:var(--line);margin-top:17px;border-radius:2px}
+.stp-bar.done{background:var(--ok-line)}
+
+/* ---------- Home ---------- */
+.hero{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 55%,#4f46e5 100%);color:#fff;border-radius:18px;padding:52px 48px;display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;box-shadow:var(--sh)}
+.hero .tag{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:5px 14px;font-size:12.5px;font-weight:700;margin-bottom:16px}
+.hero h1{font-size:34px;line-height:1.2;margin-bottom:14px}
+.hero p{color:#c7d2fe;font-size:16px;margin-bottom:26px;max-width:520px}
+.hero .cta-row{display:flex;gap:12px;flex-wrap:wrap}
+.btn-white{background:#fff;color:var(--pri-d)}
+.btn-white:hover{background:#eef2ff}
+.btn-outlinew{background:transparent;color:#fff;border-color:rgba(255,255,255,.45)}
+.btn-outlinew:hover{background:rgba(255,255,255,.1)}
+.mini-compare{background:#fff;color:var(--ink);border-radius:14px;padding:20px;box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.mini-compare h4{font-size:13px;color:var(--mut);margin-bottom:12px;font-weight:700}
+.mini-row{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:8px;font-size:13.5px;margin-bottom:6px;border:1px solid var(--line)}
+.mini-row b{font-variant-numeric:tabular-nums}
+.mini-row.win{background:var(--ok-bg);border-color:var(--ok-line)}
+.mini-foot{font-size:12px;color:var(--mut);margin-top:10px;display:flex;justify-content:space-between}
+.value-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px}
+.vcard{padding:22px}
+.vcard .ic{width:42px;height:42px;border-radius:10px;background:var(--pri-bg);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px}
+.vcard h3{font-size:16px;margin-bottom:6px}
+.vcard p{font-size:13.5px;color:var(--mut)}
+.howto{display:flex;gap:0;margin-top:18px;align-items:stretch}
+.how{flex:1;text-align:center;padding:16px 10px;position:relative}
+.how .n{width:30px;height:30px;margin:0 auto 8px;border-radius:50%;background:var(--pri-bg);color:var(--pri);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px}
+.how b{display:block;font-size:13.5px}
+.how span{font-size:12px;color:var(--mut)}
+.how:not(:last-child)::after{content:"→";position:absolute;right:-7px;top:22px;color:var(--soft);font-size:15px}
+.persona-strip{margin-top:26px;display:flex;gap:16px;align-items:center;padding:20px 24px;background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:var(--r)}
+.persona-strip .av{font-size:34px}
+.persona-strip b{display:block}
+.persona-strip p{font-size:13.5px;color:#78350f}
+
+/* ---------- Categorias ---------- */
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.cat-card{display:flex;align-items:center;gap:11px;padding:14px 15px;border:2px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;transition:border-color .12s, background .12s;user-select:none}
+.cat-card:hover{border-color:#c7d2fe}
+.cat-card.sel{border-color:var(--pri);background:var(--pri-bg)}
+.cat-card input{accent-color:var(--pri);width:17px;height:17px}
+.cat-card .ci{font-size:20px}
+.cat-card .cn{font-weight:700;font-size:13.5px;line-height:1.25}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.count-chip{font-size:13px;font-weight:700;color:var(--mut);background:#fff;border:1px solid var(--line);padding:6px 12px;border-radius:99px}
+.count-chip.ok{color:var(--ok-d);border-color:var(--ok-line);background:var(--ok-bg)}
+
+/* ---------- Lista ---------- */
+.two-col{display:grid;grid-template-columns:1fr 330px;gap:22px;align-items:start}
+.field{margin-bottom:16px}
+.field label{display:block;font-weight:700;font-size:13px;margin-bottom:6px}
+.field .req{color:var(--err)}
+.field input[type=text],.field input[type=password],.field input[type=email],.field select{width:100%;padding:11px 13px;border:1px solid #cbd5e1;border-radius:10px;background:#fff}
+.field input:focus,.field select:focus{border-color:var(--pri)}
+.field .err-msg{color:var(--err);font-size:12.5px;margin-top:5px;display:none;font-weight:600}
+.field.invalid input,.field.invalid select{border-color:var(--err)}
+.field.invalid .err-msg{display:block}
+.counter{font-size:12px;color:var(--mut);text-align:right;margin-top:4px}
+.searchbox{position:relative}
+.sug{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 30px rgba(15,23,42,.14);z-index:30;overflow:hidden}
+.sug-item{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;cursor:pointer;font-size:14px;border-bottom:1px solid #f1f5f9}
+.sug-item:hover,.sug-item.hot{background:var(--pri-bg)}
+.sug-item .un{color:var(--mut);font-size:12px}
+.sug-empty{padding:12px 14px;color:var(--mut);font-size:13.5px}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);padding:10px 12px;border-bottom:2px solid var(--line)}
+.tbl td{padding:11px 12px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.qty{display:inline-flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.qty button{width:30px;height:30px;border:none;background:#f8fafc;font-weight:800;font-size:15px;color:#334155}
+.qty button:hover{background:#eef2ff}
+.qty input{width:52px;height:30px;border:none;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.qty input::-webkit-inner-spin-button{-webkit-appearance:none}
+.icon-del{border:none;background:none;color:var(--soft);font-size:16px;padding:6px;border-radius:7px}
+.icon-del:hover{background:var(--err-bg);color:var(--err)}
+.resumo{position:sticky;top:84px}
+.resumo h3{font-size:15px;margin-bottom:14px}
+.res-line{display:flex;justify-content:space-between;font-size:13.5px;padding:7px 0;border-bottom:1px dashed var(--line)}
+.res-line b{font-variant-numeric:tabular-nums}
+.mode-chip{display:inline-block;font-size:11.5px;font-weight:800;border-radius:99px;padding:4px 10px;letter-spacing:.4px}
+.mode-eph{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line)}
+.mode-db{background:var(--ok-bg);color:var(--ok-d);border:1px solid var(--ok-line)}
+.actions-stack{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.tip{background:#f8fafc;border:1px dashed var(--line);border-radius:10px;padding:11px 13px;font-size:12.5px;color:var(--mut);margin-top:14px}
+
+/* ---------- Fornecedores ---------- */
+.slider-box{padding:18px 20px;margin-bottom:18px}
+.slider-box .sl-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.slider-box output{font-weight:800;color:var(--pri);background:var(--pri-bg);border-radius:8px;padding:3px 10px;font-size:13.5px}
+input[type=range]{width:100%;accent-color:var(--pri);height:6px}
+.sl-scale{display:flex;justify-content:space-between;font-size:11.5px;color:var(--soft);margin-top:6px}
+.forn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.forn-card{border:2px solid var(--line);border-radius:12px;padding:14px 15px;background:#fff;cursor:pointer;transition:border-color .12s,background .12s}
+.forn-card:hover{border-color:#c7d2fe}
+.forn-card.sel{border-color:var(--pri);background:var(--pri-bg)}
+.forn-card.off{opacity:.55;cursor:not-allowed;background:#f8fafc}
+.forn-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:8px}
+.forn-top b{font-size:14.5px}
+.cov-badge{font-size:11.5px;font-weight:800;border-radius:99px;padding:3px 9px;white-space:nowrap}
+.cov-hi{background:var(--ok-bg);color:var(--ok-d)}
+.cov-md{background:var(--warn-bg);color:var(--warn)}
+.cov-lo{background:#f1f5f9;color:var(--mut)}
+.forn-cats{display:flex;flex-wrap:wrap;gap:5px}
+.mini-tag{font-size:10.5px;font-weight:700;background:#f1f5f9;color:#475569;border-radius:6px;padding:2.5px 7px}
+.forn-cb-row{display:flex;gap:9px;align-items:flex-start}
+.forn-cb-row input{margin-top:3px;accent-color:var(--pri);width:16px;height:16px}
+
+/* ---------- Resultados ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi{padding:16px 18px}
+.kpi .k{font-size:12px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
+.kpi .v{font-size:20px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .s{font-size:12px;color:var(--mut);margin-top:2px}
+.kpi.win{border-color:var(--ok-line);background:var(--ok-bg)}
+.kpi.win .v{color:var(--ok-d)}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;border-radius:99px;padding:3.5px 10px}
+.b-ok{background:var(--ok-bg);color:var(--ok-d);border:1px solid var(--ok-line)}
+.b-warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line)}
+.b-mut{background:#f1f5f9;color:var(--mut)}
+.cov-bar{width:110px;height:7px;border-radius:99px;background:#e2e8f0;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:8px}
+.cov-bar i{display:block;height:100%;border-radius:99px;background:var(--pri)}
+tr.row-win td{background:var(--ok-bg)}
+tr.row-win td:first-child{border-left:4px solid var(--ok)}
+.warn-banner{display:flex;gap:10px;align-items:flex-start;background:var(--warn-bg);border:1px solid var(--warn-line);color:#78350f;border-radius:10px;padding:12px 15px;font-size:13.5px;margin:16px 0}
+.rule-note{font-size:12.5px;color:var(--mut);margin-top:12px}
+
+/* ---------- Vencedora ---------- */
+.win-hero{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:24px 28px;border:2px solid var(--ok-line);background:var(--ok-bg);border-radius:var(--r);margin-bottom:20px;flex-wrap:wrap}
+.win-hero h2{font-size:22px}
+.win-hero .meta{font-size:13px;color:var(--mut);margin-top:4px}
+.total-box{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border:2px solid var(--ink);border-radius:12px;margin-top:16px;background:#fff}
+.total-box .tl{font-size:13px;font-weight:800;letter-spacing:.8px;color:var(--mut);text-transform:uppercase}
+.total-box .tv{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums}
+.export-note{margin-top:14px;font-size:13px;color:var(--mut);display:flex;gap:8px}
+
+/* ---------- Auth ---------- */
+.auth-wrap{max-width:460px;margin:0 auto}
+.auth-card{padding:32px}
+.auth-card h1{font-size:22px;margin-bottom:6px}
+.auth-card .sub{color:var(--mut);font-size:14px;margin-bottom:22px}
+.auth-foot{margin-top:18px;text-align:center;font-size:13.5px;color:var(--mut)}
+.demo-hint{background:var(--pri-bg);border:1px dashed #c7d2fe;color:var(--pri-d);border-radius:10px;padding:10px 13px;font-size:12.5px;margin-bottom:16px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.step-pill{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--pri);text-transform:uppercase}
+
+/* ---------- Dashboard ---------- */
+.empty{text-align:center;padding:48px 20px;color:var(--mut)}
+.empty .big{font-size:40px;margin-bottom:10px}
+
+/* ---------- Modal ---------- */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;z-index:100;padding:24px}
+.modal{background:#fff;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.3);max-width:520px;width:100%;padding:28px;position:relative;max-height:90vh;overflow:auto;animation:pop .18s ease}
+@keyframes pop{from{transform:scale(.96);opacity:.4}to{transform:scale(1);opacity:1}}
+.modal h3{font-size:18px;margin-bottom:8px}
+.modal .x{position:absolute;top:14px;right:14px;border:none;background:#f1f5f9;border-radius:8px;width:30px;height:30px;font-size:14px;color:#475569}
+.modal .x:hover{background:#e2e8f0}
+.modal-pdf{max-width:860px}
+.modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end;flex-wrap:wrap}
+
+/* ---------- A4 sheet ---------- */
+.a4-sheet{background:#fff;color:#111;border:1px solid var(--line);box-shadow:var(--sh);padding:44px 48px;font-size:13.5px;line-height:1.55}
+.a4-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid var(--ink);padding-bottom:14px;margin-bottom:16px}
+.a4-head .brand{font-size:22px;font-weight:800;letter-spacing:.5px}
+.a4-head .brand small{display:block;font-size:10.5px;font-weight:600;color:#666;letter-spacing:1.2px}
+.a4-head .doc{text-align:right;font-size:11.5px;color:#444}
+.a4-meta{display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;font-size:12.5px;margin-bottom:16px;color:#333}
+.a4-meta b{color:#000}
+.a4-tbl{width:100%;border-collapse:collapse;margin-bottom:14px}
+.a4-tbl th{background:#f1f2f4;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;border:1px solid #d5d9de}
+.a4-tbl td{padding:8px 10px;border:1px solid #d5d9de;font-size:12.5px}
+.a4-tbl td.num,.a4-tbl th.num{text-align:right;font-variant-numeric:tabular-nums}
+.a4-total{display:flex;justify-content:flex-end;gap:14px;align-items:center;font-size:15px;padding:10px;border:2px solid var(--ink);border-radius:6px;margin-bottom:14px}
+.a4-total b{font-size:19px;font-variant-numeric:tabular-nums}
+.a4-foot{font-size:10.5px;color:#666;border-top:1px solid #d5d9de;padding-top:10px;display:flex;justify-content:space-between}
+
+/* ---------- Toast ---------- */
+#toasts{position:fixed;top:76px;right:20px;z-index:200;display:flex;flex-direction:column;gap:10px;max-width:380px}
+.toast{display:flex;gap:10px;align-items:flex-start;background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(15,23,42,.2);padding:13px 16px;font-size:13.5px;border-left:4px solid var(--pri);animation:slidein .2s ease}
+.toast.ok{border-left-color:var(--ok)} .toast.err{border-left-color:var(--err)} .toast.warn{border-left-color:#f59e0b}
+@keyframes slidein{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+
+/* ---------- Journey ---------- */
+#journey{position:fixed;right:18px;bottom:18px;z-index:90;width:330px}
+.j-card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 40px rgba(15,23,42,.16);overflow:hidden}
+.j-head{display:flex;gap:10px;align-items:center;padding:12px 14px;background:linear-gradient(135deg,#312e81,#4f46e5);color:#fff;cursor:pointer}
+.j-head .av{font-size:22px}
+.j-head b{font-size:13.5px;display:block}
+.j-head span{font-size:11px;opacity:.85}
+.j-head .tgl{margin-left:auto;background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:7px;padding:4px 9px;font-size:12px}
+.j-body{padding:12px 14px;max-height:320px;overflow:auto}
+.j-step{display:flex;gap:9px;padding:6px 0;font-size:12.5px;color:var(--mut);align-items:flex-start}
+.j-step .st{width:18px;height:18px;border-radius:50%;background:#e2e8f0;color:#64748b;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.j-step.done{color:#334155}.j-step.done .st{background:var(--ok-bg);color:var(--ok-d)}
+.j-step.cur{color:var(--ink);font-weight:700}.j-step.cur .st{background:var(--pri);color:#fff}
+.j-desc{font-size:12px;color:var(--mut);padding:8px 0 4px;border-top:1px dashed var(--line);margin-top:6px}
+.j-next{width:100%;margin-top:8px}
+#journey.min .j-body{display:none}
+.pulse{animation:pulse 1.2s ease 2}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(79,70,229,.55)}70%{box-shadow:0 0 0 14px rgba(79,70,229,0)}100%{box-shadow:0 0 0 0 rgba(79,70,229,0)}}
+
+/* ---------- Print ---------- */
+#print-area{display:none}
+@media print{
+  @page{size:A4;margin:13mm}
+  body{background:#fff}
+  .app-shell,#journey,#toasts,#modal-root{display:none!important}
+  #print-area{display:block!important}
+  #print-area .a4-sheet{border:none;box-shadow:none;padding:0}
+}
+
+/* ---------- Misc ---------- */
+footer.foot{border-top:1px solid var(--line);background:#fff;padding:18px 0;font-size:12.5px;color:var(--mut)}
+.row-between{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.mt{margin-top:18px}.mb{margin-bottom:18px}
+.muted{color:var(--mut)}
+.small{font-size:12.5px}
+#mobile-warn{display:none;background:var(--warn-bg);border-bottom:1px solid var(--warn-line);color:#78350f;text-align:center;font-size:13px;padding:8px;font-weight:600}
+@media (max-width:1023px){#mobile-warn{display:block}}
+</style>
+</head>
+<body>
+<noscript><p style="padding:20px">Este protótipo requer JavaScript.</p></noscript>
+<div id="mobile-warn">⚠️ Protótipo otimizado para desktop (≥1024px) — RNF04.</div>
+
+<div class="app-shell" id="app-shell">
+  <header class="top"><div class="container top-in" id="topbar"></div></header>
+  <main id="main"></main>
+  <footer class="foot"><div class="container row-between">
+    <span>© 2026 COBECO · MVP acadêmico v3.2 · Protótipo navegável — dados simulados (seed determinístico: 11 categorias · 10 fornecedores · 20 produtos)</span>
+    <span>🔒 JWT simulado em memória · 📄 PDF simulado (ReportLab) · ⚡ ACID simulado</span>
+  </div></footer>
+</div>
+
+<div id="toasts" aria-live="polite"></div>
+<div id="modal-root"></div>
+<div id="journey"></div>
+<div id="print-area"></div>
+
+<script>
+"use strict";
+/* =========================================================
+   COBECO — Protótipo Alta Fidelidade v3.2 (monolito)
+   SSOT: REQUISITOS.md + CASOSDEUSO.md + DER v3.2
+   ========================================================= */
+
+/* ---------- Seed (DOC-03) ---------- */
+const CATEGORIAS=[
+ {id:1,nome:"Mercado",ic:"🛒"},{id:2,nome:"Vestuário",ic:"👕"},{id:3,nome:"Automotivos",ic:"🚗"},
+ {id:4,nome:"Informática",ic:"💻"},{id:5,nome:"Decoração",ic:"🖼️"},{id:6,nome:"Móveis",ic:"🛋️"},
+ {id:7,nome:"Materiais de Construção e Ferragens",ic:"🧱"},{id:8,nome:"Ferramentas",ic:"🔧"},
+ {id:9,nome:"Livros",ic:"📚"},{id:10,nome:"Jardinagem",ic:"🪴"},{id:11,nome:"Eletrodomésticos",ic:"🔌"}];
+const FORNECEDORES=[
+ {id:1,nome:"Carrefour",cnpj:"99.000.111/0001-22",cats:[1,2,3,5,11,4]},
+ {id:2,nome:"Extra",cnpj:"00.111.222/0001-33",cats:[1,2,11]},
+ {id:3,nome:"Pão de Açúcar",cnpj:"66.777.888/0001-99",cats:[1]},
+ {id:4,nome:"Magazine Luiza",cnpj:"77.888.999/0001-00",cats:[11,4,6]},
+ {id:5,nome:"Casas Bahia",cnpj:"88.999.000/0001-11",cats:[11,4,6]},
+ {id:6,nome:"Leroy Merlin",cnpj:"11.222.333/0001-44",cats:[7,8,10,5]},
+ {id:7,nome:"Etna",cnpj:"22.333.444/0001-55",cats:[5,6]},
+ {id:8,nome:"C&A",cnpj:"33.444.555/0001-66",cats:[2]},
+ {id:9,nome:"Renner",cnpj:"44.555.666/0001-77",cats:[2]},
+ {id:10,nome:"Hering",cnpj:"55.666.777/0001-88",cats:[2]}];
+const PRODUTOS=[
+ {id:1,nome:"Arroz Tipo 1 5kg",un:"un",base:25.9},{id:2,nome:"Feijão Preto 1kg",un:"un",base:8.2},
+ {id:3,nome:"Óleo de Soja 900ml",un:"un",base:6.9},{id:4,nome:"Café Torrado e Moído 500g",un:"un",base:17.5},
+ {id:5,nome:"Açúcar Refinado 1kg",un:"un",base:4.4},{id:6,nome:"Leite Integral UHT 1L",un:"un",base:5.1},
+ {id:7,nome:"Macarrão Espaguete 500g",un:"un",base:4.8},{id:8,nome:"Molho de Tomate 340g",un:"un",base:3.9},
+ {id:9,nome:"Farinha de Trigo 1kg",un:"un",base:5.5},{id:10,nome:"Ovos Brancos (dúzia)",un:"dz",base:9.9},
+ {id:11,nome:"Detergente Neutro 500ml",un:"un",base:2.9},{id:12,nome:"Papel Toalha 2 rolos",un:"un",base:6.5},
+ {id:13,nome:"Liquidificador 2 Velocidades",un:"un",base:129.9},{id:14,nome:"Notebook i5 8GB",un:"un",base:2899.0},
+ {id:15,nome:"Martelo de Unha 25mm",un:"un",base:32.9},{id:16,nome:"Parafuso Philips 5mm (cx)",un:"cx",base:12.5},
+ {id:17,nome:"Camiseta Algodão M",un:"un",base:39.9},{id:18,nome:"Calça Jeans 40",un:"un",base:119.9},
+ {id:19,nome:"Vaso de Barro 20cm",un:"un",base:45.9},{id:20,nome:"Cadeira de Escritório",un:"un",base:449.9}];
+const CATALOGO={1:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,17,18],
+ 2:[1,2,3,5,6,7,8,9,10,11,12,13,17], /* Extra: sem o café (4) — curado p/ demo */
+ 3:[1,2,3,4,5,6,7,8,9,10,11,12],4:[13,14,20],5:[13,14,20],
+ 6:[15,16,19,20],7:[19,20],8:[17,18],9:[17,18],10:[17]};
+const FATOR={1:.99,2:.93,3:1.14,4:.96,5:1.05,6:.97,7:1.10,8:.95,9:1.00,10:1.04};
+const PERGUNTAS={pet:"Qual era o nome do seu primeiro animal de estimação?",cidade:"Qual é o nome da sua cidade natal?",escola:"Qual era o nome da sua escola de infância?"};
+
+const temOferta=(f,p)=>CATALOGO[f].includes(p);
+const preco=(f,p)=>{const pr=PRODUTOS.find(x=>x.id===p);const jit=Math.sin(f*997+p*131)*0.03;return Math.round(pr.base*FATOR[f]*(1+jit)*100)/100;};
+const BRL=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const hoje=()=>new Date().toLocaleDateString("pt-BR");
+const stamp=()=>{const d=new Date();return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}`;};
+const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- Estado ---------- */
+const state={view:"home",user:null,categorias:[],lista:{nome:"",itens:[]},listaEditId:null,
+ fornecedores:[],filtroDisp:0,resultado:null,busca:"",recStep:1,recUser:null,perfilEdit:false,
+ flags:{pdf:false,saved:false,done:false},attempts:0,lockedUntil:0};
+const USERS=[{nome_usuario:"mariana",nome:"Mariana Duarte",email:"mariana@temperodamari.com.br",
+ senha:"Comida123!",pergunta:"pet",resposta:"Thor",criado_em:"15/08/2026"}];
+const LISTAS={mariana:[{id:101,nome:"Compras da semana passada",criado_em:"11/09/2026",categorias:[1],
+ itens:[{pid:1,qtd:2},{pid:6,qtd:4},{pid:8,qtd:3}]}]};
+let listSeq=200;
+
+/* sessão efêmera: sessionStorage (RF07/UC01) — access token: só memória (RNF10) */
+function persistEph(){try{sessionStorage.setItem("cobeco_eph",JSON.stringify({lista:state.lista,categorias:state.categorias}));}catch(e){}}
+function loadEph(){try{const raw=sessionStorage.getItem("cobeco_eph");if(!raw)return;
+ const d=JSON.parse(raw);if(d.lista&&d.lista.itens&&d.lista.itens.length){state.lista=d.lista;state.categorias=d.categorias||[];
+ setTimeout(()=>toast("Lista efêmera recuperada da sessão: “"+state.lista.nome+"” ("+state.lista.itens.length+" itens).","ok"),600);}
+}catch(e){}}
+
+/* ---------- Toast ---------- */
+function toast(msg,type="info"){const box=document.createElement("div");
+ box.className="toast "+(type==="ok"?"ok":type==="err"?"err":type==="warn"?"warn":"");
+ box.innerHTML=`<span>${msg}</span>`;document.getElementById("toasts").appendChild(box);
+ setTimeout(()=>{box.style.opacity="0";box.style.transition="opacity .4s";setTimeout(()=>box.remove(),420);},4200);}
+
+/* ---------- Modal ---------- */
+function openModal(html){document.getElementById("modal-root").innerHTML=
+ `<div class="overlay" data-action="overlay-click"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;}
+function closeModal(){document.getElementById("modal-root").innerHTML="";}
+
+/* ---------- Regras de comparação (RF15/RF16) ---------- */
+function calcularResultado(){
+ const itens=state.lista.itens;
+ const rows=state.fornecedores.map(fid=>{
+  const f=FORNECEDORES.find(x=>x.id===fid);
+  const disp=itens.filter(i=>temOferta(fid,i.pid));
+  const aus=itens.filter(i=>!temOferta(fid,i.pid));
+  const cobertura=disp.length/itens.length;
+  const total=disp.reduce((s,i)=>s+preco(fid,i.pid)*i.qtd,0);
+  return {fid,nome:f.nome,cnpj:f.cnpj,cobertura,nDisp:disp.length,ausentes:aus,total,parcial:aus.length>0};
+ });
+ const winner=rows.slice().sort((a,b)=>b.cobertura-a.cobertura||a.total-b.total)[0]; /* monografia */
+ const display=rows.slice().sort((a,b)=>a.total-b.total); /* RF15: ordem por preço ASC */
+ state.resultado={rows:display,winner,minTotal:Math.min(...rows.map(r=>r.total)),
+  maxTotal:Math.max(...rows.map(r=>r.total))};
+}
+function coberturaDe(fid){const it=state.lista.itens;if(!it.length)return 0;
+ return it.filter(i=>temOferta(fid,i.pid)).length/it.length;}
+function fornecedoresElegiveis(){return FORNECEDORES.filter(f=>f.cats.some(c=>state.categorias.includes(c)));}
+
+/* ---------- Persona / Jornada ---------- */
+const JOURNEY=[
+ {t:"Mariana descobre o COBECO",d:"Dona do restaurante “Tempero da Mari”: precisa cotar a compra da semana em vários mercados sem perder a manhã. Clique em “Criar minha lista”."},
+ {t:"Pré-filtro por categorias (UC03)",d:"Ela marca “Mercado” — só fornecedores relevantes aparecem depois (RF12). Mínimo 1 categoria."},
+ {t:"Monta a lista (UC01/UC02)",d:"Nome da lista + 6 produtos do catálogo com quantidades (RF07). Tudo em memória, sem cadastro obrigatório. Dica: use “⚡ Preencher demo”."},
+ {t:"Escolhe os fornecedores (UC04/UC05)",d:"Marca os 3 mercados elegíveis (2–10, RF13). O slider filtra por disponibilidade mínima (RF14)."},
+ {t:"Compara orçamentos (UC06/UC07)",d:"Tabela flat: cobertura, itens ausentes e total por fornecedor. A melhor oferta é destacada (RF15/RF16)."},
+ {t:"Abre a lista vencedora",d:"Vencedor = maior cobertura; empate → menor total. Itens precificados pelo fornecedor campeão."},
+ {t:"Exporta o PDF (UC08/RF17)",d:"O PDF contém a LISTA VENCEDORA com itens precificados + total consolidado — nunca a “lista de listas”."},
+ {t:"Salva na conta (UC14/UC17)",d:"Só agora a autenticação é exigida (RF08): modal de login + promoção da lista efêmera. Demo: mariana / Comida123!"},
+ {t:"Confere Minhas Listas (UC15)",d:"Lista persistida no “banco” simulado: busca, ordenação e ações (RF09–RF11). Jornada concluída! 🎉"}];
+function journeyIndex(){
+ if(state.flags.done)return 8;
+ if(state.flags.saved)return 8;
+ if(state.flags.pdf)return 7;
+ switch(state.view){
+  case"home":return 0;case"categorias":return 1;case"lista":return 2;
+  case"fornecedores":return 3;case"resultados":return 4;case"vencedora":return 5;
+  case"dashboard":return 8;default:return state.flags.pdf?7:0;}
+}
+function renderJourney(){
+ const j=document.getElementById("journey");const idx=journeyIndex();
+ j.innerHTML=`<div class="j-card">
+  <div class="j-head" data-action="journey-toggle">
+    <span class="av">👩‍🍳</span>
+    <div><b>Jornada de Mariana</b><span>Persona · dona de restaurante · passo ${Math.min(idx+1,9)}/9</span></div>
+    <button class="tgl" aria-label="Recolher painel">▾</button>
+  </div>
+  <div class="j-body">
+   ${JOURNEY.map((s,i)=>`<div class="j-step ${i<idx?"done":i===idx?"cur":""}">
+     <span class="st">${i<idx?"✓":i+1}</span><span>${s.t}</span></div>`).join("")}
+   <div class="j-desc">💡 ${JOURNEY[Math.min(idx,8)].d}</div>
+   <button class="btn btn-pri btn-sm j-next" data-action="journey-next">🎯 Destacar próxima ação</button>
+  </div></div>`;
+}
+
+/* =========================================================
+   VIEWS
+   ========================================================= */
+function navHTML(){
+ const v=state.view;const logged=!!state.user;
+ return `<a class="logo" href="#" data-action="nav-home"><span class="mark">🛒</span>
+   <span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+  <nav class="main" aria-label="Navegação principal">
+   <a href="#" class="${v==="home"?"on":""}" data-action="nav-home">Início</a>
+   <a href="#" class="${["categorias","lista","fornecedores","resultados","vencedora"].includes(v)?"on":""}" data-action="nav-nova">Nova lista</a>
+   ${logged?`<a href="#" class="${v==="dashboard"?"on":""}" data-action="nav-listas">Minhas listas</a>
+   <a href="#" class="${v==="perfil"?"on":""}" data-action="nav-perfil">Perfil</a>`:""}
+  </nav>
+  <div class="auth-zone">${logged
+   ?`<span class="userchip">🟢 ${esc(state.user)} · sessão ativa</span>
+     <button class="btn btn-ghost btn-sm" data-action="sair">Sair</button>`
+   :`<button class="btn btn-ghost btn-sm" data-action="page-login">Entrar</button>
+     <button class="btn btn-pri btn-sm" data-action="page-cadastro">Criar conta</button>`}
+  </div>`;
+}
+
+function stepperHTML(step){
+ const steps=[["1","Categorias","categorias"],["2","Lista","lista"],["3","Fornecedores","fornecedores"],["4","Comparação","resultados"],["5","Lista vencedora","vencedora"]];
+ return `<div class="stepper" aria-label="Progresso do fluxo">`+steps.map((s,i)=>{
+  const n=i+1;const cls=n<step?"done":n===step?"active":"";
+  return `${i>0?`<div class="stp-bar ${n<=step?"done":""}"></div>`:""}
+   <div class="stp ${cls}" ${n<step?`data-action="goto-step" data-step="${s[2]}" title="Voltar para ${s[1]}"`:""}>
+    <div class="dot">${n<step?"✓":n}</div><div class="lb">${s[1]}</div></div>`;}).join("")+`</div>`;
+}
+
+/* ---- Home ---- */
+function vHome(){
+ return `<div class="container page">
+  <section class="hero">
+   <div><span class="tag">Comparador inteligente · MVP v3.2</span>
+    <h1>Compras mais inteligentes,<br>economia de verdade.</h1>
+    <p>Crie sua lista, filtre fornecedores por categoria, compare preço e disponibilidade em uma única tela — e exporte a lista vencedora em PDF. Sem cadastro obrigatório.</p>
+    <div class="cta-row">
+     <button class="btn btn-white btn-lg" data-action="nav-nova" data-primary>Criar minha lista →</button>
+     <button class="btn btn-outlinew btn-lg" data-action="page-login">${state.user?"Minhas listas":"Entrar na minha conta"}</button>
+    </div></div>
+   <div class="mini-compare" aria-hidden="true">
+    <h4>Comparação da sua lista · 6 produtos · 3 fornecedores</h4>
+    <div class="mini-row"><span>🏆 Carrefour · 100% disponível</span><b>${BRL(158.47)}</b></div>
+    <div class="mini-row"><span>Pão de Açúcar · 100% disponível</span><b>${BRL(173.80)}</b></div>
+    <div class="mini-row"><span>Extra · 83% disponível ⚠ 1 ausente</span><b>${BRL(118.75)}</b></div>
+    <div class="mini-foot"><span>Melhor oferta = maior cobertura</span><span>desempate: menor total</span></div>
+   </div>
+  </section>
+  <section class="value-cards">
+   <div class="card vcard"><div class="ic">🏷️</div><h3>Pré-filtro por categorias</h3><p>Escolha entre 11 categorias macro (Mercado, Vestuário, Eletrodomésticos…) para ver apenas fornecedores relevantes (RF12).</p></div>
+   <div class="card vcard"><div class="ic">📊</div><h3>Comparação clara</h3><p>Tabela flat por fornecedor: preço total, % de cobertura e itens ausentes. A melhor oferta é destacada (RF15/RF16).</p></div>
+   <div class="card vcard"><div class="ic">📄</div><h3>PDF da lista vencedora</h3><p>Exporte a lista do fornecedor campeão com itens precificados e total consolidado (RF17). Funciona sem login.</p></div>
+  </section>
+  <section class="card card-pad mt"><div class="row-between mb"><h2 style="font-size:18px">Como funciona</h2><span class="muted small">Fluxo principal · visitante percorre tudo sem autenticação</span></div>
+   <div class="howto">
+    <div class="how"><div class="n">1</div><b>Categorias</b><span>Pré-filtro</span></div>
+    <div class="how"><div class="n">2</div><b>Lista</b><span>Produtos + qtd</span></div>
+    <div class="how"><div class="n">3</div><b>Fornecedores</b><span>Seleção 2–10</span></div>
+    <div class="how"><div class="n">4</div><b>Comparar</b><span>Tabela flat</span></div>
+    <div class="how"><div class="n">5</div><b>Exportar</b><span>PDF / Imprimir</span></div>
+   </div></section>
+  <section class="persona-strip"><span class="av">👩‍🍳</span>
+   <div style="flex:1"><b>Conheça Mariana Duarte, 34 — dona do restaurante “Tempero da Mari” (Taquaritinga/SP)</b>
+   <p>Toda semana ela compra insumos para ~40 refeições em 3 mercados diferentes. Sem o COBECO: planilha, telefone e risco de escolher o “mais barato” incompleto. Acompanhe a jornada dela no painel ao lado →</p></div>
+   <button class="btn btn-pri" data-action="nav-nova">Iniciar jornada →</button>
+  </section>
+ </div>`;
+}
+
+/* ---- Passo 1: Categorias (UC03/RF12) ---- */
+function vCategorias(){
+ return `<div class="container page">
+  <div class="page-head"><span class="kicker">Passo 1 de 5 · Pré-filtro</span>
+   <h1>Selecione as categorias</h1>
+   <p>Escolha uma ou mais categorias macro para filtrar os fornecedores. Mínimo: 1 categoria (RF12). A seleção fica apenas em memória (transitória).</p></div>
+  ${stepperHTML(1)}
+  <div class="card card-pad">
+   <div class="toolbar">
+    <span class="count-chip ${state.categorias.length?"ok":""}" id="cat-count">${state.categorias.length} categoria(s) selecionada(s) · 11 disponíveis</span>
+    <div><button class="btn btn-ghost btn-sm" data-action="cat-all">Selecionar todas</button>
+    <button class="btn btn-ghost btn-sm" data-action="cat-none">Limpar</button></div>
+   </div>
+   <div class="cat-grid" role="group" aria-label="Categorias macro">
+    ${CATEGORIAS.map(c=>`<label class="cat-card ${state.categorias.includes(c.id)?"sel":""}" data-catcard="${c.id}">
+      <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id)?"checked":""}>
+      <span class="ci">${c.ic}</span><span class="cn">${c.nome}</span></label>`).join("")}
+   </div>
+   <div class="tip">ℹ️ <b>Como funciona:</b> os fornecedores exibidos na próxima etapa pertencem às categorias selecionadas. Ex.: “Mercado” + “Eletrodomésticos” → Carrefour, Extra, Pão de Açúcar, Magazine Luiza, Casas Bahia…</div>
+   <div class="row-between mt">
+    <button class="btn btn-ghost" data-action="nav-home">← Voltar</button>
+    <div>
+     <button class="btn btn-pri btn-lg" id="btn-to-lista" data-action="to-lista" data-primary ${state.categorias.length?"":"disabled"}>Continuar para a lista →</button>
+     ${state.categorias.length?"":`<div class="hint-disabled">⚠️ Selecione ao menos 1 categoria para continuar.</div>`}
+    </div>
+   </div>
+  </div></div>`;
+}
+
+/* ---- Passo 2: Lista (UC01/UC02/RF07) ---- */
+function vLista(){
+ const un=state.lista.itens.reduce((s,i)=>s+i.qtd,0);
+ const logado=!!state.user;
+ return `<div class="container page">
+  <div class="page-head"><span class="kicker">Passo 2 de 5 · Lista de compras</span>
+   <h1>Monte sua lista</h1>
+   <p>Adicione produtos do catálogo e ajuste quantidades (1–9999). Armazenamento: <b>em memória / sessionStorage</b> até salvar.</p></div>
+  ${stepperHTML(2)}
+  <div class="two-col">
+   <div class="card card-pad">
+    <div class="row-between mb"><span class="mode-chip ${logado?"mode-db":"mode-eph"}">${logado?"🔒 CONTA: "+esc(state.user):"⚠ MODO EFÊMERO (visitante)"}</span>
+     <button class="btn btn-ghost btn-sm" data-action="demo-lista" title="Acelera a live demo">⚡ Preencher com a lista da Mariana (demo)</button></div>
+    <div class="field" id="f-nome">
+     <label for="nome-lista">Nome da lista <span class="req">*</span></label>
+     <input type="text" id="nome-lista" maxlength="100" value="${esc(state.lista.nome)}" placeholder="Ex.: Compras do Mês" autocomplete="off">
+     <div class="counter"><span id="nome-count">${state.lista.nome.length}</span>/100</div>
+     <div class="err-msg">Informe um nome para a lista.</div>
+    </div>
+    <div class="field searchbox">
+     <label for="busca">Adicionar produto — autocomplete (mín. 2 caracteres)</label>
+     <input type="text" id="busca" value="${esc(state.busca)}" placeholder="Digite para buscar no catálogo… ex.: arroz" autocomplete="off" role="combobox" aria-expanded="false">
+     <div id="sug-box"></div>
+    </div>
+    <h3 style="font-size:15px;margin:8px 0 10px">Itens da lista</h3>
+    <div id="itens-box">${itensTableHTML()}</div>
+   </div>
+   <aside class="card card-pad resumo"><h3>Resumo</h3>
+    <div class="res-line"><span>Produtos</span><b id="r-prod">${state.lista.itens.length}</b></div>
+    <div class="res-line"><span>Unidades totais</span><b id="r-un">${un}</b></div>
+    <div class="res-line"><span>Categorias filtradas</span><b>${state.categorias.length}</b></div>
+    <div class="res-line"><span>Modo</span><b>${logado?"Conta":"Efêmero"}</b></div>
+    <div class="actions-stack">
+     <button class="btn btn-pri btn-lg" id="btn-to-forn" data-action="to-fornecedores" data-primary ${state.lista.itens.length?"":"disabled"}>Comparar preços →</button>
+     ${state.lista.itens.length?"":`<div class="hint-disabled">Adicione ao menos 1 item para comparar.</div>`}
+     <button class="btn btn-ghost" data-action="salvar-lista">${logado?"💾 Salvar lista":"💾 Salvar lista 🔒"}</button>
+    </div>
+    <div class="tip">💡 Visitantes podem comparar e exportar sem conta. A autenticação é exigida <b>apenas para salvar</b> (RF08) — o rascunho é preservado durante o login.</div>
+   </aside>
+  </div></div>`;
+}
+function itensTableHTML(){
+ if(!state.lista.itens.length)return `<div class="empty"><div class="big">🧺</div>Nenhum produto adicionado. Use a busca acima.</div>`;
+ return `<table class="tbl"><thead><tr><th>Produto</th><th style="width:130px">Qtd.</th><th style="width:80px">Un.</th><th style="width:44px"></th></tr></thead><tbody>
+  ${state.lista.itens.map((i,ix)=>{const p=PRODUTOS.find(x=>x.id===i.pid);return `<tr>
+   <td><b>${esc(p.nome)}</b></td>
+   <td><span class="qty"><button data-action="dec" data-ix="${ix}" aria-label="Diminuir">−</button>
+    <input type="text" inputmode="numeric" value="${i.qtd}" data-qtdix="${ix}" aria-label="Quantidade">
+    <button data-action="inc" data-ix="${ix}" aria-label="Aumentar">+</button></span></td>
+   <td class="muted">${p.un}</td>
+   <td><button class="icon-del" data-action="del-item" data-ix="${ix}" title="Remover item" aria-label="Remover ${esc(p.nome)}">✕</button></td></tr>`;}).join("")}
+ </tbody></table>`;
+}
+function refreshListaUI(){
+ document.getElementById("itens-box").innerHTML=itensTableHTML();
+ const un=state.lista.itens.reduce((s,i)=>s+i.qtd,0);
+ document.getElementById("r-prod").textContent=state.lista.itens.length;
+ document.getElementById("r-un").textContent=un;
+ const b=document.getElementById("btn-to-forn");
+ if(b){b.disabled=!state.lista.itens.length;
+  const h=b.nextElementSibling;if(h&&h.classList.contains("hint-disabled"))h.style.display=state.lista.itens.length?"none":"flex";}
+}
+
+/* ---- Passo 3: Fornecedores (UC04/UC05) ---- */
+function vFornecedores(){
+ return `<div class="container page">
+  <div class="page-head"><span class="kicker">Passo 3 de 5 · Fornecedores</span>
+   <h1>Escolha os fornecedores</h1>
+   <p>Selecione de <b>2 a 10</b> fornecedores (RF13). Apenas fornecedores das categorias escolhidas (${state.categorias.map(c=>CATEGORIAS.find(x=>x.id===c).nome).join(", ")}) são exibidos. O % indica a cobertura da sua lista.</p></div>
+  ${stepperHTML(3)}
+  <div class="card card-pad slider-box">
+   <div class="sl-head"><label for="slider-disp"><b>Filtro de disponibilidade (UC05)</b> — mostrar apenas fornecedores com cobertura mínima da lista</label>
+    <output id="slider-out">${state.filtroDisp}%</output></div>
+   <input type="range" id="slider-disp" min="0" max="100" step="5" value="${state.filtroDisp}" aria-label="Disponibilidade mínima">
+   <div class="sl-scale"><span>0% (todos)</span><span>50%</span><span>100%</span></div>
+  </div>
+  <div class="card card-pad">
+   <div class="toolbar">
+    <span class="count-chip ${state.fornecedores.length>=2?"ok":""}" id="forn-count">${state.fornecedores.length} selecionado(s) · mín 2 · máx 10</span>
+    <div><button class="btn btn-ghost btn-sm" data-action="forn-all">Selecionar todos</button>
+    <button class="btn btn-ghost btn-sm" data-action="forn-clear">Limpar</button></div>
+   </div>
+   <div id="forn-grid" class="forn-grid">${fornCardsHTML()}</div>
+   <div class="row-between mt">
+    <button class="btn btn-ghost" data-action="goto-step" data-step="lista">← Voltar à lista</button>
+    <div><button class="btn btn-pri btn-lg" id="btn-calc" data-action="calcular" data-primary ${state.fornecedores.length>=2?"":"disabled"}>Calcular orçamento →</button>
+    ${state.fornecedores.length>=2?"":`<div class="hint-disabled">⚠️ Selecione ao menos 2 fornecedores.</div>`}</div>
+   </div>
+  </div></div>`;
+}
+function fornCardsHTML(){
+ const eleg=fornecedoresElegiveis();
+ if(!eleg.length)return `<div class="empty" style="grid-column:1/-1"><div class="big">🔎</div>Nenhum fornecedor disponível nas categorias selecionadas.<br>Tente incluir outras categorias.</div>`;
+ return eleg.map(f=>{
+  const cov=Math.round(coberturaDe(f.id)*100);
+  const passa=cov>=state.filtroDisp;
+  const sel=state.fornecedores.includes(f.id);
+  const cls=cov>=80?"cov-hi":cov>=40?"cov-md":"cov-lo";
+  return `<label class="forn-card ${sel?"sel":""} ${passa?"":"off"}" data-forncard="${f.id}">
+   <div class="forn-cb-row"><input type="checkbox" class="forn-cb" value="${f.id}" ${sel?"checked":""} ${passa?"":"disabled"}>
+   <div style="flex:1"><div class="forn-top"><b>${f.nome}</b>
+     <span class="cov-badge ${cls}" title="Itens da sua lista disponíveis neste fornecedor">${cov}% da lista</span></div>
+    <div class="forn-cats">${f.cats.filter(c=>state.categorias.includes(c)).map(c=>`<span class="mini-tag">${CATEGORIAS.find(x=>x.id===c).nome}</span>`).join("")}</div>
+    ${cov===0?`<div class="small muted" style="margin-top:6px">⚠ Não possui itens da sua lista</div>`:""}
+   </div></div></label>`;}).join("");
+}
+function refreshFornecedores(){
+ document.getElementById("forn-grid").innerHTML=fornCardsHTML();
+ const c=document.getElementById("forn-count");
+ c.textContent=`${state.fornecedores.length} selecionado(s) · mín 2 · máx 10`;
+ c.classList.toggle("ok",state.fornecedores.length>=2);
+ const b=document.getElementById("btn-calc");b.disabled=state.fornecedores.length<2;
+ const h=b.nextElementSibling;if(h&&h.classList.contains("hint-disabled"))h.style.display=state.fornecedores.length>=2?"none":"flex";
+}
+
+/* ---- Passo 4: Resultados (UC06/UC07) ---- */
+function vResultados(){
+ if(!state.resultado)return vFornecedores();
+ const R=state.resultado;const W=R.winner;
+ const avg=Math.round(R.rows.reduce((s,r)=>s+r.cobertura,0)/R.rows.length*100);
+ const eco=R.maxTotal-W.total;
+ return `<div class="container page">
+  <div class="page-head"><span class="kicker">Passo 4 de 5 · Resultados</span>
+   <h1>Comparação de preços</h1>
+   <p>Lista “${esc(state.lista.nome)||"(sem nome)"}” · ${state.lista.itens.length} itens · ${R.rows.length} fornecedores. Ordenado pelo menor total (RF15); melhor oferta destacada (RF16).</p></div>
+  ${stepperHTML(4)}
+  <div class="kpis">
+   <div class="card kpi win"><div class="k">🏆 Melhor oferta</div><div class="v">${W.nome}</div><div class="s">${BRL(W.total)} · ${Math.round(W.cobertura*100)}% da lista</div></div>
+   <div class="card kpi"><div class="k">💰 Menor preço</div><div class="v">${BRL(R.minTotal)}</div><div class="s">pode ter itens ausentes</div></div>
+   <div class="card kpi"><div class="k">📊 Economia potencial</div><div class="v">${BRL(eco>0?eco:0)}</div><div class="s">vs. maior total cotado</div></div>
+   <div class="card kpi"><div class="k">Disponibilidade média</div><div class="v">${avg}%</div><div class="s">${R.rows.length} fornecedores comparados</div></div>
+  </div>
+  <div class="card" style="overflow:auto">
+   <table class="tbl"><thead><tr><th style="width:44px">#</th><th>Fornecedor</th><th>Cobertura</th><th>Itens</th><th>Ausentes</th><th style="text-align:right">Preço total</th></tr></thead><tbody>
+   ${R.rows.map((r,i)=>{
+    const isW=r.fid===W.fid,isMin=r.total===R.minTotal;
+    return `<tr class="${isW?"row-win":""}">
+     <td class="muted">${i+1}</td>
+     <td><b>${r.nome}</b> ${isW?`<span class="badge b-ok">🏆 Melhor oferta</span>`:""} ${isMin&&!isW?`<span class="badge b-warn">💰 Menor preço</span>`:""}</td>
+     <td><span class="cov-bar"><i style="width:${Math.round(r.cobertura*100)}%"></i></span>${Math.round(r.cobertura*100)}%</td>
+     <td>${r.nDisp} de ${state.lista.itens.length}</td>
+     <td>${r.parcial?`<span class="badge b-warn" title="${r.ausentes.map(a=>esc(PRODUTOS.find(p=>p.id===a.pid).nome)).join("; ")}">⚠ ${r.ausentes.length} item(ns)</span>`:`<span class="muted">—</span>`}</td>
+     <td style="text-align:right;font-weight:800;font-variant-numeric:tabular-nums">${BRL(r.total)}${r.parcial?` <span class="badge b-mut" title="Total parcial: considera apenas itens disponíveis">parcial</span>`:""}</td></tr>`;}).join("")}
+   </tbody></table>
+  </div>
+  <div class="warn-banner"><span>⚠️</span><span><b>Atenção:</b> o menor preço pode não incluir todos os itens da sua lista. A melhor oferta considera a <b>maior cobertura</b>; em caso de empate, vence o <b>menor total</b> — verifique a coluna “Ausentes” (passe o mouse no badge).</span></div>
+  <div class="row-between">
+   <button class="btn btn-ghost" data-action="goto-step" data-step="fornecedores">← Editar fornecedores</button>
+   <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-ghost" data-action="print-a4">🖨️ Imprimir (A4)</button>
+    <button class="btn btn-ghost" data-action="export-pdf">📄 Exportar PDF</button>
+    <button class="btn btn-ok btn-lg" data-action="ver-vencedora" data-primary>🏆 Ver lista vencedora →</button>
+   </div>
+  </div>
+  <p class="rule-note">Regra da melhor oferta (monografia/RF16): maior percentual de cobertura da lista; empate → menor custo total. A comparação não é persistida (YAGNI).</p>
+ </div>`;
+}
+
+/* ---- Passo 5: Lista vencedora (premissa central) ---- */
+function vVencedora(){
+ if(!state.resultado)return vResultados();
+ const W=state.resultado.winner;
+ return `<div class="container page">
+  <div class="page-head"><span class="kicker">Passo 5 de 5 · Exportação</span>
+   <h1>Lista vencedora</h1>
+   <p>Conteúdo da sua lista <b>precificado pelo fornecedor campeão</b>, com total consolidado. É este documento que o PDF exporta (RF17) — nunca a tabela comparativa.</p></div>
+  ${stepperHTML(5)}
+  <div class="win-hero">
+   <div><span class="badge b-ok" style="margin-bottom:8px">🏆 MELHOR OFERTA · ${Math.round(W.cobertura*100)}% DA LISTA</span>
+    <h2>${W.nome}</h2><div class="meta">CNPJ ${W.cnpj} · cotação de ${hoje()} · lista “${esc(state.lista.nome)||"(sem nome)"}”</div></div>
+   <div style="text-align:right"><div class="muted small">Total consolidado</div>
+    <div style="font-size:30px;font-weight:800;font-variant-numeric:tabular-nums">${BRL(W.total)}</div>
+    ${W.parcial?`<span class="badge b-warn">total parcial — há itens indisponíveis</span>`:`<span class="badge b-ok">todos os itens disponíveis</span>`}</div>
+  </div>
+  <div class="card" style="overflow:auto"><table class="tbl">
+   <thead><tr><th>Produto</th><th>Un.</th><th style="width:90px">Qtd.</th><th style="text-align:right">Preço unitário</th><th style="text-align:right">Subtotal</th></tr></thead><tbody>
+   ${state.lista.itens.map(i=>{const p=PRODUTOS.find(x=>x.id===i.pid);const tem=temOferta(W.fid,i.pid);
+    return tem?`<tr><td><b>${esc(p.nome)}</b></td><td class="muted">${p.un}</td><td>${i.qtd}</td>
+     <td style="text-align:right">${BRL(preco(W.fid,i.pid))}</td>
+     <td style="text-align:right;font-weight:700">${BRL(preco(W.fid,i.pid)*i.qtd)}</td></tr>`
+    :`<tr style="opacity:.55"><td>${esc(p.nome)}</td><td class="muted">${p.un}</td><td>${i.qtd}</td>
+     <td colspan="2" style="text-align:right"><span class="badge b-warn">⚠ Indisponível neste fornecedor</span></td></tr>`;}).join("")}
+   </tbody></table></div>
+  <div class="total-box"><span class="tl">Total consolidado da compra (${state.lista.itens.length} itens)</span><span class="tv">${BRL(W.total)}</span></div>
+  <div class="export-note">ℹ️ O arquivo <b>lista_${stamp()}.pdf</b> (A4, gerado no servidor via ReportLab) contém exatamente este documento: itens, preços unitários, subtotais e total consolidado.</div>
+  <div class="row-between mt">
+   <button class="btn btn-ghost" data-action="goto-step" data-step="resultados">← Voltar aos resultados</button>
+   <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-ghost btn-lg" data-action="print-a4">🖨️ Imprimir A4</button>
+    <button class="btn btn-pri btn-lg" data-action="export-pdf" data-primary>⬇ Exportar PDF — lista_${stamp()}.pdf</button>
+   </div>
+  </div></div>`;
+}
+
+/* ---- Auth: Login (UC10/RF02) ---- */
+function vLogin(){
+ const locked=Date.now()<state.lockedUntil;
+ return `<div class="container page"><div class="auth-wrap"><div class="card auth-card">
+  <span class="step-pill">Autenticação</span><h1>Entre na sua conta</h1>
+  <p class="sub">Acesse suas listas salvas. A autenticação só é exigida para <b>salvar</b> listas.</p>
+  <div class="demo-hint"><span>🎬 <b>Demo:</b> mariana / Comida123!</span><button class="linklike" data-action="demo-login-fill" type="button">preencher</button></div>
+  <form id="form-login" novalidate>
+   <div class="field" id="fl-u"><label>Nome de usuário</label><input type="text" id="l-user" autocomplete="username"><div class="err-msg">Informe o nome de usuário.</div></div>
+   <div class="field" id="fl-p"><label>Senha</label><input type="password" id="l-pass" autocomplete="current-password"><div class="err-msg">Informe a senha.</div></div>
+   ${locked?`<div class="warn-banner"><span>🔒</span><span>Muitas tentativas. Acesso bloqueado por 15 minutos (RF02, anti-força bruta).<br><button class="linklike" type="button" data-action="reset-lock">(modo demo: zerar bloqueio)</button></span></div>`:""}
+   <button class="btn btn-pri btn-lg" style="width:100%" ${locked?"disabled":""} data-primary>Entrar</button>
+   <p class="small muted mt" style="text-align:center">6 tentativas consecutivas → bloqueio de 15 min · mensagem sempre genérica (segurança)</p>
+  </form>
+  <div class="auth-foot"><a href="#" data-action="page-recuperar">Esqueci minha senha</a> · Ainda não possui conta? <a href="#" data-action="page-cadastro">Criar conta</a></div>
+ </div></div></div>`;
+}
+
+/* ---- Cadastro (UC09/RF01) ---- */
+function vCadastro(){
+ return `<div class="container page"><div class="auth-wrap" style="max-width:520px"><div class="card auth-card">
+  <span class="step-pill">Cadastro · UC09</span><h1>Criar conta</h1><p class="sub">Preencha seus dados para salvar listas. Leva menos de um minuto.</p>
+  <form id="form-cad" novalidate>
+   <div class="field" id="fc-u"><label>Username <span class="req">*</span></label><input type="text" id="c-user" placeholder="3–30 caracteres alfanuméricos, único"><div class="err-msg" id="fc-u-e">Username inválido (3–30 alfanuméricos) ou já cadastrado.</div></div>
+   <div class="field" id="fc-n"><label>Nome completo <span class="req">*</span></label><input type="text" id="c-nome" placeholder="2–100 caracteres"><div class="err-msg">Nome deve ter de 2 a 100 caracteres.</div></div>
+   <div class="field" id="fc-e"><label>Email <span class="req">*</span></label><input type="email" id="c-email" placeholder="voce@exemplo.com"><div class="err-msg">Email inválido ou já cadastrado.</div></div>
+   <div class="field" id="fc-s"><label>Senha <span class="req">*</span></label><input type="password" id="c-senha" placeholder="Mín. 8 · 1 maiúscula · 1 número · 1 especial"><div class="err-msg">Senha fraca: mín. 8, 1 maiúscula, 1 número e 1 caractere especial.</div></div>
+   <div class="field" id="fc-c"><label>Confirmar senha <span class="req">*</span></label><input type="password" id="c-conf"><div class="err-msg">As senhas não coincidem.</div></div>
+   <div class="field" id="fc-p"><label>Pergunta de segurança <span class="req">*</span></label>
+    <select id="c-perg"><option value="">Selecione…</option>${Object.entries(PERGUNTAS).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select>
+    <div class="err-msg">Selecione uma pergunta (usada na recuperação de senha).</div></div>
+   <div class="field" id="fc-r"><label>Resposta <span class="req">*</span></label><input type="text" id="c-resp" placeholder="mín. 3 caracteres"><div class="err-msg">Resposta muito curta (mín. 3).</div></div>
+   <button class="btn btn-pri btn-lg" style="width:100%" data-primary>Criar conta</button>
+   <p class="small muted mt" style="text-align:center">Validação inline · mensagens genéricas para duplicados · senha com hash bcrypt (simulado)</p>
+  </form>
+  <div class="auth-foot">Já tenho conta · <a href="#" data-action="page-login">Entrar</a></div>
+ </div></div></div>`;
+}
+
+/* ---- Recuperar senha (UC12/RF04) ---- */
+function vRecuperar(){
+ let body="";
+ if(state.recStep===1){body=`
+  <form id="form-rec1" novalidate><div class="field" id="fr-u"><label>Nome de usuário</label>
+   <input type="text" id="r-user" placeholder="seu username"><div class="err-msg">Usuário não encontrado.</div></div>
+  <button class="btn btn-pri btn-lg" style="width:100%" data-primary>Continuar →</button></form>
+  <p class="small muted mt">⚠️ Máx. 3 tentativas por etapa · 3 solicitações/hora (rate limit). Modo dev: token também seria logado no stdout (RECOVERY_MODE=log).</p>`;}
+ else if(state.recStep===2){const u=USERS.find(x=>x.nome_usuario===state.recUser);
+  body=`<p class="small muted mb">Responda para gerar o token de reset (uso único · 15 min):</p>
+  <form id="form-rec2" novalidate><div class="field" id="fr-r"><label>${PERGUNTAS[u.pergunta]}</label>
+   <input type="text" id="r-resp" placeholder="sua resposta (demo: Thor)"><div class="err-msg">Resposta incorreta. Tentativas restantes serão limitadas (3).</div></div>
+  <button class="btn btn-pri btn-lg" style="width:100%" data-primary>Validar resposta →</button></form>`;}
+ else{body=`<p class="small muted mb">Token válido ✔ (uso único, 15 min). Defina a nova senha — regras do RF01 e diferente da atual.</p>
+  <form id="form-rec3" novalidate>
+   <div class="field" id="fr-s"><label>Nova senha</label><input type="password" id="r-senha"><div class="err-msg">Senha fraca ou igual à anterior.</div></div>
+   <div class="field" id="fr-c"><label>Confirmar nova senha</label><input type="password" id="r-conf"><div class="err-msg">As senhas não coincidem.</div></div>
+  <button class="btn btn-pri btn-lg" style="width:100%" data-primary>Redefinir senha</button></form>`;}
+ return `<div class="container page"><div class="auth-wrap"><div class="card auth-card">
+  <span class="step-pill">Recuperação · passo ${state.recStep} de 3</span>
+  <h1>Recuperar senha</h1><p class="sub">Via pergunta de segurança (contexto acadêmico, sem envio de email).</p>
+  ${body}<div class="auth-foot"><a href="#" data-action="page-login">← Voltar ao login</a></div>
+ </div></div></div>`;
+}
+
+/* ---- Minhas listas (UC15/RF09) ---- */
+function vDashboard(){
+ if(!state.user)return vLogin();
+ const q=(state.dashQ||"").toLowerCase();
+ let lists=(LISTAS[state.user]||[]).slice().sort((a,b)=>b.criado_em.localeCompare(a.criado_em));
+ if(q)lists=lists.filter(l=>norm(l.nome).includes(norm(q)));
+ return `<div class="container page">
+  <div class="page-head row-between"><div><span class="kicker">Área logada · UC15</span><h1>Minhas listas</h1>
+   <p>Listas salvas de <b>${esc(state.user)}</b>, ordenadas da mais recente para a mais antiga · paginação de 20 (demo com ${lists.length}).</p></div>
+   <button class="btn btn-pri" data-action="nav-nova">+ Nova lista</button></div>
+  <div class="card card-pad">
+   <div class="toolbar"><input type="text" id="dash-q" value="${esc(state.dashQ||"")}" placeholder="🔍 Buscar por nome…" style="padding:10px 13px;border:1px solid #cbd5e1;border-radius:10px;min-width:300px" aria-label="Buscar listas por nome">
+    <span class="count-chip">${lists.length} lista(s)</span></div>
+   ${lists.length?`<table class="tbl"><thead><tr><th>Nome</th><th>Itens</th><th>Categorias</th><th>Criada em</th><th style="width:190px">Ações</th></tr></thead><tbody>
+    ${lists.map(l=>`<tr><td><b>${esc(l.nome)}</b></td><td>${l.itens.length} produtos</td>
+     <td>${(l.categorias||[]).map(c=>`<span class="mini-tag">${CATEGORIAS.find(x=>x.id===c).nome}</span>`).join(" ")||"—"}</td>
+     <td class="muted">${l.criado_em}</td>
+     <td><button class="btn btn-ghost btn-sm" data-action="editar-lista" data-id="${l.id}">✏️ Editar</button>
+     <button class="btn btn-danger btn-sm" data-action="excluir-lista" data-id="${l.id}">🗑 Excluir</button></td></tr>`).join("")}
+    </tbody></table><p class="small muted mt">Mostrando ${lists.length} de ${lists.length} listas · « 1 » · exclusão é lógica (soft delete)</p>`
+   :`<div class="empty"><div class="big">🗂️</div>Você ainda não tem listas salvas.<br><br><button class="btn btn-pri" data-action="nav-nova">Criar lista</button></div>`}
+  </div></div>`;
+}
+
+/* ---- Perfil (UC16/UC18 · RF05/RF06) ---- */
+function vPerfil(){
+ if(!state.user)return vLogin();
+ const u=USERS.find(x=>x.nome_usuario===state.user);
+ const edit=state.perfilEdit;
+ return `<div class="container page"><div class="auth-wrap" style="max-width:560px">
+  <div class="page-head"><span class="kicker">Perfil · UC18/UC16</span><h1>Meu perfil</h1>
+   <p>Visualize seus dados e edite nome, email ou senha — qualquer alteração exige a senha atual (RF06).</p></div>
+  <div class="card card-pad">
+   <div class="res-line"><span>Username</span><b>🔒 ${esc(u.nome_usuario)} <span class="badge b-mut">read-only</span></b></div>
+   <div class="res-line"><span>Nome completo</span><b>${esc(u.nome)}</b></div>
+   <div class="res-line"><span>Email</span><b>${esc(u.email)}</b></div>
+   <div class="res-line"><span>Conta criada em</span><b>${u.criado_em}</b></div>
+   ${!edit?`<div class="row-between mt">
+     <button class="btn btn-ghost" data-action="sair">🚪 Logout</button>
+     <button class="btn btn-pri" data-action="perfil-editar" data-primary>✏️ Editar perfil</button></div>`
+   :`<form id="form-perfil" novalidate class="mt">
+     <div class="field" id="fp-n"><label>Novo nome</label><input type="text" id="p-nome" value="${esc(u.nome)}"><div class="err-msg">Nome deve ter de 2 a 100 caracteres.</div></div>
+     <div class="field" id="fp-e"><label>Novo email</label><input type="email" id="p-email" value="${esc(u.email)}"><div class="err-msg">Email inválido ou já cadastrado.</div></div>
+     <div class="field" id="fp-a"><label>Senha atual <span class="req">*</span></label><input type="password" id="p-atual"><div class="err-msg">Senha atual incorreta.</div></div>
+     <div class="field" id="fp-s"><label>Nova senha (opcional)</label><input type="password" id="p-nova" placeholder="deixe em branco para manter"><div class="err-msg">Senha fraca ou igual à atual.</div></div>
+     <div class="row-between"><button class="btn btn-ghost" type="button" data-action="perfil-cancelar">Cancelar</button>
+     <button class="btn btn-ok" data-primary>💾 Salvar alterações</button></div>
+     <p class="small muted mt">Transação ACID simulada: email/nome/senha atualizam juntos ou nada muda.</p></form>`}
+  </div></div></div>`;
+}
+
+/* =========================================================
+   PDF / IMPRESSÃO — sempre a LISTA VENCEDORA (premissa)
+   ========================================================= */
+function sheetHTML(){
+ const W=state.resultado.winner;
+ const rows=state.lista.itens.map(i=>{const p=PRODUTOS.find(x=>x.id===i.pid);const tem=temOferta(W.fid,i.pid);
+  return {nome:p.nome,un:p.un,qtd:i.qtd,preco:tem?preco(W.fid,i.pid):null};});
+ return `<div class="a4-sheet" id="a4-sheet">
+  <div class="a4-head"><div class="brand">🛒 COBECO<small>COTAÇÃO DE BENS DE CONSUMO</small></div>
+   <div class="doc"><b>LISTA VENCEDORA — COTAÇÃO</b><br>Arquivo: lista_${stamp()}.pdf<br>Formato A4 · ${hoje()}</div></div>
+  <div class="a4-meta">
+   <span>Lista: <b>${esc(state.lista.nome)||"(sem nome)"}</b></span>
+   <span>Fornecedor vencedor: <b>${W.nome}</b> (CNPJ ${W.cnpj})</span>
+   <span>Itens: <b>${state.lista.itens.length}</b> · Unidades: <b>${rows.reduce((s,r)=>s+r.qtd,0)}</b></span>
+   <span>Cobertura da lista: <b>${Math.round(W.cobertura*100)}%</b>${W.parcial?" (total parcial)":""}</span>
+  </div>
+  <table class="a4-tbl"><thead><tr><th style="width:34px">#</th><th>Produto</th><th style="width:50px">Un.</th>
+   <th class="num" style="width:60px">Qtd.</th><th class="num" style="width:110px">Preço unitário</th><th class="num" style="width:110px">Subtotal</th></tr></thead>
+  <tbody>${rows.map((r,ix)=>`<tr><td>${ix+1}</td><td>${esc(r.nome)}</td><td>${r.un}</td><td class="num">${r.qtd}</td>
+   <td class="num">${r.preco!=null?BRL(r.preco):"—"}</td><td class="num">${r.preco!=null?BRL(r.preco*r.qtd):"⚠ indisponível"}</td></tr>`).join("")}</tbody></table>
+  <div class="a4-total"><span><b>TOTAL CONSOLIDADO DA COMPRA</b> — preços de ${W.nome}</span><b>${BRL(W.total)}</b></div>
+  ${W.parcial?`<p style="font-size:11px;color:#7a4a00;margin-bottom:10px">⚠ Itens indisponíveis no vencedor: ${W.ausentes.map(a=>esc(PRODUTOS.find(p=>p.id===a.pid).nome)).join("; ")}. Total calculado sobre itens disponíveis.</p>`:""}
+  <div class="a4-foot"><span>Gerado por COBECO · protótipo MVP v3.2 · PDF server-side simulado (ReportLab)</span><span>Documento de cotação — sem valor fiscal</span></div>
+ </div>`;
+}
+function exportPDF(){
+ if(!state.resultado){toast("Compare os preços antes de exportar.","warn");return;}
+ toast("⏳ Gerando PDF no servidor (ReportLab)…","info");
+ setTimeout(()=>{state.flags.pdf=true;
+  openModal(`<button class="x" data-action="close-modal" aria-label="Fechar">✕</button>
+   <h3>📄 PDF gerado com sucesso</h3>
+   <p class="small muted mb">Pré-visualização de <b>lista_${stamp()}.pdf</b> — lista vencedora precificada + total consolidado (RF17/RNF11: &lt;5s).</p>
+   <div style="max-height:56vh;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#eef0f3;padding:16px">${sheetHTML()}</div>
+   <div class="modal-actions">
+    <button class="btn btn-ghost" data-action="close-modal">Fechar</button>
+    <button class="btn btn-pri" data-action="baixar-pdf" data-primary>⬇ Baixar lista_${stamp()}.pdf</button>
+   </div>`);
+  renderJourney();},900);
+}
+function printWinner(){
+ if(!state.resultado){toast("Compare os preços antes de imprimir.","warn");return;}
+ document.getElementById("print-area").innerHTML=sheetHTML();
+ setTimeout(()=>window.print(),60);
+}
+
+/* =========================================================
+   AÇÕES
+   ========================================================= */
+function go(view){state.view=view;render();window.scrollTo({top:0});}
+function render(){
+ document.getElementById("topbar").innerHTML=navHTML();
+ const M={home:vHome,categorias:vCategorias,lista:vLista,fornecedores:vFornecedores,
+  resultados:vResultados,vencedora:vVencedora,login:vLogin,cadastro:vCadastro,
+  recuperar:vRecuperar,dashboard:vDashboard,perfil:vPerfil};
+ document.getElementById("main").innerHTML=(M[state.view]||vHome)();
+ renderJourney();
+}
+
+function loginCore(user,pass,after){
+ if(Date.now()<state.lockedUntil){toast("🔒 Conta bloqueada temporariamente (6 tentativas).","err");return false;}
+ const u=USERS.find(x=>x.nome_usuario===user);
+ if(!u||u.senha!==pass){state.attempts++;
+  if(state.attempts>=6){state.lockedUntil=Date.now()+15*60*1000;state.attempts=0;toast("🔒 6 tentativas falhas — bloqueio de 15 minutos (RF02).","err");}
+  else toast(`Credenciais inválidas. (mensagem genérica · tentativa ${state.attempts}/6)`,"err");
+  return false;}
+ state.attempts=0;state.user=u.nome_usuario;
+ toast(`✅ Bem-vinda(o), ${u.nome.split(" ")[0]}! Sessão ativa — token em memória, cookie httpOnly simulado.`,"ok");
+ return true;
+}
+function afterLogin(){
+ const hasEph=state.lista.itens.length>0;
+ if(hasEph){openModal(`<button class="x" data-action="close-modal" aria-label="Fechar">✕</button>
+   <h3>💾 Salvar lista efêmera?</h3>
+   <p class="small" style="margin:8px 0">Você tem uma lista ativa na sessão: <b>“${esc(state.lista.nome)||"(sem nome)"}” · ${state.lista.itens.length} itens</b>. Deseja salvá-la permanentemente na sua conta? (UC17 — Promover Lista Efêmera)</p>
+   <p class="small warn-banner" style="margin:10px 0"><span>⚠️</span><span>Se escolher “Não”, a lista permanece em memória e será perdida ao fechar a aba.</span></p>
+   <div class="modal-actions"><button class="btn btn-ghost" data-action="promote-no">Não, manter efêmera</button>
+   <button class="btn btn-ok" data-action="promote-yes" data-primary>Sim, salvar lista</button></div>`);}
+ else go("dashboard");
+}
+function salvarListaCore(){
+ if(!state.lista.nome.trim()){toast("Informe um nome para a lista.","err");return false;}
+ if(!state.lista.itens.length){toast("A lista precisa de ao menos 1 item.","err");return false;}
+ if(!state.categorias.length){toast("Selecione ao menos 1 categoria antes de salvar (UC03).","err");return false;}
+ const db=LISTAS[state.user]=LISTAS[state.user]||[];
+ const snap={nome:state.lista.nome,itens:state.lista.itens.map(i=>({...i})),categorias:[...state.categorias]};
+ if(state.listaEditId){const l=db.find(x=>x.id===state.listaEditId);Object.assign(l,snap);toast("✅ Lista atualizada (transação ACID simulada).","ok");}
+ else{db.push({id:++listSeq,criado_em:hoje(),...snap});state.listaEditId=listSeq;
+  state.flags.saved=true;toast("✅ Lista salva com sucesso! Persistida no banco (simulado).","ok");}
+ persistEph();renderJourney();return true;
+}
+
+document.addEventListener("click",e=>{
+ const el=e.target.closest("[data-action]");if(!el)return;
+ const a=el.dataset.action;e.preventDefault();
+ switch(a){
+  case"overlay-click":if(e.target===el)closeModal();break;
+  case"close-modal":closeModal();break;
+  case"nav-home":go("home");break;
+  case"nav-nova":go(state.categorias.length?"lista":"categorias");break;
+  case"nav-listas":state.user?go("dashboard"):(go("login"),toast("Entre para acessar suas listas.","warn"));break;
+  case"nav-perfil":state.user?go("perfil"):go("login");break;
+  case"page-login":go("login");break;
+  case"page-cadastro":go("cadastro");break;
+  case"page-recuperar":state.recStep=1;go("recuperar");break;
+  case"sair":{const hadEph=state.lista.itens.length>0;state.user=null;state.perfilEdit=false;
+   toast(`Sessão encerrada. ${hadEph?"Rascunho da aba preservado (RF03).":""}`,"info");go("home");break;}
+  case"cat-all":state.categorias=CATEGORIAS.map(c=>c.id);render();break;
+  case"cat-none":state.categorias=[];render();break;
+  case"to-lista":if(!state.categorias.length){toast("Selecione ao menos 1 categoria.","err");break;}go("lista");break;
+  case"goto-step":{const s=el.dataset.step;if(s==="lista"&&!state.categorias.length){go("categorias");break;}
+   if((s==="fornecedores"||s==="resultados")&&!state.lista.itens.length){go("lista");break;}
+   if(s==="resultados"&&!state.resultado){go("fornecedores");break;}go(s);break;}
+  case"demo-lista":state.lista={nome:"Compras do Mês",itens:[{pid:1,qtd:2},{pid:2,qtd:2},{pid:3,qtd:3},{pid:4,qtd:2},{pid:5,qtd:2},{pid:6,qtd:6}]};
+   if(!state.categorias.length)state.categorias=[1];persistEph();render();
+   toast("⚡ Lista da Mariana preenchida: 6 produtos de mercado.","ok");break;
+  case"inc":case"dec":{const ix=+el.dataset.ix;const it=state.lista.itens[ix];
+   it.qtd=Math.min(9999,Math.max(1,it.qtd+(a==="inc"?1:-1)));persistEph();refreshListaUI();break;}
+  case"del-item":state.lista.itens.splice(+el.dataset.ix,1);persistEph();refreshListaUI();break;
+  case"to-fornecedores":if(!state.lista.itens.length){toast("Adicione ao menos 1 item.","err");break;}go("fornecedores");break;
+  case"forn-all":state.fornecedores=fornecedoresElegiveis().filter(f=>coberturaDe(f.id)*100>=state.filtroDisp).map(f=>f.id).slice(0,10);refreshFornecedores();break;
+  case"forn-clear":state.fornecedores=[];refreshFornecedores();break;
+  case"calcular":{if(state.fornecedores.length<2){toast("Selecione ao menos 2 fornecedores.","err");break;}
+   const btn=el;btn.disabled=true;btn.textContent="⏳ Calculando orçamento…";
+   setTimeout(()=>{calcularResultado();go("resultados");
+    toast(`✅ Comparação concluída em ~180ms (meta p95 <500ms). Melhor oferta: ${state.resultado.winner.nome}.`,"ok");},700);break;}
+  case"ver-vencedora":go("vencedora");break;
+  case"export-pdf":exportPDF();break;
+  case"print-a4":printWinner();break;
+  case"baixar-pdf":toast("🖨️ Abrindo destino de impressão — escolha “Salvar como PDF” (protótipo simula o download server-side).","info");
+   document.getElementById("print-area").innerHTML=sheetHTML();setTimeout(()=>window.print(),80);break;
+  case"salvar-lista":{if(!state.user){openModal(`<button class="x" data-action="close-modal" aria-label="Fechar">✕</button>
+     <h3>🔒 Entre para salvar sua lista</h3>
+     <p class="small muted mb">Sua lista permanece aqui enquanto você entra (RF08 — rascunho preservado).</p>
+     <div class="demo-hint"><span>🎬 <b>Demo:</b> mariana / Comida123!</span><button class="linklike" type="button" data-action="demo-modal-fill">preencher</button></div>
+     <form id="form-login-modal" novalidate>
+      <div class="field"><label>Nome de usuário</label><input type="text" id="m-user"></div>
+      <div class="field"><label>Senha</label><input type="password" id="m-pass"></div>
+      <button class="btn btn-pri btn-lg" style="width:100%" data-primary>Entrar e salvar</button></form>
+     <div class="auth-foot"><a href="#" data-action="close-modal">Cancelar</a> · <a href="#" data-action="goto-cad-from-modal">Criar conta</a></div>`);}
+   else{if(salvarListaCore())go("dashboard");}break;}
+  case"goto-cad-from-modal":closeModal();go("cadastro");break;
+  case"demo-modal-fill":document.getElementById("m-user").value="mariana";document.getElementById("m-pass").value="Comida123!";break;
+  case"demo-login-fill":document.getElementById("l-user").value="mariana";document.getElementById("l-pass").value="Comida123!";break;
+  case"reset-lock":state.lockedUntil=0;render();break;
+  case"promote-yes":closeModal();if(salvarListaCore())go("dashboard");break;
+  case"promote-no":closeModal();toast("Lista mantida em memória (efêmera).","info");go("dashboard");break;
+  case"editar-lista":{const l=(LISTAS[state.user]||[]).find(x=>x.id===+el.dataset.id);
+   if(!l)break;state.listaEditId=l.id;state.lista={nome:l.nome,itens:l.itens.map(i=>({...i}))};
+   state.categorias=[...(l.categorias||[])];persistEph();go("lista");
+   toast("✏️ Editando “"+l.nome+"”. Ao salvar, os dados serão atualizados (UC13).","info");break;}
+  case"excluir-lista":{const id=+el.dataset.id;const l=(LISTAS[state.user]||[]).find(x=>x.id===id);
+   openModal(`<button class="x" data-action="close-modal" aria-label="Fechar">✕</button>
+    <h3>🗑️ Confirmar exclusão</h3>
+    <p class="small" style="margin:8px 0">Esta ação não pode ser desfeita (na demo). Digite o nome da lista para confirmar (RF11):</p>
+    <div class="field"><label>“${esc(l.nome)}”</label><input type="text" id="excl-nome" placeholder="digite o nome exato" autocomplete="off"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" data-action="close-modal">Cancelar</button>
+    <button class="btn btn-danger" id="btn-excl" data-action="confirmar-exclusao" data-id="${id}" disabled>Excluir permanentemente</button></div>`);break;}
+  case"confirmar-exclusao":{const id=+el.dataset.id;const db=LISTAS[state.user]||[];
+   const ix=db.findIndex(x=>x.id===id);if(ix>=0){db.splice(ix,1);}closeModal();
+   toast("🗑 Lista excluída (soft delete simulado — deletado_em).","ok");render();break;}
+  case"perfil-editar":state.perfilEdit=true;render();break;
+  case"perfil-cancelar":state.perfilEdit=false;render();break;
+  case"journey-toggle":document.getElementById("journey").classList.toggle("min");break;
+  case"journey-next":{const p=document.querySelector("[data-primary]");
+   if(p){p.scrollIntoView({behavior:"smooth",block:"center"});p.classList.remove("pulse");void p.offsetWidth;p.classList.add("pulse");p.focus({preventScroll:true});}
+   else toast("Nenhuma ação disponível neste ponto.","info");break;}
+ }
+});
+
+/* submits */
+document.addEventListener("submit",e=>{
+ const id=e.target.id;if(!id)return;e.preventDefault();
+ const val=x=>{const n=document.getElementById(x);return n?n.value.trim():"";};
+ const bad=(fid)=>{const f=document.getElementById(fid);if(f)f.classList.add("invalid");};
+ const clear=fid=>{const f=document.getElementById(fid);if(f)f.classList.remove("invalid");};
+ if(id==="form-login"||id==="form-login-modal"){
+  const u=id==="form-login"?val("l-user"):val("m-user"),p=id==="form-login"?val("l-pass"):val("m-pass");
+  if(!u||!p){toast("Informe usuário e senha.","err");return;}
+  if(loginCore(u,p)){closeModal();afterLogin();}else if(id==="form-login")render();
+ }
+ else if(id==="form-cad"){
+  let ok=true;["fc-u","fc-n","fc-e","fc-s","fc-c","fc-p","fc-r"].forEach(clear);
+  const u=val("c-user"),n=val("c-nome"),em=val("c-email"),s=val("c-senha"),c=val("c-conf"),pg=val("c-perg"),r=val("c-resp");
+  if(!/^[a-zA-Z0-9]{3,30}$/.test(u)||USERS.some(x=>x.nome_usuario===u)){bad("fc-u");ok=false;}
+  if(n.length<2||n.length>100){bad("fc-n");ok=false;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)||USERS.some(x=>x.email===em)){bad("fc-e");ok=false;}
+  if(!(s.length>=8&&/[A-Z]/.test(s)&&/\d/.test(s)&&/[^A-Za-z0-9]/.test(s))){bad("fc-s");ok=false;}
+  if(c!==s){bad("fc-c");ok=false;}
+  if(!pg){bad("fc-p");ok=false;}
+  if(r.length<3){bad("fc-r");ok=false;}
+  if(!ok){toast("Verifique os campos destacados.","err");return;}
+  USERS.push({nome_usuario:u,nome:n,email:em,senha:s,pergunta:pg,resposta:r,criado_em:hoje()});
+  toast("✅ Conta criada com sucesso! Agora faça login. (201 Created)","ok");go("login");
+ }
+ else if(id==="form-rec1"){const u=val("r-user");clear("fr-u");
+  if(!USERS.some(x=>x.nome_usuario===u)){bad("fr-u");toast("Usuário não encontrado.","err");return;}
+  state.recUser=u;state.recStep=2;render();}
+ else if(id==="form-rec2"){const u=USERS.find(x=>x.nome_usuario===state.recUser);clear("fr-r");
+  if(val("r-resp").toLowerCase()!==u.resposta.toLowerCase()){bad("fr-r");toast("Resposta incorreta (máx. 3 tentativas).","err");return;}
+  toast("✔ Resposta validada. Token de reset emitido (uso único · 15 min).","ok");state.recStep=3;render();}
+ else if(id==="form-rec3"){const u=USERS.find(x=>x.nome_usuario===state.recUser);let ok=true;["fr-s","fr-c"].forEach(clear);
+  const s=val("r-senha"),c=val("r-conf");
+  if(!(s.length>=8&&/[A-Z]/.test(s)&&/\d/.test(s)&&/[^A-Za-z0-9]/.test(s))||s===u.senha){bad("fr-s");ok=false;}
+  if(c!==s){bad("fr-c");ok=false;}
+  if(!ok){toast("Verifique a nova senha.","err");return;}
+  u.senha=s;state.recStep=1;toast("✅ Senha redefinida! Faça login com a nova senha.","ok");go("login");}
+ else if(id==="form-perfil"){const u=USERS.find(x=>x.nome_usuario===state.user);let ok=true;["fp-n","fp-e","fp-a","fp-s"].forEach(clear);
+  const n=val("p-nome"),em=val("p-email"),at=val("p-atual"),nv=val("p-nova");
+  if(n.length<2||n.length>100){bad("fp-n");ok=false;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)||USERS.some(x=>x.email===em&&x.nome_usuario!==u.nome_usuario)){bad("fp-e");ok=false;}
+  if(at!==u.senha){bad("fp-a");ok=false;}
+  if(nv&&(!(nv.length>=8&&/[A-Z]/.test(nv)&&/\d/.test(nv)&&/[^A-Za-z0-9]/.test(nv))||nv===u.senha)){bad("fp-s");ok=false;}
+  if(!ok){toast("Verifique os campos destacados.","err");return;}
+  u.nome=n;u.email=em;if(nv)u.senha=nv;state.perfilEdit=false;
+  toast("✅ Perfil atualizado (transação ACID simulada).","ok");render();}
+});
+
+/* inputs */
+document.addEventListener("input",e=>{
+ const t=e.target;
+ if(t.id==="nome-lista"){state.lista.nome=t.value;persistEph();
+  const c=document.getElementById("nome-count");if(c)c.textContent=t.value.length;}
+ else if(t.id==="busca"){state.busca=t.value;updateSugestoes();}
+ else if(t.id==="slider-disp"){state.filtroDisp=+t.value;
+  document.getElementById("slider-out").textContent=t.value+"%";
+  const removed=state.fornecedores.filter(f=>coberturaDe(f)*100<state.filtroDisp);
+  if(removed.length){state.fornecedores=state.fornecedores.filter(f=>coberturaDe(f)*100>=state.filtroDisp);
+   toast(`${removed.length} fornecedor(es) removidos da seleção pelo filtro (UC05).`,"warn");}
+  refreshFornecedores();}
+ else if(t.id==="dash-q"){state.dashQ=t.value;render();
+  const i=document.getElementById("dash-q");i.focus();i.setSelectionRange(i.value.length,i.value.length);}
+ else if(t.id==="excl-nome"){const id=+document.getElementById("btn-excl").dataset.id;
+  const l=(LISTAS[state.user]||[]).find(x=>x.id===id);
+  document.getElementById("btn-excl").disabled=t.value.trim()!==l.nome;}
+ else if(t.dataset.qtdix!==undefined){const ix=+t.dataset.qtdix;let v=parseInt(t.value,10);
+  if(isNaN(v))v=1;v=Math.min(9999,Math.max(1,v));state.lista.itens[ix].qtd=v;persistEph();}
+});
+document.addEventListener("change",e=>{
+ const t=e.target;
+ if(t.classList.contains("cat-cb")){const id=+t.value;
+  state.categorias=state.categorias.includes(id)?state.categorias.filter(x=>x!==id):[...state.categorias,id];
+  const card=t.closest("[data-catcard]");if(card)card.classList.toggle("sel",state.categorias.includes(id));
+  const c=document.getElementById("cat-count");
+  c.textContent=`${state.categorias.length} categoria(s) selecionada(s) · 11 disponíveis`;
+  c.classList.toggle("ok",state.categorias.length>0);
+  const b=document.getElementById("btn-to-lista");b.disabled=!state.categorias.length;
+  const h=b.nextElementSibling;if(h&&h.classList.contains("hint-disabled"))h.style.display=state.categorias.length?"none":"flex";}
+ else if(t.classList.contains("forn-cb")){const id=+t.value;
+  if(state.fornecedores.length>=10&&!state.fornecedores.includes(id)){toast("Máximo de 10 fornecedores (RF13).","warn");t.checked=false;return;}
+  state.fornecedores=state.fornecedores.includes(id)?state.fornecedores.filter(x=>x!==id):[...state.fornecedores,id];
+  const card=t.closest("[data-forncard]");if(card)card.classList.toggle("sel",state.fornecedores.includes(id));
+  refreshFornecedores();}
+});
+let sugTimer=null;
+function updateSugestoes(){
+ const box=document.getElementById("sug-box");if(!box)return;
+ const q=norm(state.busca);
+ if(q.length<2){box.innerHTML="";return;}
+ box.innerHTML=`<div class="sug"><div class="sug-empty">🔎 Buscando no catálogo…</div></div>`;
+ clearTimeout(sugTimer);
+ sugTimer=setTimeout(()=>{
+  const hits=PRODUTOS.filter(p=>norm(p.nome).includes(q)).slice(0,6);
+  box.innerHTML=hits.length?`<div class="sug" role="listbox">${hits.map(p=>
+   `<div class="sug-item" data-action-add="${p.id}" role="option"><span>${esc(p.nome)}</span><span class="un">por unidade de venda: ${p.un}</span></div>`).join("")}</div>`
+  :`<div class="sug"><div class="sug-empty">Nenhum produto encontrado — tente outro termo.</div></div>`;
+ },280);
+}
+document.addEventListener("click",e=>{
+ const s=e.target.closest("[data-action-add]");if(!s)return;
+ const pid=+s.dataset.actionAdd;
+ const ex=state.lista.itens.find(i=>i.pid===pid);
+ if(ex)ex.qtd=Math.min(9999,ex.qtd+1);else state.lista.itens.push({pid,qtd:1});
+ state.busca="";const b=document.getElementById("busca");if(b)b.value="";
+ document.getElementById("sug-box").innerHTML="";persistEph();refreshListaUI();
+ const p=PRODUTOS.find(x=>x.id===pid);
+ toast(`➕ ${p.nome} adicionado${ex?" (quantidade somada)":""}.`,"ok");
+});
+
+/* ---------- Boot ---------- */
+loadEph();
+render();
+</script>
+</body>
+</html>
