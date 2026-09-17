@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>COBECO — Comparador de Compras | v3.2</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --cobeco-green: #10b981;
+    --cobeco-green-dark: #059669;
+    --cobeco-blue: #1e40af;
+    --cobeco-bg: #f8fafc;
+  }
+  * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+  body { background: var(--cobeco-bg); min-width: 1024px; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .btn-primary { background: var(--cobeco-green); color: white; }
+  .btn-primary:hover { background: var(--cobeco-green-dark); }
+  .btn-outline { border: 1px solid #cbd5e1; background: white; }
+  .btn-outline:hover { background: #f1f5f9; }
+  .category-chip { transition: all 0.15s; }
+  .category-chip.selected { background: var(--cobeco-green); color: white; border-color: var(--cobeco-green); }
+  .supplier-row.selected { background: #ecfdf5; border-left: 3px solid var(--cobeco-green); }
+  .best-price { background: linear-gradient(90deg, #ecfdf5 0%, transparent 100%); }
+  .toast { animation: slideIn 0.3s ease-out; }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @media print {
+    .no-print { display: none !important; }
+    body { background: white; }
+  }
+  .skeleton { background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  .slider-thumb::-webkit-slider-thumb { appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--cobeco-green); cursor: pointer; }
+  .modal-backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); }
+</style>
+</head>
+<body class="text-slate-800">
+
+<!-- ============ HEADER GLOBAL ============ -->
+<header class="bg-white border-b border-slate-200 no-print sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('home')">
+        <div class="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-bold">C</div>
+        <span class="text-xl font-bold text-slate-900">COBECO</span>
+        <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded">v3.2</span>
+      </div>
+      <nav class="flex items-center gap-6 text-sm font-medium" id="mainNav">
+        <a onclick="navigate('home')" class="nav-link text-slate-600 hover:text-slate-900 cursor-pointer">Início</a>
+        <a onclick="navigate('categories')" class="nav-link text-slate-600 hover:text-slate-900 cursor-pointer">Nova lista</a>
+        <a onclick="navigate('dashboard')" class="nav-link text-slate-600 hover:text-slate-900 cursor-pointer" id="navLists" style="display:none">Minhas listas</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-3" id="authArea">
+      <button onclick="navigate('login')" class="btn-outline px-4 py-2 rounded-lg text-sm font-medium">Entrar</button>
+      <button onclick="navigate('register')" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">Criar conta</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ TOAST CONTAINER ============ -->
+<div id="toastContainer" class="fixed top-20 right-6 z-50 flex flex-col gap-2"></div>
+
+<!-- ============ TELA 1: HOME / LANDING ============ -->
+<section id="screen-home" class="screen active">
+  <div class="max-w-7xl mx-auto px-8 py-12">
+    <!-- Hero -->
+    <div class="grid grid-cols-2 gap-12 items-center mb-16">
+      <div>
+        <span class="inline-block bg-emerald-100 text-emerald-700 text-xs font-semibold px-3 py-1 rounded-full mb-4">Comparador inteligente v3.2</span>
+        <h1 class="text-5xl font-bold text-slate-900 leading-tight mb-4">Compras mais inteligentes, economia de verdade.</h1>
+        <p class="text-lg text-slate-600 mb-6">Crie sua lista, filtre fornecedores por categoria, compare preços e disponibilidade em segundos. Sem cadastro obrigatório.</p>
+        <div class="flex gap-3">
+          <button onclick="navigate('categories')" class="btn-primary px-6 py-3 rounded-lg font-semibold">Criar minha lista</button>
+          <button onclick="navigate('login')" class="btn-outline px-6 py-3 rounded-lg font-semibold">Entrar na minha conta</button>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-xl p-6 border border-slate-200">
+        <div class="text-xs text-slate-500 mb-3">Comparação da sua lista · 4 produtos · 3 fornecedores</div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-blue-100 rounded"></div><div><div class="font-semibold text-sm">Pão de Açúcar</div><div class="text-xs text-slate-500">100% disponível</div></div></div>
+            <div class="font-bold text-slate-900">R$ 184,90</div>
+          </div>
+          <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-purple-100 rounded"></div><div><div class="font-semibold text-sm">Carrefour</div><div class="text-xs text-slate-500">92% disponível</div></div></div>
+            <div class="font-bold text-slate-900">R$ 176,50</div>
+          </div>
+          <div class="flex items-center justify-between p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-emerald-500 rounded flex items-center justify-center text-white text-xs font-bold">✓</div><div><div class="font-semibold text-sm">Extra</div><div class="text-xs text-emerald-700">Menor preço · 84% disponível</div></div></div>
+            <div class="font-bold text-emerald-700">R$ 169,30</div>
+          </div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-slate-200 flex justify-between text-sm">
+          <span class="text-slate-600">Economia estimada</span>
+          <span class="font-bold text-emerald-600">R$ 15,60 (8%)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="grid grid-cols-3 gap-6 mb-12">
+      <div class="bg-white p-6 rounded-xl border border-slate-200">
+        <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center text-xl mb-3">🏷️</div>
+        <h3 class="font-bold text-slate-900 mb-1">Pré-filtro por categorias</h3>
+        <p class="text-sm text-slate-600">Escolha entre 11 categorias macro (Mercado, Vestuário, Eletrodomésticos...) para filtrar fornecedores relevantes.</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl border border-slate-200">
+        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-xl mb-3">📊</div>
+        <h3 class="font-bold text-slate-900 mb-1">Comparação clara</h3>
+        <p class="text-sm text-slate-600">Veja preço total, % de disponibilidade e itens ausentes por fornecedor em uma tabela flat ordenada.</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl border border-slate-200">
+        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-xl mb-3">📄</div>
+        <h3 class="font-bold text-slate-900 mb-1">Exportação em PDF</h3>
+        <p class="text-sm text-slate-600">Baixe sua comparação em PDF profissional (A4) ou imprima diretamente. Funciona sem login.</p>
+      </div>
+    </div>
+
+    <!-- Flow -->
+    <div class="bg-white rounded-2xl border border-slate-200 p-8">
+      <h2 class="text-2xl font-bold text-slate-900 mb-6 text-center">Como funciona</h2>
+      <div class="grid grid-cols-5 gap-4">
+        <div class="text-center"><div class="w-12 h-12 bg-emerald-500 text-white rounded-full flex items-center justify-center font-bold mx-auto mb-2">1</div><div class="text-sm font-semibold">Categorias</div><div class="text-xs text-slate-500">Pré-filtro</div></div>
+        <div class="text-center"><div class="w-12 h-12 bg-emerald-500 text-white rounded-full flex items-center justify-center font-bold mx-auto mb-2">2</div><div class="text-sm font-semibold">Lista</div><div class="text-xs text-slate-500">Produtos + qtd</div></div>
+        <div class="text-center"><div class="w-12 h-12 bg-emerald-500 text-white rounded-full flex items-center justify-center font-bold mx-auto mb-2">3</div><div class="text-sm font-semibold">Fornecedores</div><div class="text-xs text-slate-500">Seleção</div></div>
+        <div class="text-center"><div class="w-12 h-12 bg-emerald-500 text-white rounded-full flex items-center justify-center font-bold mx-auto mb-2">4</div><div class="text-sm font-semibold">Comparar</div><div class="text-xs text-slate-500">Tabela flat</div></div>
+        <div class="text-center"><div class="w-12 h-12 bg-emerald-500 text-white rounded-full flex items-center justify-center font-bold mx-auto mb-2">5</div><div class="text-sm font-semibold">Exportar</div><div class="text-xs text-slate-500">PDF / Imprimir</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELA 2: LOGIN (RF02 / UC10) ============ -->
+<section id="screen-login" class="screen">
+  <div class="max-w-md mx-auto py-16 px-8">
+    <div class="bg-white rounded-2xl border border-slate-200 p-8">
+      <h1 class="text-2xl font-bold text-slate-900 mb-2">Entre na sua conta</h1>
+      <p class="text-slate-600 text-sm mb-6">Acesse suas listas salvas e histórico.</p>
+      <form onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Nome de usuário</label>
+          <input type="text" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="seu_usuario">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Senha</label>
+          <input type="password" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500" placeholder="••••••••">
+          <div class="flex justify-between text-xs mt-1">
+            <span class="text-slate-500">6 tentativas / 15min (anti-DDoS)</span>
+            <a onclick="navigate('recovery')" class="text-emerald-600 hover:underline cursor-pointer">Esqueci minha senha</a>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary w-full py-2.5 rounded-lg font-semibold">Entrar</button>
+      </form>
+      <div class="mt-6 text-center text-sm text-slate-600">
+        Ainda não possui uma conta? <a onclick="navigate('register')" class="text-emerald-600 font-semibold hover:underline cursor-pointer">Criar conta</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELA 3: CADASTRO (RF01 / UC09) ============ -->
+<section id="screen-register" class="screen">
+  <div class="max-w-md mx-auto py-10 px-8">
+    <div class="bg-white rounded-2xl border border-slate-200 p-8">
+      <h1 class="text-2xl font-bold text-slate-900 mb-2">Criar conta</h1>
+      <p class="text-slate-600 text-sm mb-6">Preencha seus dados para começar.</p>
+      <form onsubmit="handleRegister(event)" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Username *</label>
+            <input type="text" required minlength="3" maxlength="30" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="3-30 caracteres">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Nome completo *</label>
+            <input type="text" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Email *</label>
+          <input type="email" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Senha *</label>
+          <input type="password" required minlength="8" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
+          <div class="text-xs text-slate-500 mt-1">Mín. 8 chars · 1 maiúscula · 1 número · 1 especial</div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Confirmar senha *</label>
+          <input type="password" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Pergunta de segurança *</label>
+          <select required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
+            <option value="">Selecione...</option>
+            <option>Qual era o nome do seu primeiro animal de estimação?</option>
+            <option>Qual é o nome da sua cidade natal?</option>
+            <option>Qual era o nome da sua escola de infância?</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Resposta *</label>
+          <input type="text" required minlength="3" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
+        </div>
+        <button type="submit" class="btn-primary w-full py-2.5 rounded-lg font-semibold mt-2">Criar conta</button>
+      </form>
+      <div class="mt-4 text-center text-sm text-slate-600">
+        Já tenho conta · <a onclick="navigate('login')" class="text-emerald-600 font-semibold cursor-pointer">Entrar</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELA 4: RECUPERAÇÃO DE SENHA (RF04 / UC12) ============ -->
+<section id="screen-recovery" class="screen">
+  <div class="max-w-md mx-auto py-16 px-8">
+    <div class="bg-white rounded-2xl border border-slate-200 p-8">
+      <h1 class="text-2xl font-bold text-slate-900 mb-2">Recuperar senha</h1>
+      <p class="text-slate-600 text-sm mb-6">Recuperação via pergunta de segurança.</p>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Username</label>
+          <input type="text" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+        </div>
+        <button onclick="showToast('Pergunta enviada', 'success')" class="btn-primary w-full py-2.5 rounded-lg font-semibold">Continuar</button>
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
+          ⚠️ Máximo de 3 tentativas. Modo dev: token também é logado no stdout.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELA 5: SELEÇÃO DE CATEGORIAS (UC03 / RF12) ⭐ NOVO v3.2 ============ -->
+<section id="screen-categories" class="screen">
+  <div class="max-w-5xl mx-auto py-10 px-8">
+    <div class="mb-6">
+      <div class="text-xs text-emerald-600 font-semibold mb-1">PASSO 1 DE 5 · PRÉ-FILTRO</div>
+      <h1 class="text-3xl font-bold text-slate-900">Selecione as categorias</h1>
+      <p class="text-slate-600 mt-1">Escolha uma ou mais categorias para filtrar os fornecedores disponíveis. Mínimo 1 categoria.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="font-semibold text-slate-900">11 categorias macro disponíveis</h2>
+        <button onclick="toggleAllCategories()" class="text-sm text-emerald-600 font-semibold hover:underline">Selecionar todas</button>
+      </div>
+      <div class="grid grid-cols-3 gap-3" id="categoryGrid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex gap-3">
+      <div class="text-blue-600 text-xl">ℹ️</div>
+      <div class="text-sm text-blue-900">
+        <strong>Como funciona:</strong> os fornecedores exibidos na próxima etapa pertencerão às categorias selecionadas. Exemplo: selecionar "Mercado" + "Eletrodomésticos" mostrará Pão de Açúcar, Carrefour, Extra, Magazine Luiza, Casas Bahia, etc.
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center">
+      <button onclick="navigate('home')" class="btn-outline px-6 py-2.5 rounded-lg font-medium">← Voltar</button>
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-slate-600"><span id="selectedCatCount">0</span> categoria(s) selecionada(s)</span>
+        <button onclick="navigateToListCreation()" class="btn-primary px-6 py-2.5 rounded-lg font-semibold">Continuar para a lista →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELA 6: CRIAÇÃO DE LISTA (RF07 / UC01) ============ -->
+<section id="screen-list" class="screen">
+  <div class="max-w-6xl mx-auto py-10 px-8">
+    <div class="mb-6">
+      <div class="text-xs text-emerald-600 font-semibold mb-1">PASSO 2 DE 5 · LISTA DE COMPRAS</div>
+      <h1 class="text-3xl font-bold text-slate-900">Monte sua lista</h1>
+      <p class="text-slate-600 mt-1">Adicione produtos do catálogo e ajuste quantidades. <span id="storageMode" class="font-semibold text-amber-600">Armazenamento: em memória (sessionStorage)</span></p>
+    </div>
+
+    <div class="grid grid-cols-3 gap-6">
+      <!-- Formulário -->
+      <div class="col-span-2 bg-white rounded-2xl border border-slate-200 p-6">
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-slate-700 mb-1">Nome da lista</label>
+          <input type="text" id="listName" maxlength="100" value="Compras da semana" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+          <div class="text-xs text-slate-500 mt-1 text-right"><span id="nameCounter">18</span>/100</div>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-slate-700 mb-1">Adicionar produto</label>
+          <div class="flex gap-2">
+            <div class="flex-1 relative">
+              <input type="text" id="productSearch" placeholder="Digite para buscar (ex: arroz, martelo, notebook...)" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+              <div id="autocomplete" class="absolute top-full left-0 right-0 bg-white border border-slate-200 rounded-lg mt-1 shadow-lg max-h-60 overflow-y-auto hidden z-10"></div>
+            </div>
+            <input type="number" id="productQty" min="1" max="9999" value="1" class="w-20 px-3 py-2 border border-slate-300 rounded-lg">
+            <button onclick="addProduct()" class="btn-primary px-4 py-2 rounded-lg font-medium">Adicionar</button>
+          </div>
+        </div>
+
+        <div class="border-t border-slate-200 pt-4">
+          <h3 class="font-semibold text-slate-900 mb-3">Itens da lista</h3>
+          <div id="listItems" class="space-y-2">
+            <!-- Populated by JS -->
+          </div>
+          <div id="emptyList" class="text-center py-8 text-slate-400 text-sm">
+            Nenhum produto adicionado. Use a busca acima.
+          </div>
+        </div>
+      </div>
+
+      <!-- Resumo -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 h-fit sticky top-24">
+        <h3 class="font-semibold text-slate-900 mb-4">Resumo</h3>
+        <div class="space-y-3 text-sm mb-6">
+          <div class="flex justify-between"><span class="text-slate-600">Produtos</span><span id="summaryProducts" class="font-semibold">0</span></div>
+          <div class="flex justify-between"><span class="text-slate-600">Unidades totais</span><span id="summaryUnits" class="font-semibold">0</span></div>
+          <div class="flex justify-between"><span class="text-slate-600">Categorias filtradas</span><span id="summaryCats" class="font-semibold text-emerald-600">0</span></div>
+          <div class="flex justify-between"><span class="text-slate-600">Modo</span><span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded">Efêmero</span></div>
+        </div>
+        <div class="space-y-2">
+          <button onclick="navigate('suppliers')" id="btnCompare" class="btn-primary w-full py-2.5 rounded-lg font-semibold" disabled>Comparar preços →</button>
+          <button onclick="handleSaveList()" class="btn-outline w-full py-2 rounded-lg text-sm font-medium">💾 Salvar lista</button>
+          <button onclick="showToast('Exportação PDF em desenvolvimento', 'info')" class="btn-outline w-full py-2 rounded-lg text-sm font-medium">📄 Exportar PDF</button>
+        </div>
+        <div class="mt-4 pt-4 border-t border-slate-200 text-xs text-slate-500">
+          💡 Dica: faça login para salvar listas permanentemente.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELA 7: SELEÇÃO DE FORNECEDORES (UC04 / RF13) ============ -->
+<section id="screen-suppliers" class="screen">
+  <div class="max-w-6xl mx-auto py-10 px-8">
+    <div class="mb-6">
+      <div class="text-xs text-emerald-600 font-semibold mb-1">PASSO 3 DE 5 · FORNECEDORES</div>
+      <h1 class="text-3xl font-bold text-slate-900">Escolha os fornecedores</h1>
+      <p class="text-slate-600 mt-1">Selecione pelo menos 2 fornecedores para comparar. Apenas fornecedores das categorias escolhidas são exibidos.</p>
+    </div>
+
+    <div class="grid grid-cols-3 gap-6">
+      <div class="col-span-2 bg-white rounded-2xl border border-slate-200 p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-semibold text-slate-900">Fornecedores disponíveis</h3>
+          <div class="flex gap-2">
+            <button onclick="selectAllSuppliers()" class="text-sm text-emerald-600 font-semibold hover:underline">Selecionar todos</button>
+            <span class="text-slate-300">|</span>
+            <button onclick="clearSuppliers()" class="text-sm text-slate-500 hover:underline">Limpar</button>
+          </div>
+        </div>
+        <div id="supplierList" class="space-y-2">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Slider de disponibilidade (UC05 / RF14) -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6">
+          <h3 class="font-semibold text-slate-900 mb-1">Filtro de disponibilidade</h3>
+          <p class="text-xs text-slate-500 mb-4">Mostrar apenas fornecedores com no mínimo X% dos itens.</p>
+          <input type="range" min="0" max="100" step="5" value="0" id="availabilitySlider" oninput="updateAvailabilityFilter(this.value)" class="w-full slider-thumb">
+          <div class="flex justify-between text-xs text-slate-500 mt-2">
+            <span>0%</span>
+            <span class="font-bold text-emerald-600 text-base" id="sliderValue">0%</span>
+            <span>100%</span>
+          </div>
+        </div>
+
+        <!-- Resumo -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6">
+          <h3 class="font-semibold text-slate-900 mb-4">Resumo da seleção</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-slate-600">Fornecedores selecionados</span><span id="selectedSupplierCount" class="font-bold">0</span></div>
+            <div class="flex justify-between"><span class="text-slate-600">Itens na lista</span><span id="supplierListItemCount" class="font-bold">0</span></div>
+          </div>
+          <button onclick="navigate('compare')" id="btnCalculate" class="btn-primary w-full py-2.5 rounded-lg font-semibold mt-4" disabled>Calcular orçamento →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELA 8: COMPARAÇÃO DE RESULTADOS (UC06, UC07 / RF15, RF16) ============ -->
+<section id="screen-compare" class="screen">
+  <div class="max-w-7xl mx-auto py-10 px-8">
+    <div class="mb-6 flex justify-between items-start">
+      <div>
+        <div class="text-xs text-emerald-600 font-semibold mb-1">PASSO 4 DE 5 · RESULTADOS</div>
+        <h1 class="text-3xl font-bold text-slate-900">Comparação de preços</h1>
+        <p class="text-slate-600 mt-1">Resultados ordenados pelo menor preço total. Melhor oferta destacada em verde.</p>
+      </div>
+      <div class="flex gap-2 no-print">
+        <button onclick="navigate('suppliers')" class="btn-outline px-4 py-2 rounded-lg text-sm font-medium">← Editar fornecedores</button>
+        <button onclick="showToast('PDF gerado: lista_20260914.pdf', 'success')" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">📄 Exportar PDF</button>
+        <button onclick="window.print()" class="btn-outline px-4 py-2 rounded-lg text-sm font-medium">🖨️ Imprimir</button>
+      </div>
+    </div>
+
+    <!-- Cards de resumo -->
+    <div class="grid grid-cols-4 gap-4 mb-6">
+      <div class="bg-white rounded-xl border border-slate-200 p-4">
+        <div class="text-xs text-slate-500 mb-1">Menor preço</div>
+        <div class="text-2xl font-bold text-emerald-600">R$ 169,30</div>
+        <div class="text-xs text-slate-600 mt-1">Extra</div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-4">
+        <div class="text-xs text-slate-500 mb-1">Economia estimada</div>
+        <div class="text-2xl font-bold text-slate-900">R$ 15,60</div>
+        <div class="text-xs text-emerald-600 font-semibold">8% vs maior preço</div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-4">
+        <div class="text-xs text-slate-500 mb-1">Fornecedores comparados</div>
+        <div class="text-2xl font-bold text-slate-900">3</div>
+        <div class="text-xs text-slate-600 mt-1">de 10 disponíveis</div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-4">
+        <div class="text-xs text-slate-500 mb-1">Disponibilidade média</div>
+        <div class="text-2xl font-bold text-slate-900">92%</div>
+        <div class="text-xs text-slate-600 mt-1">dos itens da lista</div>
+      </div>
+    </div>
+
+    <!-- Tabela flat -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <table class="w-full">
+        <thead class="bg-slate-50 border-b border-slate-200">
+          <tr>
+            <th class="text-left px-6 py-3 text-xs font-semibold text-slate-600 uppercase">#</th>
+            <th class="text-left px-6 py-3 text-xs font-semibold text-slate-600 uppercase">Fornecedor</th>
+            <th class="text-center px-6 py-3 text-xs font-semibold text-slate-600 uppercase">Disponibilidade</th>
+            <th class="text-center px-6 py-3 text-xs font-semibold text-slate-600 uppercase">Itens disponíveis</th>
+            <th class="text-center px-6 py-3 text-xs font-semibold text-slate-600 uppercase">Ausentes</th>
+            <th class="text-right px-6 py-3 text-xs font-semibold text-slate-600 uppercase">Preço total</th>
+          </tr>
+        </thead>
+        <tbody id="compareTable">
+          <tr class="best-price border-b border-slate-100">
+            <td class="px-6 py-4"><span class="bg-emerald-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">1</span></td>
+            <td class="px-6 py-4">
+              <div class="font-semibold text-slate-900">Extra</div>
+              <div class="text-xs text-emerald-600 font-semibold">⭐ Menor preço</div>
+            </td>
+            <td class="px-6 py-4 text-center"><div class="inline-flex items-center gap-2"><div class="w-24 bg-slate-200 rounded-full h-2"><div class="bg-emerald-500 h-2 rounded-full" style="width: 84%"></div></div><span class="text-sm font-semibold">84%</span></div></td>
+            <td class="px-6 py-4 text-center text-sm font-semibold">7 de 8</td>
+            <td class="px-6 py-4 text-center"><span class="text-sm text-slate-600">1 item</span></td>
+            <td class="px-6 py-4 text-right font-bold text-emerald-700 text-lg">R$ 169,30</td>
+          </tr>
+          <tr class="border-b border-slate-100 hover:bg-slate-50">
+            <td class="px-6 py-4"><span class="bg-slate-300 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">2</span></td>
+            <td class="px-6 py-4"><div class="font-semibold text-slate-900">Carrefour</div><div class="text-xs text-slate-500">6 categorias</div></td>
+            <td class="px-6 py-4 text-center"><div class="inline-flex items-center gap-2"><div class="w-24 bg-slate-200 rounded-full h-2"><div class="bg-blue-500 h-2 rounded-full" style="width: 92%"></div></div><span class="text-sm font-semibold">92%</span></div></td>
+            <td class="px-6 py-4 text-center text-sm font-semibold">8 de 8</td>
+            <td class="px-6 py-4 text-center"><span class="text-sm text-slate-600">—</span></td>
+            <td class="px-6 py-4 text-right font-bold text-slate-900 text-lg">R$ 176,50</td>
+          </tr>
+          <tr class="hover:bg-slate-50">
+            <td class="px-6 py-4"><span class="bg-slate-300 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">3</span></td>
+            <td class="px-6 py-4"><div class="font-semibold text-slate-900">Pão de Açúcar</div><div class="text-xs text-slate-500">Mercado</div></td>
+            <td class="px-6 py-4 text-center"><div class="inline-flex items-center gap-2"><div class="w-24 bg-slate-200 rounded-full h-2"><div class="bg-blue-500 h-2 rounded-full" style="width: 100%"></div></div><span class="text-sm font-semibold">100%</span></div></td>
+            <td class="px-6 py-4 text-center text-sm font-semibold">8 de 8</td>
+            <td class="px-6 py-4 text-center"><span class="text-sm text-slate-600">—</span></td>
+            <td class="px-6 py-4 text-right font-bold text-slate-900 text-lg">R$ 184,90</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-900 flex gap-2">
+      <span>⚠️</span>
+      <span>Atenção: o menor preço pode não incluir todos os itens da sua lista. Verifique a coluna "Ausentes".</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELA 9: DASHBOARD - MINHAS LISTAS (RF09 / UC15) ============ -->
+<section id="screen-dashboard" class="screen">
+  <div class="max-w-6xl mx-auto py-10 px-8">
+    <div class="flex justify-between items-start mb-6">
+      <div>
+        <h1 class="text-3xl font-bold text-slate-900">Minhas listas</h1>
+        <p class="text-slate-600 mt-1">Listas salvas, ordenadas da mais recente para a mais antiga.</p>
+      </div>
+      <button onclick="navigate('categories')" class="btn-primary px-5 py-2.5 rounded-lg font-semibold">+ Nova lista</button>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="p-4 border-b border-slate-200 flex gap-3">
+        <input type="text" placeholder="Buscar por nome..." class="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm">
+        <select class="px-3 py-2 border border-slate-300 rounded-lg text-sm">
+          <option>Mais recentes</option>
+          <option>Mais antigas</option>
+          <option>A-Z</option>
+        </select>
+      </div>
+      <table class="w-full">
+        <thead class="bg-slate-50 border-b border-slate-200">
+          <tr>
+            <th class="text-left px-6 py-3 text-xs font-semibold text-slate-600 uppercase">Nome</th>
+            <th class="text-center px-6 py-3 text-xs font-semibold text-slate-600 uppercase">Itens</th>
+            <th class="text-center px-6 py-3 text-xs font-semibold text-slate-600 uppercase">Categorias</th>
+            <th class="text-left px-6 py-3 text-xs font-semibold text-slate-600 uppercase">Criada em</th>
+            <th class="text-right px-6 py-3 text-xs font-semibold text-slate-600 uppercase">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-slate-100 hover:bg-slate-50">
+            <td class="px-6 py-4 font-semibold">Compras da semana</td>
+            <td class="px-6 py-4 text-center text-sm">8 produtos</td>
+            <td class="px-6 py-4 text-center"><span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded">Mercado</span></td>
+            <td class="px-6 py-4 text-sm text-slate-600">14/09/2026 · 10:32</td>
+            <td class="px-6 py-4 text-right space-x-2">
+              <button class="text-emerald-600 hover:underline text-sm font-medium">Editar</button>
+              <button class="text-slate-600 hover:underline text-sm">Excluir</button>
+            </td>
+          </tr>
+          <tr class="border-b border-slate-100 hover:bg-slate-50">
+            <td class="px-6 py-4 font-semibold">Reforma da casa</td>
+            <td class="px-6 py-4 text-center text-sm">23 produtos</td>
+            <td class="px-6 py-4 text-center"><span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">Ferramentas</span> <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">Decoração</span></td>
+            <td class="px-6 py-4 text-sm text-slate-600">10/09/2026 · 14:15</td>
+            <td class="px-6 py-4 text-right space-x-2">
+              <button class="text-emerald-600 hover:underline text-sm font-medium">Editar</button>
+              <button class="text-slate-600 hover:underline text-sm">Excluir</button>
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-50">
+            <td class="px-6 py-4 font-semibold">Enxoval</td>
+            <td class="px-6 py-4 text-center text-sm">45 produtos</td>
+            <td class="px-6 py-4 text-center"><span class="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded">Vestuário</span> <span class="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded">Móveis</span></td>
+            <td class="px-6 py-4 text-sm text-slate-600">02/09/2026 · 09:47</td>
+            <td class="px-6 py-4 text-right space-x-2">
+              <button class="text-emerald-600 hover:underline text-sm font-medium">Editar</button>
+              <button class="text-slate-600 hover:underline text-sm">Excluir</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="p-4 border-t border-slate-200 flex justify-between items-center text-sm text-slate-600">
+        <span>Mostrando 3 de 3 listas</span>
+        <div class="flex gap-1">
+          <button class="px-3 py-1 border border-slate-300 rounded">Anterior</button>
+          <button class="px-3 py-1 bg-emerald-500 text-white rounded">1</button>
+          <button class="px-3 py-1 border border-slate-300 rounded">Próxima</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELA 10: PERFIL (RF05, RF06 / UC16, UC18) ============ -->
+<section id="screen-profile" class="screen">
+  <div class="max-w-3xl mx-auto py-10 px-8">
+    <h1 class="text-3xl font-bold text-slate-900 mb-2">Meu perfil</h1>
+    <p class="text-slate-600 mb-6">Visualize e edite seus dados pessoais.</p>
+
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+      <h2 class="font-semibold text-slate-900 mb-4">Dados pessoais</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Username</label>
+          <input type="text" value="maria_silva" disabled class="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 text-slate-500">
+          <div class="text-xs text-slate-500 mt-1">Read-only</div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Nome completo</label>
+          <input type="text" value="Maria Silva" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+        </div>
+        <div class="col-span-2">
+          <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+          <input type="email" value="maria.silva@email.com" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+        </div>
+        <div class="col-span-2 text-xs text-slate-500">Conta criada em 15/08/2026</div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+      <h2 class="font-semibold text-slate-900 mb-4">Alterar senha</h2>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Senha atual *</label>
+          <input type="password" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Nova senha (opcional)</label>
+            <input type="password" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Confirmar nova senha</label>
+            <input type="password" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-between">
+      <button class="text-red-600 hover:underline text-sm font-medium">Excluir minha conta</button>
+      <div class="flex gap-2">
+        <button onclick="navigate('dashboard')" class="btn-outline px-5 py-2 rounded-lg font-medium">Cancelar</button>
+        <button onclick="showToast('Perfil atualizado com sucesso', 'success')" class="btn-primary px-5 py-2 rounded-lg font-medium">Salvar alterações</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MODAL: PROMOVER LISTA EFÊMERA (UC17 / RF08) ⭐ NOVO v3.2 ============ -->
+<div id="modal-promote" class="fixed inset-0 modal-backdrop z-50 hidden items-center justify-center">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center text-xl">💾</div>
+      <div class="flex-1">
+        <h3 class="font-bold text-slate-900 text-lg">Salvar sua lista?</h3>
+        <p class="text-sm text-slate-600 mt-1">Você tem uma lista efêmera ativa ("Compras da semana" · 8 itens). Deseja salvá-la permanentemente na sua conta?</p>
+      </div>
+    </div>
+    <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900 mb-4">
+      ⚠️ Se escolher "Não", a lista permanecerá em memória e será perdida ao fechar a aba.
+    </div>
+    <div class="flex gap-2 justify-end">
+      <button onclick="closeModal('modal-promote')" class="btn-outline px-4 py-2 rounded-lg font-medium">Não, manter efêmera</button>
+      <button onclick="promoteList()" class="btn-primary px-4 py-2 rounded-lg font-medium">Sim, salvar lista</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: CONFIRMAR EXCLUSÃO ============ -->
+<div id="modal-delete" class="fixed inset-0 modal-backdrop z-50 hidden items-center justify-center">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center text-xl">🗑️</div>
+      <div class="flex-1">
+        <h3 class="font-bold text-slate-900 text-lg">Confirmar exclusão</h3>
+        <p class="text-sm text-slate-600 mt-1">Esta ação não pode ser desfeita. Digite o nome da lista para confirmar.</p>
+      </div>
+    </div>
+    <input type="text" placeholder="Digite o nome da lista" class="w-full px-3 py-2 border border-slate-300 rounded-lg mb-4">
+    <div class="flex gap-2 justify-end">
+      <button onclick="closeModal('modal-delete')" class="btn-outline px-4 py-2 rounded-lg font-medium">Cancelar</button>
+      <button onclick="closeModal('modal-delete'); showToast('Lista excluída', 'success')" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium">Excluir permanentemente</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-white border-t border-slate-200 mt-16 no-print">
+  <div class="max-w-7xl mx-auto px-8 py-6 flex justify-between items-center text-sm text-slate-500">
+    <div>© 2026 COBECO · MVP acadêmico v3.2 · Stack: FastAPI + MySQL InnoDB + Vanilla JS</div>
+    <div class="flex gap-4">
+      <span>🔒 JWT stateless</span>
+      <span>📄 PDF via ReportLab</span>
+      <span>⚡ ACID garantido</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ============ STATE MANAGEMENT ============
+const state = {
+  currentScreen: 'home',
+  isAuthenticated: false,
+  selectedCategories: new Set(),
+  listItems: [],
+  selectedSuppliers: new Set(),
+  availabilityFilter: 0
+};
+
+// ============ SEED DATA (v3.2) ============
+const CATEGORIES = [
+  { id: 1, nome: 'Mercado', icon: '🛒' },
+  { id: 2, nome: 'Vestuário', icon: '👕' },
+  { id: 3, nome: 'Automotivos', icon: '🚗' },
+  { id: 4, nome: 'Informática', icon: '💻' },
+  { id: 5, nome: 'Decoração', icon: '🏺' },
+  { id: 6, nome: 'Móveis', icon: '🛋️' },
+  { id: 7, nome: 'Materiais de Construção e Ferragens', icon: '🧱' },
+  { id: 8, nome: 'Ferramentas', icon: '🔨' },
+  { id: 9, nome: 'Livros', icon: '📚' },
+  { id: 10, nome: 'Jardinagem', icon: '🌱' },
+  { id: 11, nome: 'Eletrodomésticos', icon: '🔌' }
+];
+
+const SUPPLIERS = [
+  { id: 1, nome: 'Leroy Merlin', categorias: [7, 8, 10, 5], disponibilidade: 78 },
+  { id: 2, nome: 'Etna', categorias: [5, 6], disponibilidade: 65 },
+  { id: 3, nome: 'C&A', categorias: [2], disponibilidade: 88 },
+  { id: 4, nome: 'Renner', categorias: [2], disponibilidade: 92 },
+  { id: 5, nome: 'Hering', categorias: [2], disponibilidade: 85 },
+  { id: 6, nome: 'Pão de Açúcar', categorias: [1], disponibilidade: 100 },
+  { id: 7, nome: 'Magazine Luiza', categorias: [11, 4, 6], disponibilidade: 95 },
+  { id: 8, nome: 'Casas Bahia', categorias: [11, 4, 6], disponibilidade: 91 },
+  { id: 9, nome: 'Carrefour', categorias: [1, 2, 3, 5, 11, 4], disponibilidade: 97 },
+  { id: 10, nome: 'Extra', categorias: [1, 2, 11], disponibilidade: 84 }
+];
+
+const PRODUCTS = [
+  'Arroz Tipo 1 5kg', 'Feijão Preto 1kg', 'Martelo de Unha 25mm', 'Notebook i5 8GB',
+  'Camiseta Algodão M', 'Cimento CP-II 50kg', 'Furadeira 500W', 'Sofá 3 Lugares',
+  'Livro Dom Casmurro', 'Mangueira 30m', 'Geladeira Frost Free', 'TV 50" 4K',
+  'Tênis Esportivo', 'Mesa de Jantar', 'Jogo de Panelas', 'Café Torrado 500g',
+  'Açúcar Cristal 1kg', 'Óleo de Soja 900ml', 'Shampoo 400ml', 'Papel Higiênico 12rolos'
+];
+
+// ============ NAVIGATION ============
+function navigate(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById('screen-' + screen);
+  if (target) {
+    target.classList.add('active');
+    state.currentScreen = screen;
+    window.scrollTo(0, 0);
+  }
+  if (screen === 'categories') renderCategories();
+  if (screen === 'suppliers') renderSuppliers();
+}
+
+// ============ AUTH ============
+function handleLogin(e) {
+  e.preventDefault();
+  state.isAuthenticated = true;
+  updateAuthUI();
+  // Simula lista efêmera ativa → mostra modal UC17
+  if (state.listItems.length > 0) {
+    openModal('modal-promote');
+  } else {
+    showToast('Login realizado com sucesso', 'success');
+    navigate('dashboard');
+  }
+}
+
+function handleRegister(e) {
+  e.preventDefault();
+  showToast('Conta criada com sucesso! Faça login.', 'success');
+  navigate('login');
+}
+
+function updateAuthUI() {
+  const authArea = document.getElementById('authArea');
+  const navLists = document.getElementById('navLists');
+  if (state.isAuthenticated) {
+    authArea.innerHTML = `
+      <button onclick="navigate('profile')" class="btn-outline px-4 py-2 rounded-lg text-sm font-medium">👤 Perfil</button>
+      <button onclick="logout()" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium">Sair</button>
+    `;
+    navLists.style.display = 'inline';
+    document.getElementById('storageMode').textContent = 'Armazenamento: persistente (PostgreSQL)';
+    document.getElementById('storageMode').className = 'font-semibold text-emerald-600';
+  }
+}
+
+function logout() {
+  state.isAuthenticated = false;
+  document.getElementById('authArea').innerHTML = `
+    <button onclick="navigate('login')" class="btn-outline px-4 py-2 rounded-lg text-sm font-medium">Entrar</button>
+    <button onclick="navigate('register')" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">Criar conta</button>
+  `;
+  document.getElementById('navLists').style.display = 'none';
+  showToast('Sessão encerrada', 'success');
+  navigate('home');
+}
+
+// ============ CATEGORIES (UC03) ============
+function renderCategories() {
+  const grid = document.getElementById('categoryGrid');
+  grid.innerHTML = CATEGORIES.map(cat => `
+    <button onclick="toggleCategory(${cat.id})" class="category-chip border-2 border-slate-200 rounded-xl p-4 text-left hover:border-emerald-400 ${state.selectedCategories.has(cat.id) ? 'selected' : ''}">
+      <div class="text-2xl mb-1">${cat.icon}</div>
+      <div class="font-semibold text-sm">${cat.nome}</div>
+      <div class="text-xs opacity-75 mt-1">${SUPPLIERS.filter(s => s.categorias.includes(cat.id)).length} fornecedores</div>
+    </button>
+  `).join('');
+  document.getElementById('selectedCatCount').textContent = state.selectedCategories.size;
+}
+
+function toggleCategory(id) {
+  if (state.selectedCategories.has(id)) state.selectedCategories.delete(id);
+  else state.selectedCategories.add(id);
+  renderCategories();
+}
+
+function toggleAllCategories() {
+  if (state.selectedCategories.size === CATEGORIES.length) state.selectedCategories.clear();
+  else CATEGORIES.forEach(c => state.selectedCategories.add(c.id));
+  renderCategories();
+}
+
+function navigateToListCreation() {
+  if (state.selectedCategories.size === 0) {
+    showToast('Selecione ao menos 1 categoria', 'error');
+    return;
+  }
+  document.getElementById('summaryCats').textContent = state.selectedCategories.size;
+  navigate('list');
+}
+
+// ============ LIST CREATION (UC01) ============
+function addProduct() {
+  const search = document.getElementById('productSearch');
+  const qty = parseInt(document.getElementById('productQty').value);
+  if (!search.value || qty < 1) { showToast('Preencha produto e quantidade', 'error'); return; }
+  state.listItems.push({ nome: search.value, qtd: qty });
+  search.value = '';
+  renderListItems();
+}
+
+function renderListItems() {
+  const container = document.getElementById('listItems');
+  const empty = document.getElementById('emptyList');
+  if (state.listItems.length === 0) {
+    container.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    container.innerHTML = state.listItems.map((item, i) => `
+      <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-white border border-slate-200 rounded flex items-center justify-center text-xs font-bold">${i+1}</div>
+          <div>
+            <div class="font-medium text-sm">${item.nome}</div>
+            <div class="text-xs text-slate-500">Qtd: ${item.qtd}</div>
+          </div>
+        </div>
+        <button onclick="removeItem(${i})" class="text-red-500 hover:text-red-700 text-sm">Remover</button>
+      </div>
+    `).join('');
+  }
+  document.getElementById('summaryProducts').textContent = state.listItems.length;
+  document.getElementById('summaryUnits').textContent = state.listItems.reduce((s, i) => s + i.qtd, 0);
+  document.getElementById('btnCompare').disabled = state.listItems.length === 0;
+}
+
+function removeItem(i) {
+  state.listItems.splice(i, 1);
+  renderListItems();
+}
+
+function handleSaveList() {
+  if (!state.isAuthenticated) {
+    showToast('Faça login para salvar listas', 'error');
+    navigate('login');
+    return;
+  }
+  showToast('Lista salva com sucesso (ACID ✓)', 'success');
+}
+
+// ============ SUPPLIERS (UC04) ============
+function renderSuppliers() {
+  const filtered = SUPPLIERS.filter(s => 
+    s.categorias.some(c => state.selectedCategories.has(c)) &&
+    s.disponibilidade >= state.availabilityFilter
+  );
+  const list = document.getElementById('supplierList');
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="text-center py-8 text-slate-400 text-sm">Nenhum fornecedor encontrado para as categorias selecionadas.</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(s => `
+    <div onclick="toggleSupplier(${s.id})" class="supplier-row border border-slate-200 rounded-lg p-4 cursor-pointer hover:border-emerald-400 ${state.selectedSuppliers.has(s.id) ? 'selected' : ''}">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-lg flex items-center justify-center text-white font-bold">${s.nome[0]}</div>
+          <div>
+            <div class="font-semibold text-slate-900">${s.nome}</div>
+            <div class="text-xs text-slate-500">${s.categorias.length} categoria(s)</div>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-xs text-slate-500">Disponibilidade</div>
+          <div class="font-bold ${s.disponibilidade >= 90 ? 'text-emerald-600' : s.disponibilidade >= 70 ? 'text-amber-600' : 'text-slate-600'}">${s.disponibilidade}%</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('supplierListItemCount').textContent = state.listItems.length;
+  updateSupplierCount();
+}
+
+function toggleSupplier(id) {
+  if (state.selectedSuppliers.has(id)) state.selectedSuppliers.delete(id);
+  else state.selectedSuppliers.add(id);
+  renderSuppliers();
+}
+
+function selectAllSuppliers() {
+  const filtered = SUPPLIERS.filter(s => s.categorias.some(c => state.selectedCategories.has(c)) && s.disponibilidade >= state.availabilityFilter);
+  filtered.forEach(s => state.selectedSuppliers.add(s.id));
+  renderSuppliers();
+}
+
+function clearSuppliers() {
+  state.selectedSuppliers.clear();
+  renderSuppliers();
+}
+
+function updateSupplierCount() {
+  const count = state.selectedSuppliers.size;
+  document.getElementById('selectedSupplierCount').textContent = count;
+  document.getElementById('btnCalculate').disabled = count < 2;
+}
+
+function updateAvailabilityFilter(value) {
+  state.availabilityFilter = parseInt(value);
+  document.getElementById('sliderValue').textContent = value + '%';
+  renderSuppliers();
+}
+
+// ============ MODALS ============
+function openModal(id) { document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
+
+function promoteList() {
+  closeModal('modal-promote');
+  showToast('Lista promovida e salva com sucesso!', 'success');
+  navigate('dashboard');
+}
+
+// ============ TOASTS ============
+function showToast(message, type = 'info') {
+  const colors = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-blue-500' };
+  const toast = document.createElement('div');
+  toast.className = `toast ${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium`;
+  toast.textContent = message;
+  document.getElementById('toastContainer').appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+// ============ INIT ============
+document.getElementById('listName').addEventListener('input', e => {
+  document.getElementById('nameCounter').textContent = e.target.value.length;
+});
+
+// Autocomplete simples
+document.getElementById('productSearch').addEventListener('input', e => {
+  const term = e.target.value.toLowerCase();
+  const ac = document.getElementById('autocomplete');
+  if (term.length < 2) { ac.classList.add('hidden'); return; }
+  const matches = PRODUCTS.filter(p => p.toLowerCase().includes(term)).slice(0, 5);
+  if (matches.length === 0) { ac.classList.add('hidden'); return; }
+  ac.classList.remove('hidden');
+  ac.innerHTML = matches.map(p => `<div onclick="selectProduct('${p}')" class="px-3 py-2 hover:bg-slate-50 cursor-pointer text-sm">${p}</div>`).join('');
+});
+
+function selectProduct(p) {
+  document.getElementById('productSearch').value = p;
+  document.getElementById('autocomplete').classList.add('hidden');
+}
+
+renderListItems();
+</script>
+</body>
+</html>
