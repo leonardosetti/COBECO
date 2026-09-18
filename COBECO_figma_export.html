@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COBECO v3.2 — Artboards para Figma (Export Sheet)</title>
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --pri:#4f46e5; --pri-d:#4338ca; --pri-bg:#eef2ff;
+  --ok:#16a34a; --ok-d:#15803d; --ok-bg:#ecfdf5; --ok-line:#86efac;
+  --warn:#b45309; --warn-bg:#fffbeb; --warn-line:#fcd34d;
+  --err:#dc2626; --err-bg:#fef2f2;
+  --ink:#0f172a; --mut:#64748b; --soft:#94a3b8; --line:#e2e8f0; --bg:#f5f6fa; --card:#fff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:#2c2c2c;color:var(--ink);font-size:15px;line-height:1.5}
+
+/* ============ CANVAS (chrome Figma-like — não importar) ============ */
+.canvas-info{position:sticky;top:0;z-index:99;background:#1f1f1f;color:#e5e7eb;padding:14px 28px;border-bottom:1px solid #3a3a3a;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.canvas-info b{font-size:15px}
+.canvas-info span{font-size:12.5px;color:#9ca3af}
+.canvas-info .pill{background:#333;border:1px solid #444;border-radius:99px;padding:4px 12px;font-size:12px;color:#d1d5db}
+.canvas{display:flex;flex-direction:column;gap:120px;padding:120px}
+.board-label{color:#c4c4c4;font-size:22px;font-weight:700;margin-bottom:14px;display:flex;gap:16px;align-items:baseline}
+.board-label small{color:#7a7a7a;font-size:13px;font-weight:500}
+.frame{width:1440px;background:#fff;border:1px solid #444;border-radius:4px;overflow:hidden;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+
+/* ============ COMPONENTES ============ */
+.top{background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:28px;height:64px;padding:0 32px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;text-decoration:none;color:var(--ink)}
+.logo .mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px}
+.logo small{display:block;font-size:10px;font-weight:600;color:var(--mut);letter-spacing:.4px}
+nav.main{display:flex;gap:4px;flex:1}
+nav.main a{padding:8px 13px;border-radius:8px;color:#334155;text-decoration:none;font-weight:600;font-size:14px}
+nav.main a.on{background:var(--pri-bg);color:var(--pri)}
+.auth-zone{display:flex;align-items:center;gap:10px}
+.userchip{display:flex;align-items:center;gap:8px;background:var(--ok-bg);border:1px solid var(--ok-line);color:var(--ok-d);border-radius:99px;padding:6px 12px;font-weight:700;font-size:13px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:10px;padding:11px 18px;font-weight:700;font-size:14px;text-decoration:none;white-space:nowrap}
+.btn-pri{background:var(--pri);color:#fff}
+.btn-ok{background:var(--ok);color:#fff}
+.btn-ghost{background:#fff;border-color:var(--line);color:#334155}
+.btn-danger{background:#fff;border-color:#fecaca;color:var(--err)}
+.btn-sm{padding:7px 12px;font-size:13px;border-radius:8px}
+.btn-lg{padding:14px 24px;font-size:15px}
+.btn.disabled{opacity:.45}
+.btn-white{background:#fff;color:var(--pri-d)}
+.btn-outlinew{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.45)}
+.linklike{color:var(--pri);font-weight:600;font-size:13px;text-decoration:underline;background:none;border:none}
+.container{max-width:1280px;margin:0 auto;padding:0 40px;width:100%}
+.page{padding:36px 0 64px;background:var(--bg)}
+.page-head{margin-bottom:20px}
+.page-head .kicker{font-size:12px;font-weight:800;letter-spacing:1.2px;color:var(--pri);text-transform:uppercase}
+.page-head h1{font-size:26px;margin:6px 0 4px}
+.page-head p{color:var(--mut);max-width:820px;font-size:14.5px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+.card-pad{padding:26px}
+.mt{margin-top:18px}.mb{margin-bottom:16px}
+.muted{color:var(--mut)}.small{font-size:12.5px}
+.row-between{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+/* stepper */
+.stepper{display:flex;align-items:flex-start;margin:8px 0 26px}
+.stp{display:flex;flex-direction:column;align-items:center;gap:6px;width:150px}
+.stp .dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;background:#e2e8f0;color:#64748b;border:2px solid transparent}
+.stp .lb{font-size:12px;font-weight:700;color:var(--mut);text-align:center}
+.stp.active .dot{background:var(--pri);color:#fff}.stp.active .lb{color:var(--pri)}
+.stp.done .dot{background:var(--ok-bg);color:var(--ok-d);border-color:var(--ok-line)}
+.stp-bar{flex:1;height:2px;background:var(--line);margin-top:17px}
+.stp-bar.done{background:var(--ok-line)}
+/* hero */
+.hero{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 55%,#4f46e5 100%);color:#fff;border-radius:18px;padding:52px 48px;display:flex;gap:44px;align-items:center}
+.hero .tag{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:5px 14px;font-size:12.5px;font-weight:700;margin-bottom:16px}
+.hero h1{font-size:34px;line-height:1.2;margin-bottom:14px}
+.hero p{color:#c7d2fe;font-size:16px;margin-bottom:26px;max-width:520px}
+.hero .cta-row{display:flex;gap:12px}
+.mini-compare{background:#fff;color:var(--ink);border-radius:14px;padding:20px;box-shadow:0 18px 40px rgba(0,0,0,.28);min-width:380px;margin-left:auto}
+.mini-compare h4{font-size:13px;color:var(--mut);margin-bottom:12px;font-weight:700}
+.mini-row{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:8px;font-size:13.5px;margin-bottom:6px;border:1px solid var(--line)}
+.mini-row.win{background:var(--ok-bg);border-color:var(--ok-line)}
+.mini-foot{font-size:12px;color:var(--mut);margin-top:10px;display:flex;justify-content:space-between}
+.value-cards{display:flex;gap:18px;margin-top:26px}
+.vcard{flex:1;padding:22px}
+.vcard .ic{width:42px;height:42px;border-radius:10px;background:var(--pri-bg);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px}
+.vcard h3{font-size:16px;margin-bottom:6px}.vcard p{font-size:13.5px;color:var(--mut)}
+.howto{display:flex;margin-top:18px}
+.how{flex:1;text-align:center;padding:16px 10px;position:relative}
+.how .n{width:30px;height:30px;margin:0 auto 8px;border-radius:50%;background:var(--pri-bg);color:var(--pri);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px}
+.how b{display:block;font-size:13.5px}.how span{font-size:12px;color:var(--mut)}
+.how:not(:last-child)::after{content:"→";position:absolute;right:-7px;top:22px;color:var(--soft);font-size:15px}
+.persona-strip{margin-top:26px;display:flex;gap:16px;align-items:center;padding:20px 24px;background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px}
+.persona-strip .av{font-size:34px}
+.persona-strip p{font-size:13.5px;color:#78350f}
+/* categorias */
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.cat-card{display:flex;align-items:center;gap:11px;padding:14px 15px;border:2px solid var(--line);border-radius:12px;background:#fff}
+.cat-card.sel{border-color:var(--pri);background:var(--pri-bg)}
+.cat-card .cb{width:17px;height:17px;accent-color:var(--pri)}
+.cat-card .ci{font-size:20px}.cat-card .cn{font-weight:700;font-size:13.5px;line-height:1.25}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.count-chip{font-size:13px;font-weight:700;color:var(--mut);background:#fff;border:1px solid var(--line);padding:6px 12px;border-radius:99px}
+.count-chip.ok{color:var(--ok-d);border-color:var(--ok-line);background:var(--ok-bg)}
+.tip{background:#f8fafc;border:1px dashed var(--line);border-radius:10px;padding:11px 13px;font-size:12.5px;color:var(--mut);margin-top:14px}
+.hint-disabled{font-size:12.5px;color:var(--mut);margin-top:8px}
+/* lista */
+.two-col{display:flex;gap:22px;align-items:flex-start}
+.two-col .main-col{flex:1}
+.resumo{width:340px;position:sticky}
+.field{margin-bottom:16px}
+.field label{display:block;font-weight:700;font-size:13px;margin-bottom:6px}
+.field .req{color:var(--err)}
+.inp{width:100%;padding:11px 13px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;font-size:14px}
+.counter{font-size:12px;color:var(--mut);text-align:right;margin-top:4px}
+.err-msg{color:var(--err);font-size:12.5px;margin-top:5px;font-weight:600}
+.sug{margin-top:6px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 30px rgba(15,23,42,.14);overflow:hidden;position:relative;z-index:5}
+.sug-item{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;font-size:14px;border-bottom:1px solid #f1f5f9}
+.sug-item.hot{background:var(--pri-bg)}
+.sug-item .un{color:var(--mut);font-size:12px}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);padding:10px 12px;border-bottom:2px solid var(--line)}
+.tbl td{padding:11px 12px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.qty b{width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:#f8fafc;font-size:15px;color:#334155}
+.qty span{width:52px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.icon-del{color:var(--soft);font-size:15px;background:#f8fafc;border-radius:7px;padding:6px 9px;display:inline-block}
+.res-line{display:flex;justify-content:space-between;font-size:13.5px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.mode-chip{display:inline-block;font-size:11.5px;font-weight:800;border-radius:99px;padding:4px 10px;letter-spacing:.4px}
+.mode-eph{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line)}
+.mode-db{background:var(--ok-bg);color:var(--ok-d);border:1px solid var(--ok-line)}
+.actions-stack{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+/* fornecedores */
+.slider-box{padding:18px 20px;margin-bottom:18px}
+.sl-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.sl-head output{font-weight:800;color:var(--pri);background:var(--pri-bg);border-radius:8px;padding:3px 10px;font-size:13.5px}
+.slider{height:6px;background:#e2e8f0;border-radius:99px;position:relative}
+.slider i{position:absolute;left:0;top:0;bottom:0;background:var(--pri);border-radius:99px}
+.slider .knob{position:absolute;top:-7px;width:20px;height:20px;border-radius:50%;background:#fff;border:5px solid var(--pri);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.sl-scale{display:flex;justify-content:space-between;font-size:11.5px;color:var(--soft);margin-top:10px}
+.forn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.forn-card{border:2px solid var(--line);border-radius:12px;padding:14px 15px;background:#fff}
+.forn-card.sel{border-color:var(--pri);background:var(--pri-bg)}
+.forn-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:8px}
+.forn-top b{font-size:14.5px}
+.cov-badge{font-size:11.5px;font-weight:800;border-radius:99px;padding:3px 9px;white-space:nowrap}
+.cov-hi{background:var(--ok-bg);color:var(--ok-d)}
+.cov-md{background:var(--warn-bg);color:var(--warn)}
+.forn-cats{display:flex;flex-wrap:wrap;gap:5px}
+.mini-tag{font-size:10.5px;font-weight:700;background:#f1f5f9;color:#475569;border-radius:6px;padding:2.5px 7px}
+.cb{width:16px;height:16px;accent-color:var(--pri);margin-top:3px;margin-right:9px}
+/* resultados */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi{padding:16px 18px}
+.kpi .k{font-size:12px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
+.kpi .v{font-size:20px;font-weight:800;margin-top:4px}
+.kpi .s{font-size:12px;color:var(--mut);margin-top:2px}
+.kpi.win{border-color:var(--ok-line);background:var(--ok-bg)}.kpi.win .v{color:var(--ok-d)}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;border-radius:99px;padding:3.5px 10px}
+.b-ok{background:var(--ok-bg);color:var(--ok-d);border:1px solid var(--ok-line)}
+.b-warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line)}
+.b-mut{background:#f1f5f9;color:var(--mut)}
+.cov-bar{width:110px;height:7px;border-radius:99px;background:#e2e8f0;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:8px}
+.cov-bar i{display:block;height:100%;background:var(--pri);border-radius:99px}
+tr.row-win td{background:var(--ok-bg)}
+tr.row-win td:first-child{border-left:4px solid var(--ok)}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.warn-banner{display:flex;gap:10px;align-items:flex-start;background:var(--warn-bg);border:1px solid var(--warn-line);color:#78350f;border-radius:10px;padding:12px 15px;font-size:13.5px;margin:16px 0}
+.rule-note{font-size:12.5px;color:var(--mut);margin-top:12px}
+/* vencedora */
+.win-hero{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:24px 28px;border:2px solid var(--ok-line);background:var(--ok-bg);border-radius:12px;margin-bottom:20px}
+.win-hero h2{font-size:22px}.win-hero .meta{font-size:13px;color:var(--mut);margin-top:4px}
+.total-box{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border:2px solid var(--ink);border-radius:12px;margin-top:16px;background:#fff}
+.total-box .tl{font-size:13px;font-weight:800;letter-spacing:.8px;color:var(--mut);text-transform:uppercase}
+.total-box .tv{font-size:28px;font-weight:800}
+.export-note{margin-top:14px;font-size:13px;color:var(--mut)}
+/* auth */
+.auth-wrap{max-width:460px;margin:0 auto}
+.auth-card{padding:32px}
+.auth-card h1{font-size:22px;margin-bottom:6px}
+.auth-card .sub{color:var(--mut);font-size:14px;margin-bottom:22px}
+.auth-foot{margin-top:18px;text-align:center;font-size:13.5px;color:var(--mut)}
+.demo-hint{background:var(--pri-bg);border:1px dashed #c7d2fe;color:var(--pri-d);border-radius:10px;padding:10px 13px;font-size:12.5px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.step-pill{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--pri);text-transform:uppercase}
+/* modal */
+.modal-bg{position:absolute;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;z-index:20}
+.modal{background:#fff;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.3);max-width:520px;width:100%;padding:28px;position:relative}
+.modal h3{font-size:18px;margin-bottom:8px}
+.modal .x{position:absolute;top:14px;right:14px;background:#f1f5f9;border-radius:8px;width:30px;height:30px;font-size:14px;color:#475569;display:flex;align-items:center;justify-content:center}
+.modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
+.modal-pdf{max-width:880px}
+/* A4 */
+.a4-sheet{background:#fff;color:#111;border:1px solid var(--line);padding:40px 44px;font-size:13.5px;line-height:1.55}
+.a4-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid var(--ink);padding-bottom:14px;margin-bottom:16px}
+.a4-head .brand{font-size:22px;font-weight:800}
+.a4-head .brand small{display:block;font-size:10.5px;font-weight:600;color:#666;letter-spacing:1.2px}
+.a4-head .doc{text-align:right;font-size:11.5px;color:#444}
+.a4-meta{display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;font-size:12.5px;margin-bottom:16px;color:#333}
+.a4-tbl{width:100%;border-collapse:collapse;margin-bottom:14px}
+.a4-tbl th{background:#f1f2f4;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;border:1px solid #d5d9de}
+.a4-tbl td{padding:8px 10px;border:1px solid #d5d9de;font-size:12.5px}
+.a4-total{display:flex;justify-content:flex-end;gap:14px;align-items:center;font-size:15px;padding:10px;border:2px solid var(--ink);border-radius:6px}
+.a4-total b{font-size:19px}
+.a4-foot{font-size:10.5px;color:#666;border-top:1px solid #d5d9de;padding-top:10px;margin-top:14px;display:flex;justify-content:space-between}
+/* toast */
+.toast-demo{position:absolute;top:80px;right:24px;z-index:30;background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(15,23,42,.2);padding:13px 16px;font-size:13.5px;border-left:4px solid var(--ok);max-width:360px;display:flex;gap:10px}
+/* tokens board */
+.tok-row{display:flex;gap:24px;margin-bottom:24px;flex-wrap:wrap}
+.tok-group{flex:1;min-width:280px}
+.tok-group h3{font-size:14px;text-transform:uppercase;letter-spacing:.8px;color:var(--mut);margin-bottom:12px}
+.sw{display:flex;gap:10px;flex-wrap:wrap}
+.swatch{width:110px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.swatch i{display:block;height:52px}
+.swatch b{display:block;font-size:10.5px;padding:6px 8px;color:#334155;font-weight:700}
+.type-sample{border:1px solid var(--line);border-radius:10px;padding:14px}
+.type-sample div{margin-bottom:8px;border-bottom:1px dashed var(--line);padding-bottom:8px}
+.comp-stack{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+@media print{.canvas-info{display:none}.canvas{padding:0;gap:0;background:#fff}.board-label{color:#000}.frame{border:none;box-shadow:none}}
+</style>
+</head>
+<body>
+
+<div class="canvas-info">
+  <b>🛒 COBECO v3.2 — Export Sheet para Figma</b>
+  <span class="pill">15 frames · 1440px</span>
+  <span>Importação: plugin <b>html.to.design</b> → “Import from code/file” → cada <i>.frame</i> vira um frame editável · ou capture cada artboard (F12 → full-size screenshot).</span>
+</div>
+
+<div class="canvas">
+
+<!-- ================= 00 · DESIGN TOKENS ================= -->
+<div class="board">
+  <div class="board-label">00 · Design Tokens <small>cores · tipografia · componentes base</small></div>
+  <div class="frame" style="width:1440px">
+    <div class="container" style="padding:40px;background:#fff">
+      <div class="page-head"><span class="kicker">Design System</span><h1 style="font-size:24px">Tokens & Componentes (MVP)</h1></div>
+      <div class="tok-row">
+        <div class="tok-group"><h3>Cores</h3>
+          <div class="sw">
+            <div class="swatch"><i style="background:#4f46e5"></i><b>Primary #4F46E5</b></div>
+            <div class="swatch"><i style="background:#4338ca"></i><b>Primary-D #4338CA</b></div>
+            <div class="swatch"><i style="background:#eef2ff"></i><b>Primary-BG #EEF2FF</b></div>
+            <div class="swatch"><i style="background:#16a34a"></i><b>Success #16A34A</b></div>
+            <div class="swatch"><i style="background:#ecfdf5;border-bottom:1px solid #eee"></i><b>Success-BG #ECFDF5</b></div>
+            <div class="swatch"><i style="background:#b45309"></i><b>Warning #B45309</b></div>
+            <div class="swatch"><i style="background:#fffbeb;border-bottom:1px solid #eee"></i><b>Warn-BG #FFFBEB</b></div>
+            <div class="swatch"><i style="background:#dc2626"></i><b>Error #DC2626</b></div>
+            <div class="swatch"><i style="background:#0f172a"></i><b>Ink #0F172A</b></div>
+            <div class="swatch"><i style="background:#64748b"></i><b>Muted #64748B</b></div>
+            <div class="swatch"><i style="background:#e2e8f0"></i><b>Line #E2E8F0</b></div>
+            <div class="swatch"><i style="background:#f5f6fa;border-bottom:1px solid #eee"></i><b>BG #F5F6FA</b></div>
+          </div>
+        </div>
+        <div class="tok-group"><h3>Tipografia — Inter / system</h3>
+          <div class="type-sample">
+            <div style="font-size:26px;font-weight:800">H1 Página — 26/800</div>
+            <div style="font-size:20px;font-weight:800">H2 Card — 20/800</div>
+            <div style="font-size:16px;font-weight:700">H3 Seção — 16/700</div>
+            <div style="font-size:14px">Corpo — 14/400 · line-height 1.5</div>
+            <div style="font-size:12.5px;color:#64748b">Auxiliar/Meta — 12.5 · Muted</div>
+            <div style="font-size:11.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#4f46e5">Kicker — 11.5/800 caps</div>
+          </div>
+        </div>
+      </div>
+      <div class="tok-row">
+        <div class="tok-group"><h3>Botões</h3><div class="comp-stack">
+          <span class="btn btn-pri">Primário — CTA</span>
+          <span class="btn btn-ok">Success — vencedor/salvar</span>
+          <span class="btn btn-ghost">Ghost — secundário</span>
+          <span class="btn btn-danger">Danger — excluir</span>
+          <span class="btn btn-pri disabled">Desabilitado (45%)</span>
+        </div></div>
+        <div class="tok-group"><h3>Badges & Chips</h3><div class="comp-stack">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <span class="badge b-ok">🏆 Melhor oferta</span>
+            <span class="badge b-warn">⚠ 1 item(ns)</span>
+            <span class="badge b-mut">parcial</span>
+            <span class="mode-chip mode-eph">⚠ MODO EFÊMERO</span>
+            <span class="mode-chip mode-db">🔒 CONTA: MARIANA</span>
+          </div>
+          <div class="count-chip ok">3 selecionado(s) · mín 2 · máx 10</div>
+        </div></div>
+        <div class="tok-group"><h3>Inputs</h3><div class="comp-stack">
+          <span class="inp" style="display:block;width:280px">Texto padrão</span>
+          <span class="inp" style="display:block;width:280px;border-color:#dc2626">Estado de erro</span>
+          <span class="err-msg" style="display:block">Mensagem de erro inline — 12.5/600</span>
+          <span class="qty"><b>−</b><span>2</span><b>+</b></span>
+        </div></div>
+        <div class="tok-group"><h3>Slider (UC05)</h3>
+          <div style="padding:10px 4px"><div class="slider" style="width:280px"><i style="width:60%"></i><span class="knob" style="left:calc(60% - 10px)"></span></div>
+          <div class="sl-scale" style="width:280px"><span>0%</span><span>50%</span><span>100%</span></div></div>
+          <p class="small muted">Raio: 12px (cards) · 10px (inputs/botões) · Sombra: 0 1px 3px rgba(15,23,42,.06)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 01 · HOME ================= -->
+<div class="board">
+  <div class="board-label">01 · Home — Landing (visitante) <small>UC03 entrada · CTA principal · persona</small></div>
+  <div class="frame">
+    <div class="top">
+      <a class="logo"><span class="mark">🛒</span><span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+      <nav class="main"><a class="on">Início</a><a>Nova lista</a></nav>
+      <div class="auth-zone"><span class="btn btn-ghost btn-sm">Entrar</span><span class="btn btn-pri btn-sm">Criar conta</span></div>
+    </div>
+    <div class="page">
+      <div class="container">
+        <section class="hero">
+          <div><span class="tag">Comparador inteligente · MVP v3.2</span>
+            <h1>Compras mais inteligentes,<br>economia de verdade.</h1>
+            <p>Crie sua lista, filtre fornecedores por categoria, compare preço e disponibilidade em uma única tela — e exporte a lista vencedora em PDF. Sem cadastro obrigatório.</p>
+            <div class="cta-row"><span class="btn btn-white btn-lg">Criar minha lista →</span><span class="btn btn-outlinew btn-lg">Entrar na minha conta</span></div>
+          </div>
+          <div class="mini-compare"><h4>Comparação · 6 produtos · 3 fornecedores</h4>
+            <div class="mini-row win"><span>🏆 Carrefour · 100% disponível</span><b>R$ 158,47</b></div>
+            <div class="mini-row"><span>Pão de Açúcar · 100% disponível</span><b>R$ 173,80</b></div>
+            <div class="mini-row"><span>Extra · 83% disponível ⚠ 1 ausente</span><b>R$ 118,95</b></div>
+            <div class="mini-foot"><span>Melhor oferta = maior cobertura</span><span>desempate: menor total</span></div>
+          </div>
+        </section>
+        <section class="value-cards">
+          <div class="card vcard"><div class="ic">🏷️</div><h3>Pré-filtro por categorias</h3><p>Escolha entre 11 categorias macro para ver apenas fornecedores relevantes (RF12).</p></div>
+          <div class="card vcard"><div class="ic">📊</div><h3>Comparação clara</h3><p>Tabela flat: preço total, % de cobertura e itens ausentes. Melhor oferta destacada (RF15/RF16).</p></div>
+          <div class="card vcard"><div class="ic">📄</div><h3>PDF da lista vencedora</h3><p>Exporte a lista do fornecedor campeão com itens precificados e total consolidado (RF17).</p></div>
+        </section>
+        <section class="card card-pad mt"><div class="row-between mb"><h2 style="font-size:18px">Como funciona</h2><span class="muted small">Visitante percorre tudo sem autenticação</span></div>
+          <div class="howto">
+            <div class="how"><div class="n">1</div><b>Categorias</b><span>Pré-filtro</span></div>
+            <div class="how"><div class="n">2</div><b>Lista</b><span>Produtos + qtd</span></div>
+            <div class="how"><div class="n">3</div><b>Fornecedores</b><span>Seleção 2–10</span></div>
+            <div class="how"><div class="n">4</div><b>Comparar</b><span>Tabela flat</span></div>
+            <div class="how"><div class="n">5</div><b>Exportar</b><span>PDF / Imprimir</span></div>
+          </div>
+        </section>
+        <section class="persona-strip"><span class="av">👩‍🍳</span>
+          <div style="flex:1"><b>Mariana Duarte, 34 — dona do restaurante “Tempero da Mari” (Taquaritinga/SP)</b>
+          <p>Compra semanal de insumos em 3 mercados. Sem o COBECO: planilha, telefone e risco de escolher o “mais barato” incompleto.</p></div>
+          <span class="btn btn-pri">Iniciar jornada →</span>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 02 · CATEGORIAS ================= -->
+<div class="board">
+  <div class="board-label">02 · Passo 1 — Categorias (UC03 · RF12) <small>pré-filtro · mín. 1 · 11 categorias</small></div>
+  <div class="frame">
+    <div class="top">
+      <a class="logo"><span class="mark">🛒</span><span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+      <nav class="main"><a>Início</a><a class="on">Nova lista</a></nav>
+      <div class="auth-zone"><span class="btn btn-ghost btn-sm">Entrar</span><span class="btn btn-pri btn-sm">Criar conta</span></div>
+    </div>
+    <div class="page"><div class="container">
+      <div class="page-head"><span class="kicker">Passo 1 de 5 · Pré-filtro</span><h1>Selecione as categorias</h1>
+        <p>Escolha uma ou mais categorias macro para filtrar os fornecedores (RF12). A seleção fica apenas em memória (transitória).</p></div>
+      <div class="stepper">
+        <div class="stp active"><div class="dot">1</div><div class="lb">Categorias</div></div><div class="stp-bar"></div>
+        <div class="stp"><div class="dot">2</div><div class="lb">Lista</div></div><div class="stp-bar"></div>
+        <div class="stp"><div class="dot">3</div><div class="lb">Fornecedores</div></div><div class="stp-bar"></div>
+        <div class="stp"><div class="dot">4</div><div class="lb">Comparação</div></div><div class="stp-bar"></div>
+        <div class="stp"><div class="dot">5</div><div class="lb">Lista vencedora</div></div>
+      </div>
+      <div class="card card-pad">
+        <div class="toolbar">
+          <span class="count-chip ok">1 categoria selecionada · 11 disponíveis</span>
+          <div><span class="btn btn-ghost btn-sm">Selecionar todas</span> <span class="btn btn-ghost btn-sm">Limpar</span></div>
+        </div>
+        <div class="cat-grid">
+          <div class="cat-card sel"><input class="cb" type="checkbox" checked><span class="ci">🛒</span><span class="cn">Mercado</span></div>
+          <div class="cat-card"><input class="cb" type="checkbox"><span class="ci">👕</span><span class="cn">Vestuário</span></div>
+          <div class="cat-card"><input class="cb" type="checkbox"><span class="ci">🚗</span><span class="cn">Automotivos</span></div>
+          <div class="cat-card"><input class="cb" type="checkbox"><span class="ci">💻</span><span class="cn">Informática</span></div>
+          <div class="cat-card"><input class="cb" type="checkbox"><span class="ci">🖼️</span><span class="cn">Decoração</span></div>
+          <div class="cat-card"><input class="cb" type="checkbox"><span class="ci">🛋️</span><span class="cn">Móveis</span></div>
+          <div class="cat-card"><input class="cb" type="checkbox"><span class="ci">🧱</span><span class="cn">Materiais de Construção e Ferragens</span></div>
+          <div class="cat-card"><input class="cb" type="checkbox"><span class="ci">🔧</span><span class="cn">Ferramentas</span></div>
+          <div class="cat-card"><input class="cb" type="checkbox"><span class="ci">📚</span><span class="cn">Livros</span></div>
+          <div class="cat-card"><input class="cb" type="checkbox"><span class="ci">🪴</span><span class="cn">Jardinagem</span></div>
+          <div class="cat-card"><input class="cb" type="checkbox"><span class="ci">🔌</span><span class="cn">Eletrodomésticos</span></div>
+        </div>
+        <div class="tip">ℹ️ <b>Como funciona:</b> os fornecedores da próxima etapa pertencem às categorias selecionadas. Ex.: “Mercado” → Pão de Açúcar, Carrefour, Extra.</div>
+        <div class="row-between mt">
+          <span class="btn btn-ghost">← Voltar</span>
+          <span class="btn btn-pri btn-lg">Continuar para a lista →</span>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ================= 03 · LISTA ================= -->
+<div class="board">
+  <div class="board-label">03 · Passo 2 — Lista efêmera (UC01/UC02 · RF07) <small>autocomplete aberto · itens · resumo</small></div>
+  <div class="frame">
+    <div class="top">
+      <a class="logo"><span class="mark">🛒</span><span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+      <nav class="main"><a>Início</a><a class="on">Nova lista</a></nav>
+      <div class="auth-zone"><span class="btn btn-ghost btn-sm">Entrar</span><span class="btn btn-pri btn-sm">Criar conta</span></div>
+    </div>
+    <div class="page"><div class="container">
+      <div class="page-head"><span class="kicker">Passo 2 de 5 · Lista de compras</span><h1>Monte sua lista</h1>
+        <p>Adicione produtos do catálogo e ajuste quantidades (1–9999). Armazenamento em memória / sessionStorage até salvar.</p></div>
+      <div class="stepper">
+        <div class="stp done"><div class="dot">✓</div><div class="lb">Categorias</div></div><div class="stp-bar done"></div>
+        <div class="stp active"><div class="dot">2</div><div class="lb">Lista</div></div><div class="stp-bar"></div>
+        <div class="stp"><div class="dot">3</div><div class="lb">Fornecedores</div></div><div class="stp-bar"></div>
+        <div class="stp"><div class="dot">4</div><div class="lb">Comparação</div></div><div class="stp-bar"></div>
+        <div class="stp"><div class="dot">5</div><div class="lb">Lista vencedora</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card card-pad main-col">
+          <div class="row-between mb"><span class="mode-chip mode-eph">⚠ MODO EFÊMERO (visitante)</span><span class="btn btn-ghost btn-sm">⚡ Preencher com a lista da Mariana (demo)</span></div>
+          <div class="field"><label>Nome da lista <span class="req">*</span></label>
+            <div class="inp">Compras do Mês</div><div class="counter">15/100</div></div>
+          <div class="field"><label>Adicionar produto — autocomplete (mín. 2 caracteres)</label>
+            <div class="inp" style="border-color:var(--pri)">arr<span style="color:var(--soft)">▌</span></div>
+            <div class="sug">
+              <div class="sug-item hot"><span>Arroz Tipo 1 5kg</span><span class="un">por unidade de venda: un</span></div>
+              <div class="sug-item"><span>Arroz Integral 1kg</span><span class="un">por unidade de venda: un</span></div>
+            </div>
+          </div>
+          <h3 style="font-size:15px;margin:14px 0 10px">Itens da lista</h3>
+          <table class="tbl"><thead><tr><th>Produto</th><th style="width:130px">Qtd.</th><th style="width:70px">Un.</th><th style="width:44px"></th></tr></thead><tbody>
+            <tr><td><b>Arroz Tipo 1 5kg</b></td><td><span class="qty"><b>−</b><span>2</span><b>+</b></span></td><td class="muted">un</td><td><span class="icon-del">✕</span></td></tr>
+            <tr><td><b>Feijão Preto 1kg</b></td><td><span class="qty"><b>−</b><span>2</span><b>+</b></span></td><td class="muted">un</td><td><span class="icon-del">✕</span></td></tr>
+            <tr><td><b>Óleo de Soja 900ml</b></td><td><span class="qty"><b>−</b><span>3</span><b>+</b></span></td><td class="muted">un</td><td><span class="icon-del">✕</span></td></tr>
+            <tr><td><b>Café Torrado e Moído 500g</b></td><td><span class="qty"><b>−</b><span>2</span><b>+</b></span></td><td class="muted">un</td><td><span class="icon-del">✕</span></td></tr>
+            <tr><td><b>Açúcar Refinado 1kg</b></td><td><span class="qty"><b>−</b><span>2</span><b>+</b></span></td><td class="muted">un</td><td><span class="icon-del">✕</span></td></tr>
+            <tr><td><b>Leite Integral UHT 1L</b></td><td><span class="qty"><b>−</b><span>6</span><b>+</b></span></td><td class="muted">un</td><td><span class="icon-del">✕</span></td></tr>
+          </tbody></table>
+        </div>
+        <aside class="card card-pad resumo"><h3 style="font-size:15px;margin-bottom:12px">Resumo</h3>
+          <div class="res-line"><span>Produtos</span><b>6</b></div>
+          <div class="res-line"><span>Unidades totais</span><b>17</b></div>
+          <div class="res-line"><span>Categorias filtradas</span><b>1 (Mercado)</b></div>
+          <div class="res-line"><span>Modo</span><b>Efêmero</b></div>
+          <div class="actions-stack">
+            <span class="btn btn-pri btn-lg">Comparar preços →</span>
+            <span class="btn btn-ghost">💾 Salvar lista 🔒</span>
+          </div>
+          <div class="tip">💡 Visitantes comparam e exportam sem conta. Autenticação exigida <b>apenas para salvar</b> (RF08) — rascunho preservado durante o login.</div>
+        </aside>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ================= 04 · FORNECEDORES ================= -->
+<div class="board">
+  <div class="board-label">04 · Passo 3 — Fornecedores (UC04/UC05 · RF13/RF14) <small>slider de disponibilidade · badges de cobertura</small></div>
+  <div class="frame">
+    <div class="top">
+      <a class="logo"><span class="mark">🛒</span><span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+      <nav class="main"><a>Início</a><a class="on">Nova lista</a></nav>
+      <div class="auth-zone"><span class="btn btn-ghost btn-sm">Entrar</span><span class="btn btn-pri btn-sm">Criar conta</span></div>
+    </div>
+    <div class="page"><div class="container">
+      <div class="page-head"><span class="kicker">Passo 3 de 5 · Fornecedores</span><h1>Escolha os fornecedores</h1>
+        <p>Selecione de <b>2 a 10</b> fornecedores (RF13). Apenas os da categoria “Mercado” são exibidos. O % indica a cobertura da sua lista.</p></div>
+      <div class="stepper">
+        <div class="stp done"><div class="dot">✓</div><div class="lb">Categorias</div></div><div class="stp-bar done"></div>
+        <div class="stp done"><div class="dot">✓</div><div class="lb">Lista</div></div><div class="stp-bar done"></div>
+        <div class="stp active"><div class="dot">3</div><div class="lb">Fornecedores</div></div><div class="stp-bar"></div>
+        <div class="stp"><div class="dot">4</div><div class="lb">Comparação</div></div><div class="stp-bar"></div>
+        <div class="stp"><div class="dot">5</div><div class="lb">Lista vencedora</div></div>
+      </div>
+      <div class="card slider-box">
+        <div class="sl-head"><label><b>Filtro de disponibilidade (UC05)</b> — mostrar apenas fornecedores com cobertura mínima da lista</label><output>50%</output></div>
+        <div class="slider"><i style="width:50%"></i><span class="knob" style="left:calc(50% - 10px)"></span></div>
+        <div class="sl-scale"><span>0% (todos)</span><span>50%</span><span>100%</span></div>
+      </div>
+      <div class="card card-pad">
+        <div class="toolbar">
+          <span class="count-chip ok">3 selecionado(s) · mín 2 · máx 10</span>
+          <div><span class="btn btn-ghost btn-sm">Selecionar todos</span> <span class="btn btn-ghost btn-sm">Limpar</span></div>
+        </div>
+        <div class="forn-grid">
+          <div class="forn-card sel"><div style="display:flex"><input class="cb" type="checkbox" checked><div style="flex:1">
+            <div class="forn-top"><b>Carrefour</b><span class="cov-badge cov-hi">100% da lista</span></div>
+            <div class="forn-cats"><span class="mini-tag">Mercado</span></div></div></div></div>
+          <div class="forn-card sel"><div style="display:flex"><input class="cb" type="checkbox" checked><div style="flex:1">
+            <div class="forn-top"><b>Extra</b><span class="cov-badge cov-hi">83% da lista</span></div>
+            <div class="forn-cats"><span class="mini-tag">Mercado</span></div></div></div></div>
+          <div class="forn-card sel"><div style="display:flex"><input class="cb" type="checkbox" checked><div style="flex:1">
+            <div class="forn-top"><b>Pão de Açúcar</b><span class="cov-badge cov-hi">100% da lista</span></div>
+            <div class="forn-cats"><span class="mini-tag">Mercado</span></div></div></div></div>
+        </div>
+        <div class="row-between mt">
+          <span class="btn btn-ghost">← Voltar à lista</span>
+          <span class="btn btn-pri btn-lg">Calcular orçamento →</span>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ================= 05 · RESULTADOS ================= -->
+<div class="board">
+  <div class="board-label">05 · Passo 4 — Comparação (UC06/UC07 · RF15/RF16) <small>tabela flat · melhor oferta destacada · toast</small></div>
+  <div class="frame">
+    <div class="toast-demo"><span>✅</span><span>Comparação concluída em ~180ms. Melhor oferta: <b>Carrefour</b>.</span></div>
+    <div class="top">
+      <a class="logo"><span class="mark">🛒</span><span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+      <nav class="main"><a>Início</a><a class="on">Nova lista</a></nav>
+      <div class="auth-zone"><span class="btn btn-ghost btn-sm">Entrar</span><span class="btn btn-pri btn-sm">Criar conta</span></div>
+    </div>
+    <div class="page"><div class="container">
+      <div class="page-head"><span class="kicker">Passo 4 de 5 · Resultados</span><h1>Comparação de preços</h1>
+        <p>Lista “Compras do Mês” · 6 itens · 3 fornecedores. Ordenado pelo menor total (RF15); melhor oferta destacada (RF16).</p></div>
+      <div class="stepper">
+        <div class="stp done"><div class="dot">✓</div><div class="lb">Categorias</div></div><div class="stp-bar done"></div>
+        <div class="stp done"><div class="dot">✓</div><div class="lb">Lista</div></div><div class="stp-bar done"></div>
+        <div class="stp done"><div class="dot">✓</div><div class="lb">Fornecedores</div></div><div class="stp-bar done"></div>
+        <div class="stp active"><div class="dot">4</div><div class="lb">Comparação</div></div><div class="stp-bar"></div>
+        <div class="stp"><div class="dot">5</div><div class="lb">Lista vencedora</div></div>
+      </div>
+      <div class="kpis">
+        <div class="card kpi win"><div class="k">🏆 Melhor oferta</div><div class="v">Carrefour</div><div class="s">R$ 158,47 · 100% da lista</div></div>
+        <div class="card kpi"><div class="k">💰 Menor preço</div><div class="v">R$ 118,95</div><div class="s">pode ter itens ausentes</div></div>
+        <div class="card kpi"><div class="k">📊 Economia potencial</div><div class="v">R$ 15,33</div><div class="s">vs. maior total cotado</div></div>
+        <div class="card kpi"><div class="k">Disponibilidade média</div><div class="v">94%</div><div class="s">3 fornecedores comparados</div></div>
+      </div>
+      <div class="card" style="overflow:auto"><table class="tbl">
+        <thead><tr><th style="width:44px">#</th><th>Fornecedor</th><th>Cobertura</th><th>Itens</th><th>Ausentes</th><th class="num">Preço total</th></tr></thead>
+        <tbody>
+          <tr><td class="muted">1</td><td><b>Extra</b> <span class="badge b-warn">💰 Menor preço</span></td>
+            <td><span class="cov-bar"><i style="width:83%"></i></span>83%</td><td>5 de 6</td>
+            <td><span class="badge b-warn">⚠ 1 item(ns)</span></td><td class="num"><b>R$ 118,95</b> <span class="badge b-mut">parcial</span></td></tr>
+          <tr class="row-win"><td class="muted">2</td><td><b>Carrefour</b> <span class="badge b-ok">🏆 Melhor oferta</span></td>
+            <td><span class="cov-bar"><i style="width:100%"></i></span>100%</td><td>6 de 6</td>
+            <td class="muted">—</td><td class="num"><b>R$ 158,47</b></td></tr>
+          <tr><td class="muted">3</td><td><b>Pão de Açúcar</b></td>
+            <td><span class="cov-bar"><i style="width:100%"></i></span>100%</td><td>6 de 6</td>
+            <td class="muted">—</td><td class="num"><b>R$ 173,80</b></td></tr>
+        </tbody></table></div>
+      <div class="warn-banner"><span>⚠️</span><span><b>Atenção:</b> o menor preço pode não incluir todos os itens. A melhor oferta considera a <b>maior cobertura</b>; empate → <b>menor total</b>. Item ausente no Extra: Café Torrado e Moído 500g.</span></div>
+      <div class="row-between">
+        <span class="btn btn-ghost">← Editar fornecedores</span>
+        <div style="display:flex;gap:10px">
+          <span class="btn btn-ghost">🖨️ Imprimir (A4)</span>
+          <span class="btn btn-ghost">📄 Exportar PDF</span>
+          <span class="btn btn-ok btn-lg">🏆 Ver lista vencedora →</span>
+        </div>
+      </div>
+      <p class="rule-note">Regra da melhor oferta (RF16/monografia): maior cobertura; empate → menor custo total. A comparação não é persistida (YAGNI).</p>
+    </div></div>
+  </div>
+</div>
+
+<!-- ================= 06 · LISTA VENCEDORA ================= -->
+<div class="board">
+  <div class="board-label">06 · Passo 5 — Lista Vencedora (UC07/UC08 · RF17) <small>★ conteúdo precificado + total consolidado — alvo do export</small></div>
+  <div class="frame">
+    <div class="top">
+      <a class="logo"><span class="mark">🛒</span><span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+      <nav class="main"><a>Início</a><a class="on">Nova lista</a></nav>
+      <div class="auth-zone"><span class="btn btn-ghost btn-sm">Entrar</span><span class="btn btn-pri btn-sm">Criar conta</span></div>
+    </div>
+    <div class="page"><div class="container">
+      <div class="page-head"><span class="kicker">Passo 5 de 5 · Exportação</span><h1>Lista vencedora</h1>
+        <p>Conteúdo da sua lista <b>precificado pelo fornecedor campeão</b>, com total consolidado. É este documento que o PDF exporta (RF17) — nunca a tabela comparativa.</p></div>
+      <div class="stepper">
+        <div class="stp done"><div class="dot">✓</div><div class="lb">Categorias</div></div><div class="stp-bar done"></div>
+        <div class="stp done"><div class="dot">✓</div><div class="lb">Lista</div></div><div class="stp-bar done"></div>
+        <div class="stp done"><div class="dot">✓</div><div class="lb">Fornecedores</div></div><div class="stp-bar done"></div>
+        <div class="stp done"><div class="dot">✓</div><div class="lb">Comparação</div></div><div class="stp-bar done"></div>
+        <div class="stp active"><div class="dot">5</div><div class="lb">Lista vencedora</div></div>
+      </div>
+      <div class="win-hero">
+        <div><span class="badge b-ok" style="margin-bottom:8px">🏆 MELHOR OFERTA · 100% DA LISTA</span>
+          <h2>Carrefour</h2><div class="meta">CNPJ 99.000.111/0001-22 · cotação de 18/09/2026 · lista “Compras do Mês”</div></div>
+        <div style="text-align:right"><div class="muted small">Total consolidado</div>
+          <div style="font-size:30px;font-weight:800">R$ 158,47</div>
+          <span class="badge b-ok">todos os itens disponíveis</span></div>
+      </div>
+      <div class="card" style="overflow:auto"><table class="tbl">
+        <thead><tr><th>Produto</th><th>Un.</th><th style="width:90px">Qtd.</th><th class="num">Preço unitário</th><th class="num">Subtotal</th></tr></thead>
+        <tbody>
+          <tr><td><b>Arroz Tipo 1 5kg</b></td><td class="muted">un</td><td>2</td><td class="num">R$ 24,90</td><td class="num"><b>R$ 49,80</b></td></tr>
+          <tr><td><b>Feijão Preto 1kg</b></td><td class="muted">un</td><td>2</td><td class="num">R$ 7,66</td><td class="num"><b>R$ 15,32</b></td></tr>
+          <tr><td><b>Óleo de Soja 900ml</b></td><td class="muted">un</td><td>3</td><td class="num">R$ 6,79</td><td class="num"><b>R$ 20,37</b></td></tr>
+          <tr><td><b>Café Torrado e Moído 500g</b></td><td class="muted">un</td><td>2</td><td class="num">R$ 16,90</td><td class="num"><b>R$ 33,80</b></td></tr>
+          <tr><td><b>Açúcar Refinado 1kg</b></td><td class="muted">un</td><td>2</td><td class="num">R$ 4,29</td><td class="num"><b>R$ 8,58</b></td></tr>
+          <tr><td><b>Leite Integral UHT 1L</b></td><td class="muted">un</td><td>6</td><td class="num">R$ 5,10</td><td class="num"><b>R$ 30,60</b></td></tr>
+        </tbody></table></div>
+      <div class="total-box"><span class="tl">Total consolidado da compra (6 itens · 17 unidades)</span><span class="tv">R$ 158,47</span></div>
+      <div class="export-note">ℹ️ O arquivo <b>lista_20260918.pdf</b> (A4, gerado no servidor via ReportLab) contém exatamente este documento: itens, preços unitários, subtotais e total consolidado.</div>
+      <div class="row-between mt">
+        <span class="btn btn-ghost">← Voltar aos resultados</span>
+        <div style="display:flex;gap:10px">
+          <span class="btn btn-ghost btn-lg">🖨️ Imprimir A4</span>
+          <span class="btn btn-pri btn-lg">⬇ Exportar PDF — lista_20260918.pdf</span>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ================= 07 · MODAL PDF ================= -->
+<div class="board">
+  <div class="board-label">07 · Modal — Exportar PDF (UC08/UC09 · RF17/RNF11) <small>preview A4 da LISTA VENCEDORA · download simulado</small></div>
+  <div class="frame" style="min-height:980px;background:var(--bg)">
+    <div class="top" style="opacity:.5">
+      <a class="logo"><span class="mark">🛒</span><span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+      <nav class="main"><a>Início</a><a class="on">Nova lista</a></nav>
+      <div class="auth-zone"><span class="btn btn-ghost btn-sm">Entrar</span><span class="btn btn-pri btn-sm">Criar conta</span></div>
+    </div>
+    <div class="modal-bg">
+      <div class="modal modal-pdf">
+        <div class="x">✕</div>
+        <h3>📄 PDF gerado com sucesso</h3>
+        <p class="small muted mb">Pré-visualização de <b>lista_20260918.pdf</b> — lista vencedora precificada + total consolidado (RF17/RNF11: &lt;5s).</p>
+        <div style="background:#eef0f3;padding:16px;border-radius:8px;border:1px solid var(--line)">
+          <div class="a4-sheet">
+            <div class="a4-head"><div class="brand">🛒 COBECO<small>COTAÇÃO DE BENS DE CONSUMO</small></div>
+              <div class="doc"><b>LISTA VENCEDORA — COTAÇÃO</b><br>Arquivo: lista_20260918.pdf<br>Formato A4 · 18/09/2026</div></div>
+            <div class="a4-meta">
+              <span>Lista: <b>Compras do Mês</b></span><span>Fornecedor vencedor: <b>Carrefour</b> (CNPJ 99.000.111/0001-22)</span>
+              <span>Itens: <b>6</b> · Unidades: <b>17</b></span><span>Cobertura da lista: <b>100%</b></span>
+            </div>
+            <table class="a4-tbl"><thead><tr><th style="width:34px">#</th><th>Produto</th><th style="width:50px">Un.</th><th class="num" style="width:60px">Qtd.</th><th class="num" style="width:110px">Preço unitário</th><th class="num" style="width:110px">Subtotal</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Arroz Tipo 1 5kg</td><td>un</td><td class="num">2</td><td class="num">R$ 24,90</td><td class="num">R$ 49,80</td></tr>
+              <tr><td>2</td><td>Feijão Preto 1kg</td><td>un</td><td class="num">2</td><td class="num">R$ 7,66</td><td class="num">R$ 15,32</td></tr>
+              <tr><td>3</td><td>Óleo de Soja 900ml</td><td>un</td><td class="num">3</td><td class="num">R$ 6,79</td><td class="num">R$ 20,37</td></tr>
+              <tr><td>4</td><td>Café Torrado e Moído 500g</td><td>un</td><td class="num">2</td><td class="num">R$ 16,90</td><td class="num">R$ 33,80</td></tr>
+              <tr><td>5</td><td>Açúcar Refinado 1kg</td><td>un</td><td class="num">2</td><td class="num">R$ 4,29</td><td class="num">R$ 8,58</td></tr>
+              <tr><td>6</td><td>Leite Integral UHT 1L</td><td>un</td><td class="num">6</td><td class="num">R$ 5,10</td><td class="num">R$ 30,60</td></tr>
+            </tbody></table>
+            <div class="a4-total"><span><b>TOTAL CONSOLIDADO DA COMPRA</b> — preços de Carrefour</span><b>R$ 158,47</b></div>
+            <div class="a4-foot"><span>Gerado por COBECO · protótipo MVP v3.2 · PDF server-side simulado (ReportLab)</span><span>Documento de cotação — sem valor fiscal</span></div>
+          </div>
+        </div>
+        <div class="modal-actions"><span class="btn btn-ghost">Fechar</span><span class="btn btn-pri">⬇ Baixar lista_20260918.pdf</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 08 · LOGIN ================= -->
+<div class="board">
+  <div class="board-label">08 · Login (UC10 · RF02) <small>lockout 6 tentativas · mensagem genérica · JWT em memória</small></div>
+  <div class="frame">
+    <div class="top">
+      <a class="logo"><span class="mark">🛒</span><span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+      <nav class="main"><a>Início</a><a>Nova lista</a></nav>
+      <div class="auth-zone"><span class="btn btn-ghost btn-sm">Entrar</span><span class="btn btn-pri btn-sm">Criar conta</span></div>
+    </div>
+    <div class="page" style="min-height:720px"><div class="container"><div class="auth-wrap"><div class="card auth-card">
+      <span class="step-pill">Autenticação</span><h1>Entre na sua conta</h1>
+      <p class="sub">Acesse suas listas salvas. A autenticação só é exigida para <b>salvar</b> listas.</p>
+      <div class="demo-hint"><span>🎬 <b>Demo:</b> mariana / Comida123!</span><button class="linklike">preencher</button></div>
+      <div class="field"><label>Nome de usuário</label><div class="inp">mariana</div></div>
+      <div class="field"><label>Senha</label><div class="inp">●●●●●●●●</div></div>
+      <span class="btn btn-pri btn-lg" style="width:100%">Entrar</span>
+      <p class="small muted mt" style="text-align:center">6 tentativas consecutivas → bloqueio de 15 min (HTTP 429) · mensagem sempre genérica · access JWT 15 min em memória · refresh 7d httpOnly</p>
+      <div class="auth-foot"><a class="linklike">Esqueci minha senha</a> · Ainda não possui conta? <a class="linklike">Criar conta</a></div>
+    </div></div></div></div>
+  </div>
+</div>
+
+<!-- ================= 09 · MODAL PROMOVER ================= -->
+<div class="board">
+  <div class="board-label">09 · Modal — Promover lista efêmera (UC17 · RF08) <small>pós-login com rascunho ativo</small></div>
+  <div class="frame" style="min-height:760px;background:var(--bg)">
+    <div class="top" style="opacity:.5">
+      <a class="logo"><span class="mark">🛒</span><span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+      <nav class="main"><a>Início</a><a>Nova lista</a></nav>
+      <div class="auth-zone"><span class="userchip">🟢 mariana · sessão ativa</span></div>
+    </div>
+    <div class="modal-bg">
+      <div class="modal">
+        <div class="x">✕</div>
+        <h3>💾 Salvar lista efêmera?</h3>
+        <p class="small" style="margin:8px 0">Você tem uma lista ativa na sessão: <b>“Compras do Mês” · 6 itens</b>. Deseja salvá-la permanentemente na sua conta? (UC17 — Promover Lista Efêmera)</p>
+        <div class="warn-banner" style="margin:10px 0"><span>⚠️</span><span>Se escolher “Não”, a lista permanece em memória e será perdida ao fechar a aba.</span></div>
+        <div class="modal-actions"><span class="btn btn-ghost">Não, manter efêmera</span><span class="btn btn-ok">Sim, salvar lista</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 10 · CADASTRO ================= -->
+<div class="board">
+  <div class="board-label">10 · Cadastro (UC09 · RF01) <small>validação inline · pergunta de segurança</small></div>
+  <div class="frame">
+    <div class="top">
+      <a class="logo"><span class="mark">🛒</span><span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+      <nav class="main"><a>Início</a><a>Nova lista</a></nav>
+      <div class="auth-zone"><span class="btn btn-ghost btn-sm">Entrar</span><span class="btn btn-pri btn-sm">Criar conta</span></div>
+    </div>
+    <div class="page" style="min-height:900px"><div class="container"><div class="auth-wrap" style="max-width:520px"><div class="card auth-card">
+      <span class="step-pill">Cadastro · UC09</span><h1>Criar conta</h1><p class="sub">Preencha seus dados para salvar listas. Leva menos de um minuto.</p>
+      <div class="field"><label>Username <span class="req">*</span></label><div class="inp">mariana_duarte</div></div>
+      <div class="field"><label>Nome completo <span class="req">*</span></label><div class="inp">Mariana Duarte</div></div>
+      <div class="field"><label>Email <span class="req">*</span></label><div class="inp" style="border-color:var(--err)">mariana@exemplo</div><div class="err-msg">Email inválido ou já cadastrado.</div></div>
+      <div class="field"><label>Senha <span class="req">*</span></label><div class="inp">●●●●●●●●●●</div><p class="small muted">Mín. 8 · 1 maiúscula · 1 número · 1 especial</p></div>
+      <div class="field"><label>Confirmar senha <span class="req">*</span></label><div class="inp">●●●●●●●●●●</div></div>
+      <div class="field"><label>Pergunta de segurança <span class="req">*</span></label><div class="inp" style="color:var(--mut)">Qual era o nome do seu primeiro animal de estimação? ▾</div></div>
+      <div class="field"><label>Resposta <span class="req">*</span></label><div class="inp">Thor</div></div>
+      <span class="btn btn-pri btn-lg" style="width:100%">Criar conta</span>
+      <div class="auth-foot">Já tenho conta · <a class="linklike">Entrar</a></div>
+    </div></div></div></div>
+  </div>
+</div>
+
+<!-- ================= 11 · RECUPERAR ================= -->
+<div class="board">
+  <div class="board-label">11 · Recuperar senha (UC12 · RF04) <small>passo 2/3 · pergunta de segurança · token 15min</small></div>
+  <div class="frame">
+    <div class="top">
+      <a class="logo"><span class="mark">🛒</span><span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+      <nav class="main"><a>Início</a><a>Nova lista</a></nav>
+      <div class="auth-zone"><span class="btn btn-ghost btn-sm">Entrar</span><span class="btn btn-pri btn-sm">Criar conta</span></div>
+    </div>
+    <div class="page" style="min-height:640px"><div class="container"><div class="auth-wrap"><div class="card auth-card">
+      <span class="step-pill">Recuperação · passo 2 de 3</span>
+      <h1>Recuperar senha</h1><p class="sub">Via pergunta de segurança (contexto acadêmico, sem envio de email).</p>
+      <p class="small muted mb">Responda para gerar o token de reset (uso único · 15 min):</p>
+      <div class="field"><label>Qual era o nome do seu primeiro animal de estimação?</label><div class="inp">Thor</div></div>
+      <span class="btn btn-pri btn-lg" style="width:100%">Validar resposta →</span>
+      <p class="small muted mt">⚠️ Máx. 3 tentativas por etapa · 3 solicitações/hora (429) · modo dev: token também logado no stdout (RECOVERY_MODE=log).</p>
+      <div class="auth-foot"><a class="linklike">← Voltar ao login</a></div>
+    </div></div></div></div>
+  </div>
+</div>
+
+<!-- ================= 12 · MINHAS LISTAS ================= -->
+<div class="board">
+  <div class="board-label">12 · Minhas Listas (UC15 · RF09–RF11) <small>logada · busca · ordenação data DESC · soft delete</small></div>
+  <div class="frame">
+    <div class="toast-demo"><span>✅</span><span>Lista salva com sucesso! Persistida no banco (simulado).</span></div>
+    <div class="top">
+      <a class="logo"><span class="mark">🛒</span><span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+      <nav class="main"><a>Início</a><a>Nova lista</a><a class="on">Minhas listas</a><a>Perfil</a></nav>
+      <div class="auth-zone"><span class="userchip">🟢 mariana · sessão ativa</span><span class="btn btn-ghost btn-sm">Sair</span></div>
+    </div>
+    <div class="page"><div class="container">
+      <div class="page-head row-between">
+        <div><span class="kicker">Área logada · UC15</span><h1>Minhas listas</h1>
+        <p>Listas salvas de <b>mariana</b>, ordenadas da mais recente para a mais antiga · paginação de 20 (demo: 2).</p></div>
+        <span class="btn btn-pri">+ Nova lista</span>
+      </div>
+      <div class="card card-pad">
+        <div class="toolbar">
+          <div class="inp" style="min-width:300px;width:auto;color:var(--soft)">🔍 Buscar por nome…</div>
+          <span class="count-chip">2 lista(s)</span>
+        </div>
+        <table class="tbl"><thead><tr><th>Nome</th><th>Itens</th><th>Categorias</th><th>Criada em</th><th style="width:210px">Ações</th></tr></thead>
+        <tbody>
+          <tr><td><b>Compras do Mês</b></td><td>6 produtos</td><td><span class="mini-tag">Mercado</span></td><td class="muted">18/09/2026</td>
+            <td><span class="btn btn-ghost btn-sm">✏️ Editar</span> <span class="btn btn-danger btn-sm">🗑 Excluir</span></td></tr>
+          <tr><td><b>Compras da semana passada</b></td><td>3 produtos</td><td><span class="mini-tag">Mercado</span></td><td class="muted">11/09/2026</td>
+            <td><span class="btn btn-ghost btn-sm">✏️ Editar</span> <span class="btn btn-danger btn-sm">🗑 Excluir</span></td></tr>
+        </tbody></table>
+        <p class="small muted mt">Mostrando 2 de 2 listas · « 1 » · exclusão é lógica (soft delete — deletado_em)</p>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ================= 13 · PERFIL ================= -->
+<div class="board">
+  <div class="board-label">13 · Perfil (UC18/UC16 · RF05/RF06) <small>visualização read-only → edição exige senha atual</small></div>
+  <div class="frame">
+    <div class="top">
+      <a class="logo"><span class="mark">🛒</span><span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+      <nav class="main"><a>Início</a><a>Nova lista</a><a>Minhas listas</a><a class="on">Perfil</a></nav>
+      <div class="auth-zone"><span class="userchip">🟢 mariana · sessão ativa</span><span class="btn btn-ghost btn-sm">Sair</span></div>
+    </div>
+    <div class="page" style="min-height:700px"><div class="container"><div style="display:flex;gap:24px;align-items:flex-start;justify-content:center">
+      <div class="card card-pad" style="width:460px">
+        <span class="step-pill">Perfil · UC18</span><h1 style="font-size:22px;margin:6px 0 14px">Meu perfil</h1>
+        <div class="res-line"><span>Username</span><b>🔒 mariana <span class="badge b-mut">read-only</span></b></div>
+        <div class="res-line"><span>Nome completo</span><b>Mariana Duarte</b></div>
+        <div class="res-line"><span>Email</span><b>mariana@temperodamari.com.br</b></div>
+        <div class="res-line"><span>Conta criada em</span><b>15/08/2026</b></div>
+        <div class="row-between mt"><span class="btn btn-ghost">🚪 Logout</span><span class="btn btn-pri">✏️ Editar perfil</span></div>
+      </div>
+      <div class="card card-pad" style="width:460px">
+        <span class="step-pill">Edição · UC16</span><h1 style="font-size:22px;margin:6px 0 14px">Editar perfil</h1>
+        <div class="field"><label>Novo nome</label><div class="inp">Mariana Duarte</div></div>
+        <div class="field"><label>Novo email</label><div class="inp">mariana@temperodamari.com.br</div></div>
+        <div class="field"><label>Senha atual <span class="req">*</span></label><div class="inp" style="border-color:var(--err)">●●●●●●</div><div class="err-msg">Senha atual incorreta.</div></div>
+        <div class="field"><label>Nova senha (opcional)</label><div class="inp" style="color:var(--soft)">deixe em branco para manter</div></div>
+        <div class="row-between"><span class="btn btn-ghost">Cancelar</span><span class="btn btn-ok">💾 Salvar alterações</span></div>
+        <p class="small muted mt">Transação ACID: email/nome/senha atualizam juntos ou nada muda. Logout revoga refresh e preserva rascunho da aba (RF03).</p>
+      </div>
+    </div></div></div>
+  </div>
+</div>
+
+<!-- ================= 14 · MODAL EXCLUSÃO ================= -->
+<div class="board">
+  <div class="board-label">14 · Modal — Excluir lista (UC13 · RF11) <small>confirmação por digitação do nome · botão bloqueado</small></div>
+  <div class="frame" style="min-height:760px;background:var(--bg)">
+    <div class="top" style="opacity:.5">
+      <a class="logo"><span class="mark">🛒</span><span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+      <nav class="main"><a>Início</a><a>Nova lista</a><a class="on">Minhas listas</a><a>Perfil</a></nav>
+      <div class="auth-zone"><span class="userchip">🟢 mariana · sessão ativa</span></div>
+    </div>
+    <div class="modal-bg">
+      <div class="modal">
+        <div class="x">✕</div>
+        <h3>🗑️ Confirmar exclusão</h3>
+        <p class="small" style="margin:8px 0">Esta ação não pode ser desfeita. Digite o nome da lista para confirmar (RF11):</p>
+        <div class="field"><label>“Compras do Mês”</label><div class="inp">Compras do Mês</div></div>
+        <div class="modal-actions"><span class="btn btn-ghost">Cancelar</span><span class="btn btn-danger">Excluir permanentemente</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /canvas -->
+</body>
+</html>
