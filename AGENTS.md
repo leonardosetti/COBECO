@@ -1,40 +1,85 @@
 # COBECO — AGENTS.md
 
-## Repo state: docs only, no source code yet
-This repository is in the documentation/design phase (README: "Fase 1: Setup e Infra"). There is NO application code:
-- No `package.json`, `docker-compose.yml`, `.env.example`, `requirements.txt`, `prisma/`, `src/`, or `.github/` workflows exist
-- Do not look for or assume a test suite, dev server, lint config, or build command — none are present yet
-- Root contents: markdown specs, diagrams (`.drawio`, `.excalidraw`), HTML/PNG exports, and `docx` monographs
+## Repo state: código publicado, Constitution v2.0 vigente
 
-## Directory ownership
-- `brain/md/` — MVP specs, requirement refinements, use-case flows, user manual
-- `brain/_old-artifact/` — superseded drafts (do not rely on)
-- `brain/diagrams/` — Draw.io/Excalidraw sources: DER, use cases, state machine, low-fi prototypes
-- `prj_docs/` — group work instructions (`wrk_grp.md`) and ABNT monograph template
-- `excalidraw_baixa/` — exported low-fidelity prototype SVGs
-- Root `.md` files — project docs in Portuguese (README, REQUISITOS, CASOSDEUSO, CAMADADEDADOS, etc.)
+O repositório está publicado em `git@github.com:leonardosetti/COBECO.git` (branch `main`, commit `8e2d295`).
+Aplicação completa: backend FastAPI, frontend Vanilla JS + Tailwind, nginx proxy, Docker Compose,
+seed SQL, Alembic, CI GitHub Actions, specs SDD, Constitution v2.0.
 
-## Stack: two conflicting plans — verify before writing code
-Neither plan is verified by code; ask the team which to implement before scaffolding:
-- README.md (updated 31/08/2026): React 18 + TS + Vite + Tailwind + shadcn/ui (:8080), Node.js 20 + NestJS 10 (:3000), PostgreSQL 16 + Prisma 5 (:5432), Docker Compose, GitHub Actions, Jest + Vitest
-- board_roadmap.md (dated 15/09/2026): FastAPI + Pydantic backend, MySQL 8 InnoDB, pytest/ruff, ReportLab PDF export
+Não assumir "docs only" — todo o scaffold do MVP já existe e está versionado.
 
-## Git workflow (documented in board_roadmap.md)
-- Branch pattern: `feat/UC-XX-descricao` (UC = use case number)
-- Flow: branch → PR → CI green → code review → merge to `main` → Kanban "Done"
-- Labels: priority P0/P1/P2; layer frontend/backend/database/infra/docs; type feature/bug/test/chore
-- Kanban columns: Backlog → Sprint Backlog → In Progress → Review → Done
-- Definition of Done: Clean Architecture 4 layers, parameterized queries only, PT-BR DB/variable naming, unit tests without coverage regression, OpenAPI contract updated, works via `docker compose up` with no manual config
-- Remotes: `origin git@github.com:leonardosetti/COBECO.git`; local branches `main`, `stage`; `integracao-leonardo` is remote-only
+## Lei suprema
 
-## Language conventions
-- Docs, DB schema, and variable naming: Portuguese (PT-BR) — per DoD and DER v3.2
-- Existing commit messages are in Portuguese
+`constitution.md` v2.0 é a lei suprema do repositório (SSOT normativo). Todos os artefatos devem
+estar alinhados a ela antes de qualquer merge.
 
-## Commands (planned, NOT verified — no code to run yet)
-Per README only: `cp .env.example .env` → `docker-compose up -d --build` → `docker-compose exec backend npm run test` / `frontend npm run test`
-Do not run these until the corresponding files exist.
+## Stack oficial (ADR-001 ratificado, 13/11/2026)
 
-## What to avoid
-- Do not scaffold NestJS/React/FastAPI/MySQL/Prisma files based on the README — the stack decision is unresolved
-- Do not reference `.github/` workflows, `opencode.json`, or other instruction files — none exist in this repo
+| Camada | Tecnologia | Porta |
+|---|---|---|
+| Banco | MySQL 8.0 InnoDB | 3306 (rede `data`, interna) |
+| Backend | Python 3.11 + FastAPI + SQLAlchemy 2.0 + Alembic | 8000 (rede `edge`) |
+| Frontend | Vanilla JS ES6+ + Tailwind CSS + nginx | 80 |
+| Proxy | nginx (porta 8380 exposta) | 8380 |
+| PDF | ReportLab | server-side |
+| CI | GitHub Actions (`ruff` + `pytest --cov≥80` + `mypy` + build) | — |
+
+## Diretórios
+
+- `backend/` — FastAPI, domain/usecases/adapters, config, main, testes
+- `frontend/` — Vanilla JS, Tailwind, index.html, app.js, testes E2E (Playwright)
+- `proxy/` — nginx.conf
+- `scripts/` — automação (Python preferencial)
+- `docker-compose.yml`, `docker-compose.override.yml`, `Makefile` — infra
+- `.github/workflows/ci.yml` — CI/CD
+- `constitution.md` — lei suprema
+- `REQUISITOS.md`, `CASOSDEUSO.md`, `CAMADADEDADOS.md` — SSOT v3.2
+- `board_roadmap.md` — marcos S1–S5
+- `.ai/specs/*.md` — especificações SDD
+- `.ai/handoffs/HF-*.md` — handoffs de execução
+- `docs/decisoes/` — ADRs
+- `docs/strategy/`, `docs/rfc/`, `docs/change/` — estratégia (PRD, BRD, RFC, CR)
+- `docs/operacao/`, `docs/auditorias/` — operação (Runbook, Post-Mortem, SLA, DPIA)
+- `docs/arquitetura/` — diagramas C4
+- `.opencode/` — config do OpenCode (não versionar segredos)
+- `.env` — NÃO commitar (já no `.gitignore`)
+
+## Git workflow
+
+- Branch: `feat/UC-XX-descricao`
+- Fluxo: branch → PR → CI green → code review (rubrica R-01..R-07) → gatekeeper → aprovação humana (CCB) → merge `main` → kanban "Done"
+- Labels: P0/P1/P2; camada frontend/backend/database/infra/docs; tipo feature/bug/test/chore
+- Remotes: `origin git@github.com:leonardosetti/COBECO.git`; locais `main`, `stage`; `integracao-leonardo` remote-only
+- DoD: Clean Architecture 4 camadas, queries parameterizadas, PT-BR, cobertura ≥80%, OpenAPI atualizado, `docker compose up` sem config manual
+
+## Convenções
+
+- Idioma: PT-BR (docs, DB, variáveis, comentários, mensagens de erro)
+- Commits: Conventional Commits (tipo(escopo): resumo imperativo, ex: `feat(api): add GET /perfil`)
+- Sem segredos em repositório (`.env`, `secrets/`, `*.pem`, `*.key` no `.gitignore`)
+- Dados sintéticos apenas (LGPD, Constitution Art. 3.5)
+
+## Comandos (verificados)
+
+`cp .env.example .env` → `docker compose up -d --build` → `make health` → `make test` / `make test-cov` / `make ci` / `make seed` / `make migrate`
+
+## Método SDD (Constitution Art. 6)
+
+Todo fluxo entra como spec (`.ai/specs/*.md`) e sai como handoff (`.ai/handoffs/HF-*.md`).
+Handoff passa por `handoff_parser.py` antes do dispatch do L0 (`agent-nexus-prime-ultimate` via `scripts/nexus_dispatcher.py`).
+Cadeia de merge: reviewer → qa-sdet → CI verde → gatekeeper → aprovação humana.
+
+## Templates de elite
+
+`docs/decisoes/TEMPLATE-ADR.md`, `.ai/specs/TEMPLATE-SPEC.md`,
+`docs/strategy/TEMPLATE-PRD.md`, `docs/rfc/TEMPLATE-RFC.md`,
+`docs/change/TEMPLATE-CR.md`, `docs/operacao/TEMPLATE-RUNBOOK.md`,
+`docs/operacao/TEMPLATE-TEST-PLAN.md`, `docs/operacao/TEMPLATE-CHANGELOG.md`,
+`docs/operacao/TEMPLATE-TECH-DEBT.md`, `docs/strategy/TEMPLATE-USER-STORY.md`,
+`docs/auditorias/TEMPLATE-POST-MORTEM.md`,
+`docs/auditorias/TEMPLATE-SLA-SLO-SLI.md`,
+`docs/auditorias/TEMPLATE-DPIA-THREAT.md`
+
+## Comandos úteis
+
+`make up` | `make down` | `make test` | `make test-cov` | `make lint` | `make seed` | `make migrate` | `make ci` | `make health` | `make clean`
