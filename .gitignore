@@ -1,0 +1,149 @@
+# COBECO MVP — .gitignore
+# NUNCA commite segredos, dados sensíveis ou arquivos de build
+
+# ============================================================
+# Environment & Secrets
+# ============================================================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+secrets/
+*.secret
+
+# ============================================================
+# Python / Backend
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv/
+pip-wheel-metadata/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+.dist/
+build/
+*.egg-info/
+*.egg
+
+# Virtual environments
+.venv
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================================
+# Node.js / Frontend
+# ============================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.npm
+.eslintcache
+.stylelintcache
+
+# Build outputs
+dist/
+build/
+.next/
+.out/
+*.tsbuildinfo
+
+# ============================================================
+# Docker
+# ============================================================
+.docker/
+docker-compose.override.yml
+docker-compose.*.local.yml
+
+# ============================================================
+# Database
+# ============================================================
+*.dump
+*.backup
+# rastreável: seed do banco
+!backend/seed.sql
+migrations/versions/*.py
+!migrations/versions/.gitkeep
+# rastreável: migrações Alembic
+alembic/versions/*.py
+!alembic/versions/*.py
+!alembic/versions/.gitkeep
+
+# ============================================================
+# Logs & Temporary Files
+# ============================================================
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.temp
+# saída gerada (não commitar)
+graphify-out/
+log_llama.txt
+.$uc.drawio.bkp
+.DS_Store
+Thumbs.db
+
+# ============================================================
+# Planning & AI (local only)
+# ============================================================
+.planning/vector.db
+.planning/graphs/.last-build-snapshot.json
+.opencode/gsd-core/
+.opencode/mcp.json
+.ai/handoffs/*.md
+!.ai/handoffs/INDEX.md
+.ai/agents/ledger-*.yaml
+.ai/agents/mcp_usage.jsonl
+.ai/specs/requisitos.md
+.ai/specs/tap.md
+.ai/specs/eap.md
+
+# ============================================================
+# OS & Editor
+# ============================================================
+*.orig
+*.rej
+*.patch
+*.diff
+*.bak
+*.backup
+
+# ============================================================
+# Test Coverage Reports (generated)
+# ============================================================
+coverage/
+.coverage.*
+coverage.xml
+
+# ============================================================
+# Documentation builds
+# ============================================================
+docs/_build/
+site/
+
+# ============================================================
+# Keep these directories (gitkeep)
+# ============================================================
+!**/.gitkeep

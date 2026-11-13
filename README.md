@@ -21,6 +21,7 @@ O **COBECO** é um MVP (Produto Mínimo Viável) que automatiza esse processo. T
 3. **Visualizar orçamentos consolidados** em uma tabela comparativa clara e objetiva
 4. **Identificar lacunas** — o sistema destaca quais produtos estão faltando em cada fornecedor
 5. **Tomar a melhor decisão** com base no menor custo consolidado
+6. **Exportar para PDF** (ReportLab server-side) ou imprimir otimizado
 
 ### Por que esse MVP é único?
 
@@ -28,7 +29,7 @@ Diferente de ferramentas complexas que dependem de web scraping ou APIs externas
 
 - ✅ **Dados mockados via seed** — foco 100% na lógica de negócio
 - ✅ **Motor de comparação simplificado** — tabela flat ao invés de agrupamentos complexos
-- ✅ **Stack moderna e FOSS** — React, NestJS, PostgreSQL, Docker
+- ✅ **Stack moderna e FOSS** — FastAPI, MySQL, Vanilla JS, Docker
 - ✅ **Clean Architecture** — separação clara de responsabilidades
 - ✅ **SDD (Specification-Driven Development)** — API-first com OpenAPI
 
@@ -47,22 +48,23 @@ Desenvolver um MVP funcional e minimalista que automatize a comparação de pre�
 - ✅ Manter um cadastro interno de fornecedores, categorias e produtos (via seed)
 - ✅ Desenvolver o motor de comparação que gera tabela flat com disponibilidade e preços
 - ✅ Exibir comparativos destacando o melhor orçamento e os produtos faltantes
-- ✅ Garantir a persistência dos dados em banco relacional (PostgreSQL)
+- ✅ Garantir a persistência dos dados em banco relacional (MySQL 8 InnoDB)
 - ✅ Estabelecer comunicação robusta entre Frontend e Backend via API RESTful (OpenAPI)
+- ✅ Exportar listas para PDF (ReportLab) e impressão otimizada
 
 ---
 
 ## ⚙️ Premissas e Restrições Fundamentais
 
-| Pilar                        | Aplicação no Projeto                                                                                   |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Pilar | Aplicação no Projeto |
+|-------|---------------------|
 | 🧼 **KISS (Keep It Simple)** | Escopo enxuto: dados mockados (sem APIs externas), UI exclusiva para desktop, lógica de negócio direta |
-| 🏛️ **Clean Architecture**    | Separação rígida entre Domínio, Casos de Uso, Adaptadores e Frameworks                                 |
-| ⚡ **ACID**                  | Operações no banco de dados garantem Atomicidade, Consistência, Isolamento e Durabilidade              |
-| 📐 **SDD (Spec-Driven)**     | API RESTful definida via OpenAPI antes da implementação (API-First)                                    |
-| 🧪 **Qualidade**             | Testes unitários críticos com cobertura >80%, CI/CD básico no GitHub Actions                           |
-| 📦 **Containerização**       | Frontend, Backend e Banco de Dados rodam em containers Docker isolados                                 |
-| 📊 **Metodologia Ágil**      | Desenvolvimento guiado por quadro Kanban para visualizar o fluxo de tarefas                            |
+| 🏛️ **Clean Architecture** | Separação rígida entre Domínio, Casos de Uso, Adaptadores e Frameworks |
+| ⚡ **ACID** | Operações no banco de dados garantem Atomicidade, Consistência, Isolamento e Durabilidade (MySQL InnoDB) |
+| 📐 **SDD (Spec-Driven)** | API RESTful definida via OpenAPI antes da implementação (API-First) |
+| 🧪 **Qualidade** | Testes unitários críticos com cobertura >80%, CI/CD básico no GitHub Actions |
+| 📦 **Containerização** | Frontend, Backend e Banco de Dados rodam em containers Docker isolados |
+| 📊 **Metodologia Ágil** | Desenvolvimento guiado por quadro Kanban para visualizar o fluxo de tarefas |
 
 ---
 
@@ -70,98 +72,144 @@ Desenvolver um MVP funcional e minimalista que automatize a comparação de pre�
 
 ### Módulo de Autenticação
 
-- Cadastro de novos usuários (username, nome, email, senha)
-- Login/Logout seguro com JWT + refresh tokens
-- Recuperação de senha via email (token de 15min)
+- Cadastro de novos usuários (nome_usuario, nome, email, senha, pergunta de segurança)
+- Login/Logout seguro com JWT (access 15min memória + refresh 7 dias cookie httpOnly)
+- Recuperação de senha via pergunta de segurança ou token no stdout (modo dev)
 
 ### Módulo de Listas de Compras
 
-- CRUD completo: Criação, edição, exclusão e listagem
+- CRUD completo: Criação, edição, exclusão e listagem com paginação
 - Adição de itens com campos: Produto (autocomplete), Quantidade
-- Busca por nome de lista com paginação
+- Lista efêmera em memória (sessionStorage) promovida ao banco após login
 
 ### Módulo de Fornecedores e Catálogo (Seed)
 
 - Dados populados automaticamente na inicialização do sistema
-- 10 fornecedores + 50 produtos com preços variáveis
-- Fornecedores associados a categorias (Supermercado, Informática, etc.)
+- 10 fornecedores + 50 produtos com preços variáveis (±20%)
+- 11 categorias MACRO com relacionamento N:N (fornecedor ↔ categorias)
 
 ### Módulo de Comparação de Preços
 
-- Submissão de uma lista para cotação
-- Geração de tabela flat com: Fornecedor, Itens Disponíveis, Itens Ausentes, Preço Total
-- Destaque visual para o menor orçamento consolidado
-- Listagem explícita dos produtos ausentes em cada fornecedor
+- Pré-filtro por categorias (checkboxes)
+- Seleção de fornecedores com % de disponibilidade
+- Slider de disponibilidade mínima (0-100%)
+- Motor de cálculo: tabela flat (disponíveis, ausentes, preço total)
+- Ordenação por preço ASC com destaque verde na melhor oferta
 
 ### Módulo de Exportação
 
-- Exportação para CSV (UTF-8 com BOM, delimitador `;`)
+- Exportação para PDF (UTF-8, A4, ReportLab server-side) — funciona sem login
 - Impressão otimizada via navegador (CSS `@media print`)
 
 ---
 
 ## 🛠️ Stack Tecnológica (FOSS - Gratuita e Open Source)
 
-| Camada             | Tecnologias                                             | Motivo da Escolha                                                |
-| ------------------ | ------------------------------------------------------- | ---------------------------------------------------------------- |
-| **Frontend**       | React 18 + TypeScript + Vite + Tailwind CSS + shadcn/ui | Padrão de mercado, build ultra-rápido, componentes acessíveis    |
-| **Backend**        | Node.js 20 + NestJS 10 + TypeScript                     | Clean Architecture por padrão, OpenAPI automático, tipagem forte |
-| **Banco de Dados** | PostgreSQL 16 + Prisma ORM 5                            | ACID, JSON support, type-safe queries, migrations                |
-| **API**            | RESTful + OpenAPI (Swagger)                             | Contratos claros entre Front e Back (SDD)                        |
-| **Infraestrutura** | Docker 24 + Docker Compose 2                            | Isolamento dos serviços, reprodutibilidade de ambiente           |
-| **CI/CD**          | GitHub Actions                                          | Pipeline automatizado para testes e validação de código          |
-| **Testes**         | Jest (backend) + Vitest (frontend)                      | Cobertura de casos de uso críticos (>80%)                        |
-| **Email**          | Resend (free tier) + Mailhog (dev)                      | Envio de emails para recuperação de senha                        |
+| Camada | Tecnologias | Motivo da Escolha |
+|--------|-------------|-------------------|
+| **Frontend** | Vanilla JS ES6+ + Tailwind CSS + nginx | Zero build runtime, desktop-first, leve, FOSS |
+| **Backend** | Python 3.11 + FastAPI + Pydantic + SQLAlchemy | Clean Architecture manual, OpenAPI automático, tipagem forte |
+| **Banco de Dados** | MySQL 8.0 InnoDB | ACID, utf8mb4, engine InnoDB (RNF03, RNF12) |
+| **ORM / Migrations** | SQLAlchemy 2.0 + Alembic | Async, type-safe, migrations versionadas |
+| **PDF Generation** | ReportLab | Server-side, A4, <5s para 100 itens (RF17, RNF11) |
+| **API** | RESTful + OpenAPI (Swagger) | Contratos claros entre Front e Back (SDD) |
+| **Infraestrutura** | Docker 24 + Docker Compose 2 | Isolamento dos serviços, reprodutibilidade |
+| **CI/CD** | GitHub Actions | Pipeline automatizado: ruff + pytest --cov + build |
+| **Testes** | pytest + pytest-cov + pytest-asyncio | Cobertura ≥80% (RNF06) |
+| **Lint/Format** | ruff + black + mypy | Fast, unified tooling |
+| **Auth** | python-jose (JWT) + passlib (bcrypt salt=12) | Seguro, standard |
 
 ---
 
 ## 🏗️ Arquitetura Geral (Docker Compose)
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                      DOCKER NETWORK                         │
-├─────────────────┬─────────────────┬─────────────────────────┤
-│   FRONTEND      │    BACKEND      │   POSTGRESQL            │
-│   (React + TS)  │ (NestJS + TS)   │   (Database)            │
-│   Porta: 8080   │   Porta: 3000   │   Porta: 5432           │
-├─────────────────┴─────────────────┴─────────────────────────┤
-│               Comunicação via API REST (OpenAPI)            │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                        DOCKER NETWORKS                          │
+├──────────────────────────┬──────────────────────────────────────┤
+│       DATA (interno)     │         EDGE (externo)               │
+│  ┌─────────────────┐     │  ┌───────────┐  ┌───────────────┐   │
+│  │      DB         │     │  │  BACKEND  │  │   FRONTEND    │   │
+│  │   MySQL 8.0     │◄────┤  │ FastAPI   │  │  Vanilla JS   │   │
+│  │   Porta: 3306   │     │  │ Porta:8000│  │   nginx:80    │   │
+│  └─────────────────┘     │  └─────┬─────┘  └───────┬───────┘   │
+│                          │        │               │            │
+│                          │        └───────┬───────┘            │
+│                          │                ▼                    │
+│                          │        ┌───────────────┐            │
+│                          │        │    PROXY      │            │
+│                          │        │   nginx:8080  │            │
+│                          │        │  / -> frontend│            │
+│                          │        │  /v1/ -> back │            │
+│                          │        └───────────────┘            │
+└──────────────────────────┴──────────────────────────────────────┘
 ```
 
-- **Frontend** consome a API do Backend via TanStack Query
-- **Backend** aplica as regras de negócio e acessa o Banco via Prisma ORM
-- **Banco de Dados** armazena usuários, listas, fornecedores, produtos e preços
-- **Seed** é executado automaticamente na subida do container do Banco
+- **Frontend** (nginx) serve arquivos estáticos + SPA fallback
+- **Backend** (FastAPI) aplica regras de negócio e acessa DB via SQLAlchemy async
+- **Banco de Dados** (MySQL) armazena usuários, listas, fornecedores, produtos e preços
+- **Seed** executado automaticamente na subida do container DB
+- **Proxy** (nginx) roteia `/` para frontend e `/v1/` para backend — **sem CORS** (mesma origem)
 
 ---
 
-## 🚀 Como Executar o Projeto (Passos Rápidos)
+## 🚀 Como Executar o Projeto
+
+### Pré-requisitos
+
+- Docker 24+ e Docker Compose 2+
+- Make (opcional, para comandos padronizados)
+- Git
+
+### Passos Rápidos
 
 ```bash
 # 1. Clone o repositório
 git clone https://github.com/leonardosetti/COBECO.git
-
-# 2. Acesse o diretório
 cd COBECO
 
-# 3. Copie o arquivo de variáveis de ambiente
+# 2. Copie o arquivo de variáveis de ambiente
 cp .env.example .env
+# Edite .env e preencha NVIDIA_NIM_API_KEY e GITHUB_TOKEN
 
-# 4. Suba os containers via Docker Compose
-docker-compose up -d --build
+# 3. Suba os containers (desenvolvimento com hot reload)
+make up
+# ou: docker compose -f docker-compose.yml -f docker-compose.override.yml up -d --build
 
-# 5. Acesse a aplicação no navegador
-# Frontend: http://localhost:8080
-# Backend API: http://localhost:3000
-# Swagger Docs: http://localhost:3000/api/docs
+# 4. Acesse a aplicação no navegador
+# Frontend + Proxy: http://localhost:8080
+# Backend API:      http://localhost:8080/v1/
+# Swagger Docs:     http://localhost:8080/v1/docs
 
-# 6. (Opcional) Execute os testes
-docker-compose exec backend npm run test
-docker-compose exec frontend npm run test
+# 5. (Opcional) Execute os testes
+make test
+# ou: docker compose exec backend pytest -v --cov=src --cov-fail-under=80
 ```
 
-**Nota:** O banco de dados já será populado com fornecedores, categorias e produtos de exemplo assim que subir (via seed automático).
+**Nota:** O banco de dados já será populado com fornecedores, categorias e produtos de exemplo assim que subir (via `seed.sql` automático).
+
+---
+
+## 📋 Comandos Úteis (Makefile)
+
+```bash
+make up           # Sobe ambiente dev com hot reload
+make down         # Para containers
+make logs         # Logs de todos os serviços
+make test         # Roda testes backend (pytest)
+make test-cov     # Testes com cobertura
+make lint         # Lint (ruff)
+make lint-fix     # Lint com auto-fix
+make format       # Formata (black)
+make type-check   # Type checking (mypy)
+make migrate      # Roda migrações Alembic
+make seed         # Executa seed SQL
+make db-reset     # Reset completo do banco (CUIDADO)
+make frontend-build  # Build Tailwind CSS
+make ci           # Simula pipeline CI local
+make clean        # Limpeza total (containers, volumes, imagens)
+make health       # Verifica saúde dos serviços
+```
 
 ---
 
@@ -173,40 +221,128 @@ Para manter o KISS e entregar dentro do prazo (30 dias), os seguintes itens est�
 - ❌ Desenvolvimento de aplicativos mobile nativos (Android/iOS)
 - ❌ Processamento de pagamentos ou intermediação financeira
 - ❌ Cálculo de fretes ou roteirização logística
-- ❌ Geração de PDF nativo (apenas CSV + impressão via navegador)
 - ❌ Suporte a múltiplos idiomas ou moedas (apenas BRL)
 - ❌ Autenticação via OAuth (Google/Facebook)
 - ❌ BDD/E2E tests completos (apenas unitários críticos)
+- ❌ PWA / Service Workers
 
 ---
 
 ## 🧠 Princípios de Desenvolvimento Adotados
 
-| Princípio               | Aplicação no Projeto                                                                        |
-| ----------------------- | ------------------------------------------------------------------------------------------- |
+| Princípio | Aplicação no Projeto |
+|-----------|---------------------|
 | **UI/UX Desktop-First** | Interface otimizada para telas ≥1024px, feedback visual claro (spinners, skeletons, toasts) |
-| **Clean Code**          | Código legível, nomenclatura significativa, funções com responsabilidade única              |
-| **Clean Architecture**  | Separação entre Domínio, Casos de Uso, Adaptadores e Frameworks                             |
-| **ACID**                | Garantia de atomicidade, consistência, isolamento e durabilidade nas operações de banco     |
-| **SDD (Spec-Driven)**   | Contratos OpenAPI definidos antes do desenvolvimento                                        |
-| **CI/CD**               | Pipeline automatizado no GitHub Actions para validar builds e execução de testes            |
-| **Kanban**              | Gestão do projeto com quadro Kanban (GitHub Projects) para visualização do fluxo            |
+| **Clean Code** | Código legível, nomenclatura significativa (PT-BR), funções com responsabilidade única |
+| **Clean Architecture** | Separação entre Domínio, Casos de Uso, Adaptadores e Frameworks |
+| **ACID** | Garantia de atomicidade, consistência, isolamento e durabilidade nas operações de banco |
+| **SDD (Spec-Driven)** | Contratos OpenAPI definidos antes do desenvolvimento |
+| **CI/CD** | Pipeline automatizado no GitHub Actions para validar builds e execução de testes |
+| **Kanban** | Gestão do projeto com quadro Kanban (GitHub Projects) para visualização do fluxo |
 
 ---
 
 ## 📅 Cronograma e Status Atual
 
-| Fase                             | Duração     | Status                                     |
-| -------------------------------- | ----------- | ------------------------------------------ |
-| **Fase 1: Setup e Infra**        | 3 dias      | 🟢 Em andamento                            |
-| **Fase 2: Backend Core**         | 10 dias     | ⏳ Aguardando                              |
-| **Fase 3: Frontend Core**        | 10 dias     | ⏳ Aguardando                              |
-| **Fase 4: Testes e Refinamento** | 5 dias      | ⏳ Aguardando                              |
-| **Fase 5: Deploy e Validação**   | 2 dias      | ⏳ Aguardando                              |
-| **TOTAL**                        | **30 dias** | 🚩 **Data Limite: 13 de Novembro de 2026** |
+| Fase | Duração | Status | Entregas |
+|------|---------|--------|----------|
+| **Fase 1: Setup e Infra** | 3 dias | 🟢 Concluída | Docker, DB, Seed, CI, Scaffold |
+| **Fase 2: Backend Core** | 10 dias | ⏳ Em andamento | Auth, Listas, Catálogo, Comparação |
+| **Fase 3: Frontend Core** | 10 dias | ⏳ Aguardando | Views, Autocomplete, Comparação, PDF |
+| **Fase 4: Testes e Refinamento** | 5 dias | ⏳ Aguardando | Cobertura ≥80%, Polish, Bugs |
+| **Fase 5: Deploy e Validação** | 2 dias | ⏳ Aguardando | Demo, Docs finais, Apresentação |
+| **TOTAL** | **30 dias** | 🚩 **Data Limite: 13/11/2026** | |
 
 **Metodologia de Gestão:** Kanban (GitHub Projects)  
 **Rituais:** Daily Standup (19:00), Sprint Planning/Review/Retrospectiva (sextas-feiras)
+
+---
+
+## 📂 Estrutura do Projeto
+
+```
+COBECO/
+├── .github/workflows/          # CI/CD GitHub Actions
+├── .ai/                        # SDD: specs, handoffs, agents, workflows
+├── backend/                    # FastAPI + SQLAlchemy + Alembic
+│   ├── src/
+│   │   ├── domain/             # Entidades, Value Objects, Repositories (interfaces)
+│   │   ├── usecases/           # Casos de uso puros (Clean Architecture)
+│   │   ├── adapters/           # API (FastAPI), DB (SQLAlchemy), External
+│   │   └── infrastructure/     # Config, Security, External services
+│   ├── tests/                  # Unit + Integration tests
+│   ├── alembic/                # Migrations
+│   ├── requirements.txt
+│   ├── pyproject.toml
+│   ├── seed.sql                # Dados mockados (10 forn, 50 prod, 11 cat)
+│   └── Dockerfile
+├── frontend/                   # Vanilla JS + Tailwind + nginx
+│   ├── src/
+│   │   ├── app.js              # SPA router + state + API client
+│   │   ├── styles/input.css    # Tailwind directives
+│   │   └── index.html
+│   ├── nginx.conf              # Produção
+│   ├── nginx.dev.conf          # Desenvolvimento
+│   ├── package.json
+│   └── Dockerfile
+├── proxy/                      # nginx reverse proxy
+│   └── nginx.conf
+├── docker-compose.yml          # Produção
+├── docker-compose.override.yml # Desenvolvimento (hot reload)
+├── Makefile                    # Comandos padronizados
+├── .env.example                # Template variáveis ambiente
+├── .gitignore
+├── README.md                   # Este arquivo
+├── constitution.md             # Lei suprema do projeto
+├── AGENTS.md                   # Estado do repo e convenções
+├── REQUISITOS.md               # SSOT v3.2 (18 RFs)
+├── CASOSDEUSO.md               # SSOT v3.2 (29 UCs)
+├── CAMADADEDADOS.md            # SSOT v3.2 (8 tabelas PT-BR)
+├── board_roadmap.md            # Roadmap Kanban + DoD
+└── RELATORIO_ESTADO_DA_ARTE.md # Análise completa do projeto
+```
+
+---
+
+## 🔐 Segurança e Compliance
+
+- **Zero segredos no repo**: `.env.example` sem valores reais, `.gitignore` rigoroso
+- **LGPD**: Apenas dados sintéticos no seed; sem PII real
+- **Auth**: bcrypt salt=12, JWT access em memória, refresh httpOnly+SameSite=Strict
+- **Rate limiting**: 6 req/15min por IP + username
+- **Validação**: Pydantic em todas as fronteiras HTTP
+- **Erros**: Nunca expõem tracebacks, payloads ou dados financeiros
+- **CORS**: Não necessário (proxy same-origin)
+
+---
+
+## 📝 Licenças e Compliance
+
+Todas as tecnologias utilizadas são **FOSS** (Free and Open Source Software):
+
+- **FastAPI, Starlette, Uvicorn**: MIT
+- **SQLAlchemy, Alembic**: MIT
+- **Pydantic**: MIT
+- **MySQL**: GPL (community edition)
+- **ReportLab**: BSD
+- **Tailwind CSS**: MIT
+- **nginx**: BSD-2-Clause
+- **Docker**: Apache 2.0
+- **GitHub Actions**: Free para repos públicos
+
+---
+
+## 🚀 Próximos Passos
+
+1. ✅ Scaffold completo: Docker, DB, Backend, Frontend, Proxy, CI
+2. ⏳ Implementar Use Cases de Autenticação (UC09-UC12, UC16, UC18)
+3. ⏳ Implementar Use Cases de Listas (UC01, UC14, UC15, UC17, UC13)
+4. ⏳ Implementar Use Cases de Catálogo (UC02, UC03, UC04, UC05)
+5. ⏳ Implementar Use Cases de Comparação (UC06, UC07)
+6. ⏳ Implementar Exportação PDF (UC08, UC09)
+7. ⏳ Frontend: Views, Autocomplete, Comparação, PDF
+8. ⏳ Testes unitários ≥80% + CI passing
+9. ⏳ Demo final + Documentação
 
 ---
 
@@ -226,26 +362,7 @@ Para manter o KISS e entregar dentro do prazo (30 dias), os seguintes itens est�
 
 ---
 
-## 📝 Licenças e Compliance
-
-Todas as tecnologias utilizadas são **FOSS** (Free and Open Source Software) ou possuem free tiers adequados:
-
-- **Resend:** Free tier (3000 emails/mês)
-- **GitHub Actions:** Free para repos públicos, 2000 min/mês para privados
-- **PostgreSQL, Node.js, React:** Licenças MIT/Apache
-
----
-
-## 🚀 Próximos Passos
-
-1. ✅ Aprovação deste README e especificação do MVP
-2. ⏳ Geração dos artefatos UML (Casos de Uso, Transição de Estados, DER)
-3. ⏳ Protótipo de baixa fidelidade no Figma/Excalidraw
-4. ⏳ Setup inicial dos repositórios (frontend + backend + infra)
-5. ⏳ Desenvolvimento iterativo em sprints de 1 semana
-
----
-
 **Este README é um documento vivo e será atualizado conforme o progresso do desenvolvimento.**
 
-**Última atualização:** 31 de Agosto de 2026
+**Última atualização:** 13 de Novembro de 2026  
+**Stack definida:** FastAPI + MySQL + Vanilla JS (board_roadmap ratificado pelo CCB)

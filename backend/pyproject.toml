@@ -1,0 +1,102 @@
+[project]
+name = "cobeco-backend"
+version = "0.1.0"
+description = "COBECO MVP Backend — FastAPI + MySQL + Clean Architecture"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.115.0",
+    "uvicorn[standard]==0.34.0",
+    "pydantic==2.10.3",
+    "pydantic-settings==2.8.1",
+    "pydantic-extra-types==2.10.0",
+    "sqlalchemy==2.0.36",
+    "aiomysql==0.2.0",
+    "alembic==1.14.1",
+    "python-jose[cryptography]==3.3.0",
+    "passlib[bcrypt]==1.7.4",
+    "python-multipart==0.0.9",
+    "email-validator==2.2.0",
+    "python-dateutil==2.9.0.post0",
+    "reportlab==4.3.1",
+    "python-dotenv==1.0.1",
+    "python-json-logger==2.0.7",
+    "structlog==25.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.4",
+    "pytest-cov==6.0.0",
+    "pytest-asyncio==0.25.2",
+    "pytest-mock==3.14.0",
+    "httpx==0.28.1",
+    "faker==33.1.0",
+    "ruff==0.9.1",
+    "black==24.10.0",
+    "mypy==1.14.1",
+]
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "PT", "SIM", "TID", "ARG", "PTH", "ERA", "PL", "TRY", "NPY", "RSE", "RET", "ASYNC"]
+ignore = ["E501", "B008"]
+fixable = ["ALL"]
+unfixable = ["TID252", "NPY002"]
+
+[tool.ruff.lint.pydantic]
+check-untyped = true
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+include = '\.pyi?$'
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+strict_optional = true
+show_error_codes = true
+pretty = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short --strict-markers"
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow tests",
+]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["tests/*", "alembic/*", "migrations/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+show_missing = true
+precision = 2
+
+[tool.alembic]
+script_location = "alembic"
+version_locations = "alembic/versions"
