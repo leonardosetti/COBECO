@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-015-us-015-v1.0
+id: doc-user-story-0015-us-015-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 015
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-015-us-015
+# User Story — doc-user-story-0015-us-015
 
 **Título:** Calcular Orçamento (Motor de Comparação)  
-**ID Único:** doc-user-story-015-us-015  
+**ID Único:** doc-user-story-0015-us-015  
 **Status:** Done  
 **Sprint:** S3 | **Milestone:** S3: Pré-filtro e Comparação  
 **Prioridade:** P0  
@@ -193,4 +193,4 @@ Então retorna 400 "Lista de itens não pode ser vazia" ou "Mínimo 2 fornecedor
 
 ---
 
-**Fim doc-user-story-015-us-015**
+**Fim doc-user-story-0015-us-015**

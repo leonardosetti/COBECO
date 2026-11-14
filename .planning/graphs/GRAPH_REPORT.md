@@ -1939,7 +1939,7 @@ Nodes (17): 10. Contexto e origem (camada b), 11. Critérios de aceite e testes 
 
 ### Community 254 - "SPEC spec-011 — cicd-pipeline-v1 — Pipeline CI/CD do COBECO (lint+testes ≤5 min por push, falha bloqueando merge)"
 Cohesion: 0.11
-Nodes (17): 1. Contexto e origem, 2. Resolução de conflitos, 3.1 Estado atual auditado (evidência direta no filesystem, 2026-11-03), 3.2 Requisitos do pipeline (normativos), 3.3 Delta requerido sobre o estado atual (doc-user-story-011-us-011 NÃO ATENDIDO hoje), 3.4 Job `contract-network` (fecha C.4), 3.5 Gates intransferíveis (nunca removidos, nunca reordenados abaixo do kill switch), 3.6 Merge-blocking como pré-condição (nunca substitui aprovação) (+9 more)
+Nodes (17): 1. Contexto e origem, 2. Resolução de conflitos, 3.1 Estado atual auditado (evidência direta no filesystem, 2026-11-03), 3.2 Requisitos do pipeline (normativos), 3.3 Delta requerido sobre o estado atual (doc-user-story-0011-us-011 NÃO ATENDIDO hoje), 3.4 Job `contract-network` (fecha C.4), 3.5 Gates intransferíveis (nunca removidos, nunca reordenados abaixo do kill switch), 3.6 Merge-blocking como pré-condição (nunca substitui aprovação) (+9 more)
 
 ### Community 255 - "SPEC spec-012 — rastreabilidade-prompts-sdd-v1 — Rastreabilidade de prompts SDD (100% dos handoffs catalogados em `.ai/handoffs/` — REQ-13, fase N9.3)"
 Cohesion: 0.11
@@ -2079,7 +2079,7 @@ Nodes (14): agents, description, downstream, file, layer, name, role, status (+6
 
 ### Community 289 - "SPEC spec-013 — documentacao-tecnica-v1 — Documentação técnica: doc de arquitetura + revisão/aprovação da OpenAPI (REQ-14)"
 Cohesion: 0.13
-Nodes (14): 1. Contexto e origem, 2. Resolução de conflitos, 3.1 Escopo do doc de arquitetura (visão de camadas, Art. 10.1), 3.2 Ciclo de vida da documentação (draft → revisão Code Review → aprovado), 3.3 Relação doc↔código (documented truth = running truth), 3.4 OpenAPI: fonte única de verdade, render nunca hand-restyled, critérios de revisão, 3.5 Integração REQ-14/doc-user-story-014-us-014, mapa de rastreabilidade documental e destino, 3. Domínio — documentação técnica (REQ-14, doc-user-story-014-us-014) (+6 more)
+Nodes (14): 1. Contexto e origem, 2. Resolução de conflitos, 3.1 Escopo do doc de arquitetura (visão de camadas, Art. 10.1), 3.2 Ciclo de vida da documentação (draft → revisão Code Review → aprovado), 3.3 Relação doc↔código (documented truth = running truth), 3.4 OpenAPI: fonte única de verdade, render nunca hand-restyled, critérios de revisão, 3.5 Integração REQ-14/doc-user-story-0014-us-014, mapa de rastreabilidade documental e destino, 3. Domínio — documentação técnica (REQ-14, doc-user-story-0014-us-014) (+6 more)
 
 ### Community 290 - "parseUatItemsWithStats"
 Cohesion: 0.20

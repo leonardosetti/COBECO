@@ -114,7 +114,7 @@ workflow:
 ### 4.2 Riscos de Dériva (Drift)
 | Fonte de Drift | Probabilidade | Impacto | Mitigação |
 |----------------|---------------|---------|-----------|
-| **Renomeação de arquivos** (ex: `doc-user-story-001-us-001-v1.0.md` → `US-01-cadastro.md`) | Média | Quebra links em PRD, TRACEABILITY, C4, WBS | Hook `pre-commit` validar refs |
+| **Renomeação de arquivos** (ex: `doc-user-story-0001-us-001-v1.0.md` → `US-01-cadastro.md`) | Média | Quebra links em PRD, TRACEABILITY, C4, WBS | Hook `pre-commit` validar refs |
 | **Mudança de path** (ex: `docs/strategy/` → `docs/proddoc-arch-0006-uc-v1t/`) | Baixa | Quebra em massa | Não planejado |
 | **Remoção de seção/âncora** (ex: `# 2. Critérios` removido) | Média | Links internos quebrados | Validação Markdown lint |
 | **Atualização de versão sem atualizar refs** (ex: `spec-004` → `spec-005`) | Alta | Rastreabilidade perdida | Hook `pre-commit` cross-ref |

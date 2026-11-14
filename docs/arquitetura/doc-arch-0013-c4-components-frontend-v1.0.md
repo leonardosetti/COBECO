@@ -269,7 +269,7 @@ const api = {
 | spec-008 | `.ai/specs/spec-ui-0001-frontend-web-responsive-v1.0.md` |
 | Spec-010 | `.ai/specs/spec-quality-0001-qualidade-pdca-ishikawa-v1.0.md` (feedback visual) |
 | Código Fonte | `frontend/` (estrutura modular) |
-| User Stories | `docs/strategy/user-stories/doc-user-story-005-us-005` a `doc-user-story-020-us-020` |
+| User Stories | `docs/strategy/user-stories/doc-user-story-0005-us-005` a `doc-user-story-0020-us-020` |
 
 ---
 

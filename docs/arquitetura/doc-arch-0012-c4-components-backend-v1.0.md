@@ -227,24 +227,24 @@ C4Component
 
 | UseCase | User Story | RF | Endpoint(s) |
 |---------|------------|----|-------------|
-| CadastrarUsuario | doc-user-story-001-us-001 | RF01 | POST /v1/auth/register |
-| Login | doc-user-story-002-us-002 | RF02 | POST /v1/auth/login |
-| Logout | doc-user-story-003-us-003 | RF03 | POST /v1/auth/logout |
-| RecuperarSenha | doc-user-story-004-us-004 | RF04 | POST /v1/auth/recover, /reset-password |
-| CriarLista | doc-user-story-005-us-005 | RF07 | (Frontend only — sessionStorage) |
-| SalvarLista | doc-user-story-007-us-007 | RF08 | POST /v1/listas |
-| PromoverLista | doc-user-story-008-us-008 | RF08 | POST /v1/listas (reusa) |
-| ListarMinhasListas | doc-user-story-009-us-009 | RF09 | GET /v1/listas |
-| EditarLista | doc-user-story-010-us-010 | RF10 | PUT /v1/listas/{id}, PUT /v1/listas/{id}/itens |
-| ExcluirLista | doc-user-story-011-us-011 | RF11 | DELETE /v1/listas/{id} |
-| SelecionarCategorias | doc-user-story-012-us-012 | RF12 | GET /v1/categorias, GET /v1/fornecedores?categorias= |
-| SelecionarFornecedores | doc-user-story-013-us-013 | RF13 | GET /v1/fornecedores?categorias= |
-| FiltrarDisponibilidade | doc-user-story-014-us-014 | RF14 | (Frontend local — slider) |
-| CalcularOrcamento | doc-user-story-015-us-015 | RF15 | POST /v1/orcamento |
-| VisualizarResultados | doc-user-story-016-us-016 | RF16 | (Frontend consome resposta do orcamento) |
-| ExportarPDF | doc-user-story-017-us-017 | RF17 | POST /v1/export/pdf |
-| VisualizarPerfil | doc-user-story-019-us-019 | RF05 | GET /v1/perfil |
-| GerenciarPerfil | doc-user-story-020-us-020 | RF06 | PUT /v1/perfil |
+| CadastrarUsuario | doc-user-story-0001-us-001 | RF01 | POST /v1/auth/register |
+| Login | doc-user-story-0002-us-002 | RF02 | POST /v1/auth/login |
+| Logout | doc-user-story-0003-us-003 | RF03 | POST /v1/auth/logout |
+| RecuperarSenha | doc-user-story-0004-us-004 | RF04 | POST /v1/auth/recover, /reset-password |
+| CriarLista | doc-user-story-0005-us-005 | RF07 | (Frontend only — sessionStorage) |
+| SalvarLista | doc-user-story-0007-us-007 | RF08 | POST /v1/listas |
+| PromoverLista | doc-user-story-0008-us-008 | RF08 | POST /v1/listas (reusa) |
+| ListarMinhasListas | doc-user-story-0009-us-009 | RF09 | GET /v1/listas |
+| EditarLista | doc-user-story-0010-us-010 | RF10 | PUT /v1/listas/{id}, PUT /v1/listas/{id}/itens |
+| ExcluirLista | doc-user-story-0011-us-011 | RF11 | DELETE /v1/listas/{id} |
+| SelecionarCategorias | doc-user-story-0012-us-012 | RF12 | GET /v1/categorias, GET /v1/fornecedores?categorias= |
+| SelecionarFornecedores | doc-user-story-0013-us-013 | RF13 | GET /v1/fornecedores?categorias= |
+| FiltrarDisponibilidade | doc-user-story-0014-us-014 | RF14 | (Frontend local — slider) |
+| CalcularOrcamento | doc-user-story-0015-us-015 | RF15 | POST /v1/orcamento |
+| VisualizarResultados | doc-user-story-0016-us-016 | RF16 | (Frontend consome resposta do orcamento) |
+| ExportarPDF | doc-user-story-0017-us-017 | RF17 | POST /v1/export/pdf |
+| VisualizarPerfil | doc-user-story-0019-us-019 | RF05 | GET /v1/perfil |
+| GerenciarPerfil | doc-user-story-0020-us-020 | RF06 | PUT /v1/perfil |
 
 ---
 

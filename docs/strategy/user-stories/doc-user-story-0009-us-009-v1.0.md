@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-009-us-009-v1.0
+id: doc-user-story-0009-us-009-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 009
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-009-us-009
+# User Story — doc-user-story-0009-us-009
 
 **Título:** Listar Minhas Listas  
-**ID Único:** doc-user-story-009-us-009  
+**ID Único:** doc-user-story-0009-us-009  
 **Status:** Done  
 **Sprint:** S2 | **Milestone:** S2: Listas e Catálogo  
 **Prioridade:** P0  
@@ -153,4 +153,4 @@ E metadados {total: 25, page: 2, size: 20, total_pages: 2}
 
 ---
 
-**Fim doc-user-story-009-us-009**
+**Fim doc-user-story-0009-us-009**

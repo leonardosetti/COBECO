@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-019-us-019-v1.0
+id: doc-user-story-0019-us-019-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 019
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-019-us-019
+# User Story — doc-user-story-0019-us-019
 
 **Título:** Visualizar Perfil  
-**ID Único:** doc-user-story-019-us-019  
+**ID Único:** doc-user-story-0019-us-019  
 **Status:** Done  
 **Sprint:** S4 | **Milestone:** S4: Export, Perfil e Polish  
 **Prioridade:** P1  
@@ -87,7 +87,7 @@ Então retorna 401 "Não autenticado"
 Dado que estou autenticado e acesso página "Meu Perfil"
 Quando a página carrega
 Então exibe: Nome de Usuário (desabilitado), Email, Nome, Data de Cadastro
-E botão "Editar Perfil" leva para página de edição (doc-user-story-020-us-020)
+E botão "Editar Perfil" leva para página de edição (doc-user-story-0020-us-020)
 E NÃO mostra senha, pergunta segurança, resposta
 ```
 
@@ -139,9 +139,9 @@ E NÃO mostra senha, pergunta segurança, resposta
 ## 7. Notas
 
 - **nome_usuario Read-only:** Não pode ser alterado (regra de negócio — identidade única).
-- **Email/Nome Editáveis:** Via doc-user-story-020-us-020 (Gerenciar Perfil).
+- **Email/Nome Editáveis:** Via doc-user-story-0020-us-020 (Gerenciar Perfil).
 - **Criado_em:** Timestamp imutável do cadastro.
 
 ---
 
-**Fim doc-user-story-019-us-019**
+**Fim doc-user-story-0019-us-019**

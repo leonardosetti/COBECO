@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-001-us-001-v1.0
+id: doc-user-story-0001-us-001-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 001
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-001-us-001
+# User Story — doc-user-story-0001-us-001
 
 **Título:** Cadastrar Usuário  
-**ID Único:** doc-user-story-001-us-001  
+**ID Único:** doc-user-story-0001-us-001  
 **Status:** Done  
 **Sprint:** S1 | **Milestone:** S1: Setup, Docs e Auth  
 **Prioridade:** P0  
@@ -181,5 +181,5 @@ Então o sistema retorna erro 400 "Senha deve ter no mínimo 8 caracteres"
 
 ---
 
-**Fim da User Story doc-user-story-001-us-001**  
-*Arquivo versionado em `docs/strategy/user-stories/doc-user-story-001-us-001-v1.0.md` + Issue #9 no GitHub Projects.*
+**Fim da User Story doc-user-story-0001-us-001**  
+*Arquivo versionado em `docs/strategy/user-stories/doc-user-story-0001-us-001-v1.0.md` + Issue #9 no GitHub Projects.*

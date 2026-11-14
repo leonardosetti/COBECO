@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-018-us-018-v1.0
+id: doc-user-story-0018-us-018-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 018
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-018-us-018
+# User Story — doc-user-story-0018-us-018
 
 **Título:** Otimização para Impressão (CSS @media print)  
-**ID Único:** doc-user-story-018-us-018  
+**ID Único:** doc-user-story-0018-us-018  
 **Status:** Done  
 **Sprint:** S4 | **Milestone:** S4: Export, Perfil e Polish  
 **Prioridade:** P1  
@@ -89,7 +89,7 @@ E highlight verde da melhor oferta → borda verde espessa + negrito (não backg
 
 ### Cenário 4: PDF vs Impressão Navegador
 ```gherkin
-Dado que usuário pode escolher "Exportar PDF" (doc-user-story-017-us-017) OU "Imprimir" (Ctrl+P)
+Dado que usuário pode escolher "Exportar PDF" (doc-user-story-0017-us-017) OU "Imprimir" (Ctrl+P)
 Quando imprime via navegador
 Então resultado visual similar ao PDF (tabela limpa, header repetido)
 Mas PDF (ReportLab) tem controle total de paginação; impressão navegador depende do engine do browser
@@ -152,4 +152,4 @@ Mas PDF (ReportLab) tem controle total de paginação; impressão navegador depe
 
 ---
 
-**Fim doc-user-story-018-us-018**
+**Fim doc-user-story-0018-us-018**
