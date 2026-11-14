@@ -1,26 +1,21 @@
 ---
-# === IDENTIFICAÇÃO UNIVERSAL ===
-id: "req-use-case-0001-casos-de-uso-canon"
-type: "req-use"
-title: "REQ USE — 0001 Casos De Uso"
-version: "3.2"
-status: "ratificado"
+id: req-use-case-0001-casos-de-uso-canon
+type: req-use
+title: REQ USE — 0001 Casos De Uso
+version: '3.2'
+status: rascunho
 canonical: true
-canonical_slug: "0001-casos-de-uso"
-
-# === METADADOS DE GOVERNANÇA ===
-created: "2026-11-14"
-updated: "2026-11-14"
-author: "Leonardo Setti (@leonardosetti)"
-owner: "CCB"
-ratified_by: "gh-sig:owner:leonardosetti:14863508"
-ratified_at: "2026-11-14"
+canonical_slug: 0001-casos-de-uso
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: gh-sig:owner:leonardosetti:14863508
+ratified_at: '2026-11-14'
 supersedes: null
 superseded_by: null
-
-# === RASTREABILIDADE (SSOT) ===
 trace:
-  constitution: ""
+  constitution: []
   req_func: []
   req_nfunc: []
   use_cases: []
@@ -29,16 +24,12 @@ trace:
   adrs: []
   code: []
   tests: []
-
-# === CLASSIFICAÇÃO ===
-domain: "general"
-layer: "artifact"
+domain: general
+layer: artifact
 tags: []
-lgpd_class: "n/a"
-
-# === WORKFLOW STATUS (P3) ===
+lgpd_class: n/a
 workflow:
-  stage: "ratificado"
+  stage: rascunho
   reviewer: null
   reviewed_at: null
   approval_hash: null
