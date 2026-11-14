@@ -3,6 +3,7 @@
 
 import hashlib
 from datetime import UTC, datetime, timedelta
+from typing import Optional
 
 import bcrypt
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
@@ -35,6 +36,14 @@ router = APIRouter(tags=["Autenticação"])
 # OAuth2 scheme para Swagger
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/auth/login", auto_error=False)
 
+# Constantes para mensagens de erro (TRY003 compliance)
+MSG_SENHAS_NAO_COINCIDEM = "As senhas não coincidem"
+MSG_SENHA_MAIUSCULA = "Senha deve conter pelo menos 1 maiúscula"
+MSG_SENHA_MINUSCULA = "Senha deve conter pelo menos 1 minúscula"
+MSG_SENHA_NUMERO = "Senha deve conter pelo menos 1 número"
+MSG_SENHA_ESPECIAL = "Senha deve conter pelo menos 1 caractere especial"
+MSG_SENHA_NOVA_COINCIDE = "As senhas não coincidem"
+
 
 # ============================================================
 # Schemas Pydantic (Request/Response)
@@ -50,17 +59,17 @@ class CadastrarUsuarioRequest(BaseModel):
 
     def validar_senhas(self):
         if self.senha != self.confirmar_senha:
-            raise ValueError("As senhas não coincidem")
+            raise ValueError(MSG_SENHAS_NAO_COINCIDEM)
 
         # Validação de complexidade (RF01)
         if not any(c.isupper() for c in self.senha):
-            raise ValueError("Senha deve conter pelo menos 1 maiúscula")
+            raise ValueError(MSG_SENHA_MAIUSCULA)
         if not any(c.islower() for c in self.senha):
-            raise ValueError("Senha deve conter pelo menos 1 minúscula")
+            raise ValueError(MSG_SENHA_MINUSCULA)
         if not any(c.isdigit() for c in self.senha):
-            raise ValueError("Senha deve conter pelo menos 1 número")
+            raise ValueError(MSG_SENHA_NUMERO)
         if not any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in self.senha):
-            raise ValueError("Senha deve conter pelo menos 1 caractere especial")
+            raise ValueError(MSG_SENHA_ESPECIAL)
 
 
 class LoginRequest(BaseModel):
@@ -88,7 +97,7 @@ class RecuperarSenhaConfirmarRequest(BaseModel):
 
     def validar_senhas(self):
         if self.nova_senha != self.confirmar_nova_senha:
-            raise ValueError("As senhas não coincidem")
+            raise ValueError(MSG_SENHA_NOVA_COINCIDE)
 
 
 class PerfilResponse(BaseModel):
