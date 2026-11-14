@@ -49,8 +49,8 @@ ignore = ["E501", "B008"]
 fixable = ["ALL"]
 unfixable = ["TID252", "NPY002"]
 
-[tool.ruff.lint.pydantic]
-check-untyped = true
+# [tool.ruff.lint.pydantic]  # Disabled: requires ruff >= 0.10.0
+# check-untyped = true
 
 [tool.black]
 line-length = 100
