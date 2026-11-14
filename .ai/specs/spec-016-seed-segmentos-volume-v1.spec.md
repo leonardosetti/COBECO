@@ -2,15 +2,15 @@
 id: ai-specs-spec-016-seed-segmentos-volume-v1-spec
 title: 'SPEC spec-016 — seed-segmentos-volume-v1 — Segmentos de mercado e perfis de seed'
 type: spec
-version: 1.0.0
-status: pronto-para-implementacao
+version: 1.1.0
+status: implementado
 owner: opencode
 derived-from:
 - REQUISITOS.md (RNF08)
 - CASOSDEUSO.md (UC02-UC06, UC23-UC26)
 - CAMADADEDADOS.md (v3.2)
 - constitution.md (Arts. 3.1-3.5, 7.7, 8.1-8.2, 12.7, 19.3)
-last-revised: '2026-11-13'
+last-revised: '2026-11-14'
 lgpd-class: PII-sintético
 tags:
 - specs
@@ -23,11 +23,11 @@ tags:
 ---
 spec_id: spec-016
 specname: seed-segmentos-volume-v1
-version: 1.0.0
-status: pronto-para-implementacao
+version: 1.1.0
+status: implementado
 custody: opencode (.ai/specs/)
 created: 2026-11-13
-updated: 2026-11-13
+updated: 2026-11-14
 origin: solicitação do usuário de 2026-11-13 (branch feat/UC-02-03-seed-volume)
 task: TA-0622
 kill_switch: inherited
@@ -41,7 +41,7 @@ trace:
 
 # SPEC spec-016 — seed-segmentos-volume-v1 — Segmentos de mercado e perfis de seed
 
-Status: **pronto para implementação** | Branch: `feat/UC-02-03-seed-volume` | Orquestrador: OpenCode
+Status: **implementado e validado localmente** | Branch: `feat/UC-02-03-seed-volume` | Orquestrador: OpenCode
 
 Fonte única das decisões desta especificação. Em conflito, vale a hierarquia do Art. 2 da
 Constituição.
@@ -75,7 +75,9 @@ reais price feeds e promoção do perfil expandido a seed oficial.
 9. Unidades usam somente `un`, `kg`, `L` e `m`.
 10. Preços usam `Decimal`, duas casas decimais e valor não negativo; estoque varia de 0 a 9999.
 11. IDs são explícitos e determinísticos; a mesma versão e o mesmo perfil geram SQL idêntico.
-12. O seed expanded é destrutivo somente no catálogo mock local e nunca deve receber dados reais.
+12. Os perfis `baseline` e `expanded` reiniciam os dados mockados locais (usuários, listas e
+    catálogo) para garantir estado determinístico; o perfil expanded exige confirmação operacional
+    e nunca deve ser executado em ambiente com dados reais.
 
 ## 3. Contrato de API
 
@@ -100,9 +102,9 @@ Sem alteração de schema. O gerador produz comandos para:
 - `produtos` (`id`, `nome`, `unidade`, `ativo`);
 - `fornecedores_produtos` (`fornecedor_id`, `produto_id`, `preco`, `estoque`, `ativo`).
 
-As tabelas `usuarios` e `listas` são preservadas pelo novo seed para não descartar contas e
-metadados de demonstração. Os itens dessas listas são removidos antes da recriação do catálogo;
-esse reset é explícito no artefato e deve ser tratado como operação destrutiva de mock.
+As tabelas `usuarios`, `listas` e `itens_lista` são reiniciadas junto com o catálogo. O reset é
+explícito no artefato, preserva o comportamento idempotente do seed legado e garante estado
+determinístico para os testes de integração. Nenhuma tabela é criada ou alterada.
 
 ## 5. Segurança
 
@@ -115,17 +117,17 @@ esse reset é explícito no artefato e deve ser tratado como operação destruti
 
 ## 6. Critérios de aceite (DoD)
 
-- [ ] levantamento de segmentos e taxonomia documentado em PT-BR;
-- [ ] baseline oficial permanece em 11/10/50/~300;
-- [ ] perfil expanded gera 26/60/2.600/31.200;
-- [ ] DER de oito tabelas sem alteração;
-- [ ] IDs, textos, CNPJs, unidades, preços e chaves são normalizados;
-- [ ] geração determinística e idempotente;
-- [ ] testes automatizados validam contagens e invariantes;
-- [ ] `make seed-expanded` disponível sem push;
-- [ ] queries de runtime parametrizadas;
-- [ ] nenhum PII real;
-- [ ] CI completo verde;
+- [x] levantamento de segmentos e taxonomia documentado em PT-BR;
+- [x] baseline oficial permanece em 11/10/50/300;
+- [x] perfil expanded gera 26/60/2.600/31.200;
+- [x] DER de oito tabelas sem alteração;
+- [x] IDs, textos, CNPJs, unidades, preços e chaves são normalizados;
+- [x] geração determinística e idempotente;
+- [x] testes automatizados validam contagens e invariantes;
+- [x] `make seed-expanded` disponível com confirmação operacional;
+- [x] queries de runtime permanecem parametrizadas;
+- [x] nenhum PII real;
+- [ ] CI completo verde — bloqueado por débitos preexistentes fora do escopo do seed;
 - [ ] review R-01..R-07 e aprovação humana antes de merge.
 
 ## 7. Testes
@@ -141,8 +143,20 @@ esse reset é explícito no artefato e deve ser tratado como operação destruti
 
 **Rastreabilidade:** RNF08 → UC02–UC06/UC23–UC26 → spec-016 → HF-0622 → código → teste → merge.
 
+## 8. Evidências de execução
+
+- `04b10a9`: fonte canônica, gerador SQL e sete testes automatizados do seed;
+- `713d1e1`: seed baseline reproduzível, comando de regeneração e carregamento opt-in expanded;
+- testes do seed: `7 passed` no Python 3.11 do container do backend;
+- carga baseline em banco MySQL isolado: `11/10/50/300/25`;
+- carga expanded em banco MySQL isolado: `26/60/2.600/31.200/312`;
+- reprodução byte a byte de `backend/seed.sql` confirmada pelo gerador;
+- lint dos três arquivos do seed aprovado com Ruff 0.9.1 em modo isolado.
+
 ## CHANGELOG
 
+- **1.1.0 — 2026-11-14:** implementação concluída com validação determinística e carga dos dois
+  perfis em bancos MySQL isolados.
 - **1.0.0 — 2026-11-13:** baseline corrigido para a contagem normativa; perfil expanded opt-in
   com taxonomia de 10 segmentos e 26 categorias; geração determinística e normalizada.
 

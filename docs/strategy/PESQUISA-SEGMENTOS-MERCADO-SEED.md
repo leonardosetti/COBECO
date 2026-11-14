@@ -1,9 +1,9 @@
 # Levantamento de segmentos de mercado para o seed do COBECO
 
 **Documento:** pesquisa de produto e taxonomia de seed
-**Versão:** 1.0
-**Status:** submetido para implementação local; aguarda ratificação para promoção do perfil expandido
-**Data:** 13/11/2026
+**Versão:** 1.1
+**Status:** implementado e validado localmente; aguarda ratificação para promoção do perfil expandido
+**Data:** 14/11/2026
 **Responsável:** OpenCode
 **Rastreabilidade:** RNF08, UC02, UC03, UC04, UC05, UC06, UC23–UC26
 
@@ -41,8 +41,8 @@ preserva a normalização e o escopo congelado do MVP.
 | Tecnologia e comunicação | Informática; Celulares e Telecomunicações; Games e Acessórios | informática, telecom, games | notebook, smartphone, console, headset |
 | Mobilidade | Automotivos; Bicicletas e Mobilidade | autopeças, oficina, ciclo e acessórios | filtro, óleo, pneu, bicicleta, capacete |
 | Saúde e bem-estar | Farmácia e Saúde; Beleza e Cuidados Pessoais | farmácia, drogaria, cosméticos | frasco, medicamento, protetor, shampoo |
-| Cultura e entretenimento | Livros | livraria, papelaria cultural, distributor | romance, técnico, infantil, didático |
-| Esporte e lazer | Esportes e Lazer; Camping e Outdoor | loja esportiva, camping, bike | tênis, mochila, tenda, mochila térmica |
+| Cultura e entretenimento | Livros | livraria, papelaria cultural, distribuidora | romance, técnico, infantil, didático |
+| Esporte e lazer | Esportes e Lazer; Camping e Outdoor | loja esportiva, camping, ciclismo | tênis, mochila, tenda, garrafa térmica |
 | Escritório e estudo | Papelaria e Escritório | papelaria, gráfico, escritório | caneta, pasta, papel, calculadora |
 | Infância, pet e consumo operacional | Brinquedos e Infantil; Pet; Embalagens e Descartáveis | loja infantil, pet shop, distribuidor | brinquedo, ração, tapete higiênico, caixa |
 
@@ -91,18 +91,29 @@ alterar os contratos de API ou o DER.
 # Seed oficial, mantém o baseline normativo
 make seed
 
-# Perfil expandido para testes de volume (substitui o catálogo no banco)
-make seed-expanded
+# Perfil expandido para testes de volume (confirmação obrigatória)
+make seed-expanded SEED_EXPANDED_CONFIRM=SIM
 
 # Regenerar o SQL versionado a partir da fonte canônica
 python3 backend/scripts/generate_seed.py --profile baseline --output backend/seed.sql
 ```
 
-O perfil expandido é destrutivo para o catálogo mock do banco local. Ele não deve ser executado
-contra ambiente com dados reais. Promover o perfil expandido como padrão exige CR e ratificação
-humana, conforme `constitution.md` Arts. 5.1 e 5.4.
+O perfil expandido é destrutivo para os dados mockados locais (usuários, listas e catálogo) e
+exige `SEED_EXPANDED_CONFIRM=SIM`. Ele não deve ser executado contra ambiente com dados reais.
+Promover o perfil expandido como padrão exige CR e ratificação humana, conforme
+`constitution.md` Arts. 5.1 e 5.4.
 
-## 8. Rastreabilidade
+## 8. Implementação e validação
+
+- fonte canônica: `backend/scripts/seed_data.py`;
+- gerador SQL: `backend/scripts/generate_seed.py`;
+- testes automatizados: `backend/tests/unit/test_seed_data.py`;
+- seed oficial reproduzível: `backend/seed.sql`;
+- carga validada em bancos MySQL isolados para `baseline` e `expanded`;
+- `make seed-expanded SEED_EXPANDED_CONFIRM=SIM` exige confirmação e remove o arquivo temporário
+  ao término.
+
+## 9. Rastreabilidade
 
 - `constitution.md`: Arts. 3.1, 3.3, 3.4, 3.5, 7.7, 8.1, 8.2, 12.7 e 19.3;
 - `REQUISITOS.md`: RNF08;
