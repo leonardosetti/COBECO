@@ -1,3 +1,40 @@
+---
+id: doc-adr-0001-stack-decision-v1.0
+type: doc-adr
+title: DOC ADR — Stack Decision
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: stack-decision
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: decision
+layer: decision
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # ADR-001: Decisão de Stack Tecnológica — COBECO MVP
 
 **Status:** Ratificada  
