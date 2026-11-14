@@ -1,0 +1,75 @@
+# Pre-commit hooks para Protocolo P1/P2/P3
+# Instalar: pre-commit install
+# Executar: pre-commit run --all-files
+
+repos:
+  # Secret Scanner (Constitution Art. 7.7, 17.7)
+  - repo: local
+    hooks:
+      - id: secret-scan
+        name: Secret Scanner (P3 Security)
+        entry: python scripts/script-security-0001-secret-scan-v1.0.py
+        language: system
+        types: [text]
+        stages: [commit, push]
+        always_run: true
+
+  # Artifact Validation (P1 Nomenclatura + P2 Frontmatter + P3 Workflow)
+  - repo: local
+    hooks:
+      - id: artifact-validate
+        name: Artifact Validation (P1/P2/P3)
+        entry: python scripts/script-validate-0002-artifact-validate-v1.0.py --file
+        language: system
+        types: [markdown]
+        stages: [commit]
+        require_serial: true
+        args: ["--fix"]
+
+  # Ruff (Lint Python)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.1
+    hooks:
+      - id: ruff
+        name: Ruff Lint (Python)
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+        name: Ruff Format (Python)
+
+  # MyPy (Type Check)
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0
+    hooks:
+      - id: mypy
+        name: MyPy Type Check
+        additional_dependencies: [pydantic, fastapi, sqlalchemy, pyyaml]
+        args: [--strict, --ignore-missing-imports]
+
+  # Bandit (Security)
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        name: Bandit Security Scan
+        args: [-r, backend/src, -f, json, -o, bandit-report.json]
+
+  # Conventional Commits
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.13.0
+    hooks:
+      - id: commitizen
+        name: Commitizen Conventional Commits
+        stages: [commit-msg]
+
+  # Markdown Lint
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.43.0
+    hooks:
+      - id: markdownlint
+        name: Markdown Lint
+        args: [--fix, --config, .markdownlint.json]
+
+# Configurações globais
+default_stages: [commit]
+fail_fast: false
+verbose: true

@@ -41,7 +41,7 @@ def train(features: dict, epochs: int = 1) -> dict:
         "accuracy": accuracy,
         "feature_checksum": fc,
         "trained_at": datetime.now(timezone.utc).isoformat(),
-        "package": "cobeco-sddai-trainer",
+        "config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0": "cobeco-sddai-trainer",
         "version": "1.0.0",
     }
 

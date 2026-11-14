@@ -1,0 +1,138 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "nvidia/nemotron-3-ultra-550b-a55b",
+  "providers": {
+    "nvidia": {
+      "name": "NVIDIA NIM",
+      "package": "@opencode/ai/providers/openai-compatible",
+      "settings": {
+        "baseURL": "https://integrate.api.nvidia.com/v1",
+        "apiKey": "${NVIDIA_NIM_API_KEY}"
+      },
+      "models": {
+        "nemotron-3-ultra": {
+          "name": "Nemotron 3 Ultra 550B A55B",
+          "modelID": "nvidia/nemotron-3-ultra",
+          "capabilities": {
+            "tools": true,
+            "input": ["text"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 128000,
+            "output": 8192
+          },
+          "body": {
+            "temperature": 0.2,
+            "top_p": 0.9,
+            "max_tokens": 8192
+          }
+        }
+      }
+    },
+    "local": {
+      "name": "Local Llama Server (Fallback)",
+      "package": "@opencode/ai/providers/openai-compatible",
+      "settings": {
+        "baseURL": "http://127.0.0.1:8080/v1",
+        "apiKey": "sk-local-dummy-key"
+      },
+      "models": {
+        "qwen-32b": {
+          "name": "Qwen 32B Local (Fallback)",
+          "modelID": "/var/lib/llama.cpp/models/qwen3.8-27b-q4_k_m.gguf",
+          "capabilities": {
+            "tools": true,
+            "input": ["text"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 47500,
+            "output": 8192
+          },
+          "body": {
+            "temperature": 0.2,
+            "top_p": 0.9,
+            "reasoning_effort": "medium"
+          }
+        }
+      }
+    }
+  },
+  "permissions": {
+    "allow": ["Read", "Write", "Edit", "Bash", "Shell"],
+    "deny": [
+      "Bash(pip *)",
+      "Bash(pacman *)",
+      "Bash(systemctl *)",
+      "Bash(sudo *)",
+      "Bash(curl * | sh)",
+      "Bash(wget * -O- | sh)"
+    ]
+  },
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "--allow-read",
+        ".ai/specs",
+        "--allow-read",
+        "docs",
+        "--allow-read",
+        "scripts",
+        "--allow-read",
+        ".ai/handoffs"
+      ],
+      "env": {}
+    },
+    "github": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "github-kanban": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@sunwood-ai-labs/github-kanban-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "github-remote": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "gsd": {
+      "command": ["npx", "-y", "-p", "@opengsd/gsd-core", "gsd-mcp-server", "--no-prompts"],
+      "enabled": true
+    },
+    "postman": {
+      "type": "http",
+      "url": "https://mcp.postman.com/mcp"
+    }
+  },
+  "permission": {
+    "read": {
+      "/lab/FATEC/202602/lab_eng_software/COBECO/.opencode/gsd-core/*": "allow"
+    },
+    "external_directory": {
+      "/lab/FATEC/202602/lab_eng_software/COBECO/.opencode/gsd-core/*": "allow"
+    }
+  }
+}

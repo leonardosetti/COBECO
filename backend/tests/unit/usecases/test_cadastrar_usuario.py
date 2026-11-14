@@ -49,7 +49,7 @@ class TestCadastrarUsuarioUseCase:
     """Testes para CadastrarUsuarioUseCase (UC09/RF01)"""
 
     @pytest.mark.asyncio
-    async def test_executar_sucesso(self, usecase, mock_repo, hash_senha_fn):
+    async def test_executar_sdoc-arch-0006-uc-v1esso(self, usecase, mock_repo, hash_senha_fn):
         input_data = criar_input_valido()
 
         usuario_criado = Usuario(

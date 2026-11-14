@@ -68,7 +68,7 @@
 | Charter + Business Case + Stakeholders + RACI | PO | PO | Tech Lead, Arquiteto | Equipe, Orientador |
 | ADR-001 Stack | Arquiteto | Tech Lead | PO, Devs | Orientador |
 | GitHub Projects (Milestones, Labels, Board, Issues S1) | Tech Lead | Tech Lead | PO | Equipe |
-| Docker Compose + Makefile + CI skeleton | Dev Back 1 | Tech Lead | Dev Back 2 | Equipe |
+| Docker Compose + config-make-0001-makefile-v1 + CI skeleton | Dev Back 1 | Tech Lead | Dev Back 2 | Equipe |
 
 ### Sprint 1 (Setup, Docs, Auth — 22 a 29/09)
 | Atividade | R | A | C | I |
@@ -126,7 +126,7 @@
 | CI/CD Pipeline (ruff + pytest + build <5min) | DevOps (Nicholas) | Tech Lead | QA | PO |
 | Runbooks (Deploy, Rollback, Seed, Backup, Incidentes) | DevOps | Tech Lead | QA | PO |
 | Release Notes v0.1.0 + CHANGELOG | PO | PO | Tech Lead | Orientador |
-| Refinar README + OpenAPI | PO | PO | Tech Lead | Orientador |
+| Refinar doc-readme-0001-readme-canon + OpenAPI | PO | PO | Tech Lead | Orientador |
 | Preparação Apresentação (Roteiro 35min, Ensaio) | Equipe | PO | Tech Lead | Orientador |
 | Post-Mortem / Lições | Tech Lead | Tech Lead | Equipe | PO |
 

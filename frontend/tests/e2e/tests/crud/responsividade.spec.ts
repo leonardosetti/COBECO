@@ -197,7 +197,7 @@ test.describe('Responsividade Desktop-First (≥1024px)', () => {
       await loginPage.login('testuser', 'Senha@123');
       
       // Trigger toast via console
-      await page.evaluate(() => window.showToast('Teste toast', 'success'));
+      await page.evaluate(() => window.showToast('Teste toast', 'sdoc-arch-0006-uc-v1cess'));
       
       const toastContainer = page.locator('#toast-container');
       await expect(toastContainer).toBeVisible();

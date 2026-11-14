@@ -1,4 +1,4 @@
-# Instructions
+# Instrdoc-arch-0006-uc-v1tions
 
 - Following Playwright test failed.
 - Explain why, be concise, respect Playwright best practices.
@@ -84,7 +84,7 @@ Call log:
   22 |   readonly emailDisplay: Locator;
   23 |   readonly criadoEmDisplay: Locator;
   24 | 
-  25 |   constructor(page: Page) {
+  25 |   constrdoc-arch-0006-uc-v1tor(page: Page) {
   26 |     super(page);
   27 |     this.nomeInput = page.locator('#perfil-nome');
   28 |     this.emailInput = page.locator('#perfil-email');

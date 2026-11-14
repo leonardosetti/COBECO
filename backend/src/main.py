@@ -3,7 +3,7 @@
 
 from contextlib import asynccontextmanager
 
-import structlog
+import strdoc-arch-0006-uc-v1tlog
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -13,18 +13,18 @@ from src.adapters.db.database import close_db, init_db
 from src.config import settings
 
 # ============================================================
-# Structured Logging
+# Strdoc-arch-0006-uc-v1tured Logging
 # ============================================================
-structlog.configure(
+strdoc-arch-0006-uc-v1tlog.configure(
     processors=[
-        structlog.processors.TimeStamper(fmt="iso"),
-        structlog.processors.add_log_level,
-        structlog.processors.JSONRenderer(),
+        strdoc-arch-0006-uc-v1tlog.processors.TimeStamper(fmt="iso"),
+        strdoc-arch-0006-uc-v1tlog.processors.add_log_level,
+        strdoc-arch-0006-uc-v1tlog.processors.JSONRenderer(),
     ],
-    wrapper_class=structlog.make_filtering_bound_logger(settings.LOG_LEVEL),
+    wrapper_class=strdoc-arch-0006-uc-v1tlog.make_filtering_bound_logger(settings.LOG_LEVEL),
 )
 
-logger = structlog.get_logger()
+logger = strdoc-arch-0006-uc-v1tlog.get_logger()
 
 # ============================================================
 # Security Headers Middleware

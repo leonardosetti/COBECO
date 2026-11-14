@@ -2,7 +2,7 @@ import { chromium, FullConfig } from '@playwright/test';
 import { createTestUser } from './utils/test-data';
 
 async function globalSetup(config: FullConfig) {
-  const baseURL = process.env.BASE_URL || 'http://localhost:8380';
+  const baseURL = processconfig-env-0001-env-example-v1.0.BASE_URL || 'http://localhost:8380';
   
   const browser = await chromium.launch();
   const page = await browser.newPage();
@@ -21,7 +21,7 @@ async function globalSetup(config: FullConfig) {
   const timestamp = Date.now();
   const testUser = createTestUser({ nome_usuario: `e2e_test_${timestamp}` });
   
-  process.env.TEST_USER = JSON.stringify(testUser);
+  processconfig-env-0001-env-example-v1.0.TEST_USER = JSON.stringify(testUser);
   
   console.log('✓ Global setup completed');
 }

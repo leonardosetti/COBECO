@@ -9,7 +9,7 @@ adr-016-ratificada: 'ADR-016 (Backend do MVP: cálculo, cotações, persistênci
   Pendências P1-P8 não bloqueiam a entrega. Propagado para ADR-LOG (ADR-LOG-009),
   spec-006 (NF-25), spec-009 (UAT-03), lista-specs-pendentes (E.2 fechado).'
 codigo-camadas-separadas: 'Camadas Dados/Back/Front separadas e proxy sempre ativo
-  (commit abc7350, 05/11/2026). docker-compose.yml: db+migrate+back+front+proxy; back
+  (commit abc7350, 05/11/2026). config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0002-docker-compose-override-v1-v1-v1.0-v1.0-v1.0.yml: db+migrate+back+front+proxy; back
   na rede data+edge, front na edge, db/migrate so na data; proxy sempre ativo em 127.0.0.1:8080
   roteando / para front e /v1/ para back; sem CORS. front.conf serve src/frontend/templates
   e proxa /v1/* para back:8000. index.html era 0 B, agora tela de simulacao funcional
@@ -28,7 +28,7 @@ gap-d4-fatura-persistida: 'GAP-04 / D1 (persistência de invoice) DECIDIDO = PER
 destino-evidencias-uat: 'Destino das evidências de UAT DECIDIDO = docs/uat/, classificado
   por rodada (docs/uat/rodada-NN/), com relatório analítico por rodada (taxa de aceite,
   cobertura analizada, ciclo de implementação). Decisão GP/CCB fechada em 05/11/2026
-  (pendência #6 dos 7 bloqueantes resolvida). Criado: docs/uat/README.md (índice,
+  (pendência #6 dos 7 bloqueantes resolvida). Criado: docs/uat/doc-readme-0001-readme-canon.md (índice,
   princípios P-04, estrutura por rodada, padrão de nomenclatura), docs/uat/rodada-001/relatorio-analitico.md
   (taxa de aceite 0% não executada, cobertura 0/14 casos, ciclo EM EXECUÇÃO, schema
   de defeitos DEF-UAT-NNN, rastreabilidade). Propagado para: spec-009 (§3.8 reescrito,
@@ -37,7 +37,7 @@ destino-evidencias-uat: 'Destino das evidências de UAT DECIDIDO = docs/uat/, cl
 gap-e4-backlog-req-us: 'Gap E.4 (conversao REQ->User Story, backlog inexistente) RESOLVIDO
   como artefato versionado: docs/analise/BACKLOG-REQ-US-M3-M4.md (criado 05/11/2026).
   Contem 17 cards (US-001..017) mapeados a REQ-01..15, com prioridade (10 must, 4
-  should, 3 conditional, 1 blocked), macro-fase (MF2-construcao/MF3-consolidacao),
+  should, 3 conditional, 1 blocked), macro-fase (MF2-constrdoc-arch-0006-uc-v1ao/MF3-consolidacao),
   status, trace id e spec de origem. Nao foi possivel publicar como Issues no GitHub:
   o PAT tem apenas leitura (createIssue 403, label create 403). O documento esta pronto
   para importacao manual via GitHub web pelo PO (agent-po). Marco alvo: M3 ja encerrou

@@ -462,7 +462,7 @@ async def cadastrar_usuario(
             pergunta_seguranca=request.pergunta_seguranca,
             resposta_seguranca=request.resposta_seguranca,
         ))
-        return {"message": "Conta criada com sucesso", "usuario_id": usuario.id}
+        return {"message": "Conta criada com sdoc-arch-0006-uc-v1esso", "usuario_id": usuario.id}
     except UsuarioJaExiste:
         # Mensagem genérica (não revela qual campo)
         raise HTTPException(status_code=400, detail="Credenciais inválidas")
@@ -551,7 +551,7 @@ async def solicitar_recuperacao_senha(
     usecase = RecuperarSenhaUseCase(repo, hash_senha, rate_limiter_recovery)
     token = await usecase.solicitar_reset(request.nome_usuario)
 
-    # Sempre retorna sucesso (não revela se usuário existe)
+    # Sempre retorna sdoc-arch-0006-uc-v1esso (não revela se usuário existe)
     if token and settings.RECOVERY_MODE == "log":
         return {"message": "Se o usuário existir, token de recuperação foi logado no servidor"}
     return {"message": "Se o usuário existir, instruções foram enviadas"}
@@ -577,7 +577,7 @@ async def confirmar_recuperacao_senha(
             request.resposta_seguranca or request.token or "",
             request.nova_senha,
         )
-        return {"message": "Senha alterada com sucesso"}
+        return {"message": "Senha alterada com sdoc-arch-0006-uc-v1esso"}
     except CredenciaisInvalidas:
         raise HTTPException(status_code=400, detail="Token/resposta inválida ou expirada")
 

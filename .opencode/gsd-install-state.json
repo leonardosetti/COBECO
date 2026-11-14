@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "appliedMigrations": [
+    {
+      "id": "2026-05-11-first-time-baseline-scan",
+      "appliedAt": "2026-11-04T20:33:37.806Z",
+      "journal": "gsd-migration-journal/2026-11-04T20-33-37-806Z-d1fa01afc5499456.json",
+      "checksum": "sha256:4ec58d35b30dbf39cc56e3972146086d8d31861ecd800cf0b37a7aa94fe74c2a"
+    }
+  ],
+  "hostGeneration": {
+    "runtime": "config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0",
+    "generation": 2,
+    "version": "2.2.5"
+  }
+}

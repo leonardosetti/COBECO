@@ -22,7 +22,7 @@ export class PerfilPage extends BasePage {
   readonly emailDisplay: Locator;
   readonly criadoEmDisplay: Locator;
 
-  constructor(page: Page) {
+  constrdoc-arch-0006-uc-v1tor(page: Page) {
     super(page);
     this.nomeInput = page.locator('#perfil-nome');
     this.emailInput = page.locator('#perfil-email');

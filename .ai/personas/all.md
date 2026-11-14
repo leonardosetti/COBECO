@@ -328,7 +328,7 @@ wc -c .ai/specs/*.md
 wc -c .ai/specs/tap.md .ai/specs/eap.md .ai/specs/requisitos.md
 ```
 
-Se estiverem com 0 bytes (provável, pois foram criadas com `touch`), o OpenCode continuará sem contexto de domínio. Recomendo popular as specs em seguida (posso fornecer os blocos de conteúdo derivados do TAP v3 consolidado).
+Se estiverem com 0 bytes (provável, pois foram criadas com `todoc-arch-0006-uc-v1h`), o OpenCode continuará sem contexto de domínio. Recomendo popular as specs em seguida (posso fornecer os blocos de conteúdo derivados do TAP v3 consolidado).
 
 ### 5.2 Retestar o OpenCode
 
@@ -336,10 +336,10 @@ Se estiverem com 0 bytes (provável, pois foram criadas com `touch`), o OpenCode
 cd /lab/FATEC/202602/ger_proj/COBECO
 
 # Teste 1: Verificar configuração
-jq . ~/.config/opencode/config.json
+jq . ~/.config/config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/config.json
 
 # Teste 2: Smoke test com agent coder
-opencode run "Responda APENAS com: COBECO + 3 tecnologias da stack canônica (ADR-001)." --agent coder
+config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0 run "Responda APENAS com: COBECO + 3 tecnologias da stack canônica (ADR-001)." --agent coder
 
 # Teste 3: Verificar se a resposta menciona FastAPI, SQLite, WeasyPrint (stack ADR-001)
 ```
@@ -360,10 +360,10 @@ Adicionar em `docs/conhecimento/licoes-aprendidas/MF1-licoes.md`:
 **Domínio PMBOK 7ª**: Trabalho do Projeto + Abordagem de Desenvolvimento
 
 ### O que aconteceu
-As personas SDD (.ai/personas/*.md) foram criadas com `touch` durante a reestruturação formal, mas permaneceram com 0 bytes. O symlink `active.md` nunca foi criado. O OpenCode, sem contexto SDD, caiu em fallback para modelo cloud padrão ("big-pickle"), respondendo em inglês sem aderência ao projeto.
+As personas SDD (.ai/personas/*.md) foram criadas com `todoc-arch-0006-uc-v1h` durante a reestruturação formal, mas permaneceram com 0 bytes. O symlink `active.md` nunca foi criado. O OpenCode, sem contexto SDD, caiu em fallback para modelo cloud padrão ("big-pickle"), respondendo em inglês sem aderência ao projeto.
 
 ### Causa raiz
-1. Criação de arquivos-âncora sem conteúdo (apenas `touch`)
+1. Criação de arquivos-âncora sem conteúdo (apenas `todoc-arch-0006-uc-v1h`)
 2. Ausência de verificação pós-criação (`wc -l` ou `wc -c`)
 3. Perda de conteúdo populado durante reestruturação paralela (LA-001)
 4. Symlink runtime `active.md` não criado
@@ -397,7 +397,7 @@ Execute na ordem e confirme cada item:
 - [ ] **5.** `tester.md` populado (≥ 45 linhas)
 - [ ] **6.** `active.md` symlink criado apontando para `coder.md`
 - [ ] **7.** `.gitignore` contém `.ai/personas/active.md`
-- [ ] **8.** `opencode run --agent coder` responde em PT-BR com menção à stack ADR-001
+- [ ] **8.** `config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0 run --agent coder` responde em PT-BR com menção à stack ADR-001
 - [ ] **9.** Specs verificadas (se vazias, popular em seguida)
 - [ ] **10.** LA-005 registrada em `docs/conhecimento/licoes-aprendidas/MF1-licoes.md`
 
@@ -409,7 +409,7 @@ Execute os blocos das seções 2 e 3 e me retorne com:
 
 1. **Saída de `wc -l .ai/personas/*.md`** (confirmação de conteúdo)
 2. **Saída de `wc -c .ai/specs/*.md`** (diagnóstico das specs)
-3. **Resposta completa do teste `opencode run --agent coder`** (validação final)
+3. **Resposta completa do teste `config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0 run --agent coder`** (validação final)
 
 Com essas três saídas, confirmamos se o ambiente SDD está **funcional e aderente à stack canônica**. Se as specs estiverem vazias, fornecerei em seguida os blocos de populamento derivados do TAP v3 consolidado (respeitando o regime de freeze — as specs são leitura operacional, não correção do TAP).
 

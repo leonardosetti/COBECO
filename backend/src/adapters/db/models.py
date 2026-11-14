@@ -1,5 +1,5 @@
 # COBECO Backend — SQLAlchemy Models (Adapters/DB)
-# Mapeamento ORM para as 8 tabelas PT-BR (CAMADADEDADOS.md v3.2)
+# Mapeamento ORM para as 8 tabelas PT-BR (doc-arch-0001-camada-de-dados-canon.md v3.2)
 # Clean Architecture: Adapters não vazam para Domain
 
 from datetime import datetime

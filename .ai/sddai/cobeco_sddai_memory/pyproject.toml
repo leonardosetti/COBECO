@@ -12,6 +12,6 @@ dependencies = []
 [project.scripts]
 cobeco-sddai-memory = "cobeco_sddai_memory.cli:main"
 
-[tool.setuptools.packages.find]
+[tool.setuptools.config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0s.find]
 where = ["."]
 include = ["cobeco_sddai_memory*"]

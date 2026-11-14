@@ -1,0 +1,910 @@
+- task_id: TA-0001
+  sender: nexus-prime-ultimate
+  receiver: agent-compliance-governance
+  action: promulgate
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-10-31 14:30:00+00:00
+  notes: Constituição v1.2.0 promulgada com co-assinatura humana (CCB/GP pré-aprovado). CCB-LOG atualizado,
+    audit-hooks validados, status → VIGENTE-PLENA
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0027
+  sender: nexus-prime-ultimate
+  receiver: agent-project-auditor
+  action: fix-table
+  status: escalated
+  exit_status: 0
+  timestamp: 2026-10-31 14:30:00+00:00
+  notes: Reorganized VIO register table for fluid readability while preserving append-only integrity.
+    Formalized with CCB per §0.2 KILL_SWITCH
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0028
+  sender: nexus-prime-ultimate
+  receiver: nexus-prime-ultimate
+  action: review-plan-v2.1.0
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 00:00:00+00:00
+  notes: 'Rodada 2 de revisão do Plano de Gerenciamento v2.1.0: 64 achados (18 ALTA / 33 MÉDIA / 13 BAIXA)
+    em docs/analise/REV-PLANO-GERENCIAMENTO-COBECO-v2.1.0-rodada2.md; gate humano pendente (G-1..G-7);
+    nenhum ajuste aplicado. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0029
+  sender: nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 18:15:00+00:00
+  notes: 'SPEC camadas de containers entregue: .ai/specs/container-layers-v1.spec.md (344 linhas) via
+    HF-0029; 11/11 AC validados forense no filesystem; US-018..021 Padrao B GWT; 8 lacunas UNKNOWN-verify
+    declaradas; suite tests/agents 4 failed/149 passed (falhas preexistentes de report/wiring, single-dispatch
+    admitido por FC#6); drift descricao G-05 detectado (ci.yml=189 linhas, nao vazio) — recomendar auditoria.
+    kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0030
+  sender: nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 20:20:00+00:00
+  notes: 'Amenda Nginx aceito-e-mantido em container-layers-v1.spec.md (Status 0.2.0): proxy sempre ativo,
+    cadeia usuario->proxy->front->back->db com healthchecks, demo path clone->up->127.0.0.1:8080; ratificacao
+    GP/Humano 2026-11-02 Art. 5.1 registrada (outorga de autoridade de outorga/ratificacao/promulgacao
+    recebida nesta sessao); ADR-010 intocada (follow-up emenda); 8/8 AC HF-0030 verificados. kill_switch:
+    inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0031
+  sender: nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 20:55:00+00:00
+  notes: 'Normalizacao integral do corpus .ai/specs CONCLUIDA (10/10 AC validados forense): 5 specs renomeadas
+    spec-001..005 com slug spec_id-specname.spec.md e versoes 0.1.0/0.1.0/3.1.0/1.0.0/0.2.0; template
+    canonico a-h + MANIFEST.md (mapa old->new resolve refs em imutables); 0 realocacoes (6 pinned justificados:
+    afa-changelog/requisitos/tap/eap/kb-taxonomy/input-canonico); LISTA-SPECS-PENDENTES emitida em docs/analise/;
+    imutaveis intactos (git diff vazio); sync exit 0; pytest baseline 4F/149P/1S sem falhas novas; amenda
+    TA-0030 preservada. Incidencia de forma: 1a emissao de parcela fora do schema (status ''completed'',
+    route string) — re-emissao conformante obtida (re-treino half-duplex, FC#10). kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0032
+  sender: nexus-prime-ultimate
+  receiver: agent-project-auditor
+  action: audit
+  status: escalated
+  exit_status: 0
+  timestamp: 2026-11-02 22:30:00+00:00
+  notes: 'AUDITORIA REGISTRY+LEDGER EMITIDA: docs/auditorias/AUD-2611-01-AUDITORIA-REGISTRY-LEDGER.md
+    (240 l, 9/9 AC) + VIO-026..029 no registro append-only (vio-register.md:49-52). Top achados: VIO-026
+    auto-delegacao TA-0028 sender==receiver (Art. 4.5); VIO-027 ledger fora do vocabulario dispatcher/Art.
+    4.10 (validate_ledger ValueError, mcp_nexus_ledger.py:17); VIO-028 drift registry<->DAG factory-architect-ultimate
+    camada UNKNOWN; VIO-029 3 gates L3 downstream:[] (subutilizacao, root-cause onda6/7, custodia AFA).
+    Root-cause 4 testes vermelhos classificados por custodia; propostas NAO executadas. Escalado ao Humano
+    (Art. 5.1): encerramento TA-0027 stale, ratificacao TA-0028, orcamento Art. 4.7 L0, norma de wiring
+    gates L3. Desvio de forma: notes emitido como array + human_question/burning_reason ausentes (2a divergencia
+    half-duplex — recomendar validador de parcelas de retorno). kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0033
+  sender: nexus-prime-ultimate
+  receiver: agent-project-analyst
+  action: analyze
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 22:30:00+00:00
+  notes: 'LEVANTAMENTO DRAFTS CCB EMITIDO: docs/analise/LEVANTAMENTO-DRAFTS-CCB-2026-11-02.md (286 l,
+    7/7 AC). 49 itens/66 entradas: draft/proposta=6, in_progress=2, ready=8, blocked=1, dispatched=2,
+    escalated=1, 0B/UNKNOWN=27, read-only=22; acoes recomendadas ratificar=13/aprovar=14/remendar=22/rejeitar=0.
+    Top-3 bloqueantes: ADR-016 proposta (trava 5 REQs), E-01..E-08, Plano-Gerenciamento Draft G-1..G-7.
+    kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0034
+  sender: human-gp
+  receiver: agent-nexus-prime-ultimate
+  action: aggregate
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 23:00:00+00:00
+  notes: 'Consulta direta do GP: levantamento tabular das SPECs a escrever, agregado da fonte ja emitida
+    docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md (TA-0031) sem regeneracao (YAGNI); 13 itens (3 placeholders
+    A.1-A.3 + 10 dominio B.1-B.10) entregues em tabela na parcela. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0035
+  sender: nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 01:00:00+00:00
+  notes: 'Lista de specs pendentes enriquecida (7/7 AC validados forense): coluna ''Resumo proposicional''
+    nas tabelas A e B com 13/13 itens (A.1-A.3 + B.1-B.10) baseados apenas em origens citadas; rodape
+    com data/hora UTC 2026-11-03T00:55Z + TA-0035/HF-0034 + registro Ratificacao CCB GP/Humano 2026-11-02
+    (Art. 5.1); frontmatter version 1.1.0 + updated; secoes C/D/E/F intactas; imutaveis intocados. kill_switch:
+    inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0036
+  sender: nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 23:33:42+00:00
+  notes: 'Remover/descartar 5 arquivos vazios (.ai/specs/tap.md, eap.md, requisitos.md; docs/tap/TAP.md,
+    docs/requisitos/requisitos.md) e preencher specs metodológicas canônicas não-0B. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0037
+  sender: nexus-prime-ultimate
+  receiver: agent-architect
+  action: design
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 23:33:42+00:00
+  notes: 'ADR de emenda sobre ADR-001 v1.1.0: anular Frontend HTML5/CSS3/JS vanilla; assumir Jinja/HTMX/Tailwind;
+    atualizar planos granulares e registry agent-frontend-dev. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0038
+  sender: nexus-prime-ultimate
+  receiver: agent-pm
+  action: plan
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 23:33:42+00:00
+  notes: 'Propagar impositivamente PostgreSQL 15+ a planos (OKB-C-22): plano-integral:77, plano-riscos:91,
+    plano-proddoc-arch-0006-uc-v1ao-agentes:16. SQLite apenas como fixture de teste isolado. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0039
+  sender: nexus-prime-ultimate
+  receiver: agent-pm
+  action: plan
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 23:33:42+00:00
+  notes: 'Conciliar colisão M2/M3: M2 Concluído (15/11/2026), M3 fechamento 03/11/2026, M4 17/11/2026.
+    Atualizar ADR-015; coassinar e promulgar. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0040
+  sender: nexus-prime-ultimate
+  receiver: agent-project-auditor
+  action: audit
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 23:33:42+00:00
+  notes: 'Sanear TA-0028 auto-delegação (VIO-026); reconstrução ledger (VIO-006, VIO-009) append-only
+    + commit imediato. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0041
+  sender: nexus-prime-ultimate
+  receiver: agent-project-auditor
+  action: audit
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 23:33:42+00:00
+  notes: 'Resolver VIO-013 a VIO-025: mitigações, ratificar e promulgar. Corrigir scripts para JSON half-duplex
+    com dod; validate_afa_output SDDAI (VIO-019); wiring gates L3 (VIO-029). kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0042
+  sender: nexus-prime-ultimate
+  receiver: agent-architect
+  action: design
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 23:33:42+00:00
+  notes: 'Aprovar/reativar ADR-016: status proposta->ratified; coassinar; promulgar; aglutinação convergente
+    se possível. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0043
+  sender: nexus-prime-ultimate
+  receiver: agent-pm
+  action: plan
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 23:33:42+00:00
+  notes: 'Nomear matriz partes interessadas M4 (OKB-C-24): Carleto, GP Leonardo, equipe, banca. Registrar
+    no plano-cronograma. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0044
+  sender: nexus-prime-ultimate
+  receiver: agent-ai-llm-rag-dag-mcp-roster-master-specialist
+  action: validate
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-02 23:33:42+00:00
+  notes: 'Corrigir drift DAG (VIO-028): agent-factory-architect-ultimate fora de AGENT_TOPOLOGY. Corrigir
+    security_scan agent-agile-specialist: Kill Switch, Bypass Protocol, FAIL-CLOSED. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0036
+  sender: nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: dispatched_definitivo
+  exit_status: 0
+  timestamp: 2026-11-02 23:57:39+00:00
+  notes: 'EXECUÇÃO DEFINITIVA: remover 5 artefatos bloat 0B (.ai/specs/tap.md, eap.md, requisitos.md;
+    docs/tap/TAP.md, docs/requisitos/requisitos.md); preencher specs canônicas não-0B (tap/eap/requisitos);
+    alinhar REQ-07 a PostgreSQL 15+. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0037
+  sender: nexus-prime-ultimate
+  receiver: agent-architect
+  action: design
+  status: dispatched_definitivo
+  exit_status: 0
+  timestamp: 2026-11-02 23:57:39+00:00
+  notes: 'EXECUÇÃO DEFINITIVA: ADR de emenda ADR-001 v1.1.0; anular Frontend vanilla; assumir Jinja/HTMX/Tailwind;
+    atualizar planos granulares e registry agent-frontend-dev. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0038
+  sender: nexus-prime-ultimate
+  receiver: agent-pm
+  action: plan
+  status: dispatched_definitivo
+  exit_status: 0
+  timestamp: 2026-11-02 23:57:39+00:00
+  notes: 'EXECUÇÃO DEFINITIVA: propagar PostgreSQL 15+ impositivo a planos (OKB-C-22): plano-integral:77,
+    plano-riscos:91, plano-proddoc-arch-0006-uc-v1ao-agentes:16. SQLite apenas fixture isolado. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0039
+  sender: nexus-prime-ultimate
+  receiver: agent-pm
+  action: plan
+  status: dispatched_definitivo
+  exit_status: 0
+  timestamp: 2026-11-02 23:57:39+00:00
+  notes: 'EXECUÇÃO DEFINITIVA: conciliar M2/M3; M2 concluído 15/11, M3 03/11, M4 17/11; atualizar ADR-015;
+    coassinar e promulgar. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0040
+  sender: nexus-prime-ultimate
+  receiver: agent-project-auditor
+  action: audit
+  status: dispatched_definitivo
+  exit_status: 0
+  timestamp: 2026-11-02 23:57:39+00:00
+  notes: 'EXECUÇÃO DEFINITIVA: sanear TA-0028 auto-delegação (VIO-026); reconstruir ledger append-only
+    + commit; encerrar VIO-006/VIO-009 kill-switch. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0041
+  sender: nexus-prime-ultimate
+  receiver: agent-project-auditor
+  action: audit
+  status: dispatched_definitivo
+  exit_status: 0
+  timestamp: 2026-11-02 23:57:39+00:00
+  notes: 'EXECUÇÃO DEFINITIVA: resolver VIO-013..025; corrigir scripts JSON half-duplex com dod; validate_afa_output
+    SDDAI (VIO-019); wiring gates L3 (VIO-029). kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0042
+  sender: nexus-prime-ultimate
+  receiver: agent-architect
+  action: design
+  status: dispatched_definitivo
+  exit_status: 0
+  timestamp: 2026-11-02 23:57:39+00:00
+  notes: 'EXECUÇÃO DEFINITIVA: ADR-016 proposta->ratified; coassinar; promulgar; aglutinação convergente
+    se possível. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0043
+  sender: nexus-prime-ultimate
+  receiver: agent-pm
+  action: plan
+  status: dispatched_definitivo
+  exit_status: 0
+  timestamp: 2026-11-02 23:57:39+00:00
+  notes: 'EXECUÇÃO DEFINITIVA: nomear matriz partes interessadas M4 (OKB-C-24): Carleto, GP Leonardo,
+    equipe, banca. Registrar plano-cronograma. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0044
+  sender: nexus-prime-ultimate
+  receiver: agent-ai-llm-rag-dag-mcp-roster-master-specialist
+  action: validate
+  status: dispatched_definitivo
+  exit_status: 0
+  timestamp: 2026-11-02 23:57:39+00:00
+  notes: 'EXECUÇÃO DEFINITIVA: corrigir drift DAG VIO-028 (agent-factory-architect-ultimate fora AGENT_TOPOLOGY);
+    corrigir security_scan agent-agile-specialist Kill Switch/Bypass/FAIL-CLOSED. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0045
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-dba
+  action: consult
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 00:00:00+00:00
+  notes: 'HF-0601 consulta dominio B.4/GAP-04 (modelo dados invoice): schema proposto, PostgreSQL 15+
+    ADR-010, tensao spec-004:126 (persistencia) -> decisao CCB; P-04 em constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:90 (drift de citacao
+    corrigido). kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0046
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-ui-ux-advisor
+  action: consult
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 00:00:00+00:00
+  notes: 'HF-0602 consulta dominio B.1/REQ-06 (frontend): Jinja2 server-side, vanilla JS ADR-001, inventario
+    templates/estados, a11y baseline, proxy 127.0.0.1:8080. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0047
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-qa-sdet
+  action: consult
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 00:00:00+00:00
+  notes: 'HF-0603 consulta dominio B.5/C.5 (UAT): criterio binario 100% PASS, matriz US/REQ, proposta
+    docs/uat/N6.2/ com retencao permanente (ratificacao CCB pendente). kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0048
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-devops
+  action: consult
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 00:10:00+00:00
+  notes: 'HF-0604 consulta dominio B.7/B.10/C.4: ci.yml REAL 189 linhas 6 jobs (contract-network NAO existe
+    -> C.4 fecha como job novo a fixar); drift G-05 confirmado obsoleto; US-011 nao atendido (15min >
+    5min); 6 correcoes recomendadas. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0049
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-quality-architect-specialist
+  action: consult
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 00:10:00+00:00
+  notes: 'HF-0605 consulta dominio B.6/REQ-10: 12 PDCAs ja existem em plano-qualidade v1.1.0 SS5.6 (referenciar,
+    nao recriar); 3 Ishikawa 6M em mermaid; drift FIG-5/FIG-3; mapeamento onda 6 A.19-A.22. kill_switch:
+    inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0050
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-compliance-governance
+  action: consult
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 00:10:00+00:00
+  notes: 'HF-0606 consulta dominio B.3/GAP-08: fundamentos LGPD produto + 7 decisoes CCB (D1-D7); ACHADO:
+    E-01..E-08 ja ratificadas 26/10 (constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon v1.2.1) -> LISTA E.1 obsoleta, drift a auditar. Parcela
+    nao autoriza emissao aprovada. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0051
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 00:30:00+00:00
+  notes: 'HF-0607 spec-006-nfr-consolidados-v1 v0.1.0 (186 l): 25 NFRs NF-01..25 em 7 categorias; P-04/P-06/P-07
+    mapeados; GAP-02 fechado; 4 tensoes resolvidas; 10 UNKNOWN - verify. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0052
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 00:30:00+00:00
+  notes: 'HF-0608 spec-007-invoice-data-model-v1 v0.1.0 (202 l): entidade invoices 25 campos tipados;
+    insumo parcela TA-0045 (dba); tensao persistencia spec-004:126 como condicionante CCB D1; 9 UNKNOWN
+    - verify. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0053
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 00:30:00+00:00
+  notes: 'HF-0609 spec-008-frontend-web-responsive-v1 v0.1.0 (250 l): camada front, R-INT-01..08, inventario
+    src/frontend/, estados de tela, a11y A1..A8, browsers REQ-06; insumo parcela TA-0046; 13 UNKNOWN -
+    verify. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0054
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 00:50:00+00:00
+  notes: 'HF-0610 spec-009-uat-produto-v1 v0.1.0 (261 l): criterio binario fail-closed, matriz 7/7 fluxos
+    produto trace REQ-x::UAT-nn, reuso F-01..F-07 por referencia, destino evidencias docs/uat/N6.2/ como
+    condicionante CCB; 7 UNKNOWN - verify. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0055
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 00:50:00+00:00
+  notes: 'HF-0611 spec-010-qualidade-pdca-ishikawa-v1 v0.1.0 (349 l): 12 PDCAs por referencia (plano-qualidade
+    SS5.6), 3 Ishikawa 6M mermaid IDs ISH*-***-NN, 5 conflitos resolvidos, 4 drifts registrados sem correcao
+    de terceiros. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0056
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 00:50:00+00:00
+  notes: 'HF-0612 spec-011-cicd-pipeline-v1 v0.1.0 (199 l): estado real ci.yml auditado (6 jobs), G-05
+    fechado como drift descritivo, US-011 NAO atendido com 6 deltas D-01..06, C.4 fecha (job contract-network
+    fixado); 11 UNKNOWN - verify. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0057
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 01:10:00+00:00
+  notes: 'HF-0613 spec-012-rastreabilidade-prompts-sdd-v1 v0.1.0 (223 l): criterio C-01..C-04, comandos
+    de auditoria A-E; estado real INDEX 1/34; REQ-13 NAO ATENDIDO (meta N9.3 mantida); 4 drifts registrados
+    sem correcao. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0058
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 01:10:00+00:00
+  notes: 'HF-0614 spec-013-documentacao-tecnica-v1 v0.1.0 (264 l): doc arquitetura + ciclo de vida + OpenAPI
+    delimitada (fonte unica schema gerado); consulta ISO/IEC 26514 incorporada; docs/arquitetura/ inexistente
+    registrado. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0059
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 01:10:00+00:00
+  notes: 'HF-0615 spec-014-runtime-agentes-ci-layers-v1 v0.1.0 (262 l): escopo B.10 CONFIRMADO pelo orquestrador;
+    camada CI Art. 10.1 (Bypass P-01 registrado, CI le nunca muta); runtime L1/L3 Art. 6.5; 9 ACs binarios.
+    kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0060
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 01:30:00+00:00
+  notes: 'HF-0616 spec-015-lgpd-produto-proposta-v1 v0.1.0 (191 l): PROPOSTA draft condicionada a CCB/PO
+    (Art. 5.1); minimizacao art. 6; logs sem PII; D1-D7 como condicionantes; drift E.1 da LISTA registrado
+    obsoleto. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0061
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 01:30:00+00:00
+  notes: 'HF-0617 emendas C.1-C.5: spec-004 1.0.0->1.1.0 (AC-01..AC-18 consolidados do corpo; 7 exclusoes
+    YAGNI); spec-005 0.2.0->0.3.0 (C.4 in-place :210 job contract-network nao existe/fixado por spec-011;
+    C.5 in-place :342 proposta spec-009 docs/uat/N6.2/ pendente CCB); amenda TA-0030 preservada; C.3 por
+    processo. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0063
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 01:30:00+00:00
+  notes: 'HF-0619 tap.md repovoado (265 l, TAP-001 1.0.0 draft): transcricao fiel do plano-integral (REQ-01..15,
+    EAP 12/37, marcos M1-M4, premissas, restricoes); regime freeze ADR-005/ADR-013 declarado; 7 divergencias
+    registradas sem reescrita. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0064
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 01:50:00+00:00
+  notes: 'HF-0620 eap.md repovoado (345 l, EAP-001 1.0.0 draft): 12 fases N1..N12 + 37 pacotes (plano-integral
+    Tabela 2 :36-47; divergencia N11 vs N12 da LISTA registrada); MF1/MF2/MF3; mermaid DoR; cross-refs
+    rodada. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0065
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-sdd-specialist
+  action: spec
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 01:50:00+00:00
+  notes: 'HF-0621 requisitos.md repovoado (304 l, REQ-SPEC-001 1.0.0 draft): 15 RF rastreabilidade dupla,
+    17 US matriz, 25 RNF cross-ref spec-006, emendas E-01..E-08 (gate E ratificado constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:226);
+    0 inventados (P-08). kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0062
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-project-auditor
+  action: audit
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-03 02:20:00+00:00
+  notes: 'HF-0618 auditoria rodada specs: 9/9 PASS, veredito ACEITA, zero VIO. 13/13 artefatos (spec-006..015
+    + tap/eap/requisitos) template MANIFEST e nomenclatura OK; emendas spec-004 1.1.0 / spec-005 0.3.0
+    com amenda TA-0030 intacta; baseline pytest 4F/149P/1S exata; sync --check exit 0; ledger append-only
+    provado (+160/-0). F-01 (spec-013:19 10 testes vs 9 reais) e F-02 (spec-004:285 MAPA version stale)
+    = parcelas de emenda futura. Relatorio: docs/auditorias/AUD-2026-11-03-rodada-specs.md. kill_switch:
+    inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0063
+  sender: nexus-prime-ultimate
+  receiver: agent-ai-llm-rag-dag-mcp-roster-master-specialist
+  action: implement
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-04 00:00:00+00:00
+  notes: 'TA-MCP-001: reescrito scripts/mcp_nexus_ledger.py, scripts/mcp_nexus_dispatch.py, scripts/mcp_nexus_kb.py,
+    scripts/mcp_nexus_validate.py como servidores MCP stdio JSON-RPC reais (stdio, local-only, FOSS, zero
+    custo). Registrados em .mcp-servers.json e .config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/config-config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0-0001-config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0-v1.0.jsonc. ADR-017 ratificado. kill_switch:
+    inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0065
+  sender: nexus-prime-ultimate
+  receiver: agent-compliance-governance
+  action: ratify
+  status: accepted
+  exit_status: 0
+  timestamp: 2026-11-04 00:00:00+00:00
+  notes: 'TA-MCP-002: ratificacao e promulgacao CCB/GP de todos os MCPs do projeto (nexus-ledger, nexus-dispatch,
+    nexus-kb, nexus-validate, filesystem, github-remote). Escopo LOCAL deciso (artefatos de controle em
+    .ai/mcp/, configuracao unica em .config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/config-config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0-0001-config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0-v1.0.jsonc). Arquivo .mcp-servers.json da raiz removido
+    (redundante, nao consumido). MCP docx-editor removido (a ser forjado/escolhido em rodada separada).
+    Todos os 6 servidores validados com handshake MCP initialize OK. kill_switch: inherited'
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0006
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-architect
+  action: document
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:09+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-architect via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0007
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-architect
+  action: document
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:09+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-architect via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0008
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-docer-specialist
+  action: document
+  exit_status: 1
+  timestamp: '2026-11-04T19:11:09+00:00'
+  dod: false
+  status: rejected
+  error: target não promulgado na registry; camada incompatível para entrega
+  notes: rejeitado na validação de delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0009
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-iso-26514-specialist
+  action: document
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:09+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-iso-26514-specialist via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0010
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-art-communication-marketing-pr-specialist
+  action: document
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:09+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-art-communication-marketing-pr-specialist via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0011
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-architect
+  action: document
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-architect via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0012
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-architect
+  action: document
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-architect via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0013
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-architect
+  action: document
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-architect via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0014
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-architect
+  action: analyze
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-architect via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0015
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-architect
+  action: analyze
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-architect via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0016
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-architect
+  action: implement
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-architect via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0017
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-architect
+  action: document
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-architect via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0018
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-project-auditor
+  action: audit
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-project-auditor via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0019
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-architect
+  action: implement
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-architect via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0020
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-project-auditor
+  action: audit
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-project-auditor via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0021
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-project-auditor
+  action: audit
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-project-auditor via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-0022
+  sender: nexus-prime-ultimate
+  receiver: agent-architect
+  action: document
+  exit_status: 0
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: dispatched
+  notes: entregue a agent-architect via nexus_delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-DELEG-001
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-architect
+  action: implement
+  exit_status: 1
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: rejected
+  error: task_id fora do padrão TA-NNN
+  notes: rejeitado na validação de delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-DELEG-002
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-architect
+  action: document
+  exit_status: 1
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: rejected
+  error: task_id fora do padrão TA-NNN
+  notes: rejeitado na validação de delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
+- task_id: TA-DELEG-003
+  sender: agent-nexus-prime-ultimate
+  receiver: agent-project-auditor
+  action: audit
+  exit_status: 1
+  timestamp: '2026-11-04T19:11:10+00:00'
+  dod: false
+  status: rejected
+  error: task_id fora do padrão TA-NNN
+  notes: rejeitado na validação de delivery
+  deprecated: true
+  motivo_descarte: historico pre-saneamento — descartado para uso operacional real
+  arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)

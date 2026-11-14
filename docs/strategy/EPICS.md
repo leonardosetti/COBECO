@@ -2,7 +2,7 @@
 
 **Versão:** 1.0  
 **Data:** 14/11/2026  
-**Autor:** Leonardo Setti (Product Owner)  
+**Autor:** Leonardo Setti (Proddoc-arch-0006-uc-v1t Owner)  
 **Base:** PRD v1.0, Constitution v2.0  
 **Status:** Ratificado pelo CCB (Gate 2)
 
@@ -147,7 +147,7 @@ Um **Épico** é uma grande iniciativa que agrupa múltiplas User Stories relaci
 
 | Item | Descrição | Sprint | Critério |
 |------|-----------|--------|----------|
-| Constitution v2.0 | Lei suprema ratificada CCB | S0 | `constitution.md` versionada |
+| Constitution v2.0 | Lei suprema ratificada CCB | S0 | `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md` versionada |
 | ADR-001 | Stack ratificada (FastAPI/MySQL/Vanilla JS) | S0 | `docs/decisoes/ADR-001-*.md` |
 | Specs SDD | 16 specs ratificadas em `.ai/specs/` | S0-S5 | Spec → Handoff → Dispatch |
 | Handoffs | Processados via `handoff_parser.py` → `nexus_dispatcher.py` | S1-S5 | L0 dispatch com `dod`+`kill_switch` |
@@ -193,7 +193,7 @@ graph TD
 
 ## Rastreabilidade Épico → User Story → RF
 
-| Épico | User Stories | RFs (REQUISITOS.md) |
+| Épico | User Stories | RFs (req-func-0001-requisitos-funcionais-canon.md) |
 |-------|--------------|---------------------|
 | EPIC-001 | US-001 a US-004, US-019, US-020 | RF01, RF02, RF03, RF04, RF05, RF06 |
 | EPIC-002 | US-005 a US-011 | RF07, RF08, RF09, RF10, RF11 |

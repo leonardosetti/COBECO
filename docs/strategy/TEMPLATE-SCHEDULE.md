@@ -78,7 +78,7 @@ gantt
     CI/CD Pipeline            :f3, after a10, 1d
     Runbooks                  :f4, after f3, 1d
     Release Notes v0.1.0      :f5, after f1, 0.5d
-    Refinar README + OpenAPI  :f6, after f3, 0.5d
+    Refinar doc-readme-0001-readme-canon + OpenAPI  :f6, after f3, 0.5d
     Preparação Apresentação   :f7, after f1, 1.5d
     Post-Mortem / Lições      :f8, after f7, 0.5d
     Termo de Encerramento     :f9, after f8, 0.5d
@@ -94,7 +94,7 @@ gantt
 
 ## Marcos (Milestones) — Datas Chave
 
-| Marco | Descrição | Data Prevista | Critério de Sucesso |
+| Marco | Descrição | Data Prevista | Critério de Sdoc-arch-0006-uc-v1esso |
 |-------|-----------|---------------|---------------------|
 | **M0** | Kick-off + Charter Aprovado | 15/09/2026 | Gate 1: CCB assina Charter + RACI + ADR-001 |
 | **M1** | Fim Sprint 1 (Auth + Docs) | 29/09/2026 | Gate 2: PRD + US + C4 + NFRs + Test Plan + RAID aprovados |

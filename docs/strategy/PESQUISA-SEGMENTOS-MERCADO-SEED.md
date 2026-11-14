@@ -95,29 +95,29 @@ make seed
 make seed-expanded SEED_EXPANDED_CONFIRM=SIM
 
 # Regenerar o SQL versionado a partir da fonte canônica
-python3 backend/scripts/generate_seed.py --profile baseline --output backend/seed.sql
+python3 backend/scripts/script-seed-0001-generate-seed-v1.0.py --profile baseline --output backend/config-seed-0001-seed-v1.0.sql
 ```
 
 O perfil expandido é destrutivo para os dados mockados locais (usuários, listas e catálogo) e
 exige `SEED_EXPANDED_CONFIRM=SIM`. Ele não deve ser executado contra ambiente com dados reais.
 Promover o perfil expandido como padrão exige CR e ratificação humana, conforme
-`constitution.md` Arts. 5.1 e 5.4.
+`constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md` Arts. 5.1 e 5.4.
 
 ## 8. Implementação e validação
 
-- fonte canônica: `backend/scripts/seed_data.py`;
-- gerador SQL: `backend/scripts/generate_seed.py`;
+- fonte canônica: `backend/scripts/script-seed-0002-seed-data-v1.0.py`;
+- gerador SQL: `backend/scripts/script-seed-0001-generate-seed-v1.0.py`;
 - testes automatizados: `backend/tests/unit/test_seed_data.py`;
-- seed oficial reproduzível: `backend/seed.sql`;
+- seed oficial reproduzível: `backend/config-seed-0001-seed-v1.0.sql`;
 - carga validada em bancos MySQL isolados para `baseline` e `expanded`;
 - `make seed-expanded SEED_EXPANDED_CONFIRM=SIM` exige confirmação e remove o arquivo temporário
   ao término.
 
 ## 9. Rastreabilidade
 
-- `constitution.md`: Arts. 3.1, 3.3, 3.4, 3.5, 7.7, 8.1, 8.2, 12.7 e 19.3;
-- `REQUISITOS.md`: RNF08;
-- `CASOSDEUSO.md`: UC02–UC06 e UC23–UC26;
-- `CAMADADEDADOS.md`: 8 tabelas, N:N de categorias e chaves compostas;
-- SPEC: `.ai/specs/spec-016-seed-segmentos-volume-v1.spec.md`;
+- `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md`: Arts. 3.1, 3.3, 3.4, 3.5, 7.7, 8.1, 8.2, 12.7 e 19.3;
+- `req-func-0001-requisitos-funcionais-canon.md`: RNF08;
+- `req-use-case-0001-casos-de-uso-canon.md`: UC02–UC06 e UC23–UC26;
+- `doc-arch-0001-camada-de-dados-canon.md`: 8 tabelas, N:N de categorias e chaves compostas;
+- SPEC: `.ai/specs/spec-seed-0001-seed-segmentos-volume-v1.0.md`;
 - Handoff: `.ai/handoffs/HF-0622-seed-segmentos-volume.md`.

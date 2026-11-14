@@ -60,22 +60,22 @@ def test_cnpj_ficticio_tem_formato_e_digitos_validos():
 
 def test_invariantes_e_associacoes_do_perfil_expandido():
     dataset = build_dataset("expanded")
-    offers_per_product = Counter(offer.product_id for offer in dataset.offers)
+    offers_per_proddoc-arch-0006-uc-v1t = Counter(offer.proddoc-arch-0006-uc-v1t_id for offer in dataset.offers)
     suppliers_per_category = Counter(category_id for _, category_id in dataset.supplier_categories)
 
-    assert set(offers_per_product.values()) == {12}
+    assert set(offers_per_proddoc-arch-0006-uc-v1t.values()) == {12}
     assert set(suppliers_per_category.values()) == {12}
     assert all(supplier.categories for supplier in dataset.suppliers)
     assert len({supplier.cnpj for supplier in dataset.suppliers}) == dataset.counts["fornecedores"]
-    assert len({product.name for product in dataset.products}) == dataset.counts["produtos"]
+    assert len({proddoc-arch-0006-uc-v1t.name for proddoc-arch-0006-uc-v1t in dataset.proddoc-arch-0006-uc-v1ts}) == dataset.counts["produtos"]
 
 
 def test_baseline_oferece_seis_precos_por_produto():
     dataset = build_dataset("baseline")
-    offers_per_product = Counter(offer.product_id for offer in dataset.offers)
+    offers_per_proddoc-arch-0006-uc-v1t = Counter(offer.proddoc-arch-0006-uc-v1t_id for offer in dataset.offers)
 
-    assert set(offers_per_product.values()) == {6}
-    assert len(offers_per_product) == dataset.counts["produtos"]
+    assert set(offers_per_proddoc-arch-0006-uc-v1t.values()) == {6}
+    assert len(offers_per_proddoc-arch-0006-uc-v1t) == dataset.counts["produtos"]
 
 
 def test_geracao_sql_e_deterministica():

@@ -4,9 +4,9 @@
 # ============================================================
 # Environment & Secrets
 # ============================================================
-.env
-.env.local
-.env.*.local
+config-env-0001-env-example-v1.0
+config-env-0001-env-example-v1.0.local
+config-env-0001-env-example-v1.0.*.local
 *.pem
 *.key
 *.crt
@@ -72,8 +72,8 @@ build/
 # Docker
 # ============================================================
 .docker/
-docker-compose.override.yml
-docker-compose.*.local.yml
+config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0002-docker-compose-override-v1-v1-v1.0-v1.0.override.yml
+config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0002-docker-compose-override-v1-v1-v1.0-v1.0.*.local.yml
 
 # ============================================================
 # Database
@@ -81,7 +81,7 @@ docker-compose.*.local.yml
 *.dump
 *.backup
 # rastreável: seed do banco
-!backend/seed.sql
+!backend/config-seed-0001-seed-v1.0.sql
 migrations/versions/*.py
 !migrations/versions/.gitkeep
 # rastreável: migrações Alembic
@@ -101,7 +101,7 @@ temp/
 # saída gerada (não commitar)
 graphify-out/
 log_llama.txt
-.$uc.drawio.bkp
+.$doc-arch-0006-doc-arch-0006-uc-v1-v1.0.bkp
 .DS_Store
 Thumbs.db
 
@@ -110,11 +110,11 @@ Thumbs.db
 # ============================================================
 .planning/vector.db
 .planning/graphs/.last-build-snapshot.json
-.opencode/gsd-core/
-.opencode/mcp.json
+.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/
+.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/mcp.json
 .ai/handoffs/*.md
 !.ai/handoffs/INDEX.md
-.ai/agents/ledger-*.yaml
+.ai/agents/config-ledger-0001-ledger-v1.0-*.yaml
 .ai/agents/mcp_usage.jsonl
 .ai/specs/requisitos.md
 .ai/specs/tap.md
@@ -134,7 +134,7 @@ Thumbs.db
 # OpenCode / Agent config (local only — não versionar)
 # ============================================================
 .agents/
-.opencode/
+.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/
 
 # ============================================================
 # Test Coverage Reports (generated)

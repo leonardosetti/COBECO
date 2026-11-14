@@ -1,12 +1,12 @@
 # PRD — <Nome do Produto / Funcionalidade>
 
-**Documento:** Product Requirements Document  
+**Documento:** Proddoc-arch-0006-uc-v1t Requirements Document  
 **Versão:** 1.0  
 **Status:** Draft | Aprovado | Arquivado  
 **Data:** DD/MM/AAAA  
-**Autor:** <Nome> (Product Owner)  
+**Autor:** <Nome> (Proddoc-arch-0006-uc-v1t Owner)  
 **Revisores:** <Nomes>  
-**Base:** REQUISITOS.md v3.2, CASOSDEUSO.md v3.2, board_roadmap.md, Constitution v2.0
+**Base:** req-func-0001-requisitos-funcionais-canon.md v3.2, req-use-case-0001-casos-de-uso-canon.md v3.2, board-roadmap-0001-roadmap-canon.md, Constitution v2.0
 
 ---
 
@@ -32,7 +32,7 @@
 |--------------|-----------------|---------|------|------------|
 | O1: Entregar MVP funcional | KR1: 18 RFs implementados | % RFs Done | 100% | GitHub Projects |
 | | KR2: Cobertura de testes | % cobertura | ≥ 80% | `pytest --cov` |
-| | KR3: Deploy reproduzível | `docker compose up` | Sucesso | Smoke test |
+| | KR3: Deploy reproduzível | `docker compose up` | Sdoc-arch-0006-uc-v1esso | Smoke test |
 | O2: Qualidade técnica | KR4: Clean Architecture | Code review | Aprovado | Rubrica R-01..R-07 |
 | | KR5: Documentação ABNT | Nota orientador | ≥ 8,0 | Avaliação formal |
 | O3: Aprendizado da equipe | KR6: ADRs + Specs + Handoffs | Artefatos SDD | 100% | Repo `.ai/` |
@@ -123,19 +123,19 @@
 
 | Artefato | Localização | Status |
 |----------|-------------|--------|
-| Constitution v2.0 | `constitution.md` | ✅ Ratificada |
-| Requisitos v3.2 | `REQUISITOS.md` | ✅ SSOT |
-| Casos de Uso v3.2 | `CASOSDEUSO.md` | ✅ SSOT |
-| Camada de Dados | `CAMADADEDADOS.md` | ✅ SSOT |
-| ADR-001 Stack | `docs/decisoes/ADR-001-stack-decision.md` | ✅ Ratificada |
+| Constitution v2.0 | `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md` | ✅ Ratificada |
+| Requisitos v3.2 | `req-func-0001-requisitos-funcionais-canon.md` | ✅ SSOT |
+| Casos de Uso v3.2 | `req-use-case-0001-casos-de-uso-canon.md` | ✅ SSOT |
+| Camada de Dados | `doc-arch-0001-camada-de-dados-canon.md` | ✅ SSOT |
+| ADR-001 Stack | `docs/decisoes/doc-adr-0001-stack-decision-v1.0.md` | ✅ Ratificada |
 | Specs SDD (16) | `.ai/specs/spec-*.spec.md` | ✅ Ratificadas |
 | Handoffs | `.ai/handoffs/HF-*.md` | ✅ Processo ativo |
-| Roadmap | `board_roadmap.md` + `GITHUB_PROJECTS.md` | ✅ Definido |
+| Roadmap | `board-roadmap-0001-roadmap-canon.md` + `doc-github-projects-0001-github-projects-canon.md` | ✅ Definido |
 | PRD (este) | `docs/strategy/PRD.md` | 📝 Em elaboração |
 | User Stories | `docs/strategy/USER-STORIES.md` + GitHub Issues | 📝 Pendente |
 | Diagramas C4 | `docs/arquitetura/C4-*.md` | 📝 Pendente |
-| RAID Log | `docs/operacao/RAID-LOG.md` | 📝 Pendente |
-| Test Plan | `docs/operacao/TEST-PLAN.md` | ✅ Existe |
+| RAID Log | `docs/operacao/doc-raid-log-0001-raid-log-v1.0.md` | 📝 Pendente |
+| Test Plan | `docs/operacao/doc-test-plan-0001-test-plan-v1.0.md` | ✅ Existe |
 
 ---
 

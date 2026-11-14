@@ -37,7 +37,7 @@ async def auth_user(client):
 
 
 @pytest.fixture
-async def sample_products(client):
+async def sample_proddoc-arch-0006-uc-v1ts(client):
     """Garante que existam produtos para testes"""
     # O seed já popula produtos, apenas verificamos
     response = await client.get("/v1/catalogo/produtos?limit=5")
@@ -49,9 +49,9 @@ class TestListasIntegration:
     """Testes de integração para /v1/listas"""
 
     @pytest.mark.asyncio
-    async def test_criar_lista_com_itens(self, client, auth_user, sample_products):
+    async def test_criar_lista_com_itens(self, client, auth_user, sample_proddoc-arch-0006-uc-v1ts):
         """RF07, RF08 - Criar lista com itens em transação"""
-        produtos = sample_products[:2]
+        produtos = sample_proddoc-arch-0006-uc-v1ts[:2]
         lista_data = {
             "nome": "Compras da Semana",
             "itens": [
@@ -96,7 +96,7 @@ class TestListasIntegration:
         assert "não encontrado" in response.json()["detail"].lower()
 
     @pytest.mark.asyncio
-    async def test_listar_minhas_listas_paginacao(self, client, auth_user, sample_products):
+    async def test_listar_minhas_listas_paginacao(self, client, auth_user, sample_proddoc-arch-0006-uc-v1ts):
         """RF09 - Listar listas do usuário com paginação"""
         # Cria 3 listas
         for i in range(3):
@@ -104,7 +104,7 @@ class TestListasIntegration:
                 "/v1/listas",
                 json={
                     "nome": f"Lista {i}",
-                    "itens": [{"produto_id": sample_products[0]["id"], "quantidade": 1}],
+                    "itens": [{"produto_id": sample_proddoc-arch-0006-uc-v1ts[0]["id"], "quantidade": 1}],
                 },
                 headers=auth_user,
             )
@@ -131,13 +131,13 @@ class TestListasIntegration:
         assert len(data["items"]) >= 1
 
     @pytest.mark.asyncio
-    async def test_buscar_lista_por_id(self, client, auth_user, sample_products):
+    async def test_buscar_lista_por_id(self, client, auth_user, sample_proddoc-arch-0006-uc-v1ts):
         """Buscar lista específica com itens"""
         create_resp = await client.post(
             "/v1/listas",
             json={
                 "nome": "Lista para Buscar",
-                "itens": [{"produto_id": sample_products[0]["id"], "quantidade": 3}],
+                "itens": [{"produto_id": sample_proddoc-arch-0006-uc-v1ts[0]["id"], "quantidade": 3}],
             },
             headers=auth_user,
         )
@@ -155,12 +155,12 @@ class TestListasIntegration:
         assert data["itens"][0]["quantidade"] == 3
 
     @pytest.mark.asyncio
-    async def test_buscar_lista_outro_usuario_404(self, client, auth_user, sample_products):
+    async def test_buscar_lista_outro_usuario_404(self, client, auth_user, sample_proddoc-arch-0006-uc-v1ts):
         """Usuário não pode acessar lista de outro usuário"""
         # Cria lista com user atual
         create_resp = await client.post(
             "/v1/listas",
-            json={"nome": "Minha Lista", "itens": [{"produto_id": sample_products[0]["id"], "quantidade": 1}]},
+            json={"nome": "Minha Lista", "itens": [{"produto_id": sample_proddoc-arch-0006-uc-v1ts[0]["id"], "quantidade": 1}]},
             headers=auth_user,
         )
         lista_id = create_resp.json()["id"]
@@ -184,11 +184,11 @@ class TestListasIntegration:
         assert response.status_code == 404
 
     @pytest.mark.asyncio
-    async def test_atualizar_lista_nome(self, client, auth_user, sample_products):
+    async def test_atualizar_lista_nome(self, client, auth_user, sample_proddoc-arch-0006-uc-v1ts):
         """RF10 - Editar lista salva"""
         create_resp = await client.post(
             "/v1/listas",
-            json={"nome": "Nome Original", "itens": [{"produto_id": sample_products[0]["id"], "quantidade": 1}]},
+            json={"nome": "Nome Original", "itens": [{"produto_id": sample_proddoc-arch-0006-uc-v1ts[0]["id"], "quantidade": 1}]},
             headers=auth_user,
         )
         lista_id = create_resp.json()["id"]
@@ -202,10 +202,10 @@ class TestListasIntegration:
         assert response.json()["nome"] == "Nome Atualizado"
 
     @pytest.mark.asyncio
-    async def test_atualizar_lista_nome_vazio_falha(self, client, auth_user, sample_products):
+    async def test_atualizar_lista_nome_vazio_falha(self, client, auth_user, sample_proddoc-arch-0006-uc-v1ts):
         create_resp = await client.post(
             "/v1/listas",
-            json={"nome": "Original", "itens": [{"produto_id": sample_products[0]["id"], "quantidade": 1}]},
+            json={"nome": "Original", "itens": [{"produto_id": sample_proddoc-arch-0006-uc-v1ts[0]["id"], "quantidade": 1}]},
             headers=auth_user,
         )
         lista_id = create_resp.json()["id"]
@@ -218,11 +218,11 @@ class TestListasIntegration:
         assert response.status_code == 400
 
     @pytest.mark.asyncio
-    async def test_excluir_lista_com_confirmacao(self, client, auth_user, sample_products):
+    async def test_excluir_lista_com_confirmacao(self, client, auth_user, sample_proddoc-arch-0006-uc-v1ts):
         """RF11 - Exclusão lógica com confirmação de nome"""
         create_resp = await client.post(
             "/v1/listas",
-            json={"nome": "Para Excluir", "itens": [{"produto_id": sample_products[0]["id"], "quantidade": 1}]},
+            json={"nome": "Para Excluir", "itens": [{"produto_id": sample_proddoc-arch-0006-uc-v1ts[0]["id"], "quantidade": 1}]},
             headers=auth_user,
         )
         lista_id = create_resp.json()["id"]
@@ -254,10 +254,10 @@ class TestItensListaIntegration:
     """Testes para itens dentro de listas (RF07-RF11)"""
 
     @pytest.mark.asyncio
-    async def test_adicionar_item_lista_existente(self, client, auth_user, sample_products):
+    async def test_adicionar_item_lista_existente(self, client, auth_user, sample_proddoc-arch-0006-uc-v1ts):
         create_resp = await client.post(
             "/v1/listas",
-            json={"nome": "Lista para Itens", "itens": [{"produto_id": sample_products[0]["id"], "quantidade": 1}]},
+            json={"nome": "Lista para Itens", "itens": [{"produto_id": sample_proddoc-arch-0006-uc-v1ts[0]["id"], "quantidade": 1}]},
             headers=auth_user,
         )
         lista_id = create_resp.json()["id"]
@@ -268,8 +268,8 @@ class TestItensListaIntegration:
             json={
                 "nome": "Lista para Itens",
                 "itens": [
-                    {"produto_id": sample_products[0]["id"], "quantidade": 1},
-                    {"produto_id": sample_products[1]["id"], "quantidade": 2},
+                    {"produto_id": sample_proddoc-arch-0006-uc-v1ts[0]["id"], "quantidade": 1},
+                    {"produto_id": sample_proddoc-arch-0006-uc-v1ts[1]["id"], "quantidade": 2},
                 ],
             },
             headers=auth_user,
@@ -279,18 +279,18 @@ class TestItensListaIntegration:
         assert len(data["itens"]) == 2
         # Verifica se quantidade do primeiro item foi mantida/atualizada
         item_quantities = {item["produto_id"]: item["quantidade"] for item in data["itens"]}
-        assert item_quantities[sample_products[0]["id"]] == 1
-        assert item_quantities[sample_products[1]["id"]] == 2
+        assert item_quantities[sample_proddoc-arch-0006-uc-v1ts[0]["id"]] == 1
+        assert item_quantities[sample_proddoc-arch-0006-uc-v1ts[1]["id"]] == 2
 
     @pytest.mark.asyncio
-    async def test_remover_item_lista(self, client, auth_user, sample_products):
+    async def test_remover_item_lista(self, client, auth_user, sample_proddoc-arch-0006-uc-v1ts):
         create_resp = await client.post(
             "/v1/listas",
             json={
                 "nome": "Lista com Item",
                 "itens": [
-                    {"produto_id": sample_products[0]["id"], "quantidade": 1},
-                    {"produto_id": sample_products[1]["id"], "quantidade": 1},
+                    {"produto_id": sample_proddoc-arch-0006-uc-v1ts[0]["id"], "quantidade": 1},
+                    {"produto_id": sample_proddoc-arch-0006-uc-v1ts[1]["id"], "quantidade": 1},
                 ],
             },
             headers=auth_user,
@@ -302,11 +302,11 @@ class TestItensListaIntegration:
             f"/v1/listas/{lista_id}",
             json={
                 "nome": "Lista Atualizada",
-                "itens": [{"produto_id": sample_products[0]["id"], "quantidade": 1}],
+                "itens": [{"produto_id": sample_proddoc-arch-0006-uc-v1ts[0]["id"], "quantidade": 1}],
             },
             headers=auth_user,
         )
         assert response.status_code == 200
         data = response.json()
         assert len(data["itens"]) == 1
-        assert data["itens"][0]["produto_id"] == sample_products[0]["id"]
+        assert data["itens"][0]["produto_id"] == sample_proddoc-arch-0006-uc-v1ts[0]["id"]

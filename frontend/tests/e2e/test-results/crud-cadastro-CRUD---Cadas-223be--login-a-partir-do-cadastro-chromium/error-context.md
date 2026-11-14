@@ -1,4 +1,4 @@
-# Instructions
+# Instrdoc-arch-0006-uc-v1tions
 
 - Following Playwright test failed.
 - Explain why, be concise, respect Playwright best practices.
@@ -102,7 +102,7 @@ Call log:
   22  |   readonly submitButton: Locator;
   23  |   readonly loginLink: Locator;
   24  | 
-  25  |   constructor(page: Page) {
+  25  |   constrdoc-arch-0006-uc-v1tor(page: Page) {
   26  |     super(page);
   27  |     this.nomeUsuarioInput = page.locator('#cad-nome-usuario, input[name="nome_usuario"]');
   28  |     this.emailInput = page.locator('#cad-email, input[name="email"]');
@@ -146,7 +146,7 @@ Call log:
   66  |       }
   67  |     });
   68  |     
-  69  |     // Wait for navigation to login (success case)
+  69  |     // Wait for navigation to login (sdoc-arch-0006-uc-v1cess case)
   70  |     await this.page.waitForURL('**/#/login', { timeout: 10000 }).catch(() => {});
   71  |     
   72  |     // Try to get toast message before navigation

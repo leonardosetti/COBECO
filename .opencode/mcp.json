@@ -1,0 +1,42 @@
+{
+  "version": "1",
+  "servers": {
+    "filesystem": {
+      "command": "/home/leonardo/.npm-global/bin/mcp-server-filesystem",
+      "args": ["/lab/FATEC/202602/lab_eng_software/COBECO"],
+      "env": {}
+    },
+    "memory": {
+      "command": "/home/leonardo/.npm-global/bin/mcp-server-memory",
+      "args": [],
+      "env": {}
+    },
+    "sqlite": {
+      "command": "/home/leonardo/.npm-global/bin/mcp-server-sqlite",
+      "args": ["--db-path", "/lab/FATEC/202602/lab_eng_software/COBECO/.planning/vector.db"],
+      "env": {}
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "github-remote": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "github-kanban": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    }
+  },
+  "notes": "FOSS, sem auth/token de API, binários instalados localmente (~/.npm-global). fetch e git não servidores MCP oficiais sem auth no npm; usam as ferramentas nativas do Opencode (webfetch / git CLI). GitHub MCPs usam GITHUB_TOKEN do ambiente."
+}

@@ -1,4 +1,4 @@
-# Instructions
+# Instrdoc-arch-0006-uc-v1tions
 
 - Following Playwright test failed.
 - Explain why, be concise, respect Playwright best practices.
@@ -16,7 +16,7 @@ Error: expect(received).toMatch(expected)
 
 Expected pattern: /email|já existe|duplicado|único/
 Received string:  "
-    conta criada com sucesso! redirecionando...
+    conta criada com sdoc-arch-0006-uc-v1esso! redirecionando...
     ×
   "
 ```
@@ -36,7 +36,7 @@ Received string:  "
         - link "Cadastrar" [ref=e11] [cursor=pointer]:
           - /url: "#/cadastrar"
   - alert [ref=e12]:
-    - generic [ref=e13]: Conta criada com sucesso! Redirecionando...
+    - generic [ref=e13]: Conta criada com sdoc-arch-0006-uc-v1esso! Redirecionando...
     - button "Fechar" [ref=e14] [cursor=pointer]: ×
   - main [ref=e15]:
     - generic [ref=e17]:

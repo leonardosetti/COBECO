@@ -1,0 +1,211 @@
+# COBECO MVP — CI Pipeline (GitHub Actions)
+# Executa: ruff (lint) + pytest --cov (testes) + build Docker
+# Pipeline < 5 min
+
+name: CI
+
+on:
+  push:
+    branches: [main, stage]
+  pull_request:
+    branches: [main, stage]
+
+env:
+  DATABASE_URL: mysql+pymysql://test:test@localhost:3306/cobeco_test
+  SECRET_KEY: test-secret-key-for-ci-only-32chars
+  JWT_ALGORITHM: HS256
+  ACCESS_TOKEN_EXPIRE_MINUTES: 15
+  REFRESH_TOKEN_EXPIRE_DAYS: 7
+  RECOVERY_MODE: log
+
+jobs:
+  lint-test:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: cobeco_test
+          MYSQL_USER: test
+          MYSQL_PASSWORD: test
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -u root -proot"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=10
+
+    steps:
+      # --- Checkout ---
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # --- Setup Python ---
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      # --- Install Dependencies ---
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # --- Wait for MySQL ---
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h 127.0.0.1 -u root -proot --silent; then
+              echo "MySQL is ready!"
+              break
+            fi
+            echo "Waiting for MySQL... ($i/30)"
+            sleep 2
+          done
+
+      # --- Run Migrations ---
+      - name: Run database migrations
+        working-directory: ./backend
+        run: |
+          alembic upgrade head
+
+      # --- Lint (ruff) ---
+      - name: Lint with ruff
+        working-directory: ./backend
+        run: |
+          ruff check src tests
+          ruff format --check src tests
+
+      # --- Type Check (mypy) ---
+      - name: Type check with mypy
+        working-directory: ./backend
+        run: |
+          mypy src
+
+      # --- Test (pytest with coverage) ---
+      - name: Run tests with coverage
+        working-directory: ./backend
+        run: |
+          pytest --cov=src --cov-report=term-missing --cov-report=xml --cov-fail-under=80 -v
+
+      # --- Upload Coverage ---
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: ./backend/coverage.xml
+          flags: backend
+          fail_ci_if_error: false
+
+  # --- Build Docker Images ---
+  build:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: lint-test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: false
+          tags: cobeco-backend:test
+          load: true
+
+      - name: Build frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: false
+          tags: cobeco-frontend:test
+          load: true
+
+      - name: Build proxy image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./proxy
+          push: false
+          tags: cobeco-proxy:test
+          load: true
+
+      - name: Verify docker compose config
+        run: |
+          docker compose config --quiet
+          echo "config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0002-docker-compose-override-v1-v1-v1.0-v1.0-v1.0.yml válido"
+
+  # --- CD: Build and Push on Tag ---
+  cd:
+    name: Build & Push Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: read
+      config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0s: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Build and push backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/backend:${{ steps.version.outputs.VERSION }}
+            ghcr.io/${{ github.repository }}/backend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/frontend:${{ steps.version.outputs.VERSION }}
+            ghcr.io/${{ github.repository }}/frontend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push proxy
+        uses: docker/build-push-action@v5
+        with:
+          context: ./proxy
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/proxy:${{ steps.version.outputs.VERSION }}
+            ghcr.io/${{ github.repository }}/proxy:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
