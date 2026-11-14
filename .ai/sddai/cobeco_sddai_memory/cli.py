@@ -47,7 +47,7 @@ def main() -> int:
         )
         return 1
 
-    output = {"ok": True, "package": "cobeco-sddai-memory", "result": result}
+    output = {"ok": True, "config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0": "cobeco-sddai-memory", "result": result}
 
     if args.output:
         Path(args.output).write_text(json.dumps(output, indent=2, ensure_ascii=False))

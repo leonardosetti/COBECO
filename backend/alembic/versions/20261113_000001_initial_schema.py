@@ -1,5 +1,5 @@
 # COBECO Backend — Initial Schema Migration
-# Cria as 8 tabelas PT-BR conforme CAMADADEDADOS.md v3.2
+# Cria as 8 tabelas PT-BR conforme doc-arch-0001-camada-de-dados-canon.md v3.2
 
 from alembic import op
 import sqlalchemy as sa

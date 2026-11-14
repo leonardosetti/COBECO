@@ -93,8 +93,8 @@ Então <resultado final validado>
 
 | Direção | Artefato | ID / Localização |
 |---------|----------|------------------|
-| **Origem (Negócio)** | REQUISITOS.md | RF-XX |
-| **Origem (Caso de Uso)** | CASOSDEUSO.md | UC-YY |
+| **Origem (Negócio)** | req-func-0001-requisitos-funcionais-canon.md | RF-XX |
+| **Origem (Caso de Uso)** | req-use-case-0001-casos-de-uso-canon.md | UC-YY |
 | **Especificação (SDD)** | `.ai/specs/spec-<NNN>.spec.md` | Spec ID |
 | **Handoff (Execução)** | `.ai/handoffs/HF-<NNNN>.md` | Handoff ID |
 | **Implementação** | Branch Git | `feat/UC-XX-descricao` |

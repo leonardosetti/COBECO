@@ -405,6 +405,6 @@ async def excluir_lista(
     lista_repo: ListaRepository = Depends(get_lista_repo),
 ):
     usecase = ExcluirListaUseCase(lista_repo)
-    sucesso = await usecase.executar(lista_id, current_user.id, confirmacao_nome)
-    if not sucesso:
+    sdoc-arch-0006-uc-v1esso = await usecase.executar(lista_id, current_user.id, confirmacao_nome)
+    if not sdoc-arch-0006-uc-v1esso:
         raise HTTPException(status_code=400, detail="Nome de confirmação incorreto ou lista não encontrada")

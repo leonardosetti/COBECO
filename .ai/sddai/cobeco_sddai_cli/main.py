@@ -24,17 +24,17 @@ PACKAGE_MAP = {
 }
 
 
-def run_component(package_module: str, args: list) -> dict:
+def run_component(config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0_module: str, args: list) -> dict:
     """Executa um componente SDDAI via subprocess Python -m.
 
     Args:
-        package_module: Nome do módulo (ex: cobeco_sddai_loader.cli).
+        config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0_module: Nome do módulo (ex: cobeco_sddai_loader.cli).
         args: Lista de argumentos de linha de comando.
 
     Returns:
         Dicionário com 'ok', 'stdout', 'stderr', 'returncode'.
     """
-    cmd = [sys.executable, "-m", package_module] + args
+    cmd = [sys.executable, "-m", config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0_module] + args
     try:
         proc = subprocess.run(
             cmd,

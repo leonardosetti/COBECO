@@ -8,10 +8,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """Configurações da aplicação carregadas via .env"""
+    """Configurações da aplicação carregadas via config-env-0001-env-example-v1.0"""
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file="config-env-0001-env-example-v1.0",
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",

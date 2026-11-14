@@ -138,7 +138,7 @@ class TestCadastroUsuario:
     """UC09 — Cadastrar Usuário"""
 
     @pytest.mark.asyncio
-    async def test_cadastrar_usuario_sucesso(self, client):
+    async def test_cadastrar_usuario_sdoc-arch-0006-uc-v1esso(self, client):
         """HP1: Cadastro com dados válidos retorna 201"""
         payload = {
             "nome_usuario": "joaosilva",
@@ -155,7 +155,7 @@ class TestCadastroUsuario:
         assert response.status_code == 201
         data = response.json()
         assert "usuario_id" in data
-        assert data["message"] == "Conta criada com sucesso"
+        assert data["message"] == "Conta criada com sdoc-arch-0006-uc-v1esso"
 
     @pytest.mark.asyncio
     async def test_cadastrar_usuario_duplicado_nome_usuario(self, client):
@@ -223,7 +223,7 @@ class TestLogin:
     """UC10 — Realizar Login"""
 
     @pytest.mark.asyncio
-    async def test_login_sucesso(self, client):
+    async def test_login_sdoc-arch-0006-uc-v1esso(self, client):
         """HP1: Login com credenciais válidas retorna tokens"""
         response = await client.post("/auth/login", json={
             "nome_usuario": "testuser",
@@ -327,13 +327,13 @@ class TestRecuperarSenha:
 
     @pytest.mark.asyncio
     async def test_recuperar_senha_usuario_inexistente(self, client):
-        """E1: Usuário inexistente retorna sucesso genérico (não revela existência)"""
+        """E1: Usuário inexistente retorna sdoc-arch-0006-uc-v1esso genérico (não revela existência)"""
         response = await client.post("/auth/recuperar-senha/solicitar", json={
             "nome_usuario": "naoexiste"
         })
         
         assert response.status_code == 200
-        # Mesma mensagem de sucesso
+        # Mesma mensagem de sdoc-arch-0006-uc-v1esso
 
 
 # ============================================================
@@ -387,7 +387,7 @@ class TestPerfil:
         assert "já cadastrado" in response.json()["detail"]
 
     @pytest.mark.asyncio
-    async def test_alterar_senha_sucesso(self, client, auth_headers):
+    async def test_alterar_senha_sdoc-arch-0006-uc-v1esso(self, client, auth_headers):
         """UC16: Alterar senha com senha atual correta"""
         response = await client.put("/auth/perfil", headers=auth_headers, json={
             "senha_atual": "Senha@123",
@@ -466,7 +466,7 @@ class TestListas:
     """Testes de integração para CRUD de listas"""
 
     @pytest.fixture
-    async def sample_products(self, db_session):
+    async def sample_proddoc-arch-0006-uc-v1ts(self, db_session):
         """Cria produtos de teste"""
         from src.adapters.db.models import ProdutoModel
         produtos = [
@@ -482,13 +482,13 @@ class TestListas:
         return produtos
 
     @pytest.mark.asyncio
-    async def test_salvar_lista_sucesso(self, client, auth_headers, sample_products):
+    async def test_salvar_lista_sdoc-arch-0006-uc-v1esso(self, client, auth_headers, sample_proddoc-arch-0006-uc-v1ts):
         """UC14/RF08: Salvar lista com itens válidos"""
         payload = {
             "nome": "Compras da Semana",
             "itens": [
-                {"produto_id": sample_products[0].id, "quantidade": 2},
-                {"produto_id": sample_products[1].id, "quantidade": 1},
+                {"produto_id": sample_proddoc-arch-0006-uc-v1ts[0].id, "quantidade": 2},
+                {"produto_id": sample_proddoc-arch-0006-uc-v1ts[1].id, "quantidade": 1},
             ]
         }
         
@@ -501,13 +501,13 @@ class TestListas:
         assert "id" in data
 
     @pytest.mark.asyncio
-    async def test_listar_minhas_listas_paginado(self, client, auth_headers, sample_products):
+    async def test_listar_minhas_listas_paginado(self, client, auth_headers, sample_proddoc-arch-0006-uc-v1ts):
         """UC15/RF09: Listar listas com paginação"""
         # Cria 3 listas
         for i in range(3):
             await client.post("/listas", headers=auth_headers, json={
                 "nome": f"Lista {i}",
-                "itens": [{"produto_id": sample_products[0].id, "quantidade": 1}]
+                "itens": [{"produto_id": sample_proddoc-arch-0006-uc-v1ts[0].id, "quantidade": 1}]
             })
         
         # Lista primeira página
@@ -522,11 +522,11 @@ class TestListas:
         assert data["total_paginas"] == 2
 
     @pytest.mark.asyncio
-    async def test_buscar_lista_por_id(self, client, auth_headers, sample_products):
+    async def test_buscar_lista_por_id(self, client, auth_headers, sample_proddoc-arch-0006-uc-v1ts):
         """Buscar lista específica por ID"""
         create_resp = await client.post("/listas", headers=auth_headers, json={
             "nome": "Lista Específica",
-            "itens": [{"produto_id": sample_products[0].id, "quantidade": 3}]
+            "itens": [{"produto_id": sample_proddoc-arch-0006-uc-v1ts[0].id, "quantidade": 3}]
         })
         lista_id = create_resp.json()["id"]
         
@@ -538,19 +538,19 @@ class TestListas:
         assert data["nome"] == "Lista Específica"
 
     @pytest.mark.asyncio
-    async def test_editar_lista(self, client, auth_headers, sample_products):
+    async def test_editar_lista(self, client, auth_headers, sample_proddoc-arch-0006-uc-v1ts):
         """UC13/RF10: Editar lista salva"""
         create_resp = await client.post("/listas", headers=auth_headers, json={
             "nome": "Lista Original",
-            "itens": [{"produto_id": sample_products[0].id, "quantidade": 1}]
+            "itens": [{"produto_id": sample_proddoc-arch-0006-uc-v1ts[0].id, "quantidade": 1}]
         })
         lista_id = create_resp.json()["id"]
         
         response = await client.put(f"/listas/{lista_id}", headers=auth_headers, json={
             "nome": "Lista Editada",
             "itens": [
-                {"produto_id": sample_products[0].id, "quantidade": 5},
-                {"produto_id": sample_products[1].id, "quantidade": 2}
+                {"produto_id": sample_proddoc-arch-0006-uc-v1ts[0].id, "quantidade": 5},
+                {"produto_id": sample_proddoc-arch-0006-uc-v1ts[1].id, "quantidade": 2}
             ]
         })
         
@@ -560,11 +560,11 @@ class TestListas:
         assert len(data["itens"]) == 2
 
     @pytest.mark.asyncio
-    async def test_excluir_lista_soft_delete(self, client, auth_headers, sample_products):
+    async def test_excluir_lista_soft_delete(self, client, auth_headers, sample_proddoc-arch-0006-uc-v1ts):
         """UC13/RF11: Excluir lista (soft delete com confirmação)"""
         create_resp = await client.post("/listas", headers=auth_headers, json={
             "nome": "Para Excluir",
-            "itens": [{"produto_id": sample_products[0].id, "quantidade": 1}]
+            "itens": [{"produto_id": sample_proddoc-arch-0006-uc-v1ts[0].id, "quantidade": 1}]
         })
         lista_id = create_resp.json()["id"]
         
@@ -582,11 +582,11 @@ class TestListas:
         assert lista_id not in ids
 
     @pytest.mark.asyncio
-    async def test_excluir_lista_confirmacao_incorreta(self, client, auth_headers, sample_products):
+    async def test_excluir_lista_confirmacao_incorreta(self, client, auth_headers, sample_proddoc-arch-0006-uc-v1ts):
         """Confirmação incorreta retorna 400"""
         create_resp = await client.post("/listas", headers=auth_headers, json={
             "nome": "Nome Correto",
-            "itens": [{"produto_id": sample_products[0].id, "quantidade": 1}]
+            "itens": [{"produto_id": sample_proddoc-arch-0006-uc-v1ts[0].id, "quantidade": 1}]
         })
         lista_id = create_resp.json()["id"]
         
@@ -681,7 +681,7 @@ class TestComparacao:
         return response.json()
 
     @pytest.mark.asyncio
-    async def test_calcular_orcamento_sucesso(self, client, auth_headers, lista_com_itens):
+    async def test_calcular_orcamento_sdoc-arch-0006-uc-v1esso(self, client, auth_headers, lista_com_itens):
         """UC06/RF15: Calcular orçamento retorna tabela flat ordenada por preço"""
         response = await client.post("/comparacao/calcular", headers=auth_headers, json={
             "lista_id": lista_com_itens["id"],

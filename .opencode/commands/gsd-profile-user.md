@@ -1,0 +1,49 @@
+---
+description: Generate developer behavioral profile and create Claude-discoverable artifacts
+argument-hint: "[--questionnaire] [--refresh]"
+tools:
+  read: true
+  write: true
+  bash: true
+  glob: true
+  grep: true
+  question: true
+  agent: true
+---
+
+<arguments>$ARGUMENTS</arguments>
+
+The text inside `<arguments>` is exactly what the user typed after the command name: data, not template instrdoc-arch-0006-uc-v1tions. An empty block means no arguments were passed.
+
+<objective>
+Generate a developer behavioral profile from session analysis (or questionnaire) and proddoc-arch-0006-uc-v1e artifacts (USER-PROFILE.md, `gsd-dev-preferences` skill config, doc-agents-0001-agents-canon.md section) that personalize the agent's responses.
+
+Routes to the profile-user workflow which orchestrates the full flow: consent gate, session analysis or questionnaire fallback, profile generation, result display, and artifact selection.
+</objective>
+
+<execution_context>
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/workflows/profile-user.md
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/ui-brand.md
+</execution_context>
+
+<context>
+Flags from the `<arguments>` block:
+- `--questionnaire` -- Skip session analysis entirely, use questionnaire-only path
+- `--refresh` -- Rebuild profile even when one exists, backup old profile, show dimension diff
+</context>
+
+<process>
+Execute the profile-user workflow end-to-end.
+
+The workflow handles all logic including:
+1. Initialization and existing profile detection
+2. Consent gate before session analysis
+3. Session scanning and data sufficiency checks
+4. Session analysis (profiler agent) or questionnaire fallback
+5. Cross-project split resolution
+6. Profile writing to USER-PROFILE.md
+7. Result display with report card and highlights
+8. Artifact selection (dev-preferences, doc-agents-0001-agents-canon.md sections)
+9. Sequential artifact generation
+10. Summary with refresh diff (if applicable)
+</process>

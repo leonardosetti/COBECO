@@ -4,5 +4,5 @@
   "target": "agent-compliance-governance",
   "action": "comply",
   "handoff": "HF-0102",
-  "payload": "Ledger .ai/agents/ledger.yaml: schema fixo obrigatório para ledger_append. Campos aceitos: task_id, sender, receiver, action, exit_status, timestamp, dod. Barrar linhas de texto livre. kill_switch: inherited"
+  "payload": "Ledger .ai/agents/config-ledger-0001-ledger-v1.0.yaml: schema fixo obrigatório para ledger_append. Campos aceitos: task_id, sender, receiver, action, exit_status, timestamp, dod. Barrar linhas de texto livre. kill_switch: inherited"
 }

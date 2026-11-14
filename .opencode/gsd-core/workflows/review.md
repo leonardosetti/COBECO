@@ -1,0 +1,855 @@
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/response-language-directive.md
+
+<purpose>
+Cross-AI peer review — invoke external AI CLIs to independently review phase plans.
+Each CLI gets the same prompt (PROJECT.md context, phase plans, requirements) and
+proddoc-arch-0006-uc-v1es strdoc-arch-0006-uc-v1tured feedback. Results are combined into REVIEWS.md for the planner
+to incorporate via --reviews flag.
+
+This implements adversarial review: different AI models catch different blind spots.
+A plan that survives review from 2-3 independent AI systems is more robust.
+</purpose>
+
+<process>
+
+<step name="detect_clis">
+Check which AI CLIs are available on the system:
+
+```bash
+_GSD_SHIM_NAME="gsd-tools.cjs"; _GSD_RUNTIME_ROOT="${RUNTIME_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"; GSD_TOOLS="${_GSD_RUNTIME_ROOT}/gsd-core/bin/${_GSD_SHIM_NAME}"; _gsd_at() { for _p; do if [ -f "$_p" ]; then GSD_TOOLS="$_p"; return 0; fi; done; return 1; }; _gsd_id_ok() { case "$("$1" runtime-identity --raw 2>/dev/null || true)" in '{"config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0Name":"@opengsd/gsd-core"'*'}') return 0;; *) return 1;; esac; }; _gsd_homes() { set -- "${CLAUDE_CONFIG_DIR:-/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0}" "${ANTIGRAVITY_CONFIG_DIR:-$HOME/.gemini/antigravity}" "$HOME/.gemini/antigravity-ide" "$HOME/.gemini/antigravity-cli" "${AUGMENT_CONFIG_DIR:-$HOME/.augment}" "${CLINE_CONFIG_DIR:-$HOME/.cline}" "${CODEBUDDY_CONFIG_DIR:-$HOME/.codebuddy}" "${CODEX_HOME:-$HOME/.codex}" "${COPILOT_CONFIG_DIR:-${COPILOT_HOME:-$HOME/.copilot}}" "${CURSOR_CONFIG_DIR:-$HOME/.cursor}" "${HERMES_HOME:-$HOME/.hermes}" "${KILO_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/kilo}" "${KIMI_CONFIG_DIR:-$HOME/.config/agents}" "$HOME/.agents" "${KIMI_CODE_HOME:-$HOME/.kimi-code}" "${OPENCODE_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0}" "${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}" "${QWEN_CONFIG_DIR:-$HOME/.qwen}" "${TRAE_CONFIG_DIR:-$HOME/.trae}" "${WINDSURF_CONFIG_DIR:-$HOME/.codeium/windsurf}" "${ZCODE_CONFIG_DIR:-$HOME/.zcode}" "${GROK_doc-agents-0001-agents-canon_HOME:-$HOME/.agents}"; for _h; do _gsd_at "$_h/gsd-core/bin/${_GSD_SHIM_NAME}" && return 0; done; return 1; }; if _gsd_at "${_GSD_RUNTIME_ROOT}/gsd-core/bin/${_GSD_SHIM_NAME}" "${_GSD_RUNTIME_ROOT}/.claude/gsd-core/bin/${_GSD_SHIM_NAME}" "${_GSD_RUNTIME_ROOT}/.codex/gsd-core/bin/${_GSD_SHIM_NAME}"; then gsd_run() { node "$GSD_TOOLS" "$@"; }; elif _gsd_homes; then gsd_run() { node "$GSD_TOOLS" "$@"; }; elif unset -f gsd_run; _G="$(command -v gsd_run)"; [ -n "$_G" ] && _gsd_id_ok "$_G"; then GSD_TOOLS="$_G"; gsd_run() { "$GSD_TOOLS" "$@"; }; else echo "ERROR: gsd-tools.cjs not found at $GSD_TOOLS and no identity-proving gsd_run is on PATH. Run: npx -y @opengsd/gsd-core@latest --claude --local" >&2; exit 1; fi; GSD_IDENTITY_STATUS=unverified; _gsd_id_ok gsd_run && GSD_IDENTITY_STATUS=ok; export GSD_IDENTITY_STATUS; [ "$GSD_IDENTITY_STATUS" = ok ] || echo "WARNING: \"$GSD_TOOLS\" did not prove it is @opengsd/gsd-core - it is either a different config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 or an @opengsd/gsd-core older than the runtime-identity verb. See docs/how-to/diagnose-a-foreign-gsd-tools.md" >&2; if [ -n "${CLAUDE_ENV_FILE:-}" ] && [ -n "${GSD_TOOLS:-}" ]; then printf "export PATH='%s':\"\$PATH\"\n" "${GSD_TOOLS%/*}" >> "$CLAUDE_ENV_FILE" 2>/dev/null || true; fi
+# Check each CLI
+command -v claude >/dev/null 2>&1 && echo "claude:available" || echo "claude:missing"
+command -v codex >/dev/null 2>&1 && echo "codex:available" || echo "codex:missing"
+command -v coderabbit >/dev/null 2>&1 && echo "coderabbit:available" || echo "coderabbit:missing"
+command -v config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0 >/dev/null 2>&1 && echo "config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0:available" || echo "config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0:missing"
+command -v qwen >/dev/null 2>&1 && echo "qwen:available" || echo "qwen:missing"
+command -v cursor-agent >/dev/null 2>&1 && echo "cursor:available" || echo "cursor:missing"
+command -v agy >/dev/null 2>&1 && echo "antigravity:available" || echo "antigravity:missing"
+command -v kimi >/dev/null 2>&1 && echo "kimi-code:available" || echo "kimi-code:missing"
+
+# Check local model servers (OpenAI-compatible HTTP API — no CLI binary required);
+# hosts and defaults come from each lane's descriptor
+gsd_run review-lane availability || { echo "WARNING: review-lane availability failed or is unsupported by this gsd-tools; treating local lanes as missing" >&2; printf 'ollama:missing\nlm_studio:missing\nllama_cpp:missing\n'; }
+
+# jq prerequisite (#2589). The config/model lookups in this workflow no
+# longer need jq — they use the native --raw/--pick flags. But the lanes listed
+# under "jq-dependent reviewer lanes" below parse strdoc-arch-0006-uc-v1tured JSON that gsd-tools
+# does not emit (OpenAI-compatible /v1/chat/completions responses, config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0's
+# JSONL event stream, agy's conversation cache), so they cannot run without jq.
+# Probe it here rather than letting each lane swallow exit 127 into empty output.
+command -v jq >/dev/null 2>&1 && echo "jq:available" || echo "jq:missing"
+```
+
+**jq-dependent reviewer lanes.** `jq` is a proddoc-arch-0006-uc-v1tion prerequisite for the
+`ollama`, `lm_studio`, `llama_cpp`, `config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0`, and `antigravity` lanes only. If
+`detect_clis` reports `jq:missing`, treat those five as **undetected** — they
+follow the same "known-but-undetected" path as a missing CLI. Which path that is
+depends on how the lane was selected (see the precedence rules below): reached
+through `review.default_reviewers` or `--all` it is an info note and the lane is
+ignored; named by an explicit flag it is an **error**, because the user asserted
+that lane. Tell the user to install jq:
+
+```
+NOTE: jq is not on PATH — the ollama, lm_studio, llama_cpp, config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0, and
+antigravity reviewer lanes are unavailable. Install jq (https://jqlang.org/download/)
+or select a lane that does not require it (--claude, --codex,
+--coderabbit, --qwen, --cursor).
+```
+
+The remaining lanes (`claude`, `codex`, `coderabbit`, `qwen`, `cursor`)
+do not require jq and must stay selectable on a jq-less host.
+
+Parse flags from `$ARGUMENTS`:
+- `--claude` → include the agent
+- `--codex` → include Codex
+- `--coderabbit` → include CodeRabbit
+- `--config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0` → include OpenCode
+- `--qwen` → include Qwen Code
+- `--cursor` → include Cursor
+- `--agy` or `--antigravity` → include Antigravity CLI
+- `--kimi-code` → include Kimi CLI
+- `--ollama` → include Ollama (local server, OpenAI-compatible)
+- `--lm-studio` → include LM Studio (local server, OpenAI-compatible)
+- `--llama-cpp` → include llama.cpp (local server, OpenAI-compatible)
+- `--all` → include all available (CLIs + running local servers)
+- No flags → if `review.default_reviewers` is set, include only configured reviewers that are detected; otherwise include all available
+
+Reviewer-selection precedence:
+1. Individual reviewer flags (`--claude`, `--codex`, etc.)
+2. `--all`
+3. `review.default_reviewers`
+4. No key + no flags → all detected reviewers
+
+**Explicit reviewer flags are an assertion, not a preference (ADR-2782 D4).** A lane the user
+named on the command line and that cannot run is an **error**, surfaced and non-silent — even
+when other named lanes did run. Do not proceed with a thinner reviewer set and report sdoc-arch-0006-uc-v1cess:
+`--codex --qwen` on a host without `qwen` fails, it does not quietly become a Codex-only
+review. This applies however the lane became unavailable — binary missing, prerequisite `jq`
+absent, or a local server not reachable.
+
+The asymmetry is deliberate: *not finding a lane nobody asked for is normal; failing to run a
+lane somebody asked for is an error.* A user who wants "whatever is available" has `--all`; a
+user who wants a preferred set has `review.default_reviewers`. Both stay lenient below.
+
+`review.default_reviewers` behavior:
+- Value must be a non-empty array of slug strings (configured via `gsd config-set review.default_reviewers '["codex","claude"]'`)
+- Unknown slugs warn and are ignored
+- Known-but-undetected slugs emit an info note and are ignored — a configured default is a
+  preference evaluated across many hosts, so a subset being present is expected, not an error
+- If all configured reviewers are unavailable, fail with an actionable message
+
+If `section_manifest` is `null` or `"reviewer-instances-note-1"` is in its `included` list: read and execute `gsd-core/workflows/review/steps/reviewer-instances-note-1.md`. Otherwise skip — do not read the file.
+
+If no CLIs are available:
+```
+No external AI CLIs found. Install at least one:
+- codex: https://github.com/openai/codex
+- claude: https://github.com/anthropics/claude-code
+- config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0: https://config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0.ai (leverages GitHub Copilot subscription models)
+- qwen: https://github.com/nicepkg/qwen-code (Alibaba Qwen models)
+- cursor: https://cursor.com (Cursor IDE agent mode)
+- agy: curl -fsSL https://antigravity.google/cli/install.sh | bash (Antigravity CLI — free with Google credentials)
+
+Then run /gsd-review again.
+```
+Exit.
+
+Determine which CLI to skip based on the current runtime environment:
+
+```bash
+# Environment-based runtime detection (priority order)
+if [ "$ANTIGRAVITY_AGENT" = "1" ]; then
+  # Antigravity is a separate client — all CLIs are external, skip none
+  SELF_CLI="none"
+elif [ -n "$CURSOR_SESSION_ID" ]; then
+  # Running inside Cursor agent — skip cursor for independence
+  SELF_CLI="cursor"
+elif [ -n "$CLAUDE_CODE_ENTRYPOINT" ]; then
+  # Running inside Claude Code CLI — skip claude for independence
+  SELF_CLI="claude"
+else
+  # Other environments (Codex CLI, Antigravity CLI, etc.)
+  # Fall back to AI self-identification to decide which CLI to skip
+  SELF_CLI="auto"
+fi
+```
+
+Rules:
+- If `SELF_CLI="none"` → invoke ALL available CLIs (no skip)
+- If `SELF_CLI="claude"` → skip claude, use codex/antigravity
+- If `SELF_CLI="auto"` → the executing AI identifies itself and skips its own CLI
+- At least one DIFFERENT CLI must be available for the review to proceed.
+</step>
+
+<step name="gather_context">
+Collect phase artifacts for the review prompt:
+
+```bash
+IFS= read -rd '' GSD_ARGS <<'GSD_ARGS_END_9e7c8502c65183f4f3ea587888010f02' || true
+$ARGUMENTS
+GSD_ARGS_END_9e7c8502c65183f4f3ea587888010f02
+GSD_ARGS=${GSD_ARGS%$'\n'}
+PHASE_ARG=$(echo "$GSD_ARGS" | sed -nE 's/.*--phase[[:space:]]+([A-Za-z0-9._-]+).*/\1/p')
+GSD_WS=$(echo " $GSD_ARGS" | sed -nE 's/.* --ws +([A-Za-z0-9][A-Za-z0-9._-]*).*/--ws \1/p' | head -n 1)
+INIT=$(gsd_run query init.review ${GSD_WS:+--ws=${GSD_WS##* }} "${PHASE_ARG}")
+if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
+
+# #2358: ONE run-scoped temp dir (portable via ${TMPDIR:-/tmp}) so overlapping
+# runs never collide or read each other's stale files.
+RUN_DIR=$(mktemp -d "${TMPDIR:-/tmp}/gsd-review-XXXXXX")
+echo "RUN_DIR=$RUN_DIR"
+```
+
+Read from init: `phase_dir`, `phase_number`, `padded_phase`.
+
+Capture `RUN_DIR` above (created ONCE) and thread it into every `{run_dir}`
+placeholder and `$RUN_DIR`/`${RUN_DIR}` reference within a bash block. Do NOT
+re-run `mktemp -d` later — every block must resolve to this same directory, or
+`build_prompt`'s writes and `invoke_reviewers`' reads split.
+
+Then read:
+1. `.planning/PROJECT.md` (first 80 lines — project context)
+2. Phase section from `.planning/ROADMAP.md`
+3. All `*-PLAN.md` files in the phase directory
+4. `*-CONTEXT.md` if present (user decisions)
+5. `*-RESEARCH.md` if present (domain research)
+6. `.planning/REQUIREMENTS.md` (requirements this phase addresses)
+</step>
+
+<step name="build_prompt">
+Build a strdoc-arch-0006-uc-v1tured review prompt:
+
+```markdown
+# Cross-AI Plan Review Request
+
+You are reviewing implementation plans for a software project phase.
+Provide strdoc-arch-0006-uc-v1tured feedback on plan quality, completeness, and risks.
+
+## Project Context
+{first 80 lines of PROJECT.md}
+
+## Phase {N}: {phase name}
+### Roadmap Section
+{roadmap phase section}
+
+### Requirements Addressed
+{requirements for this phase}
+
+### User Decisions (CONTEXT.md)
+{context if present}
+
+### Research Findings
+{research if present}
+
+### Plans to Review
+For each `*-PLAN.md` in the phase directory, in glob order, include its full content preceded by a `####` header carrying the plan's **repo-relative path** (e.g. `#### .planning/phases/<phase>/<NN>-PLAN.md`). The path header is the citable anchor for findings about the plan itself — cite it as `<repo-relative plan path>:<line>` (name the heading in prose beside the citation if it helps the reader); reserve `path:line` for repo files the plan references.
+{per-plan: `#### <repo-relative plan path>` + full plan contents}
+
+## Review Instrdoc-arch-0006-uc-v1tions
+
+**Verify against source — do not review the plan text in isolation.** The plans reference real files, migrations, routes, and tests in this repo.
+1. Open the referenced files and check each claim against the actual code.
+2. For every strength or concern, cite concrete `path/to/file:line` evidence plus the mechanism.
+3. When a plan asserts a mechanism works (a guard, a query filter, a test that exercises a path), trace whether it actually does what is claimed — do not take the plan's word for it.
+4. If you cannot read the repo (no file access), say so and downgrade that finding to an open question rather than asserting it.
+
+Findings citing `file:line` evidence are weighted far more heavily than impressionistic ones; a review that only restates the plan's own claims has low value.
+
+**Plan coverage is mandatory (#3301).** The exact list of plan ids and the total plan count for
+this review are given in the "## Plan Coverage Manifest" section below. Give **every** listed id
+its own `##`-level section headed with that id **verbatim** (e.g. `## 12.6-01`) before writing any
+cross-plan comparison, an overall risk assessment, or a consensus-style summary. A review that
+stops before every id has its own section is an incomplete review, not a summary — if you must
+stop early, say so explicitly and name which ids you did not reach.
+
+Analyze each plan and provide:
+
+1. **Summary** — One-paragraph assessment
+2. **Strengths** — What's well-designed (bullet points)
+3. **Concerns** — Potential issues, gaps, risks (bullet points with severity: HIGH/MEDIUM/LOW)
+4. **Suggestions** — Specific improvements (bullet points)
+5. **Risk Assessment** — Overall risk level (LOW/MEDIUM/HIGH) with justification
+
+Focus on:
+- Missing edge cases or error handling
+- Dependency ordering issues
+- Scope creep or over-engineering
+- Security considerations
+- Performance implications
+- Whether the plans actually achieve the phase goals
+
+Output your review in markdown format.
+```
+
+Write to a temp file: `{run_dir}/gsd-review-prompt.md`
+
+Append the plan coverage manifest to the prompt:
+
+```bash
+# #2962: zsh aborts the block on an unmatched for-list glob (nomatch); bash passes it through. nullglob both.
+shopt -s nullglob 2>/dev/null; setopt NULL_GLOB 2>/dev/null
+
+RUN_DIR="{run_dir}"   # from gather_context
+
+# #3301: plan coverage manifest — tell reviewers exactly which plan ids exist and
+# how many there are, so a review that silently covers 6 of 7 plans is no longer
+# indistinguishable from one that covers all 7. The id is the plan file's own
+# basename with the `-PLAN.md` suffix stripped (e.g. `12.6-01-PLAN.md` ->
+# `12.6-01`) — NOT the `plan:` frontmatter key, which holds only the bare
+# in-phase sequence number ("01") and can never reconstrdoc-arch-0006-uc-v1t the phase-qualified
+# id reviewers need to cite. The filename is guaranteed present for every plan,
+# so no plan is ever dropped from the manifest for lacking a key.
+# Count and bullets are both derived directly from the glob loop below, never
+# from re-splitting an accumulated string: bash word-splits an unquoted `$VAR`
+# on IFS by default, but zsh does not (no `setopt SH_WORD_SPLIT` here), so a
+# prior `PLAN_IDS="$PLAN_IDS $id"` + `for x in $PLAN_IDS` round-trip silently
+# collapsed every id onto one iteration under zsh whenever there were 2+ plans
+# (gsd-core#4099). Direct glob iteration (`for f in "${PHASE_DIR}"/*-PLAN.md`)
+# is identical under both shells, so this never needs word-splitting at all.
+PLAN_COUNT=0
+PLAN_ID_BULLETS=""
+for PLAN_FILE in "${PHASE_DIR}"/*-PLAN.md; do
+  PLAN_BASENAME=$(basename "$PLAN_FILE")
+  PLAN_ID="${PLAN_BASENAME%-PLAN.md}"
+  PLAN_COUNT=$((PLAN_COUNT + 1))
+  PLAN_ID_BULLETS="${PLAN_ID_BULLETS}- ${PLAN_ID}
+"
+done
+
+# Dot-prefixed so the `gsd-review-*.md` glob over RUN_DIR (reviewer reports,
+# invoke_reviewers) can never pick it up as a report.
+{
+  echo ""
+  echo "## Plan Coverage Manifest"
+  echo ""
+  echo "Total plans in this review: ${PLAN_COUNT}"
+  echo ""
+  echo "Plan ids (give each one its own \`##\`-level section, headed verbatim):"
+  printf '%s' "$PLAN_ID_BULLETS"
+} > "${RUN_DIR}/.plans-manifest.md"
+
+# #3301: append the manifest to the one prompt file every lane reads.
+cat "${RUN_DIR}/.plans-manifest.md" >> "${RUN_DIR}/gsd-review-prompt.md"
+```
+
+Note: `PHASE_DIR` comes from prompt assembly; `RUN_DIR` is the run-scoped dir from `gather_context` (#2358) re-assigned from `{run_dir}` above. Every lane receives `gsd-review-prompt.md` whole — it is never trimmed per lane (#4559). A lane whose prompt exceeds its cap is refused in `invoke_reviewers`, not shortened.
+</step>
+
+<step name="invoke_reviewers">
+Every reviewer lane is **declared data** (ADR-2782). This step iterates the lanes the selection
+resolved; it does not enumerate them. Adding a reviewer is a capability manifest, not an edit here.
+
+**Do not re-add a per-CLI block.** A `<!-- reviewer-lane: … -->` marker anywhere in this step now
+FAILS the parity gate (`checkReviewerLaneParity` → `bespoke_leg_present`). Lane divergence is
+declared in the manifest — timeout floor, probe, prompt/output channel, empty-output policy — and
+behaviour that data genuinely cannot express is a named first-party `handler` (ADR-2782 D6), never
+a bespoke block here.
+
+**Effort and model resolution (#4255).** A lane's reasoning effort and model each resolve through
+their own declared key, and the resolution order is inspectable rather than implicit:
+
+| piece | order, highest first |
+|---|---|
+| model | pinned reviewer-instance `--model` → the lane's `modelConfigKey` (`review.models.<slug>`) → the CLI's own default |
+| effort | the lane's `effortConfigKey` (`review.effort.<slug>`) → the lane's declared `defaultEffort` → **nothing emitted**, so the CLI's own configuration applies |
+
+Both come from the LANE. Effort in particular is never read from an agent's execution settings:
+until #4255 it was resolved by querying `gsd-plan-checker`, so every prompt-fed lane ran at that
+verifier's `low` and, because the rendered argument is a CLI config override, it silently beat the
+effort the operator had configured for the reviewer CLI itself. A lane that declares no effort
+emits no argument at all — a value borrowed from an unrelated agent is worse than no value.
+
+**Timeout guidance (#2194):** prompt-fed source-grounded reviews are slow — measured ~570 s for
+Codex at `xhigh` effort and ~525 s for headless the agent on a large plan set. Each lane declares its
+own `timeoutFloorMs` and the runner enforces it internally, but the **Bash tool call wrapping the
+loop below must still be given a high `timeout:`** — at least `900000`, and `1200000` when Codex or
+headless the agent are in the selection — or the host kills the whole loop mid-lane. On Claude Code,
+raise the host cap via `BASH_MAX_TIMEOUT_MS` if a review can exceed it.
+
+A silent empty output after a long run is a **timeout kill, not a crash** — the Codex `0xc0000142`
+misdiagnosis persisted for exactly this reason, because an empty result cannot distinguish the two
+on its own. Treat an empty result on a slow lane as a dropped lane and re-run with more time rather
+than diagnosing a CLI or sandbox failure. A cross-AI review that silently drops a lane is blind in
+one eye.
+
+**No hook-trust bypass (#2479):** no lane passes a hook-trust bypass flag and none runs a capability
+probe for one. That flag only bypasses *persisted* hook trust (a first-run condition) and flagless
+invocations work in steady state, while host-harness safety classifiers deny commands carrying it.
+An environment that genuinely hits an untrusted-hook prompt surfaces through the `.err` capture and
+the empty-output stub as a dropped lane with diagnosable stderr, not silent attrition. Do not
+reintroddoc-arch-0006-uc-v1e the flag (even spelled out in prose — a regression test bans the literal file-wide).
+
+If `section_manifest` is `null` or `"reviewer-instances-note-2"` is in its `included` list: read and execute `gsd-core/workflows/review/steps/reviewer-instances-note-2.md`. Otherwise skip — do not read the file.
+
+Lanes run **sequentially by default** — concurrent invocation trips provider rate limits, and a lane
+lost to one is a cross-AI review that quietly went blind in one eye. A project whose providers can
+accept the concurrency opts in with `review.parallel_lanes: true` (#3034): the selected lanes are
+dispatched together and **all** joined before aggregation. The default is unchanged, and convergence
+cycles stay sequential either way — only the lanes *within* one pass overlap.
+
+```bash
+# #2962: zsh aborts the block on an unmatched for-list glob (nomatch); bash passes it through. nullglob both.
+shopt -s nullglob 2>/dev/null; setopt NULL_GLOB 2>/dev/null
+
+RUN_DIR="{run_dir}"
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+# SELECTED_REVIEWERS is the comma-separated result of reviewer selection (ADR-0011 precedence:
+# explicit flags > --all > review.default_reviewers > all detected). Unchanged by this phase.
+
+# #3034: opt-in concurrent lane dispatch. STRICT equality on "true" is deliberate — "1", "yes" and
+# "TRUE" must NOT opt in, so a mistyped config gets the conservative behaviour rather than firing
+# concurrent requests at a rate-limited provider. Note the `|| echo "false"` fallback is the
+# OPPOSITE polarity from the commit_docs guard, which fails OPEN: there, failing open preserves the
+# user's intent; here it would fire exactly the requests the default exists to prevent.
+PARALLEL_LANES=$(gsd_run query config-get review.parallel_lanes --raw 2>/dev/null || echo "false")
+
+gsd_run query review-lane plan \
+  --selected "$SELECTED_REVIEWERS" --run-dir "$RUN_DIR" --repo-root "$REPO_ROOT" --json \
+  > "$RUN_DIR/gsd-review-lanes.json"
+
+# One lane, start to finish. Hoisted into a function so the sequential and concurrent paths share
+# ONE body: two dispatch bodies kept in sync by hand is the generative-fix divergence ADR-2782 spent
+# a phase deleting, and it is what let #2494/#2605 be filed twice as the same defect.
+#
+# The result goes to a SLUG-SCOPED file, never a shared append. Concurrent O_APPEND is atomic only
+# below PIPE_BUF (4096 on Linux, 512 on some platforms), so a lane result above that bound could
+# interleave — and write_reviews parses this JSONL to render the models:/model_sources: frontmatter,
+# so a torn line is a broken REVIEWS.md, not a cosmetic log defect.
+run_review_lane() {
+  # `local` is hygiene, not a live fix: each `&`-dispatched call already forks its own subshell, so
+  # concurrent lanes cannot share these today. Scoped anyway so the isolation is a property of this
+  # function rather than of the dispatch mechanism happening to fork.
+  local SLUG
+  SLUG="$1"
+  # #4559: no per-lane trimming. Every lane receives the whole prompt; `review-lane invoke` measures it
+  # against the lane's cap (its own `promptBudgetKey`, the global `review.max_prompt_tokens`, or the
+  # default derived from its declared context window) and REFUSES a lane that is over, writing a
+  # `review did not run: prompt exceeds` stub. A trimmed prompt reviewed something other than the plans.
+
+  # One invocation, whatever the lane's transport, prompt channel, output channel or handler.
+  # `--explicit` marks a lane the user NAMED: ADR-2782 D4 — not finding a lane nobody asked for is
+  # normal, failing to run one somebody asked for is an error.
+  gsd_run query review-lane invoke --slug "$SLUG" \
+    --run-dir "$RUN_DIR" --repo-root "$REPO_ROOT" $EXPLICIT_FLAG --json \
+    > "$RUN_DIR/gsd-review-lane-result-$SLUG.json"
+}
+
+# Split ONCE, de-duplicated, and reuse for both loops below. Two reasons, and the second is
+# load-bearing: a slug repeated in SELECTED_REVIEWERS would put TWO concurrent background jobs on
+# `> "$RUN_DIR/gsd-review-lane-result-$SLUG.json"` — the same file, both truncating. The shared-append
+# form this replaced could not corrupt itself that way, so de-duping is what keeps the concurrent
+# path no worse than the sequential one. Selection de-dupes today (the roster is a Set;
+# review.default_reviewers normalizes lowercase-unique), but reachability analysis is not a contract
+# and the next caller should not have to redo it.
+#
+# A plain string accumulator, not an array: zsh and bash disagree on array indexing and this block
+# runs under both (see the nullglob/NULL_GLOB pairing above).
+DISPATCH_SLUGS=""
+for SLUG in $(echo "$SELECTED_REVIEWERS" | tr ',' ' '); do
+  case " $DISPATCH_SLUGS " in
+    *" $SLUG "*) continue ;;
+  esac
+  DISPATCH_SLUGS="$DISPATCH_SLUGS $SLUG"
+done
+
+# Rewrapped through unquoted command substitution, not consumed as a bare
+# `$DISPATCH_SLUGS`: bash word-splits an unquoted scalar on IFS by default,
+# but zsh does not, so a bare re-split collapsed every slug onto one
+# iteration under zsh whenever 2+ reviewers were selected (gsd-core#4109).
+# Unquoted `$(...)` re-splits identically under both shells regardless of
+# `SH_WORD_SPLIT` — same reason the accumulator-building loop above already
+# works under both.
+for SLUG in $(printf '%s' "$DISPATCH_SLUGS"); do
+  if [ "$PARALLEL_LANES" = "true" ]; then
+    run_review_lane "$SLUG" &
+  else
+    run_review_lane "$SLUG"
+  fi
+done
+
+# Join every dispatched lane. A bare `wait` with no background jobs returns 0, so the sequential
+# path needs no guard around it. NOTHING below this line may run before every lane has finished —
+# write_reviews renders REVIEWS.md and the consensus summary from the aggregate below, and a review
+# assembled from a partial set looks complete while silently missing a reviewer.
+wait
+
+# Aggregate in SELECTED_REVIEWERS order, NOT completion order, so the JSONL a concurrent run
+# proddoc-arch-0006-uc-v1es is byte-identical to the one a sequential run proddoc-arch-0006-uc-v1es. This is post-join and therefore
+# single-threaded, so `>>` here is safe. A lane that never started leaves no result file, and a lane
+# REFUSED for its prompt cap (#4559: reason `prompt_exceeds_context`) is deliberately left out of the
+# aggregate — it did not run, so it must not count as a lane result or feed models:/model_sources:.
+# Its own result file stays in RUN_DIR for the `refused_reviewers` frontmatter.
+# Rewrapped through unquoted command substitution (gsd-core#4109) — see the
+# dispatch loop above for why a bare `$DISPATCH_SLUGS` collapses under zsh.
+for SLUG in $(printf '%s' "$DISPATCH_SLUGS"); do
+  LANE_RESULT="$RUN_DIR/gsd-review-lane-result-$SLUG.json"
+  # The refusal is the PARSED `reason` field — a failed lane whose `detail` merely mentions the
+  # string is a real lane result and must stay in the aggregate.
+  if [ -f "$LANE_RESULT" ] && ! node -e 'try{process.exit(JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")).reason==="prompt_exceeds_context"?0:1)}catch{process.exit(1)}' "$LANE_RESULT"; then
+    cat "$LANE_RESULT" >> "$RUN_DIR/gsd-review-lane-results.jsonl"
+  fi
+done
+```
+
+Each lane leaves `{run_dir}/gsd-review-<slug>.md` — its review, or a diagnostic stub carrying the
+captured stderr (and, for an OpenAI-compatible lane, the raw response body, where sdoc-arch-0006-uc-v1h a server puts
+its error JSON on an HTTP 4xx/5xx while still exiting 0). A stub is never mistaken for a clean
+review: it keeps its "failed or returned empty output" header (#2494/#2605/#2794).
+
+A lane that will not run reports a typed reason rather than an empty file — `missing_binary`,
+`probe_failed`, `probe_timeout`, `missing_required_binary`, `host_unreachable`,
+`egress_host_changed`, `unknown_handler`, `prompt_exceeds_context` (the prompt is over
+the lane's cap — refused, never trimmed; its review file carries a `review did not run: prompt exceeds` stub).
+**`egress_host_changed` means the lane
+was consented to send plans to one destination and `.planning/config-planning-0001-planning-config-v1-planning-0001-planning-config-v1.0-planning-0001-planning-config-v1.0-planning-0001-planning-config-v1.0.json` now names another; it is
+blocked, not silently redirected** (ADR-2782 D5).
+
+Display progress:
+```
+### GSD ► CROSS-AI REVIEW — Phase {N}
+
+◆ Reviewing with {CLI}... done ✓
+◆ Reviewing with {CLI}... done ✓
+```
+</step>
+
+<step name="write_reviews">
+**#3352 (ADR-3473 §8.5): no artifact from failed inputs.** Before rendering anything, gate on
+whether any lane actually proddoc-arch-0006-uc-v1ed a result — "every lane failed" is exactly "the aggregate
+JSONL has zero lines" (§`invoke_reviewers`'s aggregation loop already builds this file as a
+byproddoc-arch-0006-uc-v1t; a lane that never started or was refused for its prompt cap contributes no line either way).
+
+```bash
+RUN_DIR="{run_dir}"
+JSONL="$RUN_DIR/gsd-review-lane-results.jsonl"
+LANE_LINES=0
+[ -f "$JSONL" ] && LANE_LINES=$(wc -l < "$JSONL" | tr -d ' ')
+
+TOTAL_LANE_FAILURE="false"
+ALL_LANES_SKIPPED="false"
+if [ "${LANE_LINES:-0}" -eq 0 ]; then
+  # Zero lines means every dispatched lane left no result JSON — either every one
+  # was refused for its prompt cap (N5: a refusal is not a failure) or every one actually failed
+  # to run. Re-derive the dispatched-slug set the same way invoke_reviewers did
+  # (SELECTED_REVIEWERS is a shell block boundary — recompute, do not assume the
+  # earlier step's local DISPATCH_SLUGS variable survived into this block).
+  DISPATCH_SLUGS=""
+  for SLUG in $(echo "$SELECTED_REVIEWERS" | tr ',' ' '); do
+    case " $DISPATCH_SLUGS " in
+      *" $SLUG "*) continue ;;
+    esac
+    DISPATCH_SLUGS="$DISPATCH_SLUGS $SLUG"
+  done
+  # Distinguish by whether every dispatched slug's stub markdown carries the refusal marker:
+  # `review-lane invoke` writes `review did not run: prompt exceeds ...` (#4559) before returning
+  # without ever probing or spawning the lane; a real failure stub does not. If a slug has no
+  # stub at all, it is not a refusal.
+  DISPATCHED_COUNT=0
+  SKIPPED_COUNT=0
+  # Rewrapped through unquoted command substitution (gsd-core#4109): a bare
+  # `$DISPATCH_SLUGS` word-splits under bash but not zsh, collapsing every
+  # slug onto one iteration there whenever 2+ reviewers were selected.
+  for SLUG in $(printf '%s' "$DISPATCH_SLUGS"); do
+    DISPATCHED_COUNT=$((DISPATCHED_COUNT + 1))
+    STUB="$RUN_DIR/gsd-review-$SLUG.md"
+    if [ -f "$STUB" ] && grep -q "review did not run: prompt exceeds" "$STUB" 2>/dev/null; then
+      SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
+    fi
+  done
+  if [ "$DISPATCHED_COUNT" -gt 0 ] && [ "$SKIPPED_COUNT" -eq "$DISPATCHED_COUNT" ]; then
+    ALL_LANES_SKIPPED="true"
+  else
+    TOTAL_LANE_FAILURE="true"
+  fi
+fi
+```
+
+- **If `ALL_LANES_SKIPPED=true`:** do NOT write `REVIEWS.md` and do NOT run the commit below —
+  there is nothing to review. Report to the user that every selected lane refused its prompt cap
+  (not a failure; name the cap and the `review.context_window_tokens.<slug>` /
+  `review.max_prompt_tokens_per_reviewer.<slug>` keys that raise it) and stop; do not proceed to `present_results`' summary claiming a review ran.
+- **If `TOTAL_LANE_FAILURE=true`:** do NOT write `REVIEWS.md` and do NOT run the commit below.
+  Report the total lane failure to the user (name the lanes that were dispatched and point at
+  their `.err`/stub files preserved under `.review-diagnostics/` by `present_results`) and stop.
+- **Otherwise** (at least one lane proddoc-arch-0006-uc-v1ed a result — R1, unchanged): proceed exactly as below.
+
+**#3301: plan coverage check.** For each dispatched lane that proddoc-arch-0006-uc-v1ed a *real* review (not a
+stub, not refused for its prompt cap, not empty), check whether its output mentions every plan id from
+`.plans-manifest.md` — the same manifest `build_prompt` gave the reviewer, so the expected-id list
+here can never diverge from what the reviewer was actually told. This is diagnostic only: it never
+blocks the workflow, never fails a lane, and never changes the `TOTAL_LANE_FAILURE`/
+`ALL_LANES_SKIPPED` gate above.
+
+CodeRabbit is excluded — it is a diff-only lane that never receives the source-grounding prompt
+(and therefore never receives the manifest or the per-id section instrdoc-arch-0006-uc-v1tion either), the same fact
+that already excludes it from grounded-review weighting in the Consensus Summary below.
+
+The match is intentionally lenient about *where* an id appears (a `##`-headed section is asked for,
+but plain prose mentioning the id still counts as coverage — grading only the letter of the
+formatting instrdoc-arch-0006-uc-v1tion would proddoc-arch-0006-uc-v1e false INCOMPLETE verdicts against a reviewer that cited real
+evidence correctly). It is strict about *what* counts as a match: the id is regex-escaped (a
+decimal phase like `12.6` must not let `12X6-01` satisfy `12.6-01` through an unescaped `.`), and a
+`-`/word character immediately before or after the candidate match does not count as a boundary (so
+a threat id like `T-04-07` elsewhere in the review must not register as covering plan `04-07`).
+
+```bash
+RUN_DIR="{run_dir}"
+MANIFEST="$RUN_DIR/.plans-manifest.md"
+
+# Recompute — a shell variable does not survive across separate fenced blocks
+# (each is its own process), so DISPATCH_SLUGS from the gate-check block above
+# cannot be assumed to still be set here. Same recomputation as that block and
+# as invoke_reviewers.
+DISPATCH_SLUGS=""
+for SLUG in $(echo "$SELECTED_REVIEWERS" | tr ',' ' '); do
+  case " $DISPATCH_SLUGS " in
+    *" $SLUG "*) continue ;;
+  esac
+  DISPATCH_SLUGS="$DISPATCH_SLUGS $SLUG"
+done
+
+# Rewrapped through unquoted command substitution (gsd-core#4109): a bare
+# `$DISPATCH_SLUGS` word-splits under bash but not zsh, collapsing every
+# slug onto one iteration there whenever 2+ reviewers were selected.
+# gsd-resolve-lib begin pattern.cjs (#5640): load helpers from the installed runtime, not the cwd
+_gsd_lib_probe="pattern.cjs"
+_gsd_rt="${RUNTIME_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
+_gsd_gr="$(command -v gsd_run 2>/dev/null || true)"
+case "$_gsd_gr" in /*) ;; *) _gsd_gr="" ;; esac # a gsd_run shell function prints its bare name: not a path
+[ -n "$_gsd_gr" ] && _gsd_gr="$(dirname "$(node -p "require('fs').realpathSync(process.argv[1])" "$_gsd_gr" 2>/dev/null || echo "$_gsd_gr")")/lib"
+GSD_LIB_DIR=""
+_gsd_pick() { for _gsd_d; do if [ -n "$_gsd_d" ] && [ -f "$_gsd_d/$_gsd_lib_probe" ]; then GSD_LIB_DIR="$_gsd_d"; return 0; fi; done; return 1; }
+_gsd_pick "${GSD_TOOLS:+${GSD_TOOLS%/*}/lib}" "$_gsd_rt/gsd-core/bin/lib" "$_gsd_rt/.claude/gsd-core/bin/lib" "$_gsd_rt/.codex/gsd-core/bin/lib" "$_gsd_gr" "${CLAUDE_CONFIG_DIR:-/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0}/gsd-core/bin/lib" "${CODEX_HOME:-$HOME/.codex}/gsd-core/bin/lib" || true
+if [ -z "$GSD_LIB_DIR" ]; then echo "ERROR: pattern.cjs not found in the GSD runtime. Looked in: ${GSD_TOOLS:+${GSD_TOOLS%/*}/lib, }${_gsd_rt}/gsd-core/bin/lib (and its .claude and .codex forms), ${_gsd_gr:-next to gsd_run (not on PATH)}, ${CLAUDE_CONFIG_DIR:-/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0}/gsd-core/bin/lib, ${CODEX_HOME:-$HOME/.codex}/gsd-core/bin/lib. Reinstall: npx -y @opengsd/gsd-core@latest --claude --local" >&2; exit 1; fi
+export GSD_LIB_DIR
+# gsd-resolve-lib end
+for SLUG in $(printf '%s' "$DISPATCH_SLUGS"); do
+  [ "$SLUG" = "coderabbit" ] && continue
+  REVIEW_FILE="$RUN_DIR/gsd-review-$SLUG.md"
+  [ -f "$REVIEW_FILE" ] || continue
+  [ -s "$REVIEW_FILE" ] || continue
+  grep -q "review did not run: prompt exceeds" "$REVIEW_FILE" 2>/dev/null && continue
+  grep -q "failed or returned empty output" "$REVIEW_FILE" 2>/dev/null && continue
+
+  node -e '
+    const fs = require("fs");
+    const { escapeRegex } = require(require("path").join(processconfig-env-0001-env-example-v1.0.GSD_LIB_DIR, "pattern.cjs"));
+    const manifest = fs.readFileSync(process.argv[1], "utf8");
+    const review = fs.readFileSync(process.argv[2], "utf8");
+    const ids = manifest.split("\n")
+      .filter((l) => l.startsWith("- "))
+      .map((l) => l.slice(2).trim())
+      .filter(Boolean);
+    const missing = ids.filter((id) => {
+      const re = new RegExp("(?<![\\w-])" + escapeRegex(id) + "(?![\\w-])");
+      return !re.test(review);
+    });
+    process.stdout.write(JSON.stringify({ complete: missing.length === 0, missing_ids: missing, total: ids.length }));
+  ' "$MANIFEST" "$REVIEW_FILE" > "$RUN_DIR/.plan-coverage-$SLUG.json"
+done
+```
+
+Each `${RUN_DIR}/.plan-coverage-<slug>.json` carries `{complete, missing_ids, total}` for one
+graded lane. Collect these into a `plan_coverage` frontmatter block — **only** when at least one
+graded lane has `complete: false` (mirrors the `refused_reviewers` precedent: present
+only when there is something to report):
+
+```yaml
+plan_coverage:        # only present if at least one graded lane is incomplete
+  <slug>:
+    total: 7
+    missing: ["12.6-07"]
+```
+
+Combine all review responses into `{phase_dir}/{padded_phase}-REVIEWS.md`:
+
+Capture only the existing conflict entry bytes after the exact `## Plan-Revision Conflicts`
+heading and before the end of the first exact `<!-- gsd:plan-revision-conflicts:begin -->` /
+`<!-- gsd:plan-revision-conflicts:end -->` pair immediately after the artifact title, if present,
+as `{preserved_plan_revision_conflict_entries}`. Ignore identical headings or delimiters in reviewer
+output: reviewers do not own blocking state. Restore the captured bytes at the explicit slot below.
+
+After all reviewers complete, collect the lanes that were refused for their prompt cap (#4559): each dispatched lane whose `${RUN_DIR}/gsd-review-lane-result-<slug>.json` has `"reason": "prompt_exceeds_context"`. For each, include a `refused_reviewers` entry in the frontmatter with `estimated_tokens`, `cap` and `cap_source` copied from that file's `refusal` object (`estimatedTokens`, `cap`, `capSource`). Omit the key entirely if no lane was refused. A refused lane's section in the body renders its `review did not run: prompt exceeds` stub, never an empty section.
+
+**Reviewer instances (#1517, optional):** when instances ran, frontmatter records their
+names, each gets its own `## <Adapter> Review (<instance>)` section, and ≥2 same-cli
+instances print a one-line shared-adapter caveat. Format in
+`gsd-core/references/reviewer-instances.md`.
+
+**Resolved model (#2295):** each lane's `review-lane invoke --json` line in
+`{run_dir}/gsd-review-lane-results.jsonl` carries a `model` object; render `models:` from
+its `value` and `model_sources:` from its `source`. Both maps carry exactly one entry per
+reviewer that appears in `reviewers:` — the two key sets always match. Write the literal
+`unknown` rather than omitting a key: an omitted key is indistinguishable from the feature
+not having run, and a reader must be able to tell *no model recorded* from *nothing to
+look at*. Emit every `models:`/`model_sources:` value as a DOUBLE-QUOTED YAML scalar — a
+legitimate model id can contain `:` (`llama3:70b`, `qwen2.5:7b`), which is unquotable as a
+bare scalar; a control character is already refused at the recording seam, so quoting is
+what closes the remaining `:`/`#`/leading-`-` cases. When GSD applied a reasoning effort to
+a lane, its `value` already carries a `(reasoning=<level>)` suffix (e.g.
+`gpt-5.6-sol (reasoning=high)`) — render it as-is, without re-deriving or re-formatting it.
+
+```markdown
+---
+phase: {N}
+reviewers: [claude, codex, coderabbit, config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0, qwen, cursor, antigravity, ollama, lm_studio, llama_cpp]  # populate at runtime with only the reviewers actually invoked
+reviewed_at: {ISO timestamp}
+plans_reviewed: [{list of PLAN.md files}]
+models:                   # resolved model per reviewer; `unknown` when not recoverable
+  codex: "gpt-5.6-sol (reasoning=low)"
+  antigravity: "unknown"
+model_sources:            # how each value above was determined
+  codex: "banner"
+  antigravity: "unknown"
+refused_reviewers:        # only present if at least one lane was refused for its prompt cap (#4559)
+  ollama:
+    estimated_tokens: 61000
+    cap: 6000
+    cap_source: lane      # lane | global | context-window
+plan_coverage:            # only present if at least one graded lane is incomplete (#3301)
+  ollama:
+    total: 7
+    missing: ["12.6-07"]
+---
+
+# Cross-AI Plan Review — Phase {N}
+
+<!-- gsd:plan-revision-conflicts:begin -->
+## Plan-Revision Conflicts
+{preserved_plan_revision_conflict_entries}
+<!-- gsd:plan-revision-conflicts:end -->
+
+<!-- Sections are RENDERED from each lane's declared `reviewsSection`, in descriptor order.
+     There is deliberately no hardcoded per-reviewer heading list here any more: a hand-maintained
+     list is exactly the drift #2781 was filed about, and it silently disagreed with the roster.
+     `gsd_run query review-lane sections --selected "$SELECTED_REVIEWERS"` emits
+     `<slug><TAB><reviewsSection>` in order; for each row, emit:
+
+         ## <reviewsSection> Review
+
+         {contents of {run_dir}/gsd-review-<slug>.md}
+
+         ---
+
+     Two headings must NOT be generated from this list, because they are not lanes:
+       * `## <Adapter> Review (<instance>)` — an ADR-1517 reviewer INSTANCE resolves THROUGH a lane
+         and is rendered from the instance list, not the lane list (ADR-2782 D8).
+       * `## Consensus Summary` — not a review section at all.
+
+     A lane whose `evidenceClass` is `diff-only` (CodeRabbit) carries its caveat from data: it never
+     received the source-grounding prompt, so its verdict is folded in as a diff observation and is
+     not weighted as a grounded plan review. -->
+
+## Consensus Summary
+
+{synthesize common concerns across all reviewers. CodeRabbit is a diff-only reviewer (it never received the source-grounding prompt), so do not weight its verdict as a grounded plan review — fold in its diff findings, but base plan-level consensus on the prompt-fed reviewers. A reviewer output carrying the `[reviewed-without-repo-access]` marker (or beginning with `REVIEWED-WITHOUT-REPO-ACCESS`) ran without repo access (#2176) — treat it the same way: note its concerns, but do not count its verdict at full consensus weight. A reviewer output carrying the `[reviewed-without-source-citations]` marker (#3194) declared source-grounded evidence but cited no `file:line` evidence, so it reviewed the plan text only — treat it the same way: note its concerns, but do not count its verdict at full consensus weight.}
+
+### Agreed Strengths
+{strengths mentioned by 2+ reviewers}
+
+### Agreed Concerns
+{concerns raised by 2+ reviewers — highest priority}
+
+### Divergent Views
+{where reviewers disagreed — worth investigating}
+```
+
+Commit (only reached when `TOTAL_LANE_FAILURE` and `ALL_LANES_SKIPPED` are both `false` — the
+gate above):
+```bash
+gsd_run query commit "docs: cross-AI review for phase {N}" --files {phase_dir}/{padded_phase}-REVIEWS.md
+```
+</step>
+
+<step name="present_results">
+**If `write_reviews` set `TOTAL_LANE_FAILURE=true` or `ALL_LANES_SKIPPED=true`, skip the sdoc-arch-0006-uc-v1cess
+summary below entirely** — no `REVIEWS.md` was written or committed, so there is nothing to
+present as complete. Report instead:
+
+```
+### GSD ► REVIEW FAILED
+
+Phase {N}: every selected reviewer lane {failed to proddoc-arch-0006-uc-v1e a result|refused its prompt cap} — no
+REVIEWS.md was written.
+
+{If the preserve+cleanup block below reports sdoc-arch-0006-uc-v1cess: "Diagnostics preserved:
+{phase_dir}/.review-diagnostics/". If it reports failure: relay its own warning verbatim —
+it names the intact run directory holding the un-preserved evidence instead.}
+```
+
+Otherwise (at least one lane sdoc-arch-0006-uc-v1ceeded), display summary:
+
+```
+### GSD ► REVIEW COMPLETE
+
+Phase {N} reviewed by {count} AI systems.
+
+Consensus concerns:
+{top 3 shared concerns}
+
+Full review: {padded_phase}-REVIEWS.md
+
+To incorporate feedback into planning:
+  /gsd-plan-phase {N} --reviews
+```
+
+**#3352 (ADR-3473 §8.5, R3): preserve per-lane evidence before destroying it.** Regardless of
+which branch above ran, the run's temp directory is the only record that a lane failed at all —
+copy it beside the phase's artifacts BEFORE cleanup. A lane that proddoc-arch-0006-uc-v1ed no output at all (L4)
+leaves nothing to preserve; that is a smaller diagnostics folder, not a fabricated one, and is
+NOT a preservation failure. This copy is deliberately NOT part of the commit above (N6) — that
+step names only `{padded_phase}-REVIEWS.md` explicitly, never a directory glob, so
+`.review-diagnostics/` is never swept into it.
+
+**#4097: preserve lane OUTPUT, never the run's own input copies.** `RUN_DIR` holds not only
+lane outputs — prompt assembly also writes the run's assembled INPUT there under the same
+`gsd-review-` prefix: the combined prompt (`gsd-review-prompt.md`). It duplicates files already
+committed under `.planning/`; sweeping them into `.review-diagnostics/` buries
+the actual evidence under plan duplicates and grows the phase directory on every run. The
+exclusion list below is CLOSED and owned here: this workflow itself writes every input
+basename at prompt-assembly time, so a future input file CANNOT silently join the evidence
+set — adding one means adding its stem to this list consciously. Lane slugs never begin with
+any excluded stem (`prompt`, `instrdoc-arch-0006-uc-v1tions`, `plan-`, `project`, `roadmap`, `context`,
+`research`, `requirements`), so a lane report can never be excluded by accident.
+
+Preservation and cleanup MUST run in the same fenced block below (a shell variable cannot
+survive across separate fences — each is its own process). `mkdir -p` and every `cp` are
+exit-status checked; `rm -rf "$RUN_DIR"` runs ONLY if nothing was preserved (nothing to
+preserve is not a failure) or everything that needed preserving was copied sdoc-arch-0006-uc-v1cessfully. If
+preservation fails partway, `$RUN_DIR` is left intact and a message names it as the location of
+the un-preserved evidence — a leftover temp directory is far cheaper than destroyed evidence:
+
+```bash
+shopt -s nullglob 2>/dev/null; setopt NULL_GLOB 2>/dev/null
+
+RUN_DIR="{run_dir}"
+DIAG_DIR="{phase_dir}/.review-diagnostics"
+
+# #4097: `gsd-review-*.md` matches BOTH lane outputs (reports, diagnostic stubs) and the
+# run's own assembled input copies (see the #4097 note above). Filter by basename against
+# the closed input set this workflow itself writes — direct glob iteration with a `case`
+# filter, no string accumulator, identical under bash and zsh (#4099/#4109), and the
+# `nullglob` set at the top of this fence keeps an empty RUN_DIR an empty array (#2962).
+# `gsd-review-prompt*` is the one input file this workflow now writes (#4559 removed the
+# per-lane trimmed prompts and the section copies). The section-copy names stay excluded:
+# a run dir reused from an earlier GSD version can still hold them, and they are inputs,
+# not lane evidence.
+_DIAG_MD=()
+for f in "$RUN_DIR"/gsd-review-*.md; do
+  case "$(basename "$f")" in
+    gsd-review-prompt*|gsd-review-instrdoc-arch-0006-uc-v1tions*|gsd-review-plan-*|gsd-review-project*|gsd-review-roadmap*|gsd-review-context*|gsd-review-research*|gsd-review-requirements*) ;;
+    *) _DIAG_MD+=("$f") ;;
+  esac
+done
+_DIAG_ERR=()
+for f in "$RUN_DIR"/gsd-review-*.err; do
+  [ -s "$f" ] && _DIAG_ERR+=("$f")
+done
+
+_PRESERVE_OK=true
+if [ ${#_DIAG_MD[@]} -gt 0 ] || [ ${#_DIAG_ERR[@]} -gt 0 ]; then
+  # #4351: ONE SUBDIRECTORY PER RUN. A flat copy used each file's SOURCE basename,
+  # and a lane slug is stable across runs — so a second review of the same phase
+  # silently overwrote the first run's evidence for any lane that ran both times.
+  # `cp` over an existing file is a sdoc-arch-0006-uc-v1cess, so this lost data with no warning, in
+  # the one directory whose entire purpose is to outlive the `rm -rf` below.
+  #
+  # $RUN_DIR is `mktemp -d .../gsd-review-XXXXXX`, so its basename is already
+  # unique per run BY CONSTRUCTION — uniqueness never depends on the clock. The
+  # UTC stamp is only a sort key in front of it, and is omitted entirely if `date`
+  # fails. Lane basenames are unchanged INSIDE the subdirectory, so evidence still
+  # correlates back to its lane, and nothing inside $RUN_DIR is renamed (the
+  # lane invocation resolver depends on those exact basenames).
+  _DIAG_STAMP="$(date -u +%Y%m%dT%H%M%SZ 2>/dev/null || true)"
+  _DIAG_RUN_DIR="$DIAG_DIR/${_DIAG_STAMP:+${_DIAG_STAMP}-}$(basename "$RUN_DIR")"
+  # `mkdir -p` still creates $DIAG_DIR itself, so a plain FILE sitting at
+  # $DIAG_DIR still fails here and still skips the `rm -rf` (#3885).
+  if mkdir -p "$_DIAG_RUN_DIR"; then
+    if [ ${#_DIAG_MD[@]} -gt 0 ] && ! cp "${_DIAG_MD[@]}" "$_DIAG_RUN_DIR/"; then
+      _PRESERVE_OK=false
+    fi
+    if [ ${#_DIAG_ERR[@]} -gt 0 ] && ! cp "${_DIAG_ERR[@]}" "$_DIAG_RUN_DIR/"; then
+      _PRESERVE_OK=false
+    fi
+  else
+    _PRESERVE_OK=false
+  fi
+fi
+
+if [ "$_PRESERVE_OK" = "true" ]; then
+  rm -rf "$RUN_DIR"
+else
+  echo "WARNING: evidence preservation to ${_DIAG_RUN_DIR:-$DIAG_DIR} failed — leaving the un-preserved run directory intact at: $RUN_DIR" >&2
+fi
+```
+</step>
+
+</process>
+
+<sdoc-arch-0006-uc-v1cess_criteria>
+- [ ] At least one external CLI invoked sdoc-arch-0006-uc-v1cessfully
+- [ ] REVIEWS.md written with strdoc-arch-0006-uc-v1tured feedback
+- [ ] Consensus summary synthesized from multiple reviewers
+- [ ] Temp files cleaned up
+- [ ] User knows how to use feedback (/gsd-plan-phase --reviews)
+</sdoc-arch-0006-uc-v1cess_criteria>

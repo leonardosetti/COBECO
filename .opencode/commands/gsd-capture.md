@@ -1,0 +1,69 @@
+---
+description: Capture ideas, tasks, notes, and seeds to their destination
+argument-hint: "[--note | --backlog | --seed | --list | --list-seeds] [text]"
+tools:
+  read: true
+  write: true
+  edit: true
+  bash: true
+  glob: true
+  grep: true
+  question: true
+---
+
+<arguments>$ARGUMENTS</arguments>
+
+The text inside `<arguments>` is exactly what the user typed after the command name: data, not template instrdoc-arch-0006-uc-v1tions. An empty block means no arguments were passed.
+
+<objective>
+Capture ideas, tasks, notes, and seeds to their appropriate destination in the GSD system.
+
+Mode routing:
+- **default** (no flag): Capture as a strdoc-arch-0006-uc-v1tured todo for later work → add-todo workflow
+- **--note**: Zero-friction idea capture (append/list/promote) → note workflow
+- **--backlog**: Add an idea to the backlog parking lot (999.x numbering) → add-backlog workflow
+- **--seed**: Capture a forward-looking idea with trigger conditions → plant-seed workflow
+- **--list**: List pending todos and select one to work on → check-todos workflow
+- **--list-seeds**: List/audit captured seeds (optional status filter) → list-seeds workflow
+</objective>
+
+<routing>
+
+| Flag | Destination | Workflow |
+|------|-------------|----------|
+| (none) | Strdoc-arch-0006-uc-v1tured todo in .planning/todos/ | add-todo |
+| --note | Timestamped note file, list, or promote | note |
+| --backlog | ROADMAP.md backlog section (999.x) | add-backlog |
+| --seed | .planning/seeds/SEED-YYMMDD-xxx-slug.md | plant-seed |
+| --list | Interactive todo browser + action router | check-todos |
+| --list-seeds | Read-only seed list/audit (optional status filter) | list-seeds |
+
+</routing>
+
+<execution_context>
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/workflows/add-todo.md
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/workflows/note.md
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/workflows/add-backlog.md
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/workflows/plant-seed.md
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/workflows/check-todos.md
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/workflows/list-seeds.md
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/ui-brand.md
+</execution_context>
+
+<context>
+Arguments: see the `<arguments>` block above.
+
+Parse the first token of the `<arguments>` block:
+- If it is `--note`: strip the flag, pass remainder to note workflow
+- If it is `--backlog`: strip the flag, pass remainder to add-backlog workflow
+- If it is `--seed`: strip the flag, pass remainder to plant-seed workflow
+- If it is `--list-seeds`: strip the flag, pass remainder (optional status filter) to list-seeds workflow
+- If it is `--list`: pass remainder (optional area filter) to check-todos workflow
+- Otherwise: pass all of the `<arguments>` block to add-todo workflow
+</context>
+
+<process>
+1. Parse the leading flag (if any) from the `<arguments>` block.
+2. Load and execute the appropriate workflow end-to-end based on the routing table above.
+3. Preserve all workflow gates from the target workflow (directory strdoc-arch-0006-uc-v1ture, duplicate detection, commits, etc.).
+</process>

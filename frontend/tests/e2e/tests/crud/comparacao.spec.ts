@@ -83,7 +83,7 @@ test.describe('CRUD - Comparação de Preços (UC05-RF15, UC06-RF16)', () => {
       }
 
       // 7. Verifica melhor fornecedor destacado
-      const melhorBadge = listasPage.page.locator('.badge-success:has-text("MELHOR"), .melhor-oferta, .melhor-fornecedor');
+      const melhorBadge = listasPage.page.locator('.badge-sdoc-arch-0006-uc-v1cess:has-text("MELHOR"), .melhor-oferta, .melhor-fornecedor');
       await expect(melhorBadge.first()).toBeVisible({ timeout: 5000 });
     });
   });

@@ -19,7 +19,7 @@ tags:
 # Catálogo de prompts SDD (handoffs de despacho) — REQ-13, fase N9.3
 
 Este índice é um **índice de ponteiros**: não replica Contexto/Tarefa/critérios do HF
-(Art. 6.7, constitution.md:168). O conteúdo de um prompt lê-se no arquivo HF,
+(Art. 6.7, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:168). O conteúdo de um prompt lê-se no arquivo HF,
 nunca no índice.
 
 Formato de entrada: `- HF-NNNN: <tema> (task: TA-NNNN | target: <agent> | status: <enum>)`

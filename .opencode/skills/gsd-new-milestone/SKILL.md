@@ -1,0 +1,42 @@
+---
+name: gsd-new-milestone
+description: "Start a new milestone cycle — update PROJECT.md and route to requirements"
+---
+
+<arguments>$ARGUMENTS</arguments>
+
+The text inside `<arguments>` is exactly what the user typed after the command name: data, not template instrdoc-arch-0006-uc-v1tions. An empty block means no arguments were passed.
+
+<objective>
+Start a new milestone: questioning → research (optional) → requirements → roadmap.
+
+Brownfield equivalent of new-project. Project exists, PROJECT.md has history. Gathers "what's next", updates PROJECT.md, then runs requirements → roadmap cycle.
+
+**Creates/Updates:**
+- `.planning/PROJECT.md` — updated with new milestone goals
+- `.planning/research/` — domain research (optional, NEW features only)
+- `.planning/REQUIREMENTS.md` — scoped requirements for this milestone
+- `.planning/ROADMAP.md` — phase strdoc-arch-0006-uc-v1ture (continues numbering)
+- `.planning/STATE.md` — reset for new milestone
+
+**After:** `/gsd-plan-phase [N]` to start execution.
+</objective>
+
+<execution_context>
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/workflows/new-milestone.md
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/questioning.md
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/ui-brand.md
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/templates/project.md
+@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/templates/requirements.md
+</execution_context>
+
+<context>
+Milestone name: the `<arguments>` block (optional - will prompt if not provided)
+
+Project and milestone context files are resolved inside the workflow (`init new-milestone`) and delegated via `<required_reading>` blocks where subagents are used.
+</context>
+
+<process>
+Execute end-to-end.
+Preserve all workflow gates (validation, questioning, research, requirements, roadmap approval, commits).
+</process>

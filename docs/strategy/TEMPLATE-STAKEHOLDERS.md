@@ -2,7 +2,7 @@
 
 **Versão:** 1.0  
 **Data:** DD/MM/AAAA  
-**Responsável:** Product Owner  
+**Responsável:** Proddoc-arch-0006-uc-v1t Owner  
 **Frequência de Atualização:** A cada Sprint Review
 
 ---
@@ -11,7 +11,7 @@
 
 | # | Nome | Organização / Papel | Categoria | Interesse | Poder | Influência | Engajamento Atual | Engajamento Desejado | Estratégia de Comunicação |
 |---|------|---------------------|-----------|-----------|-------|------------|-------------------|----------------------|---------------------------|
-| 1 | <Nome> | Product Owner (Aluno) | Interno / Decisor | Alto | Alto | Alto | Lidera | Liderar | Daily standup, Sprint Review, 1:1 semanal |
+| 1 | <Nome> | Proddoc-arch-0006-uc-v1t Owner (Aluno) | Interno / Decisor | Alto | Alto | Alto | Lidera | Liderar | Daily standup, Sprint Review, 1:1 semanal |
 | 2 | <Nome> | Tech Lead (Aluno) | Interno / Técnico | Alto | Alto | Alto | Decide técnico | Decidir técnico | Daily standup, ADR review, Code review |
 | 3 | <Nome> | Dev Backend 1 (Aluno) | Interno / Executor | Médio | Baixo | Médio | Executa | Executar | Daily standup, Pair programming |
 | 4 | <Nome> | Dev Backend 2 (Aluno) | Interno / Executor | Médio | Baixo | Médio | Executa | Executar | Daily standup, Pair programming |
@@ -34,10 +34,10 @@
 ### Poder / Influência
 - **Alto**: Pode decidir, vetar ou alterar rumo do projeto
 - **Médio**: Pode influenciar decisões, mas não decide sozinho
-- **Baixo**: Pouca ou nenhuma capacidade de mudança
+- **Baixo**: Podoc-arch-0006-uc-v1a ou nenhuma capacidade de mudança
 
 ### Engajamento
-- **Liderar**: Responsável pelo sucesso, toma decisões-chave
+- **Liderar**: Responsável pelo sdoc-arch-0006-uc-v1esso, toma decisões-chave
 - **Decidir técnico**: Autoridade em decisões de arquitetura/tech
 - **Executar**: Mão na massa, entrega tarefas
 - **Validar**: Verifica qualidade, aprova entregas técnicas

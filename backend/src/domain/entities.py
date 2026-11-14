@@ -1,6 +1,6 @@
 # COBECO Backend — Domain Entities (Clean Architecture)
 # Entidades puras de domínio — sem dependências de framework/ORM
-# Baseadas em CAMADADEDADOS.md v3.2 (8 tabelas PT-BR)
+# Baseadas em doc-arch-0001-camada-de-dados-canon.md v3.2 (8 tabelas PT-BR)
 
 from dataclasses import dataclass, field
 from datetime import datetime

@@ -4,7 +4,7 @@
 **Data:** DD/MM/AAAA  
 **Projeto:** COBECO MVP  
 **Período:** DD/MM/AAAA a DD/MM/AAAA  
-**Autor:** Product Owner  
+**Autor:** Proddoc-arch-0006-uc-v1t Owner  
 **Aprovação:** CCB + Banca Avaliadora (Gate 4)
 
 ---
@@ -17,7 +17,7 @@ Por meio deste termo, declara-se oficialmente **ENCERRADO** o projeto **COBECO M
 
 ## 2. Objetivos vs. Resultados Alcançados
 
-| Objetivo (Project Charter) | Métrica de Sucesso | Resultado Alcançado | Status |
+| Objetivo (Project Charter) | Métrica de Sdoc-arch-0006-uc-v1esso | Resultado Alcançado | Status |
 |----------------------------|-------------------|---------------------|--------|
 | Entregar MVP funcional (18 RFs) | 100% RFs Done no GitHub Projects | <XX%> | ☐ Atingido ☐ Parcial ☐ Não atingido |
 | Cobertura de testes ≥ 80% | `pytest --cov-fail-under=80` | <XX%> | ☐ Atingido ☐ Parcial ☐ Não atingido |
@@ -40,16 +40,16 @@ Por meio deste termo, declara-se oficialmente **ENCERRADO** o projeto **COBECO M
 | **User Stories (18 RFs)** | `docs/strategy/user-stories/US-*.md` + GitHub Issues | 1.0 | PO |
 | **Matriz Rastreabilidade** | `docs/strategy/TRACEABILITY.md` | 1.0 | QA Lead |
 | **Diagramas C4** | `docs/arquitetura/C4-*.md` | 1.0 | Arquiteto |
-| **ADR-001 Stack** | `docs/decisoes/ADR-001-stack-decision.md` | Ratificada | CCB |
-| **Constitution v2.0** | `constitution.md` | 2.0 | CCB |
+| **ADR-001 Stack** | `docs/decisoes/doc-adr-0001-stack-decision-v1.0.md` | Ratificada | CCB |
+| **Constitution v2.0** | `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md` | 2.0 | CCB |
 | **Specs SDD (16)** | `.ai/specs/spec-*.spec.md` | Ratificadas | SDD Process |
 | **Handoffs** | `.ai/handoffs/HF-*.md` | Processadas | L0 Dispatch |
-| **RAID Log** | `docs/operacao/RAID-LOG.md` | Final | Tech Lead |
-| **Test Plan** | `docs/operacao/TEST-PLAN.md` | Final | QA Lead |
+| **RAID Log** | `docs/operacao/doc-raid-log-0001-raid-log-v1.0.md` | Final | Tech Lead |
+| **Test Plan** | `docs/operacao/doc-test-plan-0001-test-plan-v1.0.md` | Final | QA Lead |
 | **Runbooks** | `docs/operacao/RUNBOOK-*.md` | 1.0 | DevOps |
-| **Release Notes v0.1.0** | `docs/operacao/RELEASE-NOTES-v0.1.0.md` | 1.0 | PO |
-| **Post-Mortem** | `docs/auditorias/POST-MORTEM.md` | 1.0 | Tech Lead |
-| **Lições Aprendidas** | `docs/auditorias/LESSONS-LEARNED.md` | 1.0 | Equipe |
+| **Release Notes v0.1.0** | `docs/operacao/doc-release-notes-0001-v0-1-0-v1.0.md` | 1.0 | PO |
+| **Post-Mortem** | `docs/auditorias/audit-postmortem-0001-postmortem-v1.0.md` | 1.0 | Tech Lead |
+| **Lições Aprendidas** | `docs/auditorias/audit-lessons-0001-lessons-learned-v1.0.md` | 1.0 | Equipe |
 | **Apresentação Final (Slides)** | `docs/strategy/APRESENTACAO-FINAL.pdf` | Final | Equipe |
 
 ---
@@ -123,7 +123,7 @@ Por meio deste termo, declara-se oficialmente **ENCERRADO** o projeto **COBECO M
 3. **RAID Log atualização manual** — Automatizar coleta de riscos do GitHub Issues/PRs.
 4. **Testes E2E frágeis** — Alguns flaky no Playwright; investir em seletores estáveis + retry.
 5. **Estimativa de tarefas** — Subestimamos complexidade do cálculo orçamento (UC06); usar Planning Poker.
-6. **Comunicação com orientador** — Reuniões quinzenais foram poucas; semanais curtas (15min) seriam melhores.
+6. **Comunicação com orientador** — Reuniões quinzenais foram podoc-arch-0006-uc-v1as; semanais curtas (15min) seriam melhores.
 
 ### 6.3 Surpresas (Surprise)
 1. **MySQL InnoDB FK cascade** — Comportamento `ON DELETE CASCADE` em `itens_lista` apaga itens ao deletar lista (soft delete não cascateia). Documentado no DER.

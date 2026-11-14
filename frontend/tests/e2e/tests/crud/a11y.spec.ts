@@ -152,7 +152,7 @@ test.describe('Acessibilidade (WCAG 2.1 AA)', () => {
       await loginPage.login('testuser', 'Senha@123');
       
       // Trigger toast
-      await page.evaluate(() => window.showToast('Teste ARIA', 'success'));
+      await page.evaluate(() => window.showToast('Teste ARIA', 'sdoc-arch-0006-uc-v1cess'));
       
       const toast = page.locator('.toast, [role="alert"]').first();
       await expect(toast).toBeVisible({ timeout: 3000 });

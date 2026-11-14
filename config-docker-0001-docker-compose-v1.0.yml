@@ -1,0 +1,191 @@
+# COBECO MVP — Docker Compose (FastAPI + MySQL + Vanilla JS + nginx proxy)
+# Arquitetura de camadas ortogonais (spec-005, HF-0030)
+# Redes: 'data' (interno, DB only) | 'edge' (externo, frontend/backend/proxy)
+
+services:
+  # ============================================================
+  # DATABASE — MySQL 8.0 InnoDB (RNF03, RNF12)
+  # ============================================================
+  db:
+    image: mysql:8.0
+    container_name: cobeco-db
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --max-connections=100
+    environment:
+      MYSQL_DATABASE: cobeco
+      MYSQL_USER: cobeco
+      MYSQL_PASSWORD: cobeco
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - data
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  # ============================================================
+  # MIGRATIONS — Alembic (executa antes do backend)
+  # ============================================================
+  migrate:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cobeco-migrate
+    command: alembic upgrade head
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: mysql+pymysql://cobeco:cobeco@db:3306/cobeco
+      SECRET_KEY: ${SECRET_KEY}
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 15
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+      RECOVERY_MODE: ${RECOVERY_MODE:-log}
+      PYTHONPATH: /app
+    networks:
+      - data
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  # ============================================================
+  # SEED — Dados mockados (executa após migrações)
+  # ============================================================
+  seed:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cobeco-seed
+    user: root
+    command: >
+      sh -c "sleep 2 && mysql --skip-ssl -h db -u cobeco -pcobeco cobeco < /app/seed.sql"
+    depends_on:
+      migrate:
+        condition: service_completed_sdoc-arch-0006-uc-v1cessfully
+    environment:
+      DATABASE_URL: mysql+pymysql://cobeco:cobeco@db:3306/cobeco
+      PYTHONPATH: /app
+    networks:
+      - data
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  # ============================================================
+  # BACKEND — FastAPI + Pydantic + SQLAlchemy (porta 8000 interna)
+  # ============================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cobeco-backend
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      seed:
+        condition: service_completed_sdoc-arch-0006-uc-v1cessfully
+    environment:
+      DATABASE_URL: mysql+asyncmy://cobeco:cobeco@db:3306/cobeco
+      SECRET_KEY: ${SECRET_KEY}
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 15
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+      RECOVERY_MODE: ${RECOVERY_MODE:-log}
+      PYTHONPATH: /app
+      DEBUG: "true"
+    networks:
+      - data
+      - edge
+    volumes:
+      - ./backend:/app
+    expose:
+      - "8000"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  # ============================================================
+  # FRONTEND — Vanilla JS + Tailwind + nginx (porta 80 interna)
+  # ============================================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cobeco-frontend
+    command: nginx -g "daemon off;"
+    depends_on:
+      - backend
+    networks:
+      - edge
+    expose:
+      - "80"
+    volumes:
+      - ./frontend:/app
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+
+  # ============================================================
+  # PROXY — nginx reverse proxy (porta 8380 exposta)
+  # Roteia / -> frontend, /v1/ -> backend
+  # Sem CORS necessário (mesma origem)
+  # ============================================================
+  proxy:
+    image: nginx:alpine
+    container_name: cobeco-proxy
+    ports:
+      - "8380:8380"
+    volumes:
+      - ./proxy/config-nginx-0003-proxy-nginx-v1.0.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - edge
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+        reservations:
+          memory: 32M
+
+# ============================================================
+# NETWORKS — Isolamento de camadas
+# ============================================================
+networks:
+  data:
+    name: cobeco-data
+    driver: bridge
+    internal: true      # Sem acesso à internet — apenas DB ↔ backend/migrate
+  edge:
+    name: cobeco-edge
+    driver: bridge
+    internal: false     # Acesso externo — frontend/backend/proxy
+
+# ============================================================
+# VOLUMES — Persistência
+# ============================================================
+volumes:
+  db_data:
+    name: cobeco-db-data

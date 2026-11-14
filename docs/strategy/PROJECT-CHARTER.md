@@ -4,7 +4,7 @@
 **Status:** Aprovado  
 **Data de Criação:** 13/11/2026  
 **Data de Aprovação:** 13/11/2026  
-**Autor:** Leonardo Setti (Product Owner)  
+**Autor:** Leonardo Setti (Proddoc-arch-0006-uc-v1t Owner)  
 **Aprovadores:** CCB (Change Control Board) — FATEC Taquaritinga ADS
 
 ---
@@ -16,12 +16,12 @@
 | **Nome do Projeto** | COBECO — Comparador de Preços de Compras |
 | **Código / ID** | COBECO-MVP-2026-01 |
 | **Patrocinador** | FATEC Taquaritinga — Curso ADS (Laboratório de Engenharia de Software) |
-| **Product Owner** | Leonardo Setti |
+| **Proddoc-arch-0006-uc-v1t Owner** | Leonardo Setti |
 | **Tech Lead** | Leonardo Setti |
 | **Data de Início Prevista** | 15/09/2026 |
 | **Data de Término Prevista** | 30/10/2026 |
 | **Metodologia** | Híbrido (PMBOK 7 + SDD + Scrum) |
-| **Constituição Vigente** | `constitution.md` v2.0 (ratificada 13/11/2026) |
+| **Constituição Vigente** | `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md` v2.0 (ratificada 13/11/2026) |
 
 ---
 
@@ -31,7 +31,7 @@
 Consumidores gastam tempo excessivo comparando preços de itens de compra em múltiplos fornecedores (mercados, farmácias, atacados). Não existe ferramenta simples, desktop-first, que permita criar uma lista, selecionar fornecedores de confiança e obter comparação consolidada com destaque da melhor oferta — tudo funcionando offline-first com exportação PDF para impressão.
 
 ### 2.2 Objetivos do Projeto (SMART)
-| # | Objetivo | Métrica de Sucesso |
+| # | Objetivo | Métrica de Sdoc-arch-0006-uc-v1esso |
 |---|----------|-------------------|
 | 1 | Entregar MVP funcional com 18 RFs | 100% RFs "Done" no GitHub Projects + Demo funcional |
 | 2 | Qualidade técnica ≥ mercado | Cobertura testes ≥ 80% (`pytest --cov-fail-under=80`) + Clean Architecture (code review R-01..R-07) |
@@ -136,7 +136,7 @@ Consumidores gastam tempo excessivo comparando preços de itens de compra em mú
 
 | Nome | Papel | Interesse | Poder | Engajamento Necessário |
 |------|-------|-----------|-------|------------------------|
-| Leonardo Setti | Product Owner / Tech Lead | Alto | Alto | Liderar + Decidir técnico |
+| Leonardo Setti | Proddoc-arch-0006-uc-v1t Owner / Tech Lead | Alto | Alto | Liderar + Decidir técnico |
 | Fabrício Cabral | Dev Backend 1 | Médio | Baixo | Executar |
 | Nicholas Anthony | Dev Backend 2 | Médio | Baixo | Executar |
 | Eduardo Passarelli | Dev Frontend | Médio | Baixo | Executar |
@@ -196,7 +196,7 @@ Consumidores gastam tempo excessivo comparando preços de itens de compra em mú
 
 ---
 
-## 10. Critérios de Sucesso do Projeto
+## 10. Critérios de Sdoc-arch-0006-uc-v1esso do Projeto
 
 | Critério | Meta | Como Medir |
 |----------|------|------------|

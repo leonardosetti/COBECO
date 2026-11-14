@@ -92,14 +92,14 @@ describe('Formatters & Utils', () => {
 
   describe('showToast', () => {
     test('cria toast no container', () => {
-      showToast('Mensagem de teste', 'success');
+      showToast('Mensagem de teste', 'sdoc-arch-0006-uc-v1cess');
       
       const container = document.getElementById('toast-container');
       const toast = container.querySelector('.toast');
       
       expect(toast).toBeTruthy();
       expect(toast.textContent).toContain('Mensagem de teste');
-      expect(toast.classList.contains('toast-success')).toBe(true);
+      expect(toast.classList.contains('toast-sdoc-arch-0006-uc-v1cess')).toBe(true);
       expect(toast.getAttribute('role')).toBe('alert');
     });
 
@@ -133,8 +133,8 @@ describe('Formatters & Utils', () => {
     });
 
     test('tipos de toast aplicam classes corretas', () => {
-      showToast('Success', 'success');
-      expect(document.querySelector('.toast').classList.contains('toast-success')).toBe(true);
+      showToast('Sdoc-arch-0006-uc-v1cess', 'sdoc-arch-0006-uc-v1cess');
+      expect(document.querySelector('.toast').classList.contains('toast-sdoc-arch-0006-uc-v1cess')).toBe(true);
       
       document.getElementById('toast-container').innerHTML = '';
       showToast('Error', 'error');

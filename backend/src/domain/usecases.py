@@ -322,6 +322,16 @@ class SalvarListaUseCase:
         self.produto_repo = produto_repo
 
     async def executar(self, usuario_id: int, input: CriarListaInput) -> Lista:
+        # Validar nome da lista
+        if not input.nome or not input.nome.strip():
+            raise ValueError("nome da lista deve ter 1-100 caracteres")
+        if len(input.nome) > 100:
+            raise ValueError("nome da lista deve ter 1-100 caracteres")
+
+        # Validar lista não vazia
+        if not input.itens:
+            raise ValueError("Lista deve ter pelo menos 1 item")
+
         # Validar produtos existem
         produto_ids = [item["produto_id"] for item in input.itens]
         produtos = await self.produto_repo.buscar_por_ids(produto_ids)

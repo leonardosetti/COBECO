@@ -4,7 +4,7 @@
 **Status:** Rascunho | Aprovado | Arquivado  
 **Data de Criação:** DD/MM/AAAA  
 **Data de Aprovação:** DD/MM/AAAA  
-**Autor:** <Nome> (Product Owner)  
+**Autor:** <Nome> (Proddoc-arch-0006-uc-v1t Owner)  
 **Aprovadores:** CCB (Change Control Board)
 
 ---
@@ -16,12 +16,12 @@
 | **Nome do Projeto** | <Nome> |
 | **Código / ID** | <Código único> |
 | **Patrocinador** | <Nome / Órgão> |
-| **Product Owner** | <Nome> |
+| **Proddoc-arch-0006-uc-v1t Owner** | <Nome> |
 | **Tech Lead** | <Nome> |
 | **Data de Início Prevista** | DD/MM/AAAA |
 | **Data de Término Prevista** | DD/MM/AAAA |
 | **Metodologia** | Híbrido (PMBOK 7 + SDD + Scrum) |
-| **Constituição Vigente** | `constitution.md` v2.0 |
+| **Constituição Vigente** | `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md` v2.0 |
 
 ---
 
@@ -31,7 +31,7 @@
 <Descreva o problema de negócio ou oportunidade que o projeto resolve.>
 
 ### 2.2 Objetivos do Projeto (SMART)
-| # | Objetivo | Métrica de Sucesso |
+| # | Objetivo | Métrica de Sdoc-arch-0006-uc-v1esso |
 |---|----------|-------------------|
 | 1 | <Objetivo 1> | <KPI mensurável> |
 | 2 | <Objetivo 2> | <KPI mensurável> |
@@ -94,7 +94,7 @@
 
 | Nome | Papel | Interesse | Poder | Engajamento Necessário |
 |------|-------|-----------|-------|------------------------|
-| <Nome> | Product Owner | Alto | Alto | Liderar |
+| <Nome> | Proddoc-arch-0006-uc-v1t Owner | Alto | Alto | Liderar |
 | <Nome> | Tech Lead | Alto | Alto | Decidir técnico |
 | <Nome> | Orientador Acadêmico | Alto | Alto | Aprovar marcos |
 | <Nome> | Banca Avaliadora | Alto | Alto | Avaliar entrega final |
@@ -149,7 +149,7 @@
 
 ---
 
-## 10. Critérios de Sucesso do Projeto
+## 10. Critérios de Sdoc-arch-0006-uc-v1esso do Projeto
 
 | Critério | Meta | Como Medir |
 |----------|------|------------|

@@ -4,5 +4,5 @@
   "target": "agent-backend-dev",
   "action": "implement",
   "handoff": "HF-0111",
-  "payload": "Implementar 3 correcoes de contrato half-duplex: (1) Unificar scripts/agent_communication_hub.py para usar mesmos nomes de campo de scripts/nexus_dispatcher.py (task_id, target, payload, sender) em vez de envelope_id/receiver/payload_ref. (2) Adicionar validacao de existencia do handoff .md em .ai/handoffs/ antes de aceitar dispatch em scripts/nexus_dispatcher.py (rejeitar se arquivo HF-*.md nao existir). (3) Adicionar validacao de reply_required e correlacao task_id no ledger em scripts/nexus_delivery.py. Todos com kill_switch: inherited. Validar com pytest tests/agents verde apos mudancas."
+  "payload": "Implementar 3 correcoes de contrato half-duplex: (1) Unificar scripts/agent_communication_hub.py para usar mesmos nomes de campo de scripts/script-dispatch-0001-nexus-dispatcher-v1.0.py (task_id, target, payload, sender) em vez de envelope_id/receiver/payload_ref. (2) Adicionar validacao de existencia do handoff .md em .ai/handoffs/ antes de aceitar dispatch em scripts/script-dispatch-0001-nexus-dispatcher-v1.0.py (rejeitar se arquivo HF-*.md nao existir). (3) Adicionar validacao de reply_required e correlacao task_id no ledger em scripts/nexus_delivery.py. Todos com kill_switch: inherited. Validar com pytest tests/agents verde apos mudancas."
 }

@@ -36,8 +36,8 @@
 | 1.1.4 | Matriz RACI | Definir responsabilidades | Tech Lead | 0,5 dia | 1.1.1 | `docs/strategy/RACI.md` |
 | 1.1.5 | WBS (esta) | Decompor escopo em pacotes | Tech Lead | 0,5 dia | 1.1.1 | `docs/strategy/WBS.md` |
 | 1.1.6 | Cronograma (Gantt) | Sequenciar atividades com dependências | Tech Lead | 0,5 dia | 1.1.5 | `docs/strategy/SCHEDULE.md` |
-| 1.1.7 | ADR-001 Stack | Ratificar stack tecnológica | Arquiteto | 1 dia | — | `docs/decisoes/ADR-001-stack-decision.md` |
-| 1.1.8 | Constitution v2.0 | Validar lei suprema do repo | CCB | 0,5 dia | — | `constitution.md` |
+| 1.1.7 | ADR-001 Stack | Ratificar stack tecnológica | Arquiteto | 1 dia | — | `docs/decisoes/doc-adr-0001-stack-decision-v1.0.md` |
+| 1.1.8 | Constitution v2.0 | Validar lei suprema do repo | CCB | 0,5 dia | — | `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md` |
 | 1.1.9 | GitHub Projects Setup | Milestones, labels, board, issues | Tech Lead | 1 dia | 1.1.4 | Projeto GitHub ativo |
 | 1.1.10 | Ambiente Dev | Docker, seed, migrations, CI | Dev Backend | 1 dia | 1.1.7 | `docker compose up` funcional |
 
@@ -51,12 +51,12 @@
 
 | WBS ID | Pacote de Trabalho | Descrição | Responsável | Duração | Dependências | Entregável |
 |--------|-------------------|-----------|-------------|---------|--------------|------------|
-| 1.2.1.1 | PRD | Consolidar REQUISITOS + CASOSDEUSO | PO | 1 dia | 1.1.1 | `docs/strategy/PRD.md` |
+| 1.2.1.1 | PRD | Consolidar req-func-0001-requisitos-funcionais-canon + req-use-case-0001-casos-de-uso-canon | PO | 1 dia | 1.1.1 | `docs/strategy/PRD.md` |
 | 1.2.1.2 | User Stories (RF01-RF04) | Escrever US + Critérios Aceite Gherkin | PO | 1 dia | 1.2.1.1 | `docs/strategy/user-stories/US-*.md` + Issues GitHub |
 | 1.2.1.3 | Diagramas C4 | Contexto, Containers, Componentes | Arquiteto | 1 dia | 1.1.7 | `docs/arquitetura/C4-*.md` |
-| 1.2.1.4 | RAID Log Inicial | Riscos, premissas, issues, dependências | Tech Lead | 0,5 dia | 1.1.3 | `docs/operacao/RAID-LOG.md` |
-| 1.2.1.5 | Test Plan | Estratégia de testes unit/E2E | QA | 0,5 dia | 1.2.1.2 | `docs/operacao/TEST-PLAN.md` |
-| 1.2.1.6 | Docker Compose Prod | Infra completa (nginx, backend, DB) | Dev Backend | 1 dia | 1.1.10 | `docker-compose.yml` validado |
+| 1.2.1.4 | RAID Log Inicial | Riscos, premissas, issues, dependências | Tech Lead | 0,5 dia | 1.1.3 | `docs/operacao/doc-raid-log-0001-raid-log-v1.0.md` |
+| 1.2.1.5 | Test Plan | Estratégia de testes unit/E2E | QA | 0,5 dia | 1.2.1.2 | `docs/operacao/doc-test-plan-0001-test-plan-v1.0.md` |
+| 1.2.1.6 | Docker Compose Prod | Infra completa (nginx, backend, DB) | Dev Backend | 1 dia | 1.1.10 | `config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0002-docker-compose-override-v1-v1-v1.0-v1.0-v1.0.yml` validado |
 | 1.2.1.7 | Schema MySQL (8 tabelas) | DER implementado + migrations | Dev Backend | 1 dia | 1.1.7 | `alembic upgrade head` |
 | 1.2.1.8 | Seed Script | 11 cat, 10 forn, 50 prod, 300 preços | Dev Backend | 1 dia | 1.2.1.7 | `scripts/seed.py` <10s |
 | 1.2.1.9 | UC09: Cadastrar Usuário | Endpoint + validação + bcrypt + segurança | Dev Backend | 1,5 dia | 1.2.1.7 | `POST /v1/usuarios` |
@@ -118,12 +118,12 @@
 |--------|-------------------|-----------|-------------|---------|--------------|------------|
 | 1.2.5.1 | Cobertura Testes ≥80% | pytest --cov-fail-under=80 | QA + Devs | 2 dias | Todas specs | CI verde |
 | 1.2.5.2 | Testes E2E Playwright | Fluxos críticos cadastro→comparação→PDF | QA | 1,5 dia | 1.2.4.2 | `frontend/tests/e2e/` |
-| 1.2.5.3 | CI/CD Pipeline | ruff + pytest + build Docker <5min | DevOps | 1 dia | 1.1.10 | `.github/workflows/ci.yml` |
+| 1.2.5.3 | CI/CD Pipeline | ruff + pytest + build Docker <5min | DevOps | 1 dia | 1.1.10 | `.github/workflows/config-ci-0001-github-actions-v1.0.yml` |
 | 1.2.5.4 | Runbooks | Deploy, rollback, seed, migrate, backup | DevOps | 1 dia | 1.2.5.3 | `docs/operacao/RUNBOOK-*.md` |
 | 1.2.5.5 | Release Notes v0.1.0 | Changelog + notas de release | PO | 0,5 dia | 1.2.5.1 | `CHANGELOG.md` + GitHub Release |
-| 1.2.5.6 | Refinar README + OpenAPI | Instruções docker compose, arquitetura | PO | 0,5 dia | 1.2.5.3 | `README.md` atualizado |
+| 1.2.5.6 | Refinar doc-readme-0001-readme-canon + OpenAPI | Instruções docker compose, arquitetura | PO | 0,5 dia | 1.2.5.3 | `doc-readme-0001-readme-canon.md` atualizado |
 | 1.2.5.7 | Preparação Apresentação | Roteiro 35min, falas divididas, ensaio | Equipe | 1,5 dia | 1.2.5.1 | Slides + Demo pronta |
-| 1.2.5.8 | Post-Mortem / Lições | Blameless RCA, ações preventivas | Tech Lead | 0,5 dia | 1.2.5.7 | `docs/auditorias/POST-MORTEM.md` |
+| 1.2.5.8 | Post-Mortem / Lições | Blameless RCA, ações preventivas | Tech Lead | 0,5 dia | 1.2.5.7 | `docs/auditorias/audit-postmortem-0001-postmortem-v1.0.md` |
 | 1.2.5.9 | Termo de Encerramento | Aceite formal, lições consolidadas | PO | 0,5 dia | 1.2.5.8 | `docs/strategy/CLOSURE.md` |
 
 **Gate 3 (Fim Sprint 5):** Cobertura ≥80% + Runbooks + Release Notes + Demo funcional → CCB + Orientador

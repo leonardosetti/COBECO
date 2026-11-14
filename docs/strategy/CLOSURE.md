@@ -4,7 +4,7 @@
 **Data:** 30/10/2026  
 **Projeto:** COBECO MVP  
 **Período:** 15/09/2026 a 30/10/2026  
-**Autor:** Leonardo Setti (Product Owner)  
+**Autor:** Leonardo Setti (Proddoc-arch-0006-uc-v1t Owner)  
 **Aprovação:** CCB + Banca Avaliadora (Gate 4 — 30/10/2026)
 
 ---
@@ -17,12 +17,12 @@ Por meio deste termo, declara-se oficialmente **ENCERRADO** o projeto **COBECO M
 
 ## 2. Objetivos vs. Resultados Alcançados
 
-| Objetivo (Project Charter) | Métrica de Sucesso | Resultado Alcançado | Status |
+| Objetivo (Project Charter) | Métrica de Sdoc-arch-0006-uc-v1esso | Resultado Alcançado | Status |
 |----------------------------|-------------------|---------------------|--------|
 | Entregar MVP funcional (18 RFs) | 100% RFs Done no GitHub Projects | 100% (18/18) | ✅ Atingido |
 | Cobertura de testes ≥ 80% | `pytest --cov-fail-under=80` | 83% | ✅ Atingido |
 | Documentação ABNT aprovada | Nota orientador ≥ 8,0 | 9,2 | ✅ Atingido |
-| Deploy reproduzível | `docker compose up` smoke test | Sucesso | ✅ Atingido |
+| Deploy reproduzível | `docker compose up` smoke test | Sdoc-arch-0006-uc-v1esso | ✅ Atingido |
 | Apresentação final (35 min) | Nota banca ≥ 8,0 | 9,0 | ✅ Atingido |
 | Clean Architecture + SDD | Code review R-01..R-07 + Specs ratificadas | 16 Specs ratificadas | ✅ Atingido |
 
@@ -40,16 +40,16 @@ Por meio deste termo, declara-se oficialmente **ENCERRADO** o projeto **COBECO M
 | **User Stories (18 RFs)** | `docs/strategy/user-stories/US-*.md` + GitHub Issues | 1.0 | PO |
 | **Matriz Rastreabilidade** | `docs/strategy/TRACEABILITY.md` | 1.0 | QA Lead |
 | **Diagramas C4** | `docs/arquitetura/C4-*.md` | 1.0 | Arquiteto |
-| **ADR-001 Stack** | `docs/decisoes/ADR-001-stack-decision.md` | Ratificada | CCB |
-| **Constitution v2.0** | `constitution.md` | 2.0 | CCB |
+| **ADR-001 Stack** | `docs/decisoes/doc-adr-0001-stack-decision-v1.0.md` | Ratificada | CCB |
+| **Constitution v2.0** | `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md` | 2.0 | CCB |
 | **Specs SDD (16)** | `.ai/specs/spec-*.spec.md` | Ratificadas | SDD Process |
 | **Handoffs** | `.ai/handoffs/HF-*.md` | Processadas | L0 Dispatch |
-| **RAID Log** | `docs/operacao/RAID-LOG.md` | Final | Tech Lead |
-| **Test Plan** | `docs/operacao/TEST-PLAN.md` | Final | QA Lead |
+| **RAID Log** | `docs/operacao/doc-raid-log-0001-raid-log-v1.0.md` | Final | Tech Lead |
+| **Test Plan** | `docs/operacao/doc-test-plan-0001-test-plan-v1.0.md` | Final | QA Lead |
 | **Runbooks** | `docs/operacao/RUNBOOK-*.md` | 1.0 | DevOps |
-| **Release Notes v0.1.0** | `docs/operacao/RELEASE-NOTES-v0.1.0.md` | 1.0 | PO |
-| **Post-Mortem** | `docs/auditorias/POST-MORTEM.md` | 1.0 | Tech Lead |
-| **Lições Aprendidas** | `docs/auditorias/LESSONS-LEARNED.md` | 1.0 | Equipe |
+| **Release Notes v0.1.0** | `docs/operacao/doc-release-notes-0001-v0-1-0-v1.0.md` | 1.0 | PO |
+| **Post-Mortem** | `docs/auditorias/audit-postmortem-0001-postmortem-v1.0.md` | 1.0 | Tech Lead |
+| **Lições Aprendidas** | `docs/auditorias/audit-lessons-0001-lessons-learned-v1.0.md` | 1.0 | Equipe |
 | **Apresentação Final (Slides)** | `docs/strategy/APRESENTACAO-FINAL.pdf` | Final | Equipe |
 
 ---
@@ -142,7 +142,7 @@ Por meio deste termo, declara-se oficialmente **ENCERRADO** o projeto **COBECO M
 3. **RAID Log atualização manual** — Automatizar coleta de riscos do GitHub Issues/PRs (script `gh issue list --label risk`).
 4. **Testes E2E frágeis** — Alguns flaky no Playwright; investir em seletores `data-testid` estáveis + retry nativo.
 5. **Estimativa de tarefas** — Subestimamos complexidade do cálculo orçamento (UC06); usar Planning Poker + referência histórica.
-6. **Comunicação com orientador** — Reuniões quinzenais foram poucas; semanais curtas (15min) seriam melhores.
+6. **Comunicação com orientador** — Reuniões quinzenais foram podoc-arch-0006-uc-v1as; semanais curtas (15min) seriam melhores.
 
 ### 6.3 Surpresas (Surprise)
 1. **MySQL InnoDB FK cascade** — Comportamento `ON DELETE CASCADE` em `itens_lista` apaga itens ao deletar lista (soft delete não cascateia). Documentado no DER.

@@ -3,9 +3,9 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  forbidOnly: !!processconfig-env-0001-env-example-v1.0.CI,
+  retries: processconfig-env-0001-env-example-v1.0.CI ? 2 : 0,
+  workers: processconfig-env-0001-env-example-v1.0.CI ? 1 : undefined,
   reporter: [
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
     ['json', { outputFile: 'test-results/results.json' }],
@@ -16,7 +16,7 @@ export default defineConfig({
     timeout: 10000,
   },
   use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:8380',
+    baseURL: processconfig-env-0001-env-example-v1.0.BASE_URL || 'http://localhost:8380',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -38,9 +38,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'docker compose -f docker-compose.yml -f docker-compose.override.yml up -d',
+    command: 'docker compose -f config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0002-docker-compose-override-v1-v1-v1.0-v1.0-v1.0.yml -f config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0002-docker-compose-override-v1-v1-v1.0-v1.0.override.yml up -d',
     url: 'http://localhost:8380/health',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !processconfig-env-0001-env-example-v1.0.CI,
     timeout: 180000,
     env: {
       BASE_URL: 'http://localhost:8380',
