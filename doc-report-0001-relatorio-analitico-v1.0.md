@@ -1,3 +1,49 @@
+---
+# === IDENTIFICAÇÃO UNIVERSAL ===
+id: "doc-report-0001-relatorio-analitico-v1.0"
+type: "doc-report"
+title: "DOC REPORT — Relatorio Analitico"
+version: "v1.0"
+status: "rascunho"
+canonical: false
+canonical_slug: "relatorio-analitico"
+
+# === METADADOS DE GOVERNANÇA ===
+created: "2026-11-14"
+updated: "2026-11-14"
+author: "Leonardo Setti (@leonardosetti)"
+owner: "CCB"
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+
+# === RASTREABILIDADE (SSOT) ===
+trace:
+  constitution: ""
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+
+# === CLASSIFICAÇÃO ===
+domain: "audit"
+layer: "audit"
+tags: []
+lgpd_class: "n/a"
+
+# === WORKFLOW STATUS (P3) ===
+workflow:
+  stage: "rascunho"
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # 📋 RELATÓRIO ANALÍTICO — COBECO MVP Acadêmico v3.1
 
 **Documento de Decisão Arquitetural (ADR) Consolidado**

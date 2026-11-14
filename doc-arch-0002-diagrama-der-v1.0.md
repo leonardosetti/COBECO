@@ -1,3 +1,49 @@
+---
+# === IDENTIFICAÇÃO UNIVERSAL ===
+id: "doc-arch-0002-diagrama-der-v1.0"
+type: "doc-arch"
+title: "DOC ARCH — Diagrama Der"
+version: "v1.0"
+status: "rascunho"
+canonical: false
+canonical_slug: "diagrama-der"
+
+# === METADADOS DE GOVERNANÇA ===
+created: "2026-11-14"
+updated: "2026-11-14"
+author: "Leonardo Setti (@leonardosetti)"
+owner: "CCB"
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+
+# === RASTREABILIDADE (SSOT) ===
+trace:
+  constitution: ""
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+
+# === CLASSIFICAÇÃO ===
+domain: "architecture"
+layer: "architecture"
+tags: []
+lgpd_class: "n/a"
+
+# === WORKFLOW STATUS (P3) ===
+workflow:
+  stage: "rascunho"
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # 📊 Diagrama Entidade-Relacionamento — COBECO MVP v3.1
 
 **Documento Técnico — DER Oficial**

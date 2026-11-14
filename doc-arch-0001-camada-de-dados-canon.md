@@ -1,3 +1,49 @@
+---
+# === IDENTIFICAÇÃO UNIVERSAL ===
+id: "doc-arch-0001-camada-de-dados-canon"
+type: "doc-arch"
+title: "DOC ARCH — Camada De Dados"
+version: "3.2"
+status: "ratificado"
+canonical: true
+canonical_slug: "camada-de-dados"
+
+# === METADADOS DE GOVERNANÇA ===
+created: "2026-11-14"
+updated: "2026-11-14"
+author: "Leonardo Setti (@leonardosetti)"
+owner: "CCB"
+ratified_by: "gh-sig:owner:leonardosetti:14863508"
+ratified_at: "2026-11-14"
+supersedes: null
+superseded_by: null
+
+# === RASTREABILIDADE (SSOT) ===
+trace:
+  constitution: ""
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+
+# === CLASSIFICAÇÃO ===
+domain: "architecture"
+layer: "architecture"
+tags: []
+lgpd_class: "n/a"
+
+# === WORKFLOW STATUS (P3) ===
+workflow:
+  stage: "ratificado"
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # 📊 ESTRUTURA OFICIAL DA CAMADA DE DADOS — COBECO MVP v3.2
 
 **Documento:** Camada de Dados e Diagrama Entidade-Relacionamento (DER)  

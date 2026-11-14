@@ -1,3 +1,49 @@
+---
+# === IDENTIFICAÇÃO UNIVERSAL ===
+id: "doc-state-of-art-0001-estado-da-arte-v1.0"
+type: "doc-state"
+title: "DOC STATE — Art 0001 Estado Da Arte"
+version: "v1.0"
+status: "rascunho"
+canonical: false
+canonical_slug: "art-0001-estado-da-arte"
+
+# === METADADOS DE GOVERNANÇA ===
+created: "2026-11-14"
+updated: "2026-11-14"
+author: "Leonardo Setti (@leonardosetti)"
+owner: "CCB"
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+
+# === RASTREABILIDADE (SSOT) ===
+trace:
+  constitution: ""
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+
+# === CLASSIFICAÇÃO ===
+domain: "general"
+layer: "artifact"
+tags: []
+lgpd_class: "n/a"
+
+# === WORKFLOW STATUS (P3) ===
+workflow:
+  stage: "rascunho"
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # RELATÓRIO DE ESTADO DA ARTE — COBECO MVP
 **Data:** 13 de Novembro de 2026  
 **Versão:** 1.0  

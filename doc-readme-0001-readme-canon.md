@@ -1,3 +1,49 @@
+---
+# === IDENTIFICAÇÃO UNIVERSAL ===
+id: "doc-readme-0001-readme-canon"
+type: "doc-readme"
+title: "DOC README — Readme"
+version: "3.2"
+status: "ratificado"
+canonical: true
+canonical_slug: "readme"
+
+# === METADADOS DE GOVERNANÇA ===
+created: "2026-11-14"
+updated: "2026-11-14"
+author: "Leonardo Setti (@leonardosetti)"
+owner: "CCB"
+ratified_by: "gh-sig:owner:leonardosetti:14863508"
+ratified_at: "2026-11-14"
+supersedes: null
+superseded_by: null
+
+# === RASTREABILIDADE (SSOT) ===
+trace:
+  constitution: ""
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+
+# === CLASSIFICAÇÃO ===
+domain: "documentation"
+layer: "documentation"
+tags: []
+lgpd_class: "n/a"
+
+# === WORKFLOW STATUS (P3) ===
+workflow:
+  stage: "ratificado"
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # 🛒 COBECO - Cotação de Bens de Consumo (MVP)
 
 **Sistema de Comparação de Preços para Listas de Compras**  

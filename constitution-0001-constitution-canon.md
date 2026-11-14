@@ -1,3 +1,49 @@
+---
+# === IDENTIFICAÇÃO UNIVERSAL ===
+id: "constitution-0001-constitution--canon"
+type: "constitution-0001"
+title: "CONSTITUTION 0001 — "
+version: "3.2"
+status: "ratificado"
+canonical: true
+canonical_slug: ""
+
+# === METADADOS DE GOVERNANÇA ===
+created: "2026-11-14"
+updated: "2026-11-14"
+author: "Leonardo Setti (@leonardosetti)"
+owner: "CCB"
+ratified_by: "gh-sig:owner:leonardosetti:14863508"
+ratified_at: "2026-11-14"
+supersedes: null
+superseded_by: null
+
+# === RASTREABILIDADE (SSOT) ===
+trace:
+  constitution: ""
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+
+# === CLASSIFICAÇÃO ===
+domain: "general"
+layer: "artifact"
+tags: []
+lgpd_class: "n/a"
+
+# === WORKFLOW STATUS (P3) ===
+workflow:
+  stage: "ratificado"
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # Constituição — COBECO MVP
 
 **Projeto:** Cotação de Bens de Consumo (COBECO) — Cotação de preços entre fornecedores a partir de listas de compras.  

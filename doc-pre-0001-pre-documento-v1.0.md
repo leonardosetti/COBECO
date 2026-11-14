@@ -1,3 +1,49 @@
+---
+# === IDENTIFICAÇÃO UNIVERSAL ===
+id: "doc-pre-0001-pre-documento-v1.0"
+type: "doc-pre"
+title: "DOC PRE — Pre Documento"
+version: "v1.0"
+status: "rascunho"
+canonical: false
+canonical_slug: "pre-documento"
+
+# === METADADOS DE GOVERNANÇA ===
+created: "2026-11-14"
+updated: "2026-11-14"
+author: "Leonardo Setti (@leonardosetti)"
+owner: "CCB"
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+
+# === RASTREABILIDADE (SSOT) ===
+trace:
+  constitution: ""
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+
+# === CLASSIFICAÇÃO ===
+domain: "documentation"
+layer: "draft"
+tags: []
+lgpd_class: "n/a"
+
+# === WORKFLOW STATUS (P3) ===
+workflow:
+  stage: "rascunho"
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 Aqui está o documento completo, estruturado e redigido em linguagem acadêmica formal, pronto para ser copiado para um editor de texto (Word, Google Docs ou LaTeX) e formatado conforme as normas da ABNT (margens: superior/esquerda 3cm, inferior/direita 2cm; fonte Arial ou Times New Roman 12; espaçamento 1,5).
 
 Incluí representações em **Mermaid** para os diagramas. Você pode copiar o código do Mermaid e colar no [Mermaid Live Editor](https://mermaid.live) ou no [Draw.io](https://app.diagrams.net) (via *Arrange > Insert > Advanced > Mermaid*) para gerar as imagens em alta resolução e inseri-las no PDF final.

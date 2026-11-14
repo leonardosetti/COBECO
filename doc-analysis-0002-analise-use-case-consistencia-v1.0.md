@@ -1,3 +1,49 @@
+---
+# === IDENTIFICAÇÃO UNIVERSAL ===
+id: "doc-analysis-0002-analise-use-case-consistencia-v1.0"
+type: "doc-analysis"
+title: "DOC ANALYSIS — Analise Use Case Consistencia"
+version: "v1.0"
+status: "rascunho"
+canonical: false
+canonical_slug: "analise-use-case-consistencia"
+
+# === METADADOS DE GOVERNANÇA ===
+created: "2026-11-14"
+updated: "2026-11-14"
+author: "Leonardo Setti (@leonardosetti)"
+owner: "CCB"
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+
+# === RASTREABILIDADE (SSOT) ===
+trace:
+  constitution: ""
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+
+# === CLASSIFICAÇÃO ===
+domain: "audit"
+layer: "audit"
+tags: []
+lgpd_class: "n/a"
+
+# === WORKFLOW STATUS (P3) ===
+workflow:
+  stage: "rascunho"
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # 📋 DOCUMENTO COMPLETO — COBECO MVP v3.2
 ## Happy Paths, Exceções, Edge-Cases e Relatório Analítico de Consistência
 

@@ -1,3 +1,49 @@
+---
+# === IDENTIFICAÇÃO UNIVERSAL ===
+id: "doc-analysis-0001-analise-requisitos-casos-uso-v1.0"
+type: "doc-analysis"
+title: "DOC ANALYSIS — Analise Requisitos Casos Uso"
+version: "v1.0"
+status: "rascunho"
+canonical: false
+canonical_slug: "analise-requisitos-casos-uso"
+
+# === METADADOS DE GOVERNANÇA ===
+created: "2026-11-14"
+updated: "2026-11-14"
+author: "Leonardo Setti (@leonardosetti)"
+owner: "CCB"
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+
+# === RASTREABILIDADE (SSOT) ===
+trace:
+  constitution: ""
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+
+# === CLASSIFICAÇÃO ===
+domain: "audit"
+layer: "audit"
+tags: []
+lgpd_class: "n/a"
+
+# === WORKFLOW STATUS (P3) ===
+workflow:
+  stage: "rascunho"
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # 📋 ANÁLISE COMPLETA DO SISTEMA COBECO — MVP Acadêmico v3.1
 
 **Documento Consolidado de Engenharia de Requisitos e Modelagem UML**  
