@@ -195,13 +195,35 @@ def generate_frontmatter(info: dict) -> str:
     canonical_slug = info["nome"]
     
     # Ratificação para canon/policies/templates
-    ratified_by = 'null'
-    ratified_at = 'null'
+    ratified_by = None
+    ratified_at = None
     if canonical or tipo_classe.startswith(("policy-", "template-")):
-        ratified_by = '"gh-sig:owner:leonardosetti:14863508"'
-        ratified_at = f'"{now}"'
+        ratified_by = "gh-sig:owner:leonardosetti:14863508"
+        ratified_at = now
     
     workflow_stage = status if canonical or tipo_classe.startswith(("policy-", "template-")) else "rascunho"
+    
+    # Trace fields as empty lists (not empty strings)
+    trace = {
+        "constitution": [],
+        "req_func": [],
+        "req_nfunc": [],
+        "use_cases": [],
+        "specs": [],
+        "handoffs": [],
+        "adrs": [],
+        "code": [],
+        "tests": []
+    }
+    
+    # Workflow fields - use None for null values in YAML
+    workflow = {
+        "stage": workflow_stage,
+        "reviewer": None,
+        "reviewed_at": None,
+        "approval_hash": None,
+        "board_url": None
+    }
     
     fm = {
         "id": artifact_id,
@@ -215,32 +237,16 @@ def generate_frontmatter(info: dict) -> str:
         "updated": now,
         "author": "Leonardo Setti (@leonardosetti)",
         "owner": "CCB",
-        "ratified_by": ratified_by,
-        "ratified_at": ratified_at,
-        "supersedes": "null",
-        "superseded_by": "null",
-        "trace": {
-            "constitution": "",
-            "req_func": [],
-            "req_nfunc": [],
-            "use_cases": [],
-            "specs": [],
-            "handoffs": [],
-            "adrs": [],
-            "code": [],
-            "tests": []
-        },
+        "ratified_by": ratified_by if ratified_by != 'null' else None,
+        "ratified_at": ratified_at if ratified_at != 'null' else None,
+        "supersedes": None,
+        "superseded_by": None,
+        "trace": trace,
         "domain": domain,
         "layer": layer,
         "tags": [],
         "lgpd_class": "n/a",
-        "workflow": {
-            "stage": workflow_stage,
-            "reviewer": "null",
-            "reviewed_at": "null",
-            "approval_hash": "null",
-            "board_url": "null"
-        }
+        "workflow": workflow
     }
     
     # Serializar YAML
