@@ -1,32 +1,40 @@
 ---
-id: config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0-agents-agent-six-sigma-specialist
-title: 'SYSTEM DIRECTIVE: AGENT-SIX-SIGMA-SPECIALIST (L2 · SPECIALIST · SIX SIGMA)'
-type: conhecimento
-version: 0.1.0
-status: ativo
-owner: agent-project-analyst
-derived-from:
-- .config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-six-sigma-specialist.md (adequado à norma em 2026-11-05)
-last-revised: '2026-11-05'
-lgpd-class: n/a
-tags:
-- agents
-- docs
-- adequado-a-norma
-name: agent-six-sigma-specialist
-layer: L2
-role: specialist
-description: 'Agente agent-six-sigma-specialist do ecossistema COBECO.'
-upstream:
-  - "agent-nexus-prime-ultimate"
-  - "agent-quality-architect-specialist"
-  - "agent-project-analyst"
-downstream:
-  - "agent-project-auditor"
-  - "agent-gatekeeper"
-  - "agent-pm"
+id: agent-six-sigma--specialist
+type: agent-six
+title: 'AGENT SIX — '
+version: specialist
+status: rascunho
+canonical: false
+canonical_slug: ''
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: general
+layer: artifact
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
-
 # SYSTEM DIRECTIVE: AGENT-SIX-SIGMA-SPECIALIST (L2 · SPECIALIST · SIX SIGMA)
 <!-- Version 0.1.0 | Ratified 2026-10-23 | Status: DRAFT | ONDA 8 Lote 2 -->
 <!-- Forged by AFA-ULTIMATE v1.3.0-FINAL | Governed by constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md Arts. 4, 5 -->

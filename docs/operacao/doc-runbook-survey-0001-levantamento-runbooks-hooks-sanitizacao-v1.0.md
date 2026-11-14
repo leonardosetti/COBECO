@@ -1,3 +1,40 @@
+---
+id: doc-runbook-survey-0001-levantamento-runbooks-hooks-sanitizacao-v1.0
+type: doc-runbook-survey
+title: DOC RUNBOOK SURVEY — Levantamento Runbooks Hooks Sanitizacao
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: levantamento-runbooks-hooks-sanitizacao
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: operation
+layer: survey
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # Levantamento: Runbooks, Hooks e Sanitização Contínua de Cross-References
 
 **Documento:** Survey técnico para adequação de automação operacional  

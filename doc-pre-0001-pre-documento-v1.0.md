@@ -1,26 +1,21 @@
 ---
-# === IDENTIFICAÇÃO UNIVERSAL ===
-id: "doc-pre-0001-pre-documento-v1.0"
-type: "doc-pre"
-title: "DOC PRE — Pre Documento"
-version: "v1.0"
-status: "rascunho"
+id: doc-pre-0001-pre-documento-v1.0
+type: doc-pre
+title: DOC PRE — Pre Documento
+version: v1.0
+status: rascunho
 canonical: false
-canonical_slug: "pre-documento"
-
-# === METADADOS DE GOVERNANÇA ===
-created: "2026-11-14"
-updated: "2026-11-14"
-author: "Leonardo Setti (@leonardosetti)"
-owner: "CCB"
+canonical_slug: pre-documento
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
 ratified_by: null
 ratified_at: null
 supersedes: null
 superseded_by: null
-
-# === RASTREABILIDADE (SSOT) ===
 trace:
-  constitution: ""
+  constitution: []
   req_func: []
   req_nfunc: []
   use_cases: []
@@ -29,16 +24,12 @@ trace:
   adrs: []
   code: []
   tests: []
-
-# === CLASSIFICAÇÃO ===
-domain: "documentation"
-layer: "draft"
+domain: documentation
+layer: draft
 tags: []
-lgpd_class: "n/a"
-
-# === WORKFLOW STATUS (P3) ===
+lgpd_class: n/a
 workflow:
-  stage: "rascunho"
+  stage: rascunho
   reviewer: null
   reviewed_at: null
   approval_hash: null

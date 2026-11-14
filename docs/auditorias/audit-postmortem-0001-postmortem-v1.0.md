@@ -1,3 +1,40 @@
+---
+id: audit-postmortem-0001-postmortem-v1.0
+type: audit-postmortem
+title: AUDIT POSTMORTEM — Postmortem
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: postmortem
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: audit
+layer: audit
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # Post-Mortem (Blameless) — COBECO MVP
 
 **Documento:** Análise Pós-Mortem Sem Culpa  

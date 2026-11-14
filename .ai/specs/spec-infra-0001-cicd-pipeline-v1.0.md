@@ -1,18 +1,39 @@
 ---
-id: ai-specs-spec-011-cicd-pipeline-v1-spec
-title: SPEC spec-011 — cicd-pipeline-v1 — Pipeline CI/CD do COBECO (lint+testes ≤5 min por push, falha bloqueando merge)
-type: spec
-version: 1.0.0
-status: ativo
-owner: agent-project-analyst
-derived-from:
-- .ai/specs/spec-infra-0001-cicd-pipeline-v1.0.md (adequado à norma em 2026-11-05)
-last-revised: '2026-11-05'
-lgpd-class: n/a
-tags:
-- specs
-- docs
-- adequado-a-norma
+id: spec-infra-0001-cicd-pipeline-v1.0
+type: spec-infra
+title: SPEC INFRA — Cicd Pipeline
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: cicd-pipeline
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: specs
+layer: spec
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
 ---
 spec_id: spec-011

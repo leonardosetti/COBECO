@@ -1,22 +1,40 @@
 ---
-id: ai-specs-spec-<NNN>-<slug>-v<ver>-spec
-title: SPEC spec-<NNN> — <slug> — <Nome da Especificação>
-type: spec
-version: <ver>
-status: ativo | ratificado | arquivado
-owner: <agent-responsável>
-derived-from:
-- req-func-0001-requisitos-funcionais-canon.md (RF-XX)
-- req-use-case-0001-casos-de-uso-canon.md (UC-YY)
-last-revised: 'DD/MM/AAAA'
-lgpd-class: n/a | PII-zero | PII-sintético
-tags:
-- specs
-- docs
-- rf-XX
-- doc-arch-0006-uc-v1-YY
+id: template-spec-0001-spec-v1.0
+type: template-spec
+title: TEMPLATE SPEC — Spec
+version: v1.0
+status: rascunho
+canonical: false
+canonical_slug: spec
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: gh-sig:owner:leonardosetti:14863508
+ratified_at: '2026-11-14'
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: general
+layer: artifact
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
-
 ---
 spec_id: spec-<NNN>
 specname: <slug>

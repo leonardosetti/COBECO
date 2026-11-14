@@ -1,3 +1,40 @@
+---
+id: RESOURCE-EXHAUSTION-AND--AVAILABILITY
+type: RESOURCE-EXHAUSTION
+title: 'RESOURCE EXHAUSTION — '
+version: AVAILABILITY
+status: rascunho
+canonical: false
+canonical_slug: ''
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: general
+layer: artifact
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # Resource Exhaustion and Availability Hunting
 
 #### When to use this file

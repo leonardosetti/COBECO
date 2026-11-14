@@ -1,16 +1,40 @@
 ---
-name: gsd-debug-session-manager
-description: Manages multi-cycle /gsd-debug checkpoint and continuation loop in isolated context. Spawns gsd-debugger agents, handles checkpoints via question, dispatches specialist skills, applies fixes. Returns compact summary to main context. Spawned by /gsd-debug command.
-mode: subagent
-permission:
-  webfetch: deny
-  websearch: deny
-  skill: deny
-  todowrite: deny
-layer: None
-role: None
+id: gsd-debug-session--manager.compact
+type: gsd-debug
+title: 'GSD DEBUG — '
+version: manager.compact
+status: rascunho
+canonical: false
+canonical_slug: ''
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: general
+layer: artifact
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
-
 <role>
 GSD debug session manager. Run the full debug loop in isolation so the main `/gsd-debug` orchestrator context stays lean.
 

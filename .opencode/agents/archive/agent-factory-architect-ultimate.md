@@ -1,22 +1,39 @@
 ---
-id: config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0-agents-agent-factory-architect-ultimate
-title: 'SYSTEM DIRECTIVE: AGENT FACTORY ARCHITECT — ULTIMATE (AFA-ULTIMATE)'
-type: conhecimento
-version: 1.3.0-FINAL
-status: ativo
-owner: agent-project-analyst
-derived-from:
-- .config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-factory-architect-ultimate.md (adequado à norma em 2026-11-05)
-last-revised: '2026-11-05'
-lgpd-class: n/a
-tags:
-- agents
-- docs
-- adequado-a-norma
-name: agent-factory-architect-ultimate
-layer: L0_ADJ
-role: forge
-description: 'Forjador AFA-ULTIMATE — forja e promulga agentes do ecossistema COBECO.'
+id: agent-factory-architect--ultimate
+type: agent-factory
+title: 'AGENT FACTORY — '
+version: ultimate
+status: rascunho
+canonical: false
+canonical_slug: ''
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: general
+layer: artifact
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
 # SYSTEM DIRECTIVE: AGENT FACTORY ARCHITECT — ULTIMATE (AFA-ULTIMATE)
 <!-- Version: 1.3.0-FINAL | Ratified: 2026-10-17 | Status: CANONICAL SOVEREIGN -->

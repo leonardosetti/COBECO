@@ -1,18 +1,39 @@
 ---
-id: ai-specs-input-canonico-v4-1-1
-title: INPUT CANÔNICO SUBORDINADO — COBECO v4.1.1
-type: spec
-version: 1.0.0
-status: ativo
-owner: agent-project-analyst
-derived-from:
-- .ai/specs/doc-input-0001-input-canonico-v1.0.md (adequado à norma em 2026-11-05)
-last-revised: '2026-11-05'
-lgpd-class: n/a
-tags:
-- specs
-- docs
-- adequado-a-norma
+id: doc-input-0001-input-canonico-v1.0
+type: doc-input
+title: DOC INPUT — Input Canonico
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: input-canonico
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: specs
+layer: spec
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
 # INPUT CANÔNICO SUBORDINADO — COBECO v4.1.1
 

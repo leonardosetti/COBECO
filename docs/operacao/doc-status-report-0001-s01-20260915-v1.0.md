@@ -1,3 +1,40 @@
+---
+id: doc-status-report-0001-s01-20260915-v1.0
+type: doc-status-report
+title: DOC STATUS REPORT — S01 20260915
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: s01-20260915
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: operation
+layer: report
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # Status Report Semanal — COBECO MVP
 
 **Semana:** 1 (15/09/2026 a 19/09/2026)  

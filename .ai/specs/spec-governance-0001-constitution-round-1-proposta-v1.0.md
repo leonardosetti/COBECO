@@ -1,18 +1,39 @@
 ---
-id: ai-specs-spec-001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-round-1-proposta-spec
-title: PROPOSTA DE EMENDAS CONSTITUCIONAIS — RODADA 1 (WS-1)
-type: spec
-version: 1.0.0
-status: ativo
-owner: agent-project-analyst
-derived-from:
-- .ai/specs/spec-001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-round-1-proposta.spec.md (adequado à norma em 2026-11-05)
-last-revised: '2026-11-05'
-lgpd-class: n/a
-tags:
-- specs
-- docs
-- adequado-a-norma
+id: spec-governance-0001-constitution-round-1-proposta-v1.0
+type: spec-governance
+title: SPEC GOVERNANCE — Constitution Round 1 Proposta
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: constitution-round-1-proposta
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: specs
+layer: spec
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
 ---
 spec_id: spec-001

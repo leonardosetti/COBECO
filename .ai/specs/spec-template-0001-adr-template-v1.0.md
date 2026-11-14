@@ -1,23 +1,40 @@
 ---
-id: ai-specs-spec-adr-template-spec
-title: Template Canônico de ADR — COBECO
-type: spec
-version: 1.0.0
-status: draft
-owner: agent-project-analyst
-derived-from:
-- docs/decisoes/adr-018-nomeclatura-arquivos.md
-- docs/conhecimento/compliance/auditoria-normalizacao-artefatos.md
-- docs/conhecimento/okb.md §8.3
-last-revised: '2026-11-05'
-lgpd-class: n/a
-tags:
-- spec
-- adr
-- template
-- norma
+id: spec-template-0001-adr-template-v1.0
+type: spec-template
+title: SPEC TEMPLATE — Adr Template
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: adr-template
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: specs
+layer: spec
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
-
 # Template Canônico de ADR — COBECO
 
 Este template é a **norma de template para ADRs** do projeto COBECO. Toda ADR nova ou emendada deve seguir esta estrutura. Não criar nova ADR sobrepondo regras de ADR anterior; usar emenda de versão (ADR-LOG).

@@ -1,55 +1,40 @@
 ---
-id: config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0-agents-agent-nexus-prime-ultimate
-title: 'SYSTEM DIRECTIVE: NEXUS-PRIME ULTIMATE (L0 · ORCHESTRATOR · COBECO)'
-type: conhecimento
-version: 1.3.0-ULTIMATE
-status: ativo
-owner: agent-project-analyst
-derived-from:
-- .config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-nexus-prime-ultimate.md (refinado para COBECO em 2026-11-07)
-last-revised: '2026-11-07'
-lgpd-class: n/a
-tags:
-- agents
-- docs
-- refinado-cobeco
-name: agent-nexus-prime-ultimate
-layer: L0
-role: orchestrator
-description: 'Orquestrador L0 do ecossistema COBECO — roteamento DAG, triage, agregação, escalonamento e conformidade constitdoc-arch-0006-uc-v1ional.'
-downstream:
-  - "agent-sdd-specialist"
-  - "agent-pm"
-  - "agent-po"
-  - "agent-architect"
-  - "agent-project-analyst"
-  - "agent-python-specialist"
-  - "agent-api-specialist"
-  - "agent-dba"
-  - "agent-backend-dev"
-  - "agent-ui-ux-advisor"
-  - "agent-frontend-dev"
-  - "agent-bash-specialist"
-  - "agent-infrastrdoc-arch-0006-uc-v1ture-specialist"
-  - "agent-devops"
-  - "agent-github-specialist"
-  - "agent-digital-security"
-  - "agent-compliance-governance"
-  - "agent-docker-specialist"
-  - "agent-artifact-builder"
-  - "agent-qa-sdet"
-  - "agent-reviewer"
-  - "agent-gatekeeper"
-  - "agent-project-auditor"
-  - "agent-skill-master"
-  - "agent-sddai-loader"
-  - "agent-sddai-engineer"
-  - "agent-sddai-memory"
-  - "agent-sddai-cli"
-  - "agent-agile-specialist"
-  - "agent-quality-architect-specialist"
+id: agent-nexus-prime--ultimate
+type: agent-nexus
+title: 'AGENT NEXUS — '
+version: ultimate
+status: rascunho
+canonical: false
+canonical_slug: ''
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: general
+layer: artifact
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
-
 # SYSTEM DIRECTIVE: NEXUS-PRIME ULTIMATE (L0 · ORCHESTRATOR · COBECO)
 <!-- Hardware: 8700G / 60GB / llama.cpp CPU-only @ 8 t/s design | Model: local/qwen30b-moe -->
 

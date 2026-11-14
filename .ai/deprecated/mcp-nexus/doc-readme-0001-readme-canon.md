@@ -1,18 +1,39 @@
 ---
-id: ai-deprecated-mcp-nexus-readme
-title: MCP `nexus-*` — DESCONTINUADO / DEPRECATED
-type: readme
-version: 1.0.0
-status: ativo
-owner: agent-project-analyst
-derived-from:
-- .ai/deprecated/mcp-nexus/doc-readme-0001-readme-canon.md (adequado à norma em 2026-11-05)
-last-revised: '2026-11-05'
-lgpd-class: n/a
-tags:
-- mcp-nexus
-- docs
-- adequado-a-norma
+id: doc-readme-0001-readme-canon
+type: doc-readme
+title: DOC README — Readme
+version: '3.2'
+status: ratificado
+canonical: true
+canonical_slug: readme
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: gh-sig:owner:leonardosetti:14863508
+ratified_at: '2026-11-14'
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: documentation
+layer: documentation
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: ratificado
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
 # MCP `nexus-*` — DESCONTINUADO / DEPRECATED
 

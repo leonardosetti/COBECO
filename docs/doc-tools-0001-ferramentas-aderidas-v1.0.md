@@ -1,3 +1,40 @@
+---
+id: doc-tools-0001-ferramentas-aderidas-v1.0
+type: doc-tools
+title: DOC TOOLS — Ferramentas Aderidas
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: ferramentas-aderidas
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: documentation
+layer: reference
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # Ferramentas aderidas — SpecDrivenDev / AI-Driven dev (COBECO)
 
 Critério de aceite: custo zero (FOSS), sem autenticação/token de API, nativas ou aplicáveis ao Opencode, alta adoção comunitária.

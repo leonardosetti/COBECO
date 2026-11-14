@@ -1,18 +1,39 @@
 ---
-id: ai-specs-spec-014-runtime-agentes-ci-layers-v1-spec
-title: SPEC spec-014 — runtime-agentes-ci-layers-v1 — Camada CI e runtime de agentes SDD (L1/L3) como camadas do Art. 10.1
-type: spec
-version: 1.0.0
-status: ativo
-owner: agent-project-analyst
-derived-from:
-- .ai/specs/spec-runtime-0001-runtime-agentes-ci-layers-v1.0.md (adequado à norma em 2026-11-05)
-last-revised: '2026-11-05'
-lgpd-class: n/a
-tags:
-- specs
-- docs
-- adequado-a-norma
+id: spec-runtime-0001-runtime-agentes-ci-layers-v1.0
+type: spec-runtime
+title: SPEC RUNTIME — Runtime Agentes Ci Layers
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: runtime-agentes-ci-layers
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: specs
+layer: spec
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
 ---
 spec_id: spec-014
