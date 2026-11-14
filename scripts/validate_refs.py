@@ -74,7 +74,7 @@ IGNORE_PATHS = {
     'macro_report.md', 'relatorio_analitico_COBECO.md',
     'analise_REQ_CasosDeUso.md', 'analise-UseCase-consistencia.md',
     'frontend/node_modules/', 'frontend/tests/e2e/node_modules/',
-    'backend/', '.ai/',  # Will be handled by should_scan logic
+    'backend/', '.ai/', '.agents/', '.opencode/',  # Will be handled by should_scan logic
 }
 
 
