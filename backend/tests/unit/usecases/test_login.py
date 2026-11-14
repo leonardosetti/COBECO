@@ -47,7 +47,7 @@ class TestLoginUseCase:
     """Testes para LoginUseCase (UC10/RF2)"""
 
     @pytest.mark.asyncio
-    async def test_executar_sdoc_arch_006_uc_v1esso(self, usecase, mock_repo, criar_token_fn):
+    async def test_executar_sucesso(self, usecase, mock_repo, criar_token_fn):
         usuario = Usuario(
             id=1,
             nome_usuario="usuario_teste",

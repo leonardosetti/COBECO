@@ -1,11 +1,11 @@
 ---
 id: req-use-case-0001-casos-de-uso-canon
-type: req-use
-title: REQ USE — 0001 Casos De Uso
+type: req-use-case
+title: REQ USE CASE — Casos De Uso
 version: '3.2'
-status: rascunho
+status: ratificado
 canonical: true
-canonical_slug: 0001-casos-de-uso
+canonical_slug: casos-de-uso
 created: '2026-11-14'
 updated: '2026-11-14'
 author: Leonardo Setti (@leonardosetti)
@@ -24,12 +24,12 @@ trace:
   adrs: []
   code: []
   tests: []
-domain: general
-layer: artifact
+domain: requirements
+layer: requirements
 tags: []
 lgpd_class: n/a
 workflow:
-  stage: rascunho
+  stage: ratificado
   reviewer: null
   reviewed_at: null
   approval_hash: null

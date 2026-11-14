@@ -278,10 +278,14 @@ def fix_file(filepath: Path, dry_run: bool = False) -> tuple:
             existing_fm_yaml = content[3:end_idx].strip()
             existing_fm = yaml.safe_load(existing_fm_yaml)
             
-            # Verificar se frontmatter já está correto (ID + trace arrays + workflow nulls)
+            # Verificar se frontmatter já está correto (ID + type + trace arrays + workflow nulls)
             expected_id = f"{info['tipo_classe']}-{info['id']}-{info['nome']}-{'canon' if info['canonical'] else info['versao']}"
             trace_ok = True
+            type_ok = True
             if isinstance(existing_fm, dict) and existing_fm.get("id") == expected_id:
+                # Verificar type field
+                if existing_fm.get("type") != info["tipo_classe"]:
+                    type_ok = False
                 # Verificar trace fields são arrays
                 trace = existing_fm.get("trace", {})
                 for field in ["constitution", "req_func", "req_nfunc", "use_cases", "specs", "handoffs", "adrs", "code", "tests"]:
@@ -295,7 +299,7 @@ def fix_file(filepath: Path, dry_run: bool = False) -> tuple:
                         trace_ok = False
                         break
                 
-                if trace_ok:
+                if trace_ok and type_ok:
                     return True, "Frontmatter já correto"
             
             # Remover frontmatter antigo
