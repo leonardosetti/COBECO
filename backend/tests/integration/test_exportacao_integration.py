@@ -3,13 +3,14 @@
 
 import pytest
 import io
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from src.main import app
 
 
 @pytest.fixture
 async def client():
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
 
 
@@ -54,7 +55,7 @@ async def lista_com_itens(client, auth_user):
 
 
 class TestExportacaoIntegration:
-    """Testes de integração para /v1/export (RF17)"""
+    """Testes de integração para /export (RF17)"""
 
     @pytest.mark.asyncio
     async def test_exportar_pdf_lista_autenticado(self, client, auth_user, lista_com_itens):
@@ -62,11 +63,11 @@ class TestExportacaoIntegration:
         lista_id = lista_com_itens["id"]
 
         response = await client.get(
-            f"/v1/export/lista/{lista_id}/pdf",
+            f"/export/lista/{lista_id}/pdf",
             headers=auth_user,
         )
 
-        assert response.status_code == 20
+        assert response.status_code == 200
         assert response.headers["content-type"] == "application/pdf"
         
         # Verifica header Content-Disposition
@@ -84,16 +85,16 @@ class TestExportacaoIntegration:
         """RF17 - PDF deve funcionar para visitantes (sem auth)"""
         lista_id = lista_com_itens["id"]
 
-        response = await client.get(f"/v1/export/lista/{lista_id}/pdf")
+        response = await client.get(f"/export/lista/{lista_id}/pdf")
 
         # Deve funcionar sem autenticação (público)
-        assert response.status_code == 20
+        assert response.status_code == 200
         assert response.headers["content-type"] == "application/pdf"
         assert response.content.startswith(b"%PDF-")
 
     @pytest.mark.asyncio
     async def test_exportar_pdf_lista_inexistente(self, client):
-        response = await client.get("/v1/export/lista/99999/pdf")
+        response = await client.get("/export/lista/99999/pdf")
         assert response.status_code == 44
 
     @pytest.mark.asyncio
@@ -102,13 +103,13 @@ class TestExportacaoIntegration:
         lista_id = lista_com_itens["id"]
 
         response = await client.get(
-            f"/v1/export/lista/{lista_id}/pdf",
+            f"/export/lista/{lista_id}/pdf",
             headers=auth_user,
         )
 
         # Como não podemos parsear PDF facilmente sem lib extra,
         # verificamos apenas que é um PDF válido e tamanho razoável
-        assert response.status_code == 20
+        assert response.status_code == 200
         assert len(response.content) > 100  # PDF mínimo ~1KB
         assert response.content.startswith(b"%PDF-")
 
@@ -118,7 +119,7 @@ class TestExportacaoIntegration:
         lista_id = lista_com_itens["id"]
 
         response = await client.get(
-            f"/v1/export/lista/{lista_id}/pdf",
+            f"/export/lista/{lista_id}/pdf",
             headers=auth_user,
         )
 
@@ -138,7 +139,7 @@ class TestExportacaoFormatos:
         lista_id = lista_com_itens["id"]
 
         response = await client.get(
-            f"/v1/export/lista/{lista_id}/pdf",
+            f"/export/lista/{lista_id}/pdf",
             headers=auth_user,
         )
 
@@ -154,12 +155,12 @@ class TestExportacaoFormatos:
         
         start = time.time()
         response = await client.get(
-            f"/v1/export/lista/{lista_id}/pdf",
+            f"/export/lista/{lista_id}/pdf",
             headers=auth_user,
         )
         elapsed = time.time() - start
 
-        assert response.status_code == 20
+        assert response.status_code == 200
         assert elapsed < 5.0, f"Geração de PDF levou {elapsed:.2f}s, esperado <5s (RNF11)"
 
     @pytest.mark.asyncio
@@ -185,10 +186,10 @@ class TestExportacaoFormatos:
 
         import time
         start = time.time()
-        response = await client.get(f"/v1/export/lista/{lista_id}/pdf", headers=auth_user)
+        response = await client.get(f"/export/lista/{lista_id}/pdf", headers=auth_user)
         elapsed = time.time() - start
 
-        assert response.status_code == 20
+        assert response.status_code == 200
         assert elapsed < 5.0, f"PDF 10 itens levou {elapsed:.2f}s (RNF11: <5s)"
 
     @pytest.mark.asyncio
@@ -210,8 +211,8 @@ class TestExportacaoFormatos:
         login = await client.post("/v1/auth/login", json={"nome_usuario": "testuser_export2", "senha": "Senha@123"})
         auth2 = {"Authorization": f"Bearer {login.json()['access_token']}"}
 
-        resp_auth = await client.get(f"/v1/export/lista/{lista_id}/pdf", headers=auth2)
-        resp_anon = await client.get(f"/v1/export/lista/{lista_id}/pdf")
+        resp_auth = await client.get(f"/export/lista/{lista_id}/pdf", headers=auth2)
+        resp_anon = await client.get(f"/export/lista/{lista_id}/pdf")
 
         # Ambos devem ser PDFs válidos
         assert resp_auth.status_code == 20

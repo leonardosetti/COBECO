@@ -49,7 +49,7 @@ kill_switch: inherited
 wave: WS-1 — Seed e catálogo
 lgpd-class: PII-sintético (somente empresas, produtos e CNPJs fictícios)
 trace:
-- .ai/handoffs/HF-0622-seed-segmentos-volume.md
+- .ai/handoffs/hf-exec-0622-seed-segmentos-volume-v1.0.md
 - docs/strategy/PESQUISA-SEGMENTOS-MERCADO-SEED.md
 - constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md (Arts. 3.1-3.5, 7.7, 8.1-8.2, 12.7, 19.3)
 ---
@@ -156,7 +156,7 @@ determinístico para os testes de integração. Nenhuma tabela é criada ou alte
 | `scripts.seed_data` | determinismo | duas gerações produzem SQL idêntico | Sim |
 | seed SQL | carga no MySQL | volume persistido corresponde ao perfil | Sim |
 
-**Rastreabilidade:** RNF08 → UC02–UC06/UC23–UC26 → spec-016 → HF-0622 → código → teste → merge.
+**Rastreabilidade:** RNF08 → UC02–UC06/UC23–UC26 → spec-016 → hf-exec-0622 → código → teste → merge.
 
 ## 8. Evidências de execução
 

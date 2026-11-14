@@ -1,7 +1,44 @@
-# User Story — US-016
+---
+id: doc-user-story-016-us-016-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 016
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-016
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-016-us-016
 
 **Título:** Visualizar Resultados da Comparação  
-**ID Único:** US-016  
+**ID Único:** doc-user-story-016-us-016  
 **Status:** Done  
 **Sprint:** S3 | **Milestone:** S3: Pré-filtro e Comparação  
 **Prioridade:** P0  
@@ -52,16 +89,16 @@ Então tooltip mostra: "Itens não disponíveis: Óleo 500ml, Sal 1kg"
 ```gherkin
 Dado que estou nos resultados
 Quando clico "Exportar PDF"
-Então chama POST /v1/export/pdf (US-017) e faz download `lista_20261015.pdf`
+Então chama POST /v1/export/pdf (doc-user-story-017-us-017) e faz download `lista_20261015.pdf`
 Quando clico "Imprimir"
-Então abre `window.print()` — CSS @media print otimizado (US-020)
+Então abre `window.print()` — CSS @media print otimizado (doc-user-story-020-us-020)
 ```
 
 ### Cenário 5: Voltar para ajustar seleções
 ```gherkin
 Dado que quero mudar fornecedores
 Quando clico "Voltar ao Pré-filtro"
-Então navega para tela de Categorias (US-012) mantendo estado anterior
+Então navega para tela de Categorias (doc-user-story-012-us-012) mantendo estado anterior
 ```
 
 ---
@@ -85,7 +122,7 @@ Então navega para tela de Categorias (US-012) mantendo estado anterior
 |---------|-----------|--------|------|-------|--------|--------|
 | TA-150 | Frontend: Componente TabelaResultados — ordenação, highlight verde, linhas expansíveis | Frontend | 5 | Eduardo | ✅ | `feat/UC-07-visualizar-resultados` |
 | TA-151 | Frontend: Tooltip itens ausentes (CSS only ou JS simples) | Frontend | 1 | Eduardo | ✅ | `feat/UC-07-visualizar-resultados` |
-| TA-152 | Frontend: Botões Exportar PDF (chama US-017) + Imprimir (window.print) + Voltar | Frontend | 2 | Eduardo | ✅ | `feat/UC-07-visualizar-resultados` |
+| TA-152 | Frontend: Botões Exportar PDF (chama doc-user-story-017-us-017) + Imprimir (window.print) + Voltar | Frontend | 2 | Eduardo | ✅ | `feat/UC-07-visualizar-resultados` |
 | TA-153 | Testes E2E: fluxo completo calculo → resultados → exportar → imprimir → voltar | Frontend | 2 | Nicolas | ✅ | `feat/UC-07-visualizar-resultados` |
 
 ---
@@ -121,4 +158,4 @@ Então navega para tela de Categorias (US-012) mantendo estado anterior
 
 ---
 
-**Fim US-016**
+**Fim doc-user-story-016-us-016**

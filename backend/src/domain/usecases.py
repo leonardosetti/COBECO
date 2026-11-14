@@ -204,9 +204,10 @@ class LogoutUseCase:
 class RecuperarSenhaUseCase:
     """UC12 / RF04 — Recuperar Senha (pergunta de segurança ou token por email)"""
 
-    def __init__(self, repo: UsuarioRepository, hash_senha_fn, rate_limiter_fn):
+    def __init__(self, repo: UsuarioRepository, hash_senha_fn, verificar_senha_fn, rate_limiter_fn):
         self.repo = repo
         self.hash_senha = hash_senha_fn
+        self.verificar_senha = verificar_senha_fn
         self.rate_limiter = rate_limiter_fn
 
     async def solicitar_reset(self, nome_usuario: str) -> str | None:

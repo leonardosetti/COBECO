@@ -32,8 +32,15 @@ def rate_limiter_fn():
 
 
 @pytest.fixture
-def usecase(mock_repo, hash_senha_fn, rate_limiter_fn):
-    return RecuperarSenhaUseCase(mock_repo, hash_senha_fn, rate_limiter_fn)
+def verificar_senha_fn():
+    def fn(senha: str, hash_valor: str) -> bool:
+        return hash_valor == f"hashed_{senha}"
+    return fn
+
+
+@pytest.fixture
+def usecase(mock_repo, hash_senha_fn, verificar_senha_fn, rate_limiter_fn):
+    return RecuperarSenhaUseCase(mock_repo, hash_senha_fn, verificar_senha_fn, rate_limiter_fn)
 
 
 class TestRecuperarSenhaUseCase:
@@ -128,7 +135,8 @@ class TestRecuperarSenhaUseCase:
             )
 
             assert result.id == 1
-            assert result.senha_hash.valor == "hashed_NovaSenha@456"
+            # hash_senha_fn returns string, not SenhaHash object
+            assert result.senha_hash == "hashed_NovaSenha@456"
             mock_repo.atualizar.assert_called_once()
         finally:
             settings.RECOVERY_MODE = original_mode
@@ -158,7 +166,8 @@ class TestRecuperarSenhaUseCase:
             )
 
             assert result.id == 1
-            assert result.senha_hash.valor == "hashed_NovaSenha@456"
+            # hash_senha_fn returns string, not SenhaHash object
+            assert result.senha_hash == "hashed_NovaSenha@456"
         finally:
             settings.RECOVERY_MODE = original_mode
 

@@ -1,7 +1,44 @@
-# User Story — US-019
+---
+id: doc-user-story-019-us-019-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 019
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-019
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-019-us-019
 
 **Título:** Visualizar Perfil  
-**ID Único:** US-019  
+**ID Único:** doc-user-story-019-us-019  
 **Status:** Done  
 **Sprint:** S4 | **Milestone:** S4: Export, Perfil e Polish  
 **Prioridade:** P1  
@@ -50,7 +87,7 @@ Então retorna 401 "Não autenticado"
 Dado que estou autenticado e acesso página "Meu Perfil"
 Quando a página carrega
 Então exibe: Nome de Usuário (desabilitado), Email, Nome, Data de Cadastro
-E botão "Editar Perfil" leva para página de edição (US-020)
+E botão "Editar Perfil" leva para página de edição (doc-user-story-020-us-020)
 E NÃO mostra senha, pergunta segurança, resposta
 ```
 
@@ -102,9 +139,9 @@ E NÃO mostra senha, pergunta segurança, resposta
 ## 7. Notas
 
 - **nome_usuario Read-only:** Não pode ser alterado (regra de negócio — identidade única).
-- **Email/Nome Editáveis:** Via US-020 (Gerenciar Perfil).
+- **Email/Nome Editáveis:** Via doc-user-story-020-us-020 (Gerenciar Perfil).
 - **Criado_em:** Timestamp imutável do cadastro.
 
 ---
 
-**Fim US-019**
+**Fim doc-user-story-019-us-019**

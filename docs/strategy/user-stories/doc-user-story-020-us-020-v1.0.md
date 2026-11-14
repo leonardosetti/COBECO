@@ -1,7 +1,44 @@
-# User Story — US-020
+---
+id: doc-user-story-020-us-020-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 020
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-020
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-020-us-020
 
 **Título:** Gerenciar Perfil (Editar Email, Nome, Senha)  
-**ID Único:** US-020  
+**ID Único:** doc-user-story-020-us-020  
 **Status:** Done  
 **Sprint:** S4 | **Milestone:** S4: Export, Perfil e Polish  
 **Prioridade:** P1  
@@ -148,4 +185,4 @@ E estado final consistente
 
 ---
 
-**Fim US-020**
+**Fim doc-user-story-020-us-020**

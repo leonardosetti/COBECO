@@ -1,7 +1,44 @@
-# User Story — US-001
+---
+id: doc-user-story-001-us-001-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 001
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-001
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-001-us-001
 
 **Título:** Cadastrar Usuário  
-**ID Único:** US-001  
+**ID Único:** doc-user-story-001-us-001  
 **Status:** Done  
 **Sprint:** S1 | **Milestone:** S1: Setup, Docs e Auth  
 **Prioridade:** P0  
@@ -106,7 +143,7 @@ Então o sistema retorna erro 400 "Senha deve ter no mínimo 8 caracteres"
 - [x] **Infra:** Funciona via `docker compose up` sem config manual extra
 - [x] **Revisão:** Code review aprovado (rubrica R-01..R-07) + CI verde
 - [x] **Governança:** Aprovação humana (CCB) + merge em `main` → kanban "Done"
-- [x] **Documentação:** Spec-004 ratificada + Handoff HF-0500 processado
+- [x] **Documentação:** Spec-004 ratificada + Handoff hf-exec-0500 processado
 
 ---
 
@@ -117,7 +154,7 @@ Então o sistema retorna erro 400 "Senha deve ter no mínimo 8 caracteres"
 | **Origem (Negócio)** | req-func-0001-requisitos-funcionais-canon.md | RF01 |
 | **Origem (Caso de Uso)** | req-use-case-0001-casos-de-uso-canon.md | UC09 |
 | **Especificação (SDD)** | `.ai/specs/spec-tech-0001-backend-mvp-v1.0.md` | Spec ID |
-| **Handoff (Execução)** | `.ai/handoffs/HF-0500-backend-mvp.md` | Handoff ID |
+| **Handoff (Execução)** | `.ai/handoffs/hf-exec-0500-backend-mvp-v1.0.md` | Handoff ID |
 | **Implementação** | Branch Git | `feat/UC-09-cadastrar-usuario` |
 | **Testes** | `backend/tests/test_cadastrar_usuario.py` | Test IDs |
 | **Deploy** | Release / Tag | v0.1.0 |
@@ -144,5 +181,5 @@ Então o sistema retorna erro 400 "Senha deve ter no mínimo 8 caracteres"
 
 ---
 
-**Fim da User Story US-001**  
-*Arquivo versionado em `docs/strategy/user-stories/US-001.md` + Issue #9 no GitHub Projects.*
+**Fim da User Story doc-user-story-001-us-001**  
+*Arquivo versionado em `docs/strategy/user-stories/doc-user-story-001-us-001-v1.0.md` + Issue #9 no GitHub Projects.*

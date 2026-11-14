@@ -1,7 +1,44 @@
-# User Story — US-006
+---
+id: doc-user-story-006-us-006-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 006
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-006
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-006-us-006
 
 **Título:** Autocomplete de Produtos  
-**ID Único:** US-006  
+**ID Único:** doc-user-story-006-us-006  
 **Status:** Done  
 **Sprint:** S2 | **Milestone:** S2: Listas e Catálogo  
 **Prioridade:** P0  
@@ -77,7 +114,7 @@ E não permite adicionar à lista
 |---------|-----------|--------|------|-------|--------|--------|
 | TA-050 | Backend: GET /v1/produtos/busca?q=&limit=10 — ILIKE normalizado, índice trigram | Backend | 3 | Nicholas | ✅ | `feat/UC-02-autocomplete` |
 | TA-051 | Frontend: Componente Autocomplete reutilizável (debounce, fetch, dropdown, seleção) | Frontend | 4 | Eduardo | ✅ | `feat/UC-02-autocomplete` |
-| TA-052 | Integração: US-005 usa componente Autocomplete | Frontend | 1 | Eduardo | ✅ | `feat/UC-01-lista-memoria` |
+| TA-052 | Integração: doc-user-story-005-us-005 usa componente Autocomplete | Frontend | 1 | Eduardo | ✅ | `feat/UC-01-lista-memoria` |
 | TA-053 | Testes: backend busca + frontend componente + integração | Ambos | 2 | Nicolas | ✅ | `feat/UC-02-autocomplete` |
 
 ---
@@ -107,8 +144,8 @@ E não permite adicionar à lista
 
 - **MySQL Normalização:** `WHERE normalizar(nome) LIKE normalizar(?)` — function `normalizar(str)` remove acentos + lower.
 - **Índice:** `CREATE INDEX idx_produtos_nome_norm ON produtos (normalizar(nome))` — ou trigram se PostgreSQL.
-- **Compartilhado:** Componente usado em US-005 (Nova Lista) e US-010 (Editar Lista).
+- **Compartilhado:** Componente usado em doc-user-story-005-us-005 (Nova Lista) e doc-user-story-010-us-010 (Editar Lista).
 
 ---
 
-**Fim US-006**
+**Fim doc-user-story-006-us-006**

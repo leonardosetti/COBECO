@@ -1,7 +1,44 @@
-# User Story — US-005
+---
+id: doc-user-story-005-us-005-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 005
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-005
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-005-us-005
 
 **Título:** Criar Lista em Memória (Efêmera)  
-**ID Único:** US-005  
+**ID Único:** doc-user-story-005-us-005  
 **Status:** Done  
 **Sprint:** S2 | **Milestone:** S2: Listas e Catálogo  
 **Prioridade:** P0  
@@ -123,10 +160,10 @@ Então minha lista efêmera ainda está lá com os 3 itens
 
 ## 7. Notas
 
-- **Visitante vs Autenticado:** Mesmo comportamento. Se autenticado, botão "Salvar" envia para backend (US-008). Se visitante, só "Exportar PDF" (US-019).
+- **Visitante vs Autenticado:** Mesmo comportamento. Se autenticado, botão "Salvar" envia para backend (doc-user-story-008-us-008). Se visitante, só "Exportar PDF" (doc-user-story-019-us-019).
 - **Autocomplete Endpoint:** `GET /v1/produtos/busca?q={termo}&limit=10` — retorna `[{id, nome, categoria, unidade}]`.
 - **Normalização:** `termo.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()` tanto client quanto server.
 
 ---
 
-**Fim US-005**
+**Fim doc-user-story-005-us-005**

@@ -42,17 +42,17 @@ status: active
 version: 1.0.0
 created: 2026-11-02
 owner: agent-sdd-specialist (.ai/specs/)
-task: TA-0031 | handoff: HF-0031 | sender: agent-nexus-prime-ultimate
+task: TA-0031 | handoff: hf-exec-0031 | sender: agent-nexus-prime-ultimate
 kill_switch: inherited
 ---
 
-# MANIFEST — corpus `.ai/specs/` (TA-0031, HF-0031)
+# MANIFEST — corpus `.ai/specs/` (TA-0031, hf-exec-0031)
 
 Normalização integral decretada pelo GP/Humano (2026-11-02, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md Art. 5.1 —
 outorga registrada em ledger no entry TA-0030). Este arquivo é a fonte única do
 mapeamento old→new do corpus: referências antigas em arquivos imutáveis
 (`.ai/agents/config-ledger-0001-ledger-v1.0.yaml`, `.ai/handoffs/*`, `docs/decisoes/*`, `docs/auditorias/*`)
-resolvem-se por aqui, nunca por edição daqueles arquivos (HF-0031:55-68).
+resolvem-se por aqui, nunca por edição daqueles arquivos (hf-exec-0031:55-68).
 
 ## 1. Template canônico de corpo (camadas fundamentais a–h)
 
@@ -101,9 +101,9 @@ citação `arquivo:linha`.
 
 ### 2.1 Slug e `spec_id`
 
-- Padrão de arquivo: **`spec_id-specname.spec.md`** (kebab-case), decretado em HF-0031:35. Norma geral de nomenclatura de arquivos de artefato: `tipo_artefato-id_artefato-nome_artefato.{ext}` (ADR-018, RAT-2026-11-05-A18). As specs são o caso particular `tipo_artefato=spec` com extensão `.spec.md`.
+- Padrão de arquivo: **`spec_id-specname.spec.md`** (kebab-case), decretado em hf-exec-0031:35. Norma geral de nomenclatura de arquivos de artefato: `tipo_artefato-id_artefato-nome_artefato.{ext}` (ADR-018, RAT-2026-11-05-A18). As specs são o caso particular `tipo_artefato=spec` com extensão `.spec.md`.
 - `spec_id` sequencial `spec-NNN` (lowercase kebab): precedente dos prefixos NNN do
-  repo — `HF-NNNN`, `TA-NNNN`, `ADR-NNN`, `VIO-NNN` (HF-0031:36-37) — com a exigência
+  repo — `HF-NNNN`, `TA-NNNN`, `ADR-NNN`, `VIO-NNN` (hf-exec-0031:36-37) — com a exigência
   de kebab-case no frontmatter de `.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-sdd-specialist.md:127`
   (imutável). O frontmatter anterior usava `<nome>-1` (ex.: `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-round-1-proposta-1`),
   incompatível com o slug de arquivo decretado.
@@ -120,7 +120,7 @@ citação `arquivo:linha`.
 | spec-002 | 0.1.0 | já declarada no frontmatter original (AUD-2610-04.md:12) — mantida |
 | spec-003 | 3.1.0 | versão do run `CANON-20261029-01` (H1 original `v3.1.0`) — mantida, sem bump |
 | spec-004 | 1.0.0 | **bump inicial** (linha `Status:` original sem versão semver) |
-| spec-005 | 0.2.0 | pós-TA-0030 (HF-0031:20, HF-0030) — **mantida, sem regressão da amenda** |
+| spec-005 | 0.2.0 | pós-TA-0030 (hf-exec-0031:20, hf-exec-0030) — **mantida, sem regressão da amenda** |
 
 ## 3. Inventário e classificação (11 arquivos → 11 arquivos; 0 realocações)
 
@@ -129,17 +129,17 @@ editáveis apontando para o slug novo; "imutáveis" = resolvidas pelo mapa do §
 
 | Arquivo original (pré-TA-0031) | Class. | Nome novo | Versão | Delta (linhas) | Refs vivas atualizadas | Imutáveis resolvidas via §4 |
 |---|---|---|---|---|---|---|
-| `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-round-1-proposta.md` | spec | `spec-001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-round-1-proposta.spec.md` | 0.1.0 | 396 → 413 (edição in-place do `spec_id` + caminho próprio; +17 anexados ao final; deslocamento 0 → refs `arquivo:linha` históricas seguem válidas) | 8 em `spec-002` (linhas 17, 30, 35, 45, 100, 128, 141, 217) | `AUD-2610-03.md:11,18,34,63,79,240,247`; `AUD-2610-04.md:10,57,73,109,247`; `HF-RELATORIO-ANALISE-CONSTITUICAO.md:43`; `HF-0031:21` |
-| `requisitos-review-round-1.md` | spec | `spec-002-requisitos-review-round-1.spec.md` | 0.1.0 | 267 → 282 (in-place: `spec_id` + 9 linhas de ref; deslocamento 0) | 15 em `spec-005` | `vio-register.md:31`; `AUD-2610-04.md:12,65,75`; `HF-0029:53`; `HF-RELATORIO:42`; `HF-0031:21` |
-| `000-SDD_CONF-memory.spec.md` | spec | `spec-003-sdd-conf-memory.spec.md` | 3.1.0 | 1127 → 1179 (+12 frontmatter; corpo das Partes 0–10 idêntico byte a byte, deslocamento +12; +40 anexados = PARTE 11 + MAPA) | 2 em `docs/analise/RELATORIO_MEMORIA_PERSISTENTE_SDDAI.md:13,88` | `AUD-2610-03-RESULTADOS.md:7`; `HF-0031:19` |
-| `backend-mvp-v1.spec.md` | spec | `spec-004-backend-mvp-v1.spec.md` | 1.0.0 (bump inicial) | 207 → 262 (título substituído por frontmatter+título = +13 de deslocamento; corpo `f6e0455` idêntico; +42 anexados = §§10–14 + MAPA) | 25 em `spec-005` + 1 em `docs/planos/plano-granular/desenvolvimento.md:13` | `ADR-016:18,127`; `HF-0029:16,30,49,61`; `HF-0500:12`; `HF-0031:19` |
-| `container-layers-v1.spec.md` | spec | `spec-005-container-layers-v1.spec.md` | 0.2.0 (mantida) | 378 hoje (arquivo nunca commitado — criado em TA-0029; `HF-0030:18` atesta 344 l no dispatch da amenda; +12 frontmatter + MAPA/anotação anexados em TA-0031) | 0 externas (2 auto-referências) | `ledger.yaml:24,32`; `HF-0030:18,26,57`; `HF-0031:19` |
+| `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-round-1-proposta.md` | spec | `spec-001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-round-1-proposta.spec.md` | 0.1.0 | 396 → 413 (edição in-place do `spec_id` + caminho próprio; +17 anexados ao final; deslocamento 0 → refs `arquivo:linha` históricas seguem válidas) | 8 em `spec-002` (linhas 17, 30, 35, 45, 100, 128, 141, 217) | `AUD-2610-03.md:11,18,34,63,79,240,247`; `AUD-2610-04.md:10,57,73,109,247`; `HF-RELATORIO-ANALISE-CONSTITUICAO.md:43`; `hf-exec-0031:21` |
+| `requisitos-review-round-1.md` | spec | `spec-002-requisitos-review-round-1.spec.md` | 0.1.0 | 267 → 282 (in-place: `spec_id` + 9 linhas de ref; deslocamento 0) | 15 em `spec-005` | `vio-register.md:31`; `AUD-2610-04.md:12,65,75`; `hf-exec-0029:53`; `HF-RELATORIO:42`; `hf-exec-0031:21` |
+| `000-SDD_CONF-memory.spec.md` | spec | `spec-003-sdd-conf-memory.spec.md` | 3.1.0 | 1127 → 1179 (+12 frontmatter; corpo das Partes 0–10 idêntico byte a byte, deslocamento +12; +40 anexados = PARTE 11 + MAPA) | 2 em `docs/analise/RELATORIO_MEMORIA_PERSISTENTE_SDDAI.md:13,88` | `AUD-2610-03-RESULTADOS.md:7`; `hf-exec-0031:19` |
+| `backend-mvp-v1.spec.md` | spec | `spec-004-backend-mvp-v1.spec.md` | 1.0.0 (bump inicial) | 207 → 262 (título substituído por frontmatter+título = +13 de deslocamento; corpo `f6e0455` idêntico; +42 anexados = §§10–14 + MAPA) | 25 em `spec-005` + 1 em `docs/planos/plano-granular/desenvolvimento.md:13` | `ADR-016:18,127`; `hf-exec-0029:16,30,49,61`; `hf-exec-0500:12`; `hf-exec-0031:19` |
+| `container-layers-v1.spec.md` | spec | `spec-005-container-layers-v1.spec.md` | 0.2.0 (mantida) | 378 hoje (arquivo nunca commitado — criado em TA-0029; `hf-exec-0030:18` atesta 344 l no dispatch da amenda; +12 frontmatter + MAPA/anotação anexados em TA-0031) | 0 externas (2 auto-referências) | `ledger.yaml:24,32`; `hf-exec-0030:18,26,57`; `hf-exec-0031:19` |
 | `afa-changelog.md` | **pinned** | (sem rename) | — | — | — | — (canon AFA §15, ver §5) |
 | `requisitos.md` (0 B) | **pinned** | (sem rename) | — | — | — | — (ver §5) |
 | `tap.md` (0 B) | **pinned** | (sem rename) | — | — | — | — (ver §5) |
 | `eap.md` (0 B) | **pinned** | (sem rename) | — | — | — | — (ver §5) |
 | `kb-taxonomy.md` | **pinned** | (sem rename) | — | — | — | — (ver §5) |
-| `input-canonico-v4.1.1.md` | **pinned/ambiguous** | (sem rename — HF-0031:44-45) | — | — | — | `ADR-011:56` (ver §5) |
+| `input-canonico-v4.1.1.md` | **pinned/ambiguous** | (sem rename — hf-exec-0031:44-45) | — | — | — | `ADR-011:56` (ver §5) |
 
 Totais verificáveis: 51 linhas de refs vivas atualizadas em 4 arquivos editáveis
 (`spec-002` ×8, `spec-005` ×40, `RELATORIO_MEMORIA_PERSISTENTE_SDDAI.md` ×2,
@@ -175,11 +175,11 @@ exata, mesmas 4 falhas preexistentes de report/wiring) e
 |---|---|---|
 | `.ai/agents/config-ledger-0001-ledger-v1.0.yaml:24` (TA-0029) | `container-layers-v1.spec.md` (344 l) | `spec-005-container-layers-v1.spec.md` (hoje 378 l; "344 l" é o valor histórico do dispatch) |
 | `.ai/agents/config-ledger-0001-ledger-v1.0.yaml:32` (TA-0030) | `container-layers-v1.spec.md` (Status 0.2.0) | `spec-005-container-layers-v1.spec.md` (0.2.0 mantida) |
-| `.ai/handoffs/HF-0029-container-layers-spec.md:16,30,49,61` | `backend-mvp-v1.spec.md` | `spec-004-backend-mvp-v1.spec.md` |
-| `.ai/handoffs/HF-0029-container-layers-spec.md:53` | `requisitos-review-round-1.md` | `spec-002-requisitos-review-round-1.spec.md` |
-| `.ai/handoffs/HF-0030-nginx-aceito-demo.md:18,26,57` | `container-layers-v1.spec.md` (344 l) | `spec-005-container-layers-v1.spec.md` |
-| `.ai/handoffs/HF-0031-specs-normalizacao.md:19,21,30` | os 5 antigos | §4.1 (HF descreve o estado pré-normalização) |
-| `.ai/handoffs/HF-0500-backend-mvp.md:12` | `backend-mvp-v1.spec.md` | `spec-004-backend-mvp-v1.spec.md` |
+| `.ai/handoffs/hf-exec-0029-container-layers-spec-v1.0.md:16,30,49,61` | `backend-mvp-v1.spec.md` | `spec-004-backend-mvp-v1.spec.md` |
+| `.ai/handoffs/hf-exec-0029-container-layers-spec-v1.0.md:53` | `requisitos-review-round-1.md` | `spec-002-requisitos-review-round-1.spec.md` |
+| `.ai/handoffs/hf-exec-0030-nginx-aceito-demo-v1.0.md:18,26,57` | `container-layers-v1.spec.md` (344 l) | `spec-005-container-layers-v1.spec.md` |
+| `.ai/handoffs/hf-exec-0031-specs-normalizacao-v1.0.md:19,21,30` | os 5 antigos | §4.1 (HF descreve o estado pré-normalização) |
+| `.ai/handoffs/hf-exec-0500-backend-mvp-v1.0.md:12` | `backend-mvp-v1.spec.md` | `spec-004-backend-mvp-v1.spec.md` |
 | `.ai/handoffs/HF-RELATORIO-ANALISE-CONSTITUICAO.md:42` | `requisitos-review-round-1.md` | `spec-002-requisitos-review-round-1.spec.md` |
 | `.ai/handoffs/HF-RELATORIO-ANALISE-CONSTITUICAO.md:43` | `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-round-1-proposta.md` | `spec-001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-round-1-proposta.spec.md` |
 | `docs/decisoes/ADR-016-backend-mvp.md:18,127` | `backend-mvp-v1.spec.md` | `spec-004-backend-mvp-v1.spec.md` |
@@ -196,7 +196,7 @@ permanecem exatas. Para spec-004 o corpo deslocou +13 (frontmatter) — nenhuma 
 imutável cita linha numérica de `backend-mvp-v1.spec.md` (só §/seções), e as 25+4 citações
 numéricas vivas em `spec-005` foram reposicionadas (+13) com verificação forense
 (linha antiga == linha nova +13 para todos os números citados). `ledger.yaml:24` e
-`HF-0030:18` citam "344 linhas" = valor histórico, agora resolvido por este mapa.
+`hf-exec-0030:18` citam "344 linhas" = valor histórico, agora resolvido por este mapa.
 
 ## 5. Justificativas — pinned, ambiguous e realocações
 
@@ -204,16 +204,16 @@ numéricas vivas em `spec-005` foram reposicionadas (+13) com verificação fore
 
 | Arquivo | Evidência de referência (grep) | Destino/justificativa |
 |---|---|---|
-| `afa-changelog.md` (317 B) | **43 arquivos** de `.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/*` (forja AFA imutável, Art. 4.1) apontam `.ai/specs/doc-afa-0001-changelog-v1.0.md` como log SIR — ex.: `agent-sdd-specialist.md:217`, `agent-architect.md:89,210`, `agent-compliance-governance.md:33`, `agent-factory-architect-ultimate.md:648`, `agent-nexus-prime-ultimate.md:232`; canon AFA §15 | Renomear/mover quebraria o contrato de log de 43 agentes imutáveis (fail-closed HF-0031:64-65) |
+| `afa-changelog.md` (317 B) | **43 arquivos** de `.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/*` (forja AFA imutável, Art. 4.1) apontam `.ai/specs/doc-afa-0001-changelog-v1.0.md` como log SIR — ex.: `agent-sdd-specialist.md:217`, `agent-architect.md:89,210`, `agent-compliance-governance.md:33`, `agent-factory-architect-ultimate.md:648`, `agent-nexus-prime-ultimate.md:232`; canon AFA §15 | Renomear/mover quebraria o contrato de log de 43 agentes imutáveis (fail-closed hf-exec-0031:64-65) |
 | `requisitos.md` (0 B) | `.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-business-analysis-specialist.md:31,67,144` ("REQ SSOT", "REQ ids from … only", "re-read … first"); `agent-project-design-specialist.md:32,166` | Placeholder canônico da camada 5 (Art. 2) sob custódia BA/design; conteúdo vazio = pendência declarada (G-08/GAP-01, ver LISTA-SPECS-PENDENTES). Repovoamento é ato de outra custódia, pós-gate E |
 | `tap.md` (0 B) | `agent-business-analysis-specialist.md:32`; `agent-sldc-process-specialist.md:31` ("TAP/EAP scope baseline") | idem — baseline de escopo referenciada por prompts imutáveis |
 | `eap.md` (0 B) | `agent-business-analysis-specialist.md:32`; `agent-sldc-process-specialist.md:31` | idem |
 | `kb-taxonomy.md` (13.383 B) | `agent-business-analysis-specialist.md:33` ("taxonomy classes for requirement classification"); `agent-project-patterns-standards-specialist.md:32` ("taxonomy for pattern classification") | Taxonomia viva usada por 2 agentes imutáveis; renomear quebraria o contrato |
 
-### 5.2 `input-canonico-v4.1.1.md` — `pinned/ambiguous` (NÃO movido, conforme HF-0031:44-45)
+### 5.2 `input-canonico-v4.1.1.md` — `pinned/ambiguous` (NÃO movido, conforme hf-exec-0031:44-45)
 
 - **A favor do move** (papel de input, não de spec): o próprio arquivo se declara input
-  canônico (título/frontmatter) e o HF-0031:22-23 o lista como "input canônico".
+  canônico (título/frontmatter) e o hf-exec-0031:22-23 o lista como "input canônico".
 - **Contra o move** (fail-closed): `docs/decisoes/ADR-011-Ecossistema-SDDAI.md:56`
   (imutável, canon de decisão Art. 2) o classifica literalmente como
   "**Specs imutáveis** (`.ai/specs/*.md`): `tap.md`, `eap.md`, `requisitos.md`,
@@ -222,7 +222,7 @@ numéricas vivas em `spec-005` foram reposicionadas (+13) com verificação fore
 - **Veredito:** papel incerto no ciclo SDD (input × spec) com conflito entre a
   autodeclaração e o cano decisional → classe `pinned/ambiguous`, permanece em
   `.ai/specs/` sem rename. Nenhuma viva o referencia (grep repo-wide: só `ADR-011:56` e
-  `HF-0031:23`, ambos imutáveis) — portanto zero refs a atualizar e zero link quebrado.
+  `hf-exec-0031:23`, ambos imutáveis) — portanto zero refs a atualizar e zero link quebrado.
 
 ### 5.3 Realocações de não-specs — NENHUMA (justificativa)
 
@@ -230,10 +230,10 @@ Os 6 não-specs do diretório são integralmente cobertos por §5.1 (5 pinned po
 referência em prompts imutáveis) e §5.2 (1 ambiguous por cano imutável). Não há arquivo
 restante com conteúdo correspondente a `docs/planos/`, `docs/analise/`, `docs/decisoes/`
 ou `docs/conhecimento/` que possa ser movido sem quebrar link canônico em imutável —
-regra fail-closed de HF-0031:67-68 ("nunca quebre link canônico"). Consequentemente,
+regra fail-closed de hf-exec-0031:67-68 ("nunca quebre link canônico"). Consequentemente,
 `pending_rename` também está vazio: nenhum rename viável foi adiado.
 
-## 6. Critérios de aceite (HF-0031:70-81) — verificação
+## 6. Critérios de aceite (hf-exec-0031:70-81) — verificação
 
 | # | AC | Evidência | Estado |
 |---|---|---|---|
@@ -250,7 +250,7 @@ regra fail-closed de HF-0031:67-68 ("nunca quebre link canônico"). Consequentem
 
 ## 7. Fora do escopo desta normalização
 
-- Nenhum arquivo de código/compose/Dockerfile/workflow alterado (HF-0031:90-92).
+- Nenhum arquivo de código/compose/Dockerfile/workflow alterado (hf-exec-0031:90-92).
 - Realocação humana não-commitada em `docs/planos/` (legacy/ + plano-granular/ preservados, unstaged).
 - Repovoamento dos placeholders 0 B (`requisitos.md`, `tap.md`, `eap.md`) — pós-gate E,
   listado como pendência em `docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md`.

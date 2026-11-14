@@ -1,7 +1,44 @@
-# User Story — US-015
+---
+id: doc-user-story-015-us-015-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 015
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-015
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-015-us-015
 
 **Título:** Calcular Orçamento (Motor de Comparação)  
-**ID Único:** US-015  
+**ID Único:** doc-user-story-015-us-015  
 **Status:** Done  
 **Sprint:** S3 | **Milestone:** S3: Pré-filtro e Comparação  
 **Prioridade:** P0  
@@ -156,4 +193,4 @@ Então retorna 400 "Lista de itens não pode ser vazia" ou "Mínimo 2 fornecedor
 
 ---
 
-**Fim US-015**
+**Fim doc-user-story-015-us-015**

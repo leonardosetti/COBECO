@@ -1,7 +1,44 @@
-# User Story — US-014
+---
+id: doc-user-story-014-us-014-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 014
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-014
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-014-us-014
 
 **Título:** Filtrar por Disponibilidade (Slider 0-100%)  
-**ID Único:** US-014  
+**ID Único:** doc-user-story-014-us-014  
 **Status:** Done  
 **Sprint:** S3 | **Milestone:** S3: Pré-filtro e Comparação  
 **Prioridade:** P1  
@@ -96,10 +133,10 @@ E se nenhum tem 100%, mostra "Nenhum fornecedor com 100% disponibilidade"
 
 ## 7. Notas
 
-- **Filtro Local:** Não chama backend — usa array de fornecedores já carregado no US-012/US-013. Performance instantânea.
+- **Filtro Local:** Não chama backend — usa array de fornecedores já carregado no doc-user-story-012-us-012/doc-user-story-013-us-013. Performance instantânea.
 - **Step:** 5% (0, 5, 10, ..., 100).
 - **Feedback Visual:** Toast sutil quando fornecedor selecionado é removido pelo filtro.
 
 ---
 
-**Fim US-014**
+**Fim doc-user-story-014-us-014**

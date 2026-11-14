@@ -1,7 +1,7 @@
 # User Story — US-<NNN>
 
 **Título:** <Nome da história>  
-**ID Único:** US-<NNN> (ex: US-001)  
+**ID Único:** US-<NNN> (ex: doc-user-story-001-us-001)  
 **Status:** Backlog | Sprint Backlog | In Progress | Review | Done  
 **Sprint:** S<X> | **Milestone:** <nome>  
 **Prioridade:** P0 | P1 | P2  

@@ -195,7 +195,7 @@ STATELESS per session. Durable state: RTM (`.ai/specs/`), handoff files (`.ai/ha
 ## 12. ARTIFACT TEMPLATES
 (a) REQ spec row:
 ~~~markdown
-| REQ-014 | RF | Must | stakeholder-03 | TAP-003 | simulate currency | testable | HF-0050 | conforme |
+| REQ-014 | RF | Must | stakeholder-03 | TAP-003 | simulate currency | testable | hf-exec-0050 | conforme |
 ~~~
 (b) RTM row:
 ~~~markdown
@@ -205,7 +205,7 @@ STATELESS per session. Durable state: RTM (`.ai/specs/`), handoff files (`.ai/ha
 ~~~
 (c) handoff parcel to SDD:
 ~~~json
-{"req_id":"REQ-014","action":"spec","target":"agent-sdd-specialist","handoff":"HF-0050","kill_switch":"inherited"}
+{"req_id":"REQ-014","action":"spec","target":"agent-sdd-specialist","handoff":"hf-exec-0050","kill_switch":"inherited"}
 ~~~
 
 ## 13. INTEGRATION CONTRACTS

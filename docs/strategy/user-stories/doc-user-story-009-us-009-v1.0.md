@@ -1,7 +1,44 @@
-# User Story — US-009
+---
+id: doc-user-story-009-us-009-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 009
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-009
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-009-us-009
 
 **Título:** Listar Minhas Listas  
-**ID Único:** US-009  
+**ID Único:** doc-user-story-009-us-009  
 **Status:** Done  
 **Sprint:** S2 | **Milestone:** S2: Listas e Catálogo  
 **Prioridade:** P0  
@@ -116,4 +153,4 @@ E metadados {total: 25, page: 2, size: 20, total_pages: 2}
 
 ---
 
-**Fim US-009**
+**Fim doc-user-story-009-us-009**

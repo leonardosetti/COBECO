@@ -18,7 +18,7 @@ class TestUsuario:
     def test_usuario_criacao_valida(self):
         usuario = Usuario(
             id=1,
-            nome_usuario="usuario_teste",
+            nome_usuario="usuarioteste",
             email=Email("teste@exemplo.com"),
             nome="Usuário Teste",
             senha_hash=SenhaHash("$2b$12$hash"),
@@ -26,7 +26,7 @@ class TestUsuario:
             resposta_seguranca_hash=SenhaHash("$2b$12$hash"),
         )
         assert usuario.id == 1
-        assert usuario.nome_usuario == "usuario_teste"
+        assert usuario.nome_usuario == "usuarioteste"
         assert usuario.email.valor == "teste@exemplo.com"
         assert usuario.esta_ativo() is True
 
@@ -43,12 +43,12 @@ class TestUsuario:
             Usuario(nome_usuario="usuario-teste", email=Email("a@b.com"), nome="Nome")
 
     def test_usuario_nome_muito_curto(self):
-        with pytest.raises(ValueError, match="nome deve ter 2-10 caracteres"):
+        with pytest.raises(ValueError, match="nome deve ter 2-100 caracteres"):
             Usuario(nome_usuario="usuario", email=Email("a@b.com"), nome="A")
 
     def test_usuario_nome_muito_longo(self):
-        with pytest.raises(ValueError, match="nome deve ter 2-10 caracteres"):
-            Usuario(nome_usuario="usuario", email=Email("a@b.com"), nome="A" * 11)
+        with pytest.raises(ValueError, match="nome deve ter 2-100 caracteres"):
+            Usuario(nome_usuario="usuario", email=Email("a@b.com"), nome="A" * 101)
 
     def test_usuario_soft_delete(self):
         usuario = Usuario(nome_usuario="usuario", email=Email("a@b.com"), nome="Nome")
@@ -157,12 +157,12 @@ class TestLista:
         assert lista.esta_ativa() is True
 
     def test_lista_nome_obrigatorio(self):
-        with pytest.raises(ValueError, match="nome da lista deve ter 1-10 caracteres"):
+        with pytest.raises(ValueError, match="nome da lista deve ter 1-100 caracteres"):
             Lista(usuario_id=1, nome="")
 
     def test_lista_nome_muito_longo(self):
-        with pytest.raises(ValueError, match="nome da lista deve ter 1-10 caracteres"):
-            Lista(usuario_id=1, nome="A" * 11)
+        with pytest.raises(ValueError, match="nome da lista deve ter 1-100 caracteres"):
+            Lista(usuario_id=1, nome="A" * 101)
 
     def test_lista_soft_delete_com_confirmacao(self):
         lista = Lista(usuario_id=1, nome="Teste")
@@ -193,7 +193,7 @@ class TestItemLista:
 
     def test_item_lista_quantidade_maxima(self):
         with pytest.raises(ValueError, match="quantidade deve ser entre 1 e 9999"):
-            ItemLista(lista_id=1, produto_id=1, quantidade=1000)
+            ItemLista(lista_id=1, produto_id=1, quantidade=10000)
 
 
 class TestEntidadesComparacao:
@@ -252,7 +252,7 @@ class TestSessao:
             id=1,
             usuario_id=1,
             refresh_token_hash="hash123",
-            expira_em=datetime.now().replace(year=227),
+            expira_em=datetime.now().replace(year=datetime.now().year + 1),
         )
         assert sessao.esta_ativa() is True
 

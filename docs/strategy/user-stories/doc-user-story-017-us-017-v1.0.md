@@ -1,7 +1,44 @@
-# User Story — US-017
+---
+id: doc-user-story-017-us-017-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 017
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-017
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-017-us-017
 
 **Título:** Exportar Lista em PDF (ReportLab)  
-**ID Único:** US-017  
+**ID Único:** doc-user-story-017-us-017  
 **Status:** Done  
 **Sprint:** S4 | **Milestone:** S4: Export, Perfil e Polish  
 **Prioridade:** P0  
@@ -127,4 +164,4 @@ E loga erro completo no backend
 
 ---
 
-**Fim US-017**
+**Fim doc-user-story-017-us-017**

@@ -3,13 +3,14 @@
 
 import pytest
 from decimal import Decimal
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from src.main import app
 
 
 @pytest.fixture
 async def client():
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
 
 
@@ -55,7 +56,7 @@ async def lista_com_itens(client, auth_user):
 
 
 class TestComparacaoIntegration:
-    """Testes de integração para /v1/comparacao"""
+    """Testes de integração para /comparacao"""
 
     @pytest.mark.asyncio
     async def test_comparacao_flat_ordenacao_preco_asc(self, client, auth_user, lista_com_itens):
@@ -68,7 +69,7 @@ class TestComparacaoIntegration:
         forn_ids = [f["id"] for f in fornecedores[:5]]
 
         response = await client.post(
-            "/v1/comparacao",
+            "/comparacao",
             json={
                 "lista_id": lista_id,
                 "fornecedor_ids": forn_ids,
@@ -77,7 +78,7 @@ class TestComparacaoIntegration:
             headers=auth_user,
         )
 
-        assert response.status_code == 20
+        assert response.status_code == 200
         data = response.json()
 
         # Estrutura da resposta
@@ -129,7 +130,7 @@ class TestComparacaoIntegration:
 
         # Disponibilidade mínima 0% (todos)
         response_0 = await client.post(
-            "/v1/comparacao",
+            "/comparacao",
             json={"lista_id": lista_id, "fornecedor_ids": forn_ids, "disponibilidade_minima": 0.0},
             headers=auth_user,
         )
@@ -138,7 +139,7 @@ class TestComparacaoIntegration:
 
         # Disponibilidade mínima 100% (apenas quem tem todos os itens)
         response_10 = await client.post(
-            "/v1/comparacao",
+            "/comparacao",
             json={"lista_id": lista_id, "fornecedor_ids": forn_ids, "disponibilidade_minima": 100.0},
             headers=auth_user,
         )
@@ -159,7 +160,7 @@ class TestComparacaoIntegration:
         forn_ids = [f["id"] for f in forn_resp.json()[:3]]
 
         response = await client.post(
-            "/v1/comparacao",
+            "/comparacao",
             json={"lista_id": 99999, "fornecedor_ids": forn_ids, "disponibilidade_minima": 0.0},
             headers=auth_user,
         )
@@ -179,11 +180,11 @@ class TestComparacaoIntegration:
     @pytest.mark.asyncio
     async def test_comparacao_sem_fornecedores(self, client, auth_user, lista_com_itens):
         response = await client.post(
-            "/v1/comparacao",
+            "/comparacao",
             json={"lista_id": lista_com_itens["id"], "fornecedor_ids": [], "disponibilidade_minima": 0.0},
             headers=auth_user,
         )
-        assert response.status_code == 20
+        assert response.status_code == 200
         data = response.json()
         assert data["fornecedores"] == []
         assert data["melhor_fornecedor_id"] is None
@@ -191,12 +192,12 @@ class TestComparacaoIntegration:
     @pytest.mark.asyncio
     async def test_comparacao_fornecedor_inexistente(self, client, auth_user, lista_com_itens):
         response = await client.post(
-            "/v1/comparacao",
+            "/comparacao",
             json={"lista_id": lista_com_itens["id"], "fornecedor_ids": [99999], "disponibilidade_minima": 0.0},
             headers=auth_user,
         )
         # Deve ignorar fornecedores inexistentes ou retornar vazio
-        assert response.status_code == 20
+        assert response.status_code == 200
         data = response.json()
         assert data["fornecedores"] == []
 
@@ -211,7 +212,7 @@ class TestComparacaoFlatEstrutura:
         forn_ids = [f["id"] for f in forn_resp.json()[:3]]
 
         response = await client.post(
-            "/v1/comparacao",
+            "/comparacao",
             json={"lista_id": lista_id, "fornecedor_ids": forn_ids, "disponibilidade_minima": 0.0},
             headers=auth_user,
         )
@@ -236,7 +237,7 @@ class TestComparacaoFlatEstrutura:
         forn_ids = [f["id"] for f in forn_resp.json()[:3]]
 
         response = await client.post(
-            "/v1/comparacao",
+            "/comparacao",
             json={"lista_id": lista_id, "fornecedor_ids": forn_ids, "disponibilidade_minima": 0.0},
             headers=auth_user,
         )

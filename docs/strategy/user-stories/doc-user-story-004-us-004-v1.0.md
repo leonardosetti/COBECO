@@ -1,7 +1,44 @@
-# User Story — US-004
+---
+id: doc-user-story-004-us-004-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 004
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-004
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-004-us-004
 
 **Título:** Recuperar Senha  
-**ID Único:** US-004  
+**ID Único:** doc-user-story-004-us-004  
 **Status:** Done  
 **Sprint:** S1 | **Milestone:** S1: Setup, Docs e Auth  
 **Prioridade:** P1  
@@ -100,7 +137,7 @@ Então retorna 200 com mensagem genérica (não vaza existência) "Se o usuário
 | req-func-0001-requisitos-funcionais-canon.md | RF04 |
 | req-use-case-0001-casos-de-uso-canon.md | UC12 |
 | spec-004 | Spec ID |
-| HF-0500 | Handoff ID |
+| hf-exec-0500 | Handoff ID |
 | Branch | `feat/UC-12-recuperar-senha` |
 
 ---
@@ -108,9 +145,9 @@ Então retorna 200 com mensagem genérica (não vaza existência) "Se o usuário
 ## 7. Notas
 
 - **RECOVERY_MODE=log:** Apenas desenvolvimento. Em produção, enviaria email (fora escopo MVP).
-- **Pergunta Segurança:** Definida no cadastro (US-001). Resposta armazenada como hash bcrypt.
+- **Pergunta Segurança:** Definida no cadastro (doc-user-story-001-us-001). Resposta armazenada como hash bcrypt.
 - **Frontend:** 2 páginas — "Solicitar recuperação" (input usuário) → "Redefinir senha" (token + nova senha + confirmar).
 
 ---
 
-**Fim US-004**
+**Fim doc-user-story-004-us-004**

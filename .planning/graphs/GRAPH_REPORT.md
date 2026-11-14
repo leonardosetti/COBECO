@@ -258,7 +258,7 @@
 - match
 - Matcher
 - doc-pre-0001-pre-documento-v1.0.md
-- MANIFEST — corpus `.ai/specs/` (TA-0031, HF-0031)
+- MANIFEST — corpus `.ai/specs/` (TA-0031, hf-exec-0031)
 - 3. Modelo de dados (domínio)
 - agent-install-check.cjs
 - estimate-cli.cjs
@@ -537,12 +537,12 @@
 - Evaluate an optimization observation
 - caveman-stats
 - Handoff: Normalização integral do corpus de specs — slug, versionamento, corpo canônico, realocação e pendentes (TA-0031)
-- HF-0601 — Consulta de dominio: modelo de dados da invoice (B.4/GAP-04)
-- HF-0602 — Consulta de dominio: frontend web responsivo (B.1/REQ-06)
-- HF-0603 — Consulta de dominio: UAT de produto e destino de evidencias (B.5/C.5)
-- HF-0604 — Consulta de dominio: CI/CD, drift G-05 e camada CI (B.7/B.10/C.4)
-- HF-0605 — Consulta de dominio: qualidade PDCA + Ishikawa 6M (B.6/REQ-10)
-- HF-0606 — Consulta de dominio: LGPD de produto — fundamentos para CCB (B.3/GAP-08)
+- hf-exec-0601 — Consulta de dominio: modelo de dados da invoice (B.4/GAP-04)
+- hf-exec-0602 — Consulta de dominio: frontend web responsivo (B.1/REQ-06)
+- hf-exec-0603 — Consulta de dominio: UAT de produto e destino de evidencias (B.5/C.5)
+- hf-exec-0604 — Consulta de dominio: CI/CD, drift G-05 e camada CI (B.7/B.10/C.4)
+- hf-exec-0605 — Consulta de dominio: qualidade PDCA + Ishikawa 6M (B.6/REQ-10)
+- hf-exec-0606 — Consulta de dominio: LGPD de produto — fundamentos para CCB (B.3/GAP-08)
 - kb-taxonomy.md
 - Seção Histórico
 - 📋 Detalhamento dos Gaps
@@ -582,55 +582,55 @@
 - caveman-discover/SKILL.md
 - Ledger operacional — corte de histórico deprecated
 - MCP `nexus-*` — DESCONTINUADO / DEPRECATED
-- Handoff: HF-0010
-- Handoff: HF-0022
+- Handoff: hf-exec-0010
+- Handoff: hf-exec-0022
 - Handoff: SPEC de camadas de containers para a produção ortogonal do COBECO
 - Handoff: Amenda Nginx aceito-e-mantido + comunicação integrada para demo local (TA-0030)
 - Handoff: Auditoria dedicada de registry.yaml e ledger.yaml — circuito de agentes, regras de roteamento, subutilização e desvio de função (TA-0032)
 - Handoff: Levantamento de artefatos com status draft para aprovação CCB (TA-0033)
 - Handoff: Enriquecimento da lista de specs pendentes com dados propositivos + rodapé com hora e ratificação CCB (TA-0035)
-- Handoff: HF-0036
-- Handoff: HF-0037
-- Handoff: HF-0038
-- Handoff: HF-0039
-- Handoff: HF-0040
-- Handoff: HF-0041
-- Handoff: HF-0042
-- Handoff: HF-0043
-- Handoff: HF-0044
-- Handoff: HF-0100
-- Handoff: HF-0101
-- Handoff: HF-0102
-- Handoff: HF-0103
-- Handoff: HF-0104
-- Handoff: HF-0105
-- Handoff: HF-0106
-- Handoff: HF-0107
-- Handoff: HF-0108
-- Handoff: HF-0109
-- Handoff: HF-0110
-- Handoff: HF-0111
+- Handoff: hf-exec-0036
+- Handoff: hf-exec-0037
+- Handoff: hf-exec-0038
+- Handoff: hf-exec-0039
+- Handoff: hf-exec-0040
+- Handoff: hf-exec-0041
+- Handoff: hf-exec-0042
+- Handoff: hf-exec-0043
+- Handoff: hf-exec-0044
+- Handoff: hf-exec-0100
+- Handoff: hf-exec-0101
+- Handoff: hf-exec-0102
+- Handoff: hf-exec-0103
+- Handoff: hf-exec-0104
+- Handoff: hf-exec-0105
+- Handoff: hf-exec-0106
+- Handoff: hf-exec-0107
+- Handoff: hf-exec-0108
+- Handoff: hf-exec-0109
+- Handoff: hf-exec-0110
+- Handoff: hf-exec-0111
 - Handoff: SDDAI Data Loader — Ingestão de Dados
 - Handoff: SDDAI Memory Optimizer — Otimização de Memória
 - Handoff: SDDAI Feature Engineer — Engenharia de Features
 - Handoff: SDDAI Model Trainer — Treinamento de Modelo
 - Handoff: SDDAI CLI Orchestrator — Pipeline Unificado
 - Handoff: Scheduler de auditoria de compliance (REQ-13)
-- HF-0607 — Emissao spec-006-nfr-consolidados-v1 (B.2/GAP-02)
-- HF-0608 — Emissao spec-007-invoice-data-model-v1 (B.4/GAP-04) — insumo TA-0045
-- HF-0609 — Emissao spec-008-frontend-web-responsive-v1 (B.1/REQ-06) — insumo TA-0046
-- HF-0610 — Emissao spec-009-uat-produto-v1 (B.5/REQ-09) — insumo TA-0047
-- HF-0611 — Emissao spec-010-qualidade-pdca-ishikawa-v1 (B.6/REQ-10) — insumo TA-0049
-- HF-0612 — Emissao spec-011-cicd-pipeline-v1 (B.7/REQ-11) — insumo TA-0048
-- HF-0613 — Emissao spec-012-rastreabilidade-prompts-sdd-v1 (B.8/REQ-13)
-- HF-0614 — Emissao spec-013-documentacao-tecnica-v1 (B.9/REQ-14)
-- HF-0615 — Emissao spec-014-runtime-agentes-ci-layers-v1 (B.10) — escopo CONFIRMADO pelo orquestrador
-- HF-0616 — Emissao spec-015-lgpd-produto-proposta-v1 (B.3/GAP-08) — PROPOSTA draft condicionada a CCB
-- HF-0617 — Emendas C.1+C.2 em spec-004 e C.4+C.5 em spec-005 (lacunas de conteudo)
-- HF-0618 — Auditoria de integridade da rodada de specs (fechamento)
-- HF-0619 — Repovoar .ai/specs/tap.md (A.2) — transcricao da baseline congelada TAP v3
-- HF-0620 — Repovoar .ai/specs/eap.md (A.3) — fases N1..N11 com rastreabilidade
-- HF-0621 — Repovoar .ai/specs/requisitos.md (A.1)
+- hf-exec-0607 — Emissao spec-006-nfr-consolidados-v1 (B.2/GAP-02)
+- hf-exec-0608 — Emissao spec-007-invoice-data-model-v1 (B.4/GAP-04) — insumo TA-0045
+- hf-exec-0609 — Emissao spec-008-frontend-web-responsive-v1 (B.1/REQ-06) — insumo TA-0046
+- hf-exec-0610 — Emissao spec-009-uat-produto-v1 (B.5/REQ-09) — insumo TA-0047
+- hf-exec-0611 — Emissao spec-010-qualidade-pdca-ishikawa-v1 (B.6/REQ-10) — insumo TA-0049
+- hf-exec-0612 — Emissao spec-011-cicd-pipeline-v1 (B.7/REQ-11) — insumo TA-0048
+- hf-exec-0613 — Emissao spec-012-rastreabilidade-prompts-sdd-v1 (B.8/REQ-13)
+- hf-exec-0614 — Emissao spec-013-documentacao-tecnica-v1 (B.9/REQ-14)
+- hf-exec-0615 — Emissao spec-014-runtime-agentes-ci-layers-v1 (B.10) — escopo CONFIRMADO pelo orquestrador
+- hf-exec-0616 — Emissao spec-015-lgpd-produto-proposta-v1 (B.3/GAP-08) — PROPOSTA draft condicionada a CCB
+- hf-exec-0617 — Emendas C.1+C.2 em spec-004 e C.4+C.5 em spec-005 (lacunas de conteudo)
+- hf-exec-0618 — Auditoria de integridade da rodada de specs (fechamento)
+- hf-exec-0619 — Repovoar .ai/specs/tap.md (A.2) — transcricao da baseline congelada TAP v3
+- hf-exec-0620 — Repovoar .ai/specs/eap.md (A.3) — fases N1..N11 com rastreabilidade
+- hf-exec-0621 — Repovoar .ai/specs/requisitos.md (A.1)
 - Catálogo de prompts SDD (handoffs de despacho) — REQ-13, fase N9.3
 - Inventário de MCPs — COBECO
 - 📋 DOCUMENTO COMPLETO — COBECO MVP v3.2
@@ -1889,7 +1889,7 @@ Nodes (20): add(), allocTable(), arraysEqual(), clearCache(), computeClosure(), 
 Cohesion: 0.10
 Nodes (19): 1. OBJETIVO DO PROJETO, 2. ESCOPO, 3.1. Requisitos Funcionais (RF), 3.2. Requisitos Não Funcionais (RNF), 3.3. Requisitos Desejáveis (Backlog Pós-MVP), 3. req-func-0001-requisitos-funcionais-canon, 4.1. Diagrama de Caso de Uso, 4.2. Diagrama Entidade-Relacionamento (DER) (+11 more)
 
-### Community 242 - "MANIFEST — corpus `.ai/specs/` (TA-0031, HF-0031)"
+### Community 242 - "MANIFEST — corpus `.ai/specs/` (TA-0031, hf-exec-0031)"
 Cohesion: 0.11
 Nodes (18): 1.1 Camada (a) — cabeçalho (frontmatter YAML), 1.2 Camadas (b)–(h) — corpo, 1. Template canônico de corpo (camadas fundamentais a–h), 2.1 Slug e `spec_id`, 2.2 Versões (bump inicial nas sem versão; preservar as existentes), 2. Regras de nomenclatura e versionamento, 3.1 Fronteira de integridade verificada, 3. Inventário e classificação (11 arquivos → 11 arquivos; 0 realocações) (+10 more)
 
@@ -1939,7 +1939,7 @@ Nodes (17): 10. Contexto e origem (camada b), 11. Critérios de aceite e testes 
 
 ### Community 254 - "SPEC spec-011 — cicd-pipeline-v1 — Pipeline CI/CD do COBECO (lint+testes ≤5 min por push, falha bloqueando merge)"
 Cohesion: 0.11
-Nodes (17): 1. Contexto e origem, 2. Resolução de conflitos, 3.1 Estado atual auditado (evidência direta no filesystem, 2026-11-03), 3.2 Requisitos do pipeline (normativos), 3.3 Delta requerido sobre o estado atual (US-011 NÃO ATENDIDO hoje), 3.4 Job `contract-network` (fecha C.4), 3.5 Gates intransferíveis (nunca removidos, nunca reordenados abaixo do kill switch), 3.6 Merge-blocking como pré-condição (nunca substitui aprovação) (+9 more)
+Nodes (17): 1. Contexto e origem, 2. Resolução de conflitos, 3.1 Estado atual auditado (evidência direta no filesystem, 2026-11-03), 3.2 Requisitos do pipeline (normativos), 3.3 Delta requerido sobre o estado atual (doc-user-story-011-us-011 NÃO ATENDIDO hoje), 3.4 Job `contract-network` (fecha C.4), 3.5 Gates intransferíveis (nunca removidos, nunca reordenados abaixo do kill switch), 3.6 Merge-blocking como pré-condição (nunca substitui aprovação) (+9 more)
 
 ### Community 255 - "SPEC spec-012 — rastreabilidade-prompts-sdd-v1 — Rastreabilidade de prompts SDD (100% dos handoffs catalogados em `.ai/handoffs/` — REQ-13, fase N9.3)"
 Cohesion: 0.11
@@ -2079,7 +2079,7 @@ Nodes (14): agents, description, downstream, file, layer, name, role, status (+6
 
 ### Community 289 - "SPEC spec-013 — documentacao-tecnica-v1 — Documentação técnica: doc de arquitetura + revisão/aprovação da OpenAPI (REQ-14)"
 Cohesion: 0.13
-Nodes (14): 1. Contexto e origem, 2. Resolução de conflitos, 3.1 Escopo do doc de arquitetura (visão de camadas, Art. 10.1), 3.2 Ciclo de vida da documentação (draft → revisão Code Review → aprovado), 3.3 Relação doc↔código (documented truth = running truth), 3.4 OpenAPI: fonte única de verdade, render nunca hand-restyled, critérios de revisão, 3.5 Integração REQ-14/US-014, mapa de rastreabilidade documental e destino, 3. Domínio — documentação técnica (REQ-14, US-014) (+6 more)
+Nodes (14): 1. Contexto e origem, 2. Resolução de conflitos, 3.1 Escopo do doc de arquitetura (visão de camadas, Art. 10.1), 3.2 Ciclo de vida da documentação (draft → revisão Code Review → aprovado), 3.3 Relação doc↔código (documented truth = running truth), 3.4 OpenAPI: fonte única de verdade, render nunca hand-restyled, critérios de revisão, 3.5 Integração REQ-14/doc-user-story-014-us-014, mapa de rastreabilidade documental e destino, 3. Domínio — documentação técnica (REQ-14, doc-user-story-014-us-014) (+6 more)
 
 ### Community 290 - "parseUatItemsWithStats"
 Cohesion: 0.20
@@ -2997,29 +2997,29 @@ Nodes (5): caveman-stats, Example output, How to invoke, See also, What it does
 Cohesion: 0.29
 Nodes (6): Contexto, Critérios de Aceite, Handoff: Normalização integral do corpus de specs — slug, versionamento, corpo canônico, realocação e pendentes (TA-0031), Regras de integridade de referência (fail-closed), Restrições, Tarefa
 
-### Community 521 - "HF-0601 — Consulta de dominio: modelo de dados da invoice (B.4/GAP-04)"
+### Community 521 - "hf-exec-0601 — Consulta de dominio: modelo de dados da invoice (B.4/GAP-04)"
 Cohesion: 0.29
-Nodes (6): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes, HF-0601 — Consulta de dominio: modelo de dados da invoice (B.4/GAP-04), RESPOSTA — PARCELA DE CONSULTA (TA-0045 / agent-dba, 2026-11-03), Tarefa (meio-duplex — sem escrita de arquivos)
+Nodes (6): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes, hf-exec-0601 — Consulta de dominio: modelo de dados da invoice (B.4/GAP-04), RESPOSTA — PARCELA DE CONSULTA (TA-0045 / agent-dba, 2026-11-03), Tarefa (meio-duplex — sem escrita de arquivos)
 
-### Community 522 - "HF-0602 — Consulta de dominio: frontend web responsivo (B.1/REQ-06)"
+### Community 522 - "hf-exec-0602 — Consulta de dominio: frontend web responsivo (B.1/REQ-06)"
 Cohesion: 0.29
-Nodes (6): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes, HF-0602 — Consulta de dominio: frontend web responsivo (B.1/REQ-06), RESPOSTA — PARCELA DE CONSULTA (TA-0046 / agent-ui-ux-advisor, 2026-11-03), Tarefa (meio-duplex — sem escrita de arquivos)
+Nodes (6): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes, hf-exec-0602 — Consulta de dominio: frontend web responsivo (B.1/REQ-06), RESPOSTA — PARCELA DE CONSULTA (TA-0046 / agent-ui-ux-advisor, 2026-11-03), Tarefa (meio-duplex — sem escrita de arquivos)
 
-### Community 523 - "HF-0603 — Consulta de dominio: UAT de produto e destino de evidencias (B.5/C.5)"
+### Community 523 - "hf-exec-0603 — Consulta de dominio: UAT de produto e destino de evidencias (B.5/C.5)"
 Cohesion: 0.29
-Nodes (6): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes, HF-0603 — Consulta de dominio: UAT de produto e destino de evidencias (B.5/C.5), RESPOSTA — PARCELA DE CONSULTA (TA-0047 / agent-qa-sdet, 2026-11-03), Tarefa (meio-duplex — sem escrita de arquivos)
+Nodes (6): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes, hf-exec-0603 — Consulta de dominio: UAT de produto e destino de evidencias (B.5/C.5), RESPOSTA — PARCELA DE CONSULTA (TA-0047 / agent-qa-sdet, 2026-11-03), Tarefa (meio-duplex — sem escrita de arquivos)
 
-### Community 524 - "HF-0604 — Consulta de dominio: CI/CD, drift G-05 e camada CI (B.7/B.10/C.4)"
+### Community 524 - "hf-exec-0604 — Consulta de dominio: CI/CD, drift G-05 e camada CI (B.7/B.10/C.4)"
 Cohesion: 0.29
-Nodes (6): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes, HF-0604 — Consulta de dominio: CI/CD, drift G-05 e camada CI (B.7/B.10/C.4), RESPOSTA — PARCELA DE CONSULTA (TA-0048 / agent-devops, 2026-11-03), Tarefa (meio-duplex — sem escrita de arquivos)
+Nodes (6): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes, hf-exec-0604 — Consulta de dominio: CI/CD, drift G-05 e camada CI (B.7/B.10/C.4), RESPOSTA — PARCELA DE CONSULTA (TA-0048 / agent-devops, 2026-11-03), Tarefa (meio-duplex — sem escrita de arquivos)
 
-### Community 525 - "HF-0605 — Consulta de dominio: qualidade PDCA + Ishikawa 6M (B.6/REQ-10)"
+### Community 525 - "hf-exec-0605 — Consulta de dominio: qualidade PDCA + Ishikawa 6M (B.6/REQ-10)"
 Cohesion: 0.29
-Nodes (6): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes, HF-0605 — Consulta de dominio: qualidade PDCA + Ishikawa 6M (B.6/REQ-10), RESPOSTA — PARCELA DE CONSULTA (TA-0049 / agent-quality-architect-specialist, 2026-11-03), Tarefa (meio-duplex — sem escrita de arquivos)
+Nodes (6): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes, hf-exec-0605 — Consulta de dominio: qualidade PDCA + Ishikawa 6M (B.6/REQ-10), RESPOSTA — PARCELA DE CONSULTA (TA-0049 / agent-quality-architect-specialist, 2026-11-03), Tarefa (meio-duplex — sem escrita de arquivos)
 
-### Community 526 - "HF-0606 — Consulta de dominio: LGPD de produto — fundamentos para CCB (B.3/GAP-08)"
+### Community 526 - "hf-exec-0606 — Consulta de dominio: LGPD de produto — fundamentos para CCB (B.3/GAP-08)"
 Cohesion: 0.29
-Nodes (6): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes, HF-0606 — Consulta de dominio: LGPD de produto — fundamentos para CCB (B.3/GAP-08), RESPOSTA — PARCELA DE CONSULTA (TA-0050 / agent-compliance-governance, 2026-11-03), Tarefa (meio-duplex — SEM escrita de arquivos; emissao condicionada a CCB/PO)
+Nodes (6): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes, hf-exec-0606 — Consulta de dominio: LGPD de produto — fundamentos para CCB (B.3/GAP-08), RESPOSTA — PARCELA DE CONSULTA (TA-0050 / agent-compliance-governance, 2026-11-03), Tarefa (meio-duplex — SEM escrita de arquivos; emissao condicionada a CCB/PO)
 
 ### Community 527 - "kb-taxonomy.md"
 Cohesion: 0.29
@@ -3177,13 +3177,13 @@ Nodes (5): Arquivos, Critério de corte, Ledger operacional — corte de histór
 Cohesion: 0.33
 Nodes (5): ADR-017, Arquivos movidos para cá, MCP `nexus-*` — DESCONTINUADO / DEPRECATED, Motivo, Reativação
 
-### Community 566 - "Handoff: HF-0010"
+### Community 566 - "Handoff: hf-exec-0010"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0010, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0010, Restrições, Tarefa
 
-### Community 567 - "Handoff: HF-0022"
+### Community 567 - "Handoff: hf-exec-0022"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0022, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0022, Restrições, Tarefa
 
 ### Community 568 - "Handoff: SPEC de camadas de containers para a produção ortogonal do COBECO"
 Cohesion: 0.33
@@ -3205,89 +3205,89 @@ Nodes (5): Contexto, Critérios de Aceite, Handoff: Levantamento de artefatos co
 Cohesion: 0.33
 Nodes (5): Contexto, Critérios de Aceite, Handoff: Enriquecimento da lista de specs pendentes com dados propositivos + rodapé com hora e ratificação CCB (TA-0035), Restrições, Tarefa
 
-### Community 573 - "Handoff: HF-0036"
+### Community 573 - "Handoff: hf-exec-0036"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0036, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0036, Restrições, Tarefa
 
-### Community 574 - "Handoff: HF-0037"
+### Community 574 - "Handoff: hf-exec-0037"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0037, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0037, Restrições, Tarefa
 
-### Community 575 - "Handoff: HF-0038"
+### Community 575 - "Handoff: hf-exec-0038"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0038, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0038, Restrições, Tarefa
 
-### Community 576 - "Handoff: HF-0039"
+### Community 576 - "Handoff: hf-exec-0039"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0039, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0039, Restrições, Tarefa
 
-### Community 577 - "Handoff: HF-0040"
+### Community 577 - "Handoff: hf-exec-0040"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0040, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0040, Restrições, Tarefa
 
-### Community 578 - "Handoff: HF-0041"
+### Community 578 - "Handoff: hf-exec-0041"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0041, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0041, Restrições, Tarefa
 
-### Community 579 - "Handoff: HF-0042"
+### Community 579 - "Handoff: hf-exec-0042"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0042, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0042, Restrições, Tarefa
 
-### Community 580 - "Handoff: HF-0043"
+### Community 580 - "Handoff: hf-exec-0043"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0043, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0043, Restrições, Tarefa
 
-### Community 581 - "Handoff: HF-0044"
+### Community 581 - "Handoff: hf-exec-0044"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0044, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0044, Restrições, Tarefa
 
-### Community 582 - "Handoff: HF-0100"
+### Community 582 - "Handoff: hf-exec-0100"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0100, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0100, Restrições, Tarefa
 
-### Community 583 - "Handoff: HF-0101"
+### Community 583 - "Handoff: hf-exec-0101"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0101, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0101, Restrições, Tarefa
 
-### Community 584 - "Handoff: HF-0102"
+### Community 584 - "Handoff: hf-exec-0102"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0102, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0102, Restrições, Tarefa
 
-### Community 585 - "Handoff: HF-0103"
+### Community 585 - "Handoff: hf-exec-0103"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0103, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0103, Restrições, Tarefa
 
-### Community 586 - "Handoff: HF-0104"
+### Community 586 - "Handoff: hf-exec-0104"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0104, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0104, Restrições, Tarefa
 
-### Community 587 - "Handoff: HF-0105"
+### Community 587 - "Handoff: hf-exec-0105"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0105, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0105, Restrições, Tarefa
 
-### Community 588 - "Handoff: HF-0106"
+### Community 588 - "Handoff: hf-exec-0106"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0106, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0106, Restrições, Tarefa
 
-### Community 589 - "Handoff: HF-0107"
+### Community 589 - "Handoff: hf-exec-0107"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0107, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0107, Restrições, Tarefa
 
-### Community 590 - "Handoff: HF-0108"
+### Community 590 - "Handoff: hf-exec-0108"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0108, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0108, Restrições, Tarefa
 
-### Community 591 - "Handoff: HF-0109"
+### Community 591 - "Handoff: hf-exec-0109"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0109, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0109, Restrições, Tarefa
 
-### Community 592 - "Handoff: HF-0110"
+### Community 592 - "Handoff: hf-exec-0110"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0110, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0110, Restrições, Tarefa
 
-### Community 593 - "Handoff: HF-0111"
+### Community 593 - "Handoff: hf-exec-0111"
 Cohesion: 0.33
-Nodes (5): Contexto, Critérios de Aceite, Handoff: HF-0111, Restrições, Tarefa
+Nodes (5): Contexto, Critérios de Aceite, Handoff: hf-exec-0111, Restrições, Tarefa
 
 ### Community 594 - "Handoff: SDDAI Data Loader — Ingestão de Dados"
 Cohesion: 0.33
@@ -3313,65 +3313,65 @@ Nodes (5): Contexto, Critérios de Aceite, Handoff: SDDAI CLI Orchestrator — P
 Cohesion: 0.33
 Nodes (5): Contexto, Critérios de Aceite, Handoff: Scheduler de auditoria de compliance (REQ-13), Restrições, Tarefa
 
-### Community 600 - "HF-0607 — Emissao spec-006-nfr-consolidados-v1 (B.2/GAP-02)"
+### Community 600 - "hf-exec-0607 — Emissao spec-006-nfr-consolidados-v1 (B.2/GAP-02)"
 Cohesion: 0.33
-Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, HF-0607 — Emissao spec-006-nfr-consolidados-v1 (B.2/GAP-02), Tarefa
+Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, hf-exec-0607 — Emissao spec-006-nfr-consolidados-v1 (B.2/GAP-02), Tarefa
 
-### Community 601 - "HF-0608 — Emissao spec-007-invoice-data-model-v1 (B.4/GAP-04) — insumo TA-0045"
+### Community 601 - "hf-exec-0608 — Emissao spec-007-invoice-data-model-v1 (B.4/GAP-04) — insumo TA-0045"
 Cohesion: 0.33
-Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, HF-0608 — Emissao spec-007-invoice-data-model-v1 (B.4/GAP-04) — insumo TA-0045, Tarefa
+Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, hf-exec-0608 — Emissao spec-007-invoice-data-model-v1 (B.4/GAP-04) — insumo TA-0045, Tarefa
 
-### Community 602 - "HF-0609 — Emissao spec-008-frontend-web-responsive-v1 (B.1/REQ-06) — insumo TA-0046"
+### Community 602 - "hf-exec-0609 — Emissao spec-008-frontend-web-responsive-v1 (B.1/REQ-06) — insumo TA-0046"
 Cohesion: 0.33
-Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, HF-0609 — Emissao spec-008-frontend-web-responsive-v1 (B.1/REQ-06) — insumo TA-0046, Tarefa
+Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, hf-exec-0609 — Emissao spec-008-frontend-web-responsive-v1 (B.1/REQ-06) — insumo TA-0046, Tarefa
 
-### Community 603 - "HF-0610 — Emissao spec-009-uat-produto-v1 (B.5/REQ-09) — insumo TA-0047"
+### Community 603 - "hf-exec-0610 — Emissao spec-009-uat-produto-v1 (B.5/REQ-09) — insumo TA-0047"
 Cohesion: 0.33
-Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, HF-0610 — Emissao spec-009-uat-produto-v1 (B.5/REQ-09) — insumo TA-0047, Tarefa
+Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, hf-exec-0610 — Emissao spec-009-uat-produto-v1 (B.5/REQ-09) — insumo TA-0047, Tarefa
 
-### Community 604 - "HF-0611 — Emissao spec-010-qualidade-pdca-ishikawa-v1 (B.6/REQ-10) — insumo TA-0049"
+### Community 604 - "hf-exec-0611 — Emissao spec-010-qualidade-pdca-ishikawa-v1 (B.6/REQ-10) — insumo TA-0049"
 Cohesion: 0.33
-Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, HF-0611 — Emissao spec-010-qualidade-pdca-ishikawa-v1 (B.6/REQ-10) — insumo TA-0049, Tarefa
+Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, hf-exec-0611 — Emissao spec-010-qualidade-pdca-ishikawa-v1 (B.6/REQ-10) — insumo TA-0049, Tarefa
 
-### Community 605 - "HF-0612 — Emissao spec-011-cicd-pipeline-v1 (B.7/REQ-11) — insumo TA-0048"
+### Community 605 - "hf-exec-0612 — Emissao spec-011-cicd-pipeline-v1 (B.7/REQ-11) — insumo TA-0048"
 Cohesion: 0.33
-Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, HF-0612 — Emissao spec-011-cicd-pipeline-v1 (B.7/REQ-11) — insumo TA-0048, Tarefa
+Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, hf-exec-0612 — Emissao spec-011-cicd-pipeline-v1 (B.7/REQ-11) — insumo TA-0048, Tarefa
 
-### Community 606 - "HF-0613 — Emissao spec-012-rastreabilidade-prompts-sdd-v1 (B.8/REQ-13)"
+### Community 606 - "hf-exec-0613 — Emissao spec-012-rastreabilidade-prompts-sdd-v1 (B.8/REQ-13)"
 Cohesion: 0.33
-Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, HF-0613 — Emissao spec-012-rastreabilidade-prompts-sdd-v1 (B.8/REQ-13), Tarefa
+Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, hf-exec-0613 — Emissao spec-012-rastreabilidade-prompts-sdd-v1 (B.8/REQ-13), Tarefa
 
-### Community 607 - "HF-0614 — Emissao spec-013-documentacao-tecnica-v1 (B.9/REQ-14)"
+### Community 607 - "hf-exec-0614 — Emissao spec-013-documentacao-tecnica-v1 (B.9/REQ-14)"
 Cohesion: 0.33
-Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, HF-0614 — Emissao spec-013-documentacao-tecnica-v1 (B.9/REQ-14), Tarefa
+Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, hf-exec-0614 — Emissao spec-013-documentacao-tecnica-v1 (B.9/REQ-14), Tarefa
 
-### Community 608 - "HF-0615 — Emissao spec-014-runtime-agentes-ci-layers-v1 (B.10) — escopo CONFIRMADO pelo orquestrador"
+### Community 608 - "hf-exec-0615 — Emissao spec-014-runtime-agentes-ci-layers-v1 (B.10) — escopo CONFIRMADO pelo orquestrador"
 Cohesion: 0.33
-Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, HF-0615 — Emissao spec-014-runtime-agentes-ci-layers-v1 (B.10) — escopo CONFIRMADO pelo orquestrador, Tarefa
+Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, hf-exec-0615 — Emissao spec-014-runtime-agentes-ci-layers-v1 (B.10) — escopo CONFIRMADO pelo orquestrador, Tarefa
 
-### Community 609 - "HF-0616 — Emissao spec-015-lgpd-produto-proposta-v1 (B.3/GAP-08) — PROPOSTA draft condicionada a CCB"
+### Community 609 - "hf-exec-0616 — Emissao spec-015-lgpd-produto-proposta-v1 (B.3/GAP-08) — PROPOSTA draft condicionada a CCB"
 Cohesion: 0.33
-Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, HF-0616 — Emissao spec-015-lgpd-produto-proposta-v1 (B.3/GAP-08) — PROPOSTA draft condicionada a CCB, Tarefa
+Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, hf-exec-0616 — Emissao spec-015-lgpd-produto-proposta-v1 (B.3/GAP-08) — PROPOSTA draft condicionada a CCB, Tarefa
 
-### Community 610 - "HF-0617 — Emendas C.1+C.2 em spec-004 e C.4+C.5 em spec-005 (lacunas de conteudo)"
+### Community 610 - "hf-exec-0617 — Emendas C.1+C.2 em spec-004 e C.4+C.5 em spec-005 (lacunas de conteudo)"
 Cohesion: 0.33
-Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, HF-0617 — Emendas C.1+C.2 em spec-004 e C.4+C.5 em spec-005 (lacunas de conteudo), Tarefa
+Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, hf-exec-0617 — Emendas C.1+C.2 em spec-004 e C.4+C.5 em spec-005 (lacunas de conteudo), Tarefa
 
-### Community 611 - "HF-0618 — Auditoria de integridade da rodada de specs (fechamento)"
+### Community 611 - "hf-exec-0618 — Auditoria de integridade da rodada de specs (fechamento)"
 Cohesion: 0.33
-Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes, HF-0618 — Auditoria de integridade da rodada de specs (fechamento), Tarefa (executar APENAS apos conclusao de TA-0051..TA-0064)
+Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes, hf-exec-0618 — Auditoria de integridade da rodada de specs (fechamento), Tarefa (executar APENAS apos conclusao de TA-0051..TA-0064)
 
-### Community 612 - "HF-0619 — Repovoar .ai/specs/tap.md (A.2) — transcricao da baseline congelada TAP v3"
+### Community 612 - "hf-exec-0619 — Repovoar .ai/specs/tap.md (A.2) — transcricao da baseline congelada TAP v3"
 Cohesion: 0.33
-Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, HF-0619 — Repovoar .ai/specs/tap.md (A.2) — transcricao da baseline congelada TAP v3, Tarefa
+Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, hf-exec-0619 — Repovoar .ai/specs/tap.md (A.2) — transcricao da baseline congelada TAP v3, Tarefa
 
-### Community 613 - "HF-0620 — Repovoar .ai/specs/eap.md (A.3) — fases N1..N11 com rastreabilidade"
+### Community 613 - "hf-exec-0620 — Repovoar .ai/specs/eap.md (A.3) — fases N1..N11 com rastreabilidade"
 Cohesion: 0.33
-Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, HF-0620 — Repovoar .ai/specs/eap.md (A.3) — fases N1..N11 com rastreabilidade, Tarefa
+Nodes (5): Contrato de resposta (meio-duplex), Critérios de Aceite, Fontes obrigatorias, hf-exec-0620 — Repovoar .ai/specs/eap.md (A.3) — fases N1..N11 com rastreabilidade, Tarefa
 
-### Community 614 - "HF-0621 — Repovoar .ai/specs/requisitos.md (A.1)"
+### Community 614 - "hf-exec-0621 — Repovoar .ai/specs/requisitos.md (A.1)"
 Cohesion: 0.33
-Nodes (5): Condicao de desbloqueio VERIFICADA, Critérios de Aceite, HF-0621 — Repovoar .ai/specs/requisitos.md (A.1), Regras, Tarefa
+Nodes (5): Condicao de desbloqueio VERIFICADA, Critérios de Aceite, hf-exec-0621 — Repovoar .ai/specs/requisitos.md (A.1), Regras, Tarefa
 
 ### Community 615 - "Catálogo de prompts SDD (handoffs de despacho) — REQ-13, fase N9.3"
 Cohesion: 0.33

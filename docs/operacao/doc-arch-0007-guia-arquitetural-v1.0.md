@@ -174,7 +174,7 @@ graph TD
 | `docs/decisoes/` | Decisões Arquiteturais | ADRs (Architecture Decision Records) |
 | `docs/auditorias/` | Auditoria & Encerramento | Post-Mortem, Lessons Learned, DPIA, SLA |
 | `.ai/specs/` | Specs SDD | 16 specs ratificadas (spec-001 a spec-016) |
-| `.ai/handoffs/` | Handoffs SDD | HF-0001 a HF-XXXX (processados via L0) |
+| `.ai/handoffs/` | Handoffs SDD | hf-exec-0001 a HF-XXXX (processados via L0) |
 | `.ai/agents/` | Agent Registry | registry.yaml, ledger.yaml, audit_trail.yml |
 | `scripts/` | Automação Python | Hooks, dispatchers, parsers, validators |
 | `.github/workflows/` | CI/CD | ci.yml (ruff + pytest --cov≥80 + mypy + build) |
@@ -210,11 +210,11 @@ flowchart TD
 | Artefato | Padrão de Nome | Localização | Exemplo |
 |----------|----------------|-------------|---------|
 | **Spec** | `spec-<NNN>-<slug>-v<ver>.spec.md` | `.ai/specs/` | `spec-004-backend-mvp-v1.spec.md` |
-| **Handoff** | `HF-<NNNN>.md` | `.ai/handoffs/` | `HF-0500-backend-mvp.md` |
+| **Handoff** | `HF-<NNNN>.md` | `.ai/handoffs/` | `hf-exec-0500-backend-mvp-v1.0.md` |
 | **ADR** | `ADR-<NNN>-<slug>.md` | `docs/decisoes/` | `ADR-001-stack-decision.md` |
 | **RFC** | `RFC-<NNN>-<slug>.md` | `docs/rfc/` | `RFC-001-auth-pattern.md` |
 | **CR** | `CR-<NNN>-<slug>.md` | `docs/change/` | `CR-001-quality-board-publico.md` |
-| **User Story** | `US-<NNN>.md` | `docs/strategy/user-stories/` | `US-001.md` |
+| **User Story** | `US-<NNN>.md` | `docs/strategy/user-stories/` | `doc-user-story-001-us-001-v1.0.md` |
 | **Spec Template** | `TEMPLATE-SPEC.md` | `.ai/specs/` | — |
 | **Handoff Template** | `TEMPLATE-HANDOFF.md` | `.ai/handoffs/` | — |
 
@@ -272,7 +272,7 @@ graph LR
     
     T1 -.->|docs/strategy/| D1[Instância: PROJECT-CHARTER.md]
     T7 -.->|docs/strategy/| D2[Instância: PRD.md]
-    T8 -.->|docs/strategy/user-stories/| D3[Instâncias: US-001..US-020.md]
+    T8 -.->|docs/strategy/user-stories/| D3[Instâncias: doc-user-story-001-us-001..doc-user-story-020-us-020-v1.0.md]
     T9 -.->|docs/strategy/| D4[Instância: TRACEABILITY.md]
     T10 -.->|docs/arquitetura/| D5[Instâncias: C4-*.md]
     T11 -.->|docs/decisoes/| D6[Instância: ADR-001-*.md]
@@ -381,7 +381,7 @@ flowchart LR
     end
     
     subgraph HANDOFF["Handoffs (.ai/handoffs/)"]
-        H1[HF-0001..HF-XXXX]
+        H1[hf-exec-0001..HF-XXXX]
     end
     
     subgraph CODE["Código Fonte"]
@@ -416,10 +416,10 @@ flowchart LR
 
 | RF | UC | User Story | Spec | Handoff | Test Unit | Test E2E | Branch | Deploy |
 |----|----|------------|------|---------|-----------|----------|--------|--------|
-| RF01 | UC09 | US-001 | spec-004 | HF-0500 | `test_cadastrar_usuario.py` | `test_auth_flow.py` | `feat/UC-09` | v0.1.0 |
-| RF02 | UC10 | US-002 | spec-004 | HF-0500 | `test_login_jwt.py` | `test_auth_flow.py` | `feat/UC-10` | v0.1.0 |
+| RF01 | UC09 | doc-user-story-001-us-001 | spec-004 | hf-exec-0500 | `test_cadastrar_usuario.py` | `test_auth_flow.py` | `feat/UC-09` | v0.1.0 |
+| RF02 | UC10 | doc-user-story-002-us-002 | spec-004 | hf-exec-0500 | `test_login_jwt.py` | `test_auth_flow.py` | `feat/UC-10` | v0.1.0 |
 | ... | ... | ... | ... | ... | ... | ... | ... | ... |
-| RF18 | UC09 | US-020 | spec-008 | HF-XXXX | `test_print_css.py` | `test_export_flow.py` | `feat/UC-09-imprimir` | v0.1.0 |
+| RF18 | UC09 | doc-user-story-020-us-020 | spec-008 | HF-XXXX | `test_print_css.py` | `test_export_flow.py` | `feat/UC-09-imprimir` | v0.1.0 |
 
 **Validações Obrigatórias (CI Gate):**
 - ✅ 100% RFs → Spec
@@ -659,7 +659,7 @@ flowchart TD
 | Constitution v2.0 | `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md` |
 | Project Charter | `docs/strategy/PROJECT-CHARTER.md` |
 | PRD | `docs/strategy/PRD.md` |
-| User Stories | `docs/strategy/user-stories/US-001.md` a `US-020.md` |
+| User Stories | `docs/strategy/user-stories/doc-user-story-001-us-001-v1.0.md` a `doc-user-story-020-us-020-v1.0.md` |
 | Traceability | `docs/strategy/TRACEABILITY.md` |
 | WBS + Schedule | `docs/strategy/WBS.md` + `SCHEDULE.md` |
 | C4 Diagrams | `docs/arquitetura/doc-arch-0010-c4-context-v1.0.md`, `C4-Containers.md`, `C4-Components-*.md` |

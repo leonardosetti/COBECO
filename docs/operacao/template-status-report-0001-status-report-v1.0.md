@@ -87,7 +87,7 @@ workflow:
 
 | Entregável | RF/UC | Spec/Handoff | Branch/PR | Testes | Deploy Tag |
 |------------|-------|--------------|-----------|--------|------------|
-| <Ex.: UC09 Cadastrar Usuário> | RF01/UC09 | spec-004/HF-0500 | `feat/UC-09` / PR#12 | Unit: 92% | v0.1.0-rc1 |
+| <Ex.: UC09 Cadastrar Usuário> | RF01/UC09 | spec-004/hf-exec-0500 | `feat/UC-09` / PR#12 | Unit: 92% | v0.1.0-rc1 |
 
 ---
 

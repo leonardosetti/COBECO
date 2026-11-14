@@ -1,7 +1,44 @@
-# User Story — US-010
+---
+id: doc-user-story-010-us-010-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 010
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-010
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-010-us-010
 
 **Título:** Editar Lista  
-**ID Único:** US-010  
+**ID Único:** doc-user-story-010-us-010  
 **Status:** Done  
 **Sprint:** S2 | **Milestone:** S2: Listas e Catálogo  
 **Prioridade:** P1  
@@ -80,7 +117,7 @@ E qtd 0 remove item
 | TA-090 | Backend: PUT /v1/listas/{id} (nome) + PUT /v1/listas/{id}/itens (replace all) | Backend | 4 | Fabrício | ✅ | `feat/UC-13-editar-excluir-lista` |
 | TA-091 | Backend: Validação ownership (usuario_id = current_user), qtd 1-9999, produto existe | Backend | 2 | Fabrício | ✅ | `feat/UC-13-editar-excluir-lista` |
 | TA-092 | Testes: nome, itens replace, ownership, validações, concorrência | Backend | 2 | Nicolas | ✅ | `feat/UC-13-editar-excluir-lista` |
-| TA-093 | Frontend: Página Editar — reusa Autocomplete (US-006), tabela editável, botão salvar | Frontend | 4 | Eduardo | ✅ | `feat/UC-13-editar-excluir-lista` |
+| TA-093 | Frontend: Página Editar — reusa Autocomplete (doc-user-story-006-us-006), tabela editável, botão salvar | Frontend | 4 | Eduardo | ✅ | `feat/UC-13-editar-excluir-lista` |
 
 ---
 
@@ -113,4 +150,4 @@ E qtd 0 remove item
 
 ---
 
-**Fim US-010**
+**Fim doc-user-story-010-us-010**

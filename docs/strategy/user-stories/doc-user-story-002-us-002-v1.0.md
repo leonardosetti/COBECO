@@ -1,7 +1,44 @@
-# User Story — US-002
+---
+id: doc-user-story-002-us-002-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 002
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-002
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-002-us-002
 
 **Título:** Login com JWT  
-**ID Único:** US-002  
+**ID Único:** doc-user-story-002-us-002  
 **Status:** Done  
 **Sprint:** S1 | **Milestone:** S1: Setup, Docs e Auth  
 **Prioridade:** P0  
@@ -105,7 +142,7 @@ E bloqueia temporariamente o IP
 | Negócio | req-func-0001-requisitos-funcionais-canon.md | RF02 |
 | Caso de Uso | req-use-case-0001-casos-de-uso-canon.md | UC10 |
 | Spec SDD | spec-004 | Spec ID |
-| Handoff | HF-0500 | Handoff ID |
+| Handoff | hf-exec-0500 | Handoff ID |
 | Branch | Git | `feat/UC-10-login-jwt` |
 | Testes | backend/tests/test_login.py | Test IDs |
 | Deploy | Tag | v0.1.0 |
@@ -131,4 +168,4 @@ E bloqueia temporariamente o IP
 
 ---
 
-**Fim da User Story US-002**
+**Fim da User Story doc-user-story-002-us-002**

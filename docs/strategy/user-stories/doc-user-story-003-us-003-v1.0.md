@@ -1,7 +1,44 @@
-# User Story — US-003
+---
+id: doc-user-story-003-us-003-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 003
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-003
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-003-us-003
 
 **Título:** Logout  
-**ID Único:** US-003  
+**ID Único:** doc-user-story-003-us-003  
 **Status:** Done  
 **Sprint:** S1 | **Milestone:** S1: Setup, Docs e Auth  
 **Prioridade:** P1  
@@ -82,7 +119,7 @@ E redireciona para login
 | req-func-0001-requisitos-funcionais-canon.md | RF03 |
 | req-use-case-0001-casos-de-uso-canon.md | UC11 |
 | spec-004 | Spec ID |
-| HF-0500 | Handoff ID |
+| hf-exec-0500 | Handoff ID |
 | Branch | `feat/UC-11-logout` |
 
 ---
@@ -95,4 +132,4 @@ E redireciona para login
 
 ---
 
-**Fim US-003**
+**Fim doc-user-story-003-us-003**

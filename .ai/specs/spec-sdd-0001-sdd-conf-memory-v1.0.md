@@ -1187,7 +1187,7 @@ python3 scripts/canon_guard.py restore --snapshot "$SNAP" --confirm-ccb
 
 # PARTE 11 — CAMADAS FUNDAMENTAIS E CONTROLE (TA-0031)
 
-> Normalização estrutural de `.ai/specs/` (TA-0031, HF-0031; ratificação GP/Humano 2026-11-02, Art. 5.1). Conteúdo das Partes 0–10 preservado integralmente; lacunas declaradas `UNKNOWN - verify`, nunca inventadas (P-08).
+> Normalização estrutural de `.ai/specs/` (TA-0031, hf-exec-0031; ratificação GP/Humano 2026-11-02, Art. 5.1). Conteúdo das Partes 0–10 preservado integralmente; lacunas declaradas `UNKNOWN - verify`, nunca inventadas (P-08).
 
 ## 11.1. Contexto e origem (camada b)
 
@@ -1208,7 +1208,7 @@ A Parte 0 (diagnóstico das cinco falhas do v3.0.0 e correções adotadas no v3.
 
 ## 11.4. Changelog (camada h)
 
-- 3.1.0 — 2026-11-02 (TA-0031, HF-0031): normalização estrutural — frontmatter canônico (`spec_id: spec-003`), slug `000-SDD_CONF-memory.spec.md` → `spec-003-sdd-conf-memory.spec.md` (mapa em `.ai/specs/doc-manifest-0001-manifest-v1.0.md`), mapa de camadas a–h. Versão mantida 3.1.0 (original: run `CANON-20261029-01`, commit `149067f` de 2026-10-30); conteúdo das Partes 0–10 sem alteração.
+- 3.1.0 — 2026-11-02 (TA-0031, hf-exec-0031): normalização estrutural — frontmatter canônico (`spec_id: spec-003`), slug `000-SDD_CONF-memory.spec.md` → `spec-003-sdd-conf-memory.spec.md` (mapa em `.ai/specs/doc-manifest-0001-manifest-v1.0.md`), mapa de camadas a–h. Versão mantida 3.1.0 (original: run `CANON-20261029-01`, commit `149067f` de 2026-10-30); conteúdo das Partes 0–10 sem alteração.
 - 3.2.0 — 2026-11-05 (refinamento de ratificação, Grupo B): frontmatter atualizado ao padrão TA-0031 ratificado (adicionado `wave: WS-4`, `handoff` em `origin`; `version` 3.1.0 → 3.2.0). Ratificação CCB 05/11/2026 (instrumento RAT-2026-11-05-A16, ADR-LOG-012). Aderência ao padrão de nomenclatura `spec-NNN-specname.spec.md` confirmada (ADR-018, RAT-2026-11-05-A18). Nenhuma decisão de negócio das Partes 0–10 reescrita.
 
 ## CAMADAS FUNDAMENTAIS — MAPA (TA-0031)

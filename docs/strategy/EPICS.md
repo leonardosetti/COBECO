@@ -24,10 +24,10 @@ Um **Épico** é uma grande iniciativa que agrupa múltiplas User Stories relaci
 
 | Épico ID | Título | Descrição | USs Relacionadas | Sprints | Valor de Negócio |
 |----------|--------|-----------|------------------|---------|------------------|
-| **EPIC-001** | **Autenticação e Identidade** | Cadastro, login JWT, logout, recuperação de senha, gestão de sessão segura | US-001 a US-004, US-019, US-020 | S1, S4 | Fundação de segurança; permite acesso personalizado e proteção de dados |
-| **EPIC-002** | **Gestão de Listas de Compras** | CRUD completo de listas: criação em memória, autocomplete, persistência, promoção de lista efêmera | US-005 a US-011 | S2 | Core do produto; permite ao usuário organizar compras |
-| **EPIC-003** | **Comparação de Preços** | Pré-filtro (categorias, fornecedores, disponibilidade), motor de cálculo, visualização de resultados | US-012 a US-016 | S3 | Diferencial competitivo; economiza tempo/dinheiro do usuário |
-| **EPIC-004** | **Exportação e Documentação** | Geração PDF A4 server-side, otimização para impressão, documentação ABNT | US-017, US-018 | S4 | Entregável tangível; leva lista ao mercado físico |
+| **EPIC-001** | **Autenticação e Identidade** | Cadastro, login JWT, logout, recuperação de senha, gestão de sessão segura | doc-user-story-001-us-001 a doc-user-story-004-us-004, doc-user-story-019-us-019, doc-user-story-020-us-020 | S1, S4 | Fundação de segurança; permite acesso personalizado e proteção de dados |
+| **EPIC-002** | **Gestão de Listas de Compras** | CRUD completo de listas: criação em memória, autocomplete, persistência, promoção de lista efêmera | doc-user-story-005-us-005 a doc-user-story-011-us-011 | S2 | Core do produto; permite ao usuário organizar compras |
+| **EPIC-003** | **Comparação de Preços** | Pré-filtro (categorias, fornecedores, disponibilidade), motor de cálculo, visualização de resultados | doc-user-story-012-us-012 a doc-user-story-016-us-016 | S3 | Diferencial competitivo; economiza tempo/dinheiro do usuário |
+| **EPIC-004** | **Exportação e Documentação** | Geração PDF A4 server-side, otimização para impressão, documentação ABNT | doc-user-story-017-us-017, doc-user-story-018-us-018 | S4 | Entregável tangível; leva lista ao mercado físico |
 | **EPIC-005** | **Infraestrutura e Qualidade** | Docker Compose, CI/CD, testes, runbooks, monitoramento, governança | US-040 a US-051 (técnicas) | S0-S5 | Base técnica confiável; deploy reproduzível, qualidade ≥80% |
 | **EPIC-006** | **Governança e Conformidade** | Constitution, ADRs, Specs SDD, Handoffs, Rastreabilidade, RAID, CRs | Transversal | S0-S5 | Alinhamento legal/acadêmico; rastreabilidade total |
 
@@ -41,12 +41,12 @@ Um **Épico** é uma grande iniciativa que agrupa múltiplas User Stories relaci
 
 | US ID | Título | Prioridade | Sprint | Critério de Aceite Principal |
 |-------|--------|------------|--------|------------------------------|
-| US-001 | Cadastrar Usuário | P0 | S1 | Cadastro com bcrypt salt=12, unicidade email/usuario, pergunta segurança |
-| US-002 | Login JWT | P0 | S1 | Access 15min (memória) + Refresh 7d (cookie httpOnly, SameSite=Strict) |
-| US-003 | Logout | P1 | S1 | Invalida refresh token + limpa cookie + redirect login |
-| US-004 | Recuperar Senha | P1 | S1 | Pergunta segurança (bcrypt) OU RECOVERY_MODE=log (token stdout) |
-| US-019 | Visualizar Perfil | P1 | S4 | GET /v1/perfil retorna campos permitidos (sem senha/hash) |
-| US-020 | Gerenciar Perfil | P1 | S4 | PUT /v1/perfil com senha_atual, email unique, nova_senha≠atual≥8, invalida refresh |
+| doc-user-story-001-us-001 | Cadastrar Usuário | P0 | S1 | Cadastro com bcrypt salt=12, unicidade email/usuario, pergunta segurança |
+| doc-user-story-002-us-002 | Login JWT | P0 | S1 | Access 15min (memória) + Refresh 7d (cookie httpOnly, SameSite=Strict) |
+| doc-user-story-003-us-003 | Logout | P1 | S1 | Invalida refresh token + limpa cookie + redirect login |
+| doc-user-story-004-us-004 | Recuperar Senha | P1 | S1 | Pergunta segurança (bcrypt) OU RECOVERY_MODE=log (token stdout) |
+| doc-user-story-019-us-019 | Visualizar Perfil | P1 | S4 | GET /v1/perfil retorna campos permitidos (sem senha/hash) |
+| doc-user-story-020-us-020 | Gerenciar Perfil | P1 | S4 | PUT /v1/perfil com senha_atual, email unique, nova_senha≠atual≥8, invalida refresh |
 
 **Definição de Pronto do Épico:**
 - [ ] Todas USs Done (code review + CI + CCB)
@@ -63,13 +63,13 @@ Um **Épico** é uma grande iniciativa que agrupa múltiplas User Stories relaci
 
 | US ID | Título | Prioridade | Sprint | Critério de Aceite Principal |
 |-------|--------|------------|--------|------------------------------|
-| US-005 | Lista em Memória | P0 | S2 | sessionStorage, soma qtd mesmo produto, validação 1-9999 |
-| US-006 | Autocomplete Produtos | P0 | S2 | Debounce 300ms, normalização NFD+lowerCase, GET /v1/produtos/busca |
-| US-007 | Salvar Lista (Persistir) | P0 | S2 | Transação MySQL BEGIN/COMMIT, valida categorias pré-selecionadas |
-| US-008 | Promover Lista Efêmera | P0 | S2 | Modal no login detecta sessionStorage, 3 opções (salvar/manter/descartar) |
-| US-009 | Listar Minhas Listas | P0 | S2 | Paginação 20/pág, ordenação criado_em DESC, filtro nome ILIKE, soft delete |
-| US-010 | Editar Lista | P1 | S2 | PUT nome + PUT itens (replace all), validação qtd 1-9999, ownership |
-| US-011 | Excluir Lista | P1 | S2 | Soft delete (deletado_em), confirmação digitando nome exato |
+| doc-user-story-005-us-005 | Lista em Memória | P0 | S2 | sessionStorage, soma qtd mesmo produto, validação 1-9999 |
+| doc-user-story-006-us-006 | Autocomplete Produtos | P0 | S2 | Debounce 300ms, normalização NFD+lowerCase, GET /v1/produtos/busca |
+| doc-user-story-007-us-007 | Salvar Lista (Persistir) | P0 | S2 | Transação MySQL BEGIN/COMMIT, valida categorias pré-selecionadas |
+| doc-user-story-008-us-008 | Promover Lista Efêmera | P0 | S2 | Modal no login detecta sessionStorage, 3 opções (salvar/manter/descartar) |
+| doc-user-story-009-us-009 | Listar Minhas Listas | P0 | S2 | Paginação 20/pág, ordenação criado_em DESC, filtro nome ILIKE, soft delete |
+| doc-user-story-010-us-010 | Editar Lista | P1 | S2 | PUT nome + PUT itens (replace all), validação qtd 1-9999, ownership |
+| doc-user-story-011-us-011 | Excluir Lista | P1 | S2 | Soft delete (deletado_em), confirmação digitando nome exato |
 
 **Definição de Pronto do Épico:**
 - [ ] Todas USs Done
@@ -86,11 +86,11 @@ Um **Épico** é uma grande iniciativa que agrupa múltiplas User Stories relaci
 
 | US ID | Título | Prioridade | Sprint | Critério de Aceite Principal |
 |-------|--------|------------|--------|------------------------------|
-| US-012 | Selecionar Categorias | P0 | S3 | 11 checkboxes, filtra fornecedores tempo real, min 1 para prosseguir |
-| US-013 | Selecionar Fornecedores | P0 | S3 | Checkboxes + % disponibilidade, ordenação DESC, min 2 para comparar |
-| US-014 | Filtrar Disponibilidade | P1 | S3 | Slider 0-100%, debounce 100ms, mantém seleções válidas |
-| US-015 | Calcular Orçamento | P0 | S3 | POST /v1/orcamento → tabela flat (disp/ausentes/total), cache 5min, timeout 10s |
-| US-016 | Visualizar Resultados | P0 | S3 | Tabela ordenada total ASC, highlight verde melhor, expansível itens, tooltip N/D |
+| doc-user-story-012-us-012 | Selecionar Categorias | P0 | S3 | 11 checkboxes, filtra fornecedores tempo real, min 1 para prosseguir |
+| doc-user-story-013-us-013 | Selecionar Fornecedores | P0 | S3 | Checkboxes + % disponibilidade, ordenação DESC, min 2 para comparar |
+| doc-user-story-014-us-014 | Filtrar Disponibilidade | P1 | S3 | Slider 0-100%, debounce 100ms, mantém seleções válidas |
+| doc-user-story-015-us-015 | Calcular Orçamento | P0 | S3 | POST /v1/orcamento → tabela flat (disp/ausentes/total), cache 5min, timeout 10s |
+| doc-user-story-016-us-016 | Visualizar Resultados | P0 | S3 | Tabela ordenada total ASC, highlight verde melhor, expansível itens, tooltip N/D |
 
 **Definição de Pronto do Épico:**
 - [ ] Todas USs Done
@@ -107,8 +107,8 @@ Um **Épico** é uma grande iniciativa que agrupa múltiplas User Stories relaci
 
 | US ID | Título | Prioridade | Sprint | Critério de Aceite Principal |
 |-------|--------|------------|--------|------------------------------|
-| US-017 | Exportar PDF | P0 | S4 | ReportLab A4, DejaVuSans, < 5s (100 itens), visitante+auth, filename data |
-| US-018 | Otimização Impressão | P1 | S4 | CSS @media print: oculta UI, thead repeat, quebra limpa, cores econ. tinta |
+| doc-user-story-017-us-017 | Exportar PDF | P0 | S4 | ReportLab A4, DejaVuSans, < 5s (100 itens), visitante+auth, filename data |
+| doc-user-story-018-us-018 | Otimização Impressão | P1 | S4 | CSS @media print: oculta UI, thead repeat, quebra limpa, cores econ. tinta |
 
 **Definição de Pronto do Épico:**
 - [ ] PDF A4 gerado server-side (< 5s)
@@ -195,10 +195,10 @@ graph TD
 
 | Épico | User Stories | RFs (req-func-0001-requisitos-funcionais-canon.md) |
 |-------|--------------|---------------------|
-| EPIC-001 | US-001 a US-004, US-019, US-020 | RF01, RF02, RF03, RF04, RF05, RF06 |
-| EPIC-002 | US-005 a US-011 | RF07, RF08, RF09, RF10, RF11 |
-| EPIC-003 | US-012 a US-016 | RF12, RF13, RF14, RF15, RF16 |
-| EPIC-004 | US-017, US-018 | RF17, RF18 |
+| EPIC-001 | doc-user-story-001-us-001 a doc-user-story-004-us-004, doc-user-story-019-us-019, doc-user-story-020-us-020 | RF01, RF02, RF03, RF04, RF05, RF06 |
+| EPIC-002 | doc-user-story-005-us-005 a doc-user-story-011-us-011 | RF07, RF08, RF09, RF10, RF11 |
+| EPIC-003 | doc-user-story-012-us-012 a doc-user-story-016-us-016 | RF12, RF13, RF14, RF15, RF16 |
+| EPIC-004 | doc-user-story-017-us-017, doc-user-story-018-us-018 | RF17, RF18 |
 | EPIC-005 | US-040 a US-051 (técnicas) | RNF01-RNF12 |
 | EPIC-006 | Transversal | Constitution, ADR, SDD, CR |
 

@@ -70,7 +70,7 @@ class TestLoginUseCase:
         assert result.access_token == "access_token_for_1"
         assert result.refresh_token == "refresh_token_for_1"
         assert result.token_type == "bearer"
-        assert result.expires_in == 90  # 15 min * 60
+        assert result.expires_in == 900  # 15 min * 60
         assert result.usuario_id == 1
 
     @pytest.mark.asyncio
@@ -89,7 +89,7 @@ class TestLoginUseCase:
     async def test_executar_usuario_inativo(self, usecase, mock_repo):
         usuario = Usuario(
             id=1,
-            nome_usuario="usuario_teste",
+            nome_usuario="usuarioteste",
             email=Email("teste@exemplo.com"),
             nome="Usuário Teste",
             senha_hash=SenhaHash("hashed_Senha@123"),
@@ -109,7 +109,7 @@ class TestLoginUseCase:
     async def test_executar_senha_incorreta(self, usecase, mock_repo):
         usuario = Usuario(
             id=1,
-            nome_usuario="usuario_teste",
+            nome_usuario="usuarioteste",
             email=Email("teste@exemplo.com"),
             nome="Usuário Teste",
             senha_hash=SenhaHash("hashed_Senha@123"),
@@ -148,7 +148,7 @@ class TestLoginUseCase:
     async def test_executar_tokens_tipos_corretos(self, usecase, mock_repo):
         usuario = Usuario(
             id=42,
-            nome_usuario="usuario_teste",
+            nome_usuario="usuarioteste",
             email=Email("teste@exemplo.com"),
             nome="Usuário Teste",
             senha_hash=SenhaHash("hashed_Senha@123"),

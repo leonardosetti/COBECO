@@ -1,7 +1,44 @@
-# User Story — US-011
+---
+id: doc-user-story-011-us-011-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 011
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-011
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-011-us-011
 
 **Título:** Excluir Lista (Soft Delete)  
-**ID Único:** US-011  
+**ID Único:** doc-user-story-011-us-011  
 **Status:** Done  
 **Sprint:** S2 | **Milestone:** S2: Listas e Catálogo  
 **Prioridade:** P1  
@@ -78,7 +115,7 @@ Então chama DELETE API, fecha modal, toast "Lista excluída", remove linha da t
 | Task ID | Descrição | Camada | Est. | Resp. | Status | Branch |
 |---------|-----------|--------|------|-------|--------|--------|
 | TA-100 | Backend: DELETE /v1/listas/{id} — valida ownership, body confirmação, soft delete | Backend | 2 | Fabrício | ✅ | `feat/UC-13-editar-excluir-lista` |
-| TA-101 | Backend: Query `deletado_em IS NULL` em todos GET /v1/listas (já em US-009) | Backend | 0 | — | ✅ | — |
+| TA-101 | Backend: Query `deletado_em IS NULL` em todos GET /v1/listas (já em doc-user-story-009-us-009) | Backend | 0 | — | ✅ | — |
 | TA-102 | Testes: soft delete, confirmação, ownership, itens permanecem | Backend | 1 | Nicolas | ✅ | `feat/UC-13-editar-excluir-lista` |
 | TA-103 | Frontend: Modal Excluir — input nome, validação tempo real (habilita botão), loading, toast | Frontend | 3 | Eduardo | ✅ | `feat/UC-13-editar-excluir-lista` |
 
@@ -114,4 +151,4 @@ Então chama DELETE API, fecha modal, toast "Lista excluída", remove linha da t
 
 ---
 
-**Fim US-011**
+**Fim doc-user-story-011-us-011**

@@ -7,8 +7,15 @@ from collections import Counter
 
 import pytest
 
-from scripts.generate_seed import render_sql
-from scripts.seed_data import build_dataset, is_valid_cnpj, make_cnpj, normalize_text
+import sys
+from pathlib import Path
+
+# Add scripts directory to path
+scripts_dir = Path(__file__).parent.parent.parent / "scripts"
+sys.path.insert(0, str(scripts_dir))
+
+from script_seed_0001_generate_seed_v1_0 import render_sql
+from script_seed_0002_seed_data_v1_0 import build_dataset, is_valid_cnpj, make_cnpj, normalize_text
 
 
 @pytest.mark.parametrize(
@@ -60,22 +67,22 @@ def test_cnpj_ficticio_tem_formato_e_digitos_validos():
 
 def test_invariantes_e_associacoes_do_perfil_expandido():
     dataset = build_dataset("expanded")
-    offers_per_proddoc-arch_6_uc-v1t = Counter(offer.proddoc-arch_6_uc-v1t_id for offer in dataset.offers)
+    offers_per_proddoc_arch_6_uc_v1t = Counter(offer.proddoc_arch_6_uc_v1t_id for offer in dataset.offers)
     suppliers_per_category = Counter(category_id for _, category_id in dataset.supplier_categories)
 
-    assert set(offers_per_proddoc-arch_6_uc-v1t.values()) == {12}
+    assert set(offers_per_proddoc_arch_6_uc_v1t.values()) == {12}
     assert set(suppliers_per_category.values()) == {12}
     assert all(supplier.categories for supplier in dataset.suppliers)
     assert len({supplier.cnpj for supplier in dataset.suppliers}) == dataset.counts["fornecedores"]
-    assert len({proddoc-arch_6_uc-v1t.name for proddoc-arch_6_uc-v1t in dataset.proddoc-arch_6_uc-v1ts}) == dataset.counts["produtos"]
+    assert len({proddoc_arch_6_uc_v1t.name for proddoc_arch_6_uc_v1t in dataset.proddoc_arch_6_uc_v1ts}) == dataset.counts["produtos"]
 
 
 def test_baseline_oferece_seis_precos_por_produto():
     dataset = build_dataset("baseline")
-    offers_per_proddoc-arch_6_uc-v1t = Counter(offer.proddoc-arch_6_uc-v1t_id for offer in dataset.offers)
+    offers_per_proddoc_arch_6_uc_v1t = Counter(offer.proddoc_arch_6_uc_v1t_id for offer in dataset.offers)
 
-    assert set(offers_per_proddoc-arch_6_uc-v1t.values()) == {6}
-    assert len(offers_per_proddoc-arch_6_uc-v1t) == dataset.counts["produtos"]
+    assert set(offers_per_proddoc_arch_6_uc_v1t.values()) == {6}
+    assert len(offers_per_proddoc_arch_6_uc_v1t) == dataset.counts["produtos"]
 
 
 def test_geracao_sql_e_deterministica():

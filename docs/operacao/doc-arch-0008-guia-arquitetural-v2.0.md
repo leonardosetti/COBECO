@@ -892,24 +892,24 @@ graph TB
 
 | RF | UC Principal | Spec | Handoff | Backend Module | Frontend Module | Testes |
 |----|--------------|------|---------|----------------|-----------------|--------|
-| RF01 | UC09 | spec-009 | HF-0009 | `auth.py`, `usecases.py:CadastrarUsuario` | `CadastroPage` | `test_cadastrar_usuario.py`, `auth.spec.ts` |
-| RF02 | UC10 | spec-010 | HF-0010 | `auth.py`, `usecases.py:Login` | `LoginPage` | `test_login.py`, `auth.spec.ts` |
-| RF03 | UC11 | spec-011 | HF-0011 | `auth.py`, `usecases.py:Logout` | `LoginPage` | `test_logout.py`, `auth.spec.ts` |
-| RF04 | UC12 | spec-012 | HF-0012 | `auth.py`, `usecases.py:RecuperarSenha` | `LoginPage` | `test_recuperar_senha.py`, `auth.spec.ts` |
-| RF05 | UC18 | spec-018 | HF-0018 | `perfil.py`, `usecases.py:VisualizarPerfil` | `PerfilPage` | `test_perfil_integration.py`, `perfil.spec.ts` |
-| RF06 | UC16 | spec-016 | HF-0016 | `perfil.py`, `usecases.py:EditarPerfil` | `PerfilPage` | `test_perfil_integration.py`, `perfil.spec.ts` |
-| RF07 | UC01, UC02 | spec-001, spec-002 | HF-0001, HF-0002 | `catalogo.py:autocomplete`, `listas.py` | `app.js:ListaState`, `Autocomplete` | `test_criar_lista.py`, `catalogo.spec.ts`, `itens.spec.ts` |
-| RF08 | UC14, UC17 | spec-014, spec-017 | HF-0014, HF-0017 | `listas.py`, `usecases.py:SalvarLista,PromoverLista` | `ListasPage`, `LoginPage` | `test_listas_integration.py`, `listas.spec.ts` |
-| RF09 | UC15 | spec-015 | HF-0015 | `listas.py`, `usecases.py:ListarListas` | `ListasPage` | `test_listas_integration.py`, `listas.spec.ts` |
-| RF10 | UC13 | spec-013 | HF-0013 | `listas.py`, `usecases.py:EditarLista,ExcluirLista` | `ListasPage` | `test_listas_integration.py`, `listas.spec.ts` |
-| RF11 | UC13 | spec-013 | HF-0013 | `listas.py`, `usecases.py:ExcluirLista` | `ListasPage` | `test_listas_integration.py`, `listas.spec.ts` |
-| RF12 | UC03 | spec-003 | HF-0003 | `catalogo.py:categorias`, `usecases.py:BuscarCategorias` | `app.js:CategoriaSelector` | `test_catalogo_integration.py`, `catalogo.spec.ts` |
-| RF13 | UC04 | spec-004 | HF-0004 | `catalogo.py:fornecedores`, `usecases.py:BuscarFornecedores` | `app.js:FornecedorSelector` | `test_catalogo_integration.py`, `catalogo.spec.ts` |
-| RF14 | UC05 | spec-005 | HF-0005 | `comparacao.py:filtrar`, `usecases.py:FiltrarDisponibilidade` | `app.js:DisponibilidadeSlider` | `test_comparacao_integration.py`, `comparacao.spec.ts` |
-| RF15 | UC06 | spec-006 | HF-0006 | `comparacao.py:calcular`, `usecases.py:CalcularOrcamento` | `app.js:ComparacaoEngine` | `test_calcular_orcamento.py`, `comparacao.spec.ts` |
-| RF16 | UC07 | spec-007 | HF-0007 | `comparacao.py:resultados` | `app.js:ResultadosTable` | `test_comparacao_integration.py`, `comparacao.spec.ts` |
-| RF17 | UC08 | spec-008 | HF-0008 | `exportacao.py:pdf`, `usecases.py:GerarPDFLista` | `app.js:PDFExport` | `test_exportacao_integration.py`, `exportacao.spec.ts` |
-| RF18 | UC09 | spec-009 | HF-0009 | `exportacao.py:print` (CSS) | `styles/print.css` | `exportacao.spec.ts`, `responsividade.spec.ts` |
+| RF01 | UC09 | spec-009 | hf-exec-0009 | `auth.py`, `usecases.py:CadastrarUsuario` | `CadastroPage` | `test_cadastrar_usuario.py`, `auth.spec.ts` |
+| RF02 | UC10 | spec-010 | hf-exec-0010 | `auth.py`, `usecases.py:Login` | `LoginPage` | `test_login.py`, `auth.spec.ts` |
+| RF03 | UC11 | spec-011 | hf-exec-0011 | `auth.py`, `usecases.py:Logout` | `LoginPage` | `test_logout.py`, `auth.spec.ts` |
+| RF04 | UC12 | spec-012 | hf-exec-0012 | `auth.py`, `usecases.py:RecuperarSenha` | `LoginPage` | `test_recuperar_senha.py`, `auth.spec.ts` |
+| RF05 | UC18 | spec-018 | hf-exec-0018 | `perfil.py`, `usecases.py:VisualizarPerfil` | `PerfilPage` | `test_perfil_integration.py`, `perfil.spec.ts` |
+| RF06 | UC16 | spec-016 | hf-exec-0016 | `perfil.py`, `usecases.py:EditarPerfil` | `PerfilPage` | `test_perfil_integration.py`, `perfil.spec.ts` |
+| RF07 | UC01, UC02 | spec-001, spec-002 | hf-exec-0001, hf-exec-0002 | `catalogo.py:autocomplete`, `listas.py` | `app.js:ListaState`, `Autocomplete` | `test_criar_lista.py`, `catalogo.spec.ts`, `itens.spec.ts` |
+| RF08 | UC14, UC17 | spec-014, spec-017 | hf-exec-0014, hf-exec-0017 | `listas.py`, `usecases.py:SalvarLista,PromoverLista` | `ListasPage`, `LoginPage` | `test_listas_integration.py`, `listas.spec.ts` |
+| RF09 | UC15 | spec-015 | hf-exec-0015 | `listas.py`, `usecases.py:ListarListas` | `ListasPage` | `test_listas_integration.py`, `listas.spec.ts` |
+| RF10 | UC13 | spec-013 | hf-exec-0013 | `listas.py`, `usecases.py:EditarLista,ExcluirLista` | `ListasPage` | `test_listas_integration.py`, `listas.spec.ts` |
+| RF11 | UC13 | spec-013 | hf-exec-0013 | `listas.py`, `usecases.py:ExcluirLista` | `ListasPage` | `test_listas_integration.py`, `listas.spec.ts` |
+| RF12 | UC03 | spec-003 | hf-exec-0003 | `catalogo.py:categorias`, `usecases.py:BuscarCategorias` | `app.js:CategoriaSelector` | `test_catalogo_integration.py`, `catalogo.spec.ts` |
+| RF13 | UC04 | spec-004 | hf-exec-0004 | `catalogo.py:fornecedores`, `usecases.py:BuscarFornecedores` | `app.js:FornecedorSelector` | `test_catalogo_integration.py`, `catalogo.spec.ts` |
+| RF14 | UC05 | spec-005 | hf-exec-0005 | `comparacao.py:filtrar`, `usecases.py:FiltrarDisponibilidade` | `app.js:DisponibilidadeSlider` | `test_comparacao_integration.py`, `comparacao.spec.ts` |
+| RF15 | UC06 | spec-006 | hf-exec-0006 | `comparacao.py:calcular`, `usecases.py:CalcularOrcamento` | `app.js:ComparacaoEngine` | `test_calcular_orcamento.py`, `comparacao.spec.ts` |
+| RF16 | UC07 | spec-007 | hf-exec-0007 | `comparacao.py:resultados` | `app.js:ResultadosTable` | `test_comparacao_integration.py`, `comparacao.spec.ts` |
+| RF17 | UC08 | spec-008 | hf-exec-0008 | `exportacao.py:pdf`, `usecases.py:GerarPDFLista` | `app.js:PDFExport` | `test_exportacao_integration.py`, `exportacao.spec.ts` |
+| RF18 | UC09 | spec-009 | hf-exec-0009 | `exportacao.py:print` (CSS) | `styles/print.css` | `exportacao.spec.ts`, `responsividade.spec.ts` |
 
 ---
 

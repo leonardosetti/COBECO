@@ -1,7 +1,44 @@
-# User Story — US-007
+---
+id: doc-user-story-007-us-007-v1.0
+type: doc-user-story
+title: DOC USER STORY — Us 007
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: us-007
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: strategy
+layer: user-story
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
+# User Story — doc-user-story-007-us-007
 
 **Título:** Salvar Lista (Persistir no Banco)  
-**ID Único:** US-007  
+**ID Único:** doc-user-story-007-us-007  
 **Status:** Done  
 **Sprint:** S2 | **Milestone:** S2: Listas e Catálogo  
 **Prioridade:** P0  
@@ -109,9 +146,9 @@ E loga erro no backend
 ## 7. Notas
 
 - **Transação:** `session.begin()` → `session.add(lista)` → `session.flush()` (pega ID) → `session.add_all(itens)` → `session.commit()`. Em exceção: `session.rollback()`.
-- **Categorias Pré-selecionadas:** Vêm do estado do pré-filtro (US-012 a US-014). Salvas em `sessionStorage` ou context do usuário autenticado.
+- **Categorias Pré-selecionadas:** Vêm do estado do pré-filtro (doc-user-story-012-us-012 a doc-user-story-014-us-014). Salvas em `sessionStorage` ou context do usuário autenticado.
 - **Itens:** Cada item valida `produto_id` existe + `quantidade` 1-9999.
 
 ---
 
-**Fim US-007**
+**Fim doc-user-story-007-us-007**
