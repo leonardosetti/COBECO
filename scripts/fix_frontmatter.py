@@ -274,9 +274,25 @@ def fix_file(filepath: Path, dry_run: bool = False) -> tuple:
             existing_fm_yaml = content[3:end_idx].strip()
             existing_fm = yaml.safe_load(existing_fm_yaml)
             
-            # Verificar se frontmatter já está correto
-            if isinstance(existing_fm, dict) and existing_fm.get("id") == f"{info['tipo_classe']}-{info['id']}-{info['nome']}-{'canon' if info['canonical'] else info['versao']}":
-                return True, "Frontmatter já correto"
+            # Verificar se frontmatter já está correto (ID + trace arrays + workflow nulls)
+            expected_id = f"{info['tipo_classe']}-{info['id']}-{info['nome']}-{'canon' if info['canonical'] else info['versao']}"
+            trace_ok = True
+            if isinstance(existing_fm, dict) and existing_fm.get("id") == expected_id:
+                # Verificar trace fields são arrays
+                trace = existing_fm.get("trace", {})
+                for field in ["constitution", "req_func", "req_nfunc", "use_cases", "specs", "handoffs", "adrs", "code", "tests"]:
+                    if not isinstance(trace.get(field), list):
+                        trace_ok = False
+                        break
+                # Verificar workflow fields são null (não strings 'null')
+                workflow = existing_fm.get("workflow", {})
+                for field in ["reviewer", "reviewed_at", "approval_hash", "board_url"]:
+                    if workflow.get(field) == 'null':
+                        trace_ok = False
+                        break
+                
+                if trace_ok:
+                    return True, "Frontmatter já correto"
             
             # Remover frontmatter antigo
             content = content[end_idx + 4:]  # pula \n---\n
