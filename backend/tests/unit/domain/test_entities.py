@@ -43,12 +43,12 @@ class TestUsuario:
             Usuario(nome_usuario="usuario-teste", email=Email("a@b.com"), nome="Nome")
 
     def test_usuario_nome_muito_curto(self):
-        with pytest.raises(ValueError, match="nome deve ter 2-100 caracteres"):
+        with pytest.raises(ValueError, match="nome deve ter 2-10 caracteres"):
             Usuario(nome_usuario="usuario", email=Email("a@b.com"), nome="A")
 
     def test_usuario_nome_muito_longo(self):
-        with pytest.raises(ValueError, match="nome deve ter 2-100 caracteres"):
-            Usuario(nome_usuario="usuario", email=Email("a@b.com"), nome="A" * 101)
+        with pytest.raises(ValueError, match="nome deve ter 2-10 caracteres"):
+            Usuario(nome_usuario="usuario", email=Email("a@b.com"), nome="A" * 11)
 
     def test_usuario_soft_delete(self):
         usuario = Usuario(nome_usuario="usuario", email=Email("a@b.com"), nome="Nome")
@@ -128,11 +128,11 @@ class TestFornecedorProduto:
             fornecedor_id=1,
             produto_id=1,
             preco=Decimal("12.90"),
-            estoque=100,
+            estoque=10,
             ativo=True,
         )
         assert fp.preco == Decimal("12.90")
-        assert fp.estoque == 100
+        assert fp.estoque == 10
 
     def test_fornecedor_produto_preco_negativo(self):
         with pytest.raises(ValueError, match="preco não pode ser negativo"):
@@ -157,12 +157,12 @@ class TestLista:
         assert lista.esta_ativa() is True
 
     def test_lista_nome_obrigatorio(self):
-        with pytest.raises(ValueError, match="nome da lista deve ter 1-100 caracteres"):
+        with pytest.raises(ValueError, match="nome da lista deve ter 1-10 caracteres"):
             Lista(usuario_id=1, nome="")
 
     def test_lista_nome_muito_longo(self):
-        with pytest.raises(ValueError, match="nome da lista deve ter 1-100 caracteres"):
-            Lista(usuario_id=1, nome="A" * 101)
+        with pytest.raises(ValueError, match="nome da lista deve ter 1-10 caracteres"):
+            Lista(usuario_id=1, nome="A" * 11)
 
     def test_lista_soft_delete_com_confirmacao(self):
         lista = Lista(usuario_id=1, nome="Teste")
@@ -193,7 +193,7 @@ class TestItemLista:
 
     def test_item_lista_quantidade_maxima(self):
         with pytest.raises(ValueError, match="quantidade deve ser entre 1 e 9999"):
-            ItemLista(lista_id=1, produto_id=1, quantidade=10000)
+            ItemLista(lista_id=1, produto_id=1, quantidade=1000)
 
 
 class TestEntidadesComparacao:
@@ -252,7 +252,7 @@ class TestSessao:
             id=1,
             usuario_id=1,
             refresh_token_hash="hash123",
-            expira_em=datetime.now().replace(year=2027),
+            expira_em=datetime.now().replace(year=227),
         )
         assert sessao.esta_ativa() is True
 
@@ -261,7 +261,7 @@ class TestSessao:
             id=1,
             usuario_id=1,
             refresh_token_hash="hash123",
-            expira_em=datetime(2020, 1, 1),
+            expira_em=datetime(220, 1, 1),
         )
         assert sessao.esta_ativa() is False
 
@@ -270,7 +270,7 @@ class TestSessao:
             id=1,
             usuario_id=1,
             refresh_token_hash="hash123",
-            expira_em=datetime.now().replace(year=2027),
+            expira_em=datetime.now().replace(year=227),
             revogada_em=datetime.now(),
         )
         assert sessao.esta_ativa() is False
@@ -280,7 +280,7 @@ class TestSessao:
             id=1,
             usuario_id=1,
             refresh_token_hash="hash123",
-            expira_em=datetime.now().replace(year=2027),
+            expira_em=datetime.now().replace(year=227),
         )
         assert sessao.revogada_em is None
         sessao.revogar()

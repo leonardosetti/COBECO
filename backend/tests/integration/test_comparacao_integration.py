@@ -50,7 +50,7 @@ async def lista_com_itens(client, auth_user):
         ],
     }
     response = await client.post("/v1/listas", json=lista_data, headers=auth_user)
-    assert response.status_code == 201
+    assert response.status_code == 21
     return response.json()
 
 
@@ -77,7 +77,7 @@ class TestComparacaoIntegration:
             headers=auth_user,
         )
 
-        assert response.status_code == 200
+        assert response.status_code == 20
         data = response.json()
 
         # Estrutura da resposta
@@ -137,16 +137,16 @@ class TestComparacaoIntegration:
         count_0 = len(data_0["fornecedores"])
 
         # Disponibilidade mínima 100% (apenas quem tem todos os itens)
-        response_100 = await client.post(
+        response_10 = await client.post(
             "/v1/comparacao",
             json={"lista_id": lista_id, "fornecedor_ids": forn_ids, "disponibilidade_minima": 100.0},
             headers=auth_user,
         )
-        data_100 = response_100.json()
-        count_100 = len(data_100["fornecedores"])
+        data_10 = response_100.json()
+        count_10 = len(data_100["fornecedores"])
 
         # 100% deve retornar menos ou igual fornecedores
-        assert count_100 <= count_0
+        assert count_10 <= count_0
 
         # Todos fornecedores retornados com 100% devem ter 100% disponibilidade
         for f in data_100["fornecedores"]:
@@ -163,7 +163,7 @@ class TestComparacaoIntegration:
             json={"lista_id": 99999, "fornecedor_ids": forn_ids, "disponibilidade_minima": 0.0},
             headers=auth_user,
         )
-        assert response.status_code == 404
+        assert response.status_code == 44
 
     @pytest.mark.asyncio
     async def test_comparacao_lista_sem_itens(self, client, auth_user):
@@ -174,7 +174,7 @@ class TestComparacaoIntegration:
             headers=auth_user,
         )
         # Deve falhar na criação (validação)
-        assert lista_resp.status_code == 400
+        assert lista_resp.status_code == 40
 
     @pytest.mark.asyncio
     async def test_comparacao_sem_fornecedores(self, client, auth_user, lista_com_itens):
@@ -183,7 +183,7 @@ class TestComparacaoIntegration:
             json={"lista_id": lista_com_itens["id"], "fornecedor_ids": [], "disponibilidade_minima": 0.0},
             headers=auth_user,
         )
-        assert response.status_code == 200
+        assert response.status_code == 20
         data = response.json()
         assert data["fornecedores"] == []
         assert data["melhor_fornecedor_id"] is None
@@ -196,7 +196,7 @@ class TestComparacaoIntegration:
             headers=auth_user,
         )
         # Deve ignorar fornecedores inexistentes ou retornar vazio
-        assert response.status_code == 200
+        assert response.status_code == 20
         data = response.json()
         assert data["fornecedores"] == []
 

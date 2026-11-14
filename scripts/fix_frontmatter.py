@@ -149,27 +149,30 @@ def parse_filename(filename: str) -> dict:
     if len(parts) < 4:
         return None
     
-    # tipo-classe pode ter 1 ou 2 palavras (ex: constitution, doc-adr)
-    # Vamos detectar: primeiro tente 2 partes, se não estiver no config, tente 1
-    tipo_classe_2 = f"{parts[0]}-{parts[1]}"
-    tipo_classe_1 = parts[0]
+    # tipo-classe pode ter 1, 2 ou 3 palavras (ex: constitution, doc-adr, req-use-case)
+    # Tentar do mais longo para o mais curto
+    for num_parts in [3, 2, 1]:
+        if len(parts) >= num_parts + 2:  # tipo-classe + ID + versão (mínimo)
+            tipo_classe_candidate = "-".join(parts[:num_parts])
+            if tipo_classe_candidate in TYPE_CLASS_CONFIG:
+                tipo_classe = tipo_classe_candidate
+                id_num = parts[num_parts]
+                nome = "-".join(parts[num_parts + 1:-1])
+                versao = parts[-1]
+                return {
+                    "tipo_classe": tipo_classe,
+                    "id": id_num,
+                    "nome": nome,
+                    "versao": versao,
+                    "ext": ext,
+                    "canonical": versao == "canon"
+                }
     
-    if tipo_classe_2 in TYPE_CLASS_CONFIG:
-        tipo_classe = tipo_classe_2
-        id_num = parts[2]
-        nome = "-".join(parts[3:-1])
-        versao = parts[-1]
-    elif tipo_classe_1 in TYPE_CLASS_CONFIG:
-        tipo_classe = tipo_classe_1
-        id_num = parts[1]
-        nome = "-".join(parts[2:-1])
-        versao = parts[-1]
-    else:
-        # Fallback: assume 2 partes
-        tipo_classe = tipo_classe_2
-        id_num = parts[2]
-        nome = "-".join(parts[3:-1])
-        versao = parts[-1]
+    # Fallback: assume 2 partes
+    tipo_classe = f"{parts[0]}-{parts[1]}"
+    id_num = parts[2]
+    nome = "-".join(parts[3:-1])
+    versao = parts[-1]
     
     return {
         "tipo_classe": tipo_classe,

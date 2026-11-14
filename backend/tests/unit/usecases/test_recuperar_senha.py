@@ -37,7 +37,7 @@ def usecase(mock_repo, hash_senha_fn, rate_limiter_fn):
 
 
 class TestRecuperarSenhaUseCase:
-    """Testes para RecuperarSenhaUseCase (UC12/RF04)"""
+    """Testes para RecuperarSenhaUseCase (UC12/RF4)"""
 
     @pytest.mark.asyncio
     async def test_solicitar_reset_usuario_existente_modo_email(self, usecase, mock_repo):

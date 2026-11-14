@@ -30,10 +30,10 @@ def usecase(mock_repo, mock_produto_repo):
 
 
 class TestSalvarListaUseCase:
-    """Testes para SalvarListaUseCase (RF08)"""
+    """Testes para SalvarListaUseCase (RF8)"""
 
     @pytest.mark.asyncio
-    async def test_executar_sdoc-arch-0006-uc-v1esso_lista_com_itens(self, usecase, mock_repo, mock_produto_repo):
+    async def test_executar_sdoc_arch_006_uc_v1esso_lista_com_itens(self, usecase, mock_repo, mock_produto_repo):
         # Produtos existem
         produtos = [
             Produto(id=1, nome="Arroz 5kg", unidade=UnidadeMedida.KG),
@@ -127,5 +127,5 @@ class TestSalvarListaUseCase:
             itens=[{"produto_id": 1, "quantidade": 1}],
         )
 
-        with pytest.raises(ValueError, match="nome da lista deve ter 1-100 caracteres"):
+        with pytest.raises(ValueError, match="nome da lista deve ter 1-10 caracteres"):
             await usecase.executar(usuario_id=1, input=input_data)
