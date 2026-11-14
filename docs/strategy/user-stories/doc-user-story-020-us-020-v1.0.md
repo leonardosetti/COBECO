@@ -1,7 +1,7 @@
-# User Story — US-020
+# User Story — doc-user-story-020-us-020
 
 **Título:** Gerenciar Perfil (Editar Email, Nome, Senha)  
-**ID Único:** US-020  
+**ID Único:** doc-user-story-020-us-020  
 **Status:** Done  
 **Sprint:** S4 | **Milestone:** S4: Export, Perfil e Polish  
 **Prioridade:** P1  
@@ -148,4 +148,4 @@ E estado final consistente
 
 ---
 
-**Fim US-020**
+**Fim doc-user-story-020-us-020**

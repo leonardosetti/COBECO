@@ -1,7 +1,7 @@
-# User Story — US-006
+# User Story — doc-user-story-006-us-006
 
 **Título:** Autocomplete de Produtos  
-**ID Único:** US-006  
+**ID Único:** doc-user-story-006-us-006  
 **Status:** Done  
 **Sprint:** S2 | **Milestone:** S2: Listas e Catálogo  
 **Prioridade:** P0  
@@ -77,7 +77,7 @@ E não permite adicionar à lista
 |---------|-----------|--------|------|-------|--------|--------|
 | TA-050 | Backend: GET /v1/produtos/busca?q=&limit=10 — ILIKE normalizado, índice trigram | Backend | 3 | Nicholas | ✅ | `feat/UC-02-autocomplete` |
 | TA-051 | Frontend: Componente Autocomplete reutilizável (debounce, fetch, dropdown, seleção) | Frontend | 4 | Eduardo | ✅ | `feat/UC-02-autocomplete` |
-| TA-052 | Integração: US-005 usa componente Autocomplete | Frontend | 1 | Eduardo | ✅ | `feat/UC-01-lista-memoria` |
+| TA-052 | Integração: doc-user-story-005-us-005 usa componente Autocomplete | Frontend | 1 | Eduardo | ✅ | `feat/UC-01-lista-memoria` |
 | TA-053 | Testes: backend busca + frontend componente + integração | Ambos | 2 | Nicolas | ✅ | `feat/UC-02-autocomplete` |
 
 ---
@@ -107,8 +107,8 @@ E não permite adicionar à lista
 
 - **MySQL Normalização:** `WHERE normalizar(nome) LIKE normalizar(?)` — function `normalizar(str)` remove acentos + lower.
 - **Índice:** `CREATE INDEX idx_produtos_nome_norm ON produtos (normalizar(nome))` — ou trigram se PostgreSQL.
-- **Compartilhado:** Componente usado em US-005 (Nova Lista) e US-010 (Editar Lista).
+- **Compartilhado:** Componente usado em doc-user-story-005-us-005 (Nova Lista) e doc-user-story-010-us-010 (Editar Lista).
 
 ---
 
-**Fim US-006**
+**Fim doc-user-story-006-us-006**

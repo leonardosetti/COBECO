@@ -2,13 +2,14 @@
 # Testes de integração para Perfil e Sessões (RF5, RF6, RF02-Refresh)
 
 import pytest
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from src.main import app
 
 
 @pytest.fixture
 async def client():
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
 
 
@@ -38,13 +39,13 @@ async def auth_user(client):
 
 
 class TestPerfilIntegration:
-    """Testes de integração para /v1/auth/perfil e /v1/perfil"""
+    """Testes de integração para /v1/auth/perfil e /perfil"""
 
     @pytest.mark.asyncio
     async def test_visualizar_perfil_get(self, client, auth_user):
         """RF5 - Visualizar Perfil (UC18)"""
         response = await client.get("/v1/auth/perfil", headers=auth_user["auth"])
-        assert response.status_code == 20
+        assert response.status_code == 200
         data = response.json()
         assert data["nome_usuario"] == "testuser_perfil"
         assert data["email"] == "perfil@teste.com"
@@ -63,7 +64,7 @@ class TestPerfilIntegration:
             json={"nome": "Nome Atualizado"},
             headers=auth_user["auth"],
         )
-        assert response.status_code == 20
+        assert response.status_code == 200
         data = response.json()
         assert data["nome"] == "Nome Atualizado"
 
@@ -79,7 +80,7 @@ class TestPerfilIntegration:
             json={"email": "novo_email@teste.com"},
             headers=auth_user["auth"],
         )
-        assert response.status_code == 20
+        assert response.status_code == 200
         assert response.json()["email"] == "novo_email@teste.com"
 
     @pytest.mark.asyncio
@@ -126,7 +127,7 @@ class TestPerfilIntegration:
             },
             headers=auth_user["auth"],
         )
-        assert response.status_code == 20
+        assert response.status_code == 200
 
         # Login com nova senha deve funcionar
         login_resp = await client.post(
@@ -185,7 +186,7 @@ class TestPerfilIntegration:
             json={"email": "email_only@teste.com"},
             headers=auth_user["auth"],
         )
-        assert response.status_code == 20
+        assert response.status_code == 200
         assert response.json()["email"] == "email_only@teste.com"
 
 
@@ -210,7 +211,7 @@ class TestSessoesRefreshToken:
             "/v1/auth/login",
             json={"nome_usuario": "testuser_session", "senha": "Senha@123"},
         )
-        assert response.status_code == 20
+        assert response.status_code == 200
 
         # Verifica cookie refresh_token
         cookies = response.headers.get("set-cookie", "")

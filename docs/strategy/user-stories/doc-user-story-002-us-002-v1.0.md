@@ -1,7 +1,7 @@
-# User Story — US-002
+# User Story — doc-user-story-002-us-002
 
 **Título:** Login com JWT  
-**ID Único:** US-002  
+**ID Único:** doc-user-story-002-us-002  
 **Status:** Done  
 **Sprint:** S1 | **Milestone:** S1: Setup, Docs e Auth  
 **Prioridade:** P0  
@@ -131,4 +131,4 @@ E bloqueia temporariamente o IP
 
 ---
 
-**Fim da User Story US-002**
+**Fim da User Story doc-user-story-002-us-002**

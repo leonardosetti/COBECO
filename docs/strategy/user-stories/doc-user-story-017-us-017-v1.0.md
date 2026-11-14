@@ -1,7 +1,7 @@
-# User Story — US-017
+# User Story — doc-user-story-017-us-017
 
 **Título:** Exportar Lista em PDF (ReportLab)  
-**ID Único:** US-017  
+**ID Único:** doc-user-story-017-us-017  
 **Status:** Done  
 **Sprint:** S4 | **Milestone:** S4: Export, Perfil e Polish  
 **Prioridade:** P0  
@@ -127,4 +127,4 @@ E loga erro completo no backend
 
 ---
 
-**Fim US-017**
+**Fim doc-user-story-017-us-017**

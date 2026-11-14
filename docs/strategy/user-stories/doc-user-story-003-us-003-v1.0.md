@@ -1,7 +1,7 @@
-# User Story — US-003
+# User Story — doc-user-story-003-us-003
 
 **Título:** Logout  
-**ID Único:** US-003  
+**ID Único:** doc-user-story-003-us-003  
 **Status:** Done  
 **Sprint:** S1 | **Milestone:** S1: Setup, Docs e Auth  
 **Prioridade:** P1  
@@ -95,4 +95,4 @@ E redireciona para login
 
 ---
 
-**Fim US-003**
+**Fim doc-user-story-003-us-003**

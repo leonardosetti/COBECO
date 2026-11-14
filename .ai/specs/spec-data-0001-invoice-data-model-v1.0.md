@@ -52,7 +52,7 @@ trace:
   - .ai/handoffs/HF-0601-consulta-de-dominio.md:33-45 (PARCELA DE CONSULTA TA-0045, agent-dba — insumo normativo incorporado nos §§3.1-3.6)
   - .ai/handoffs/HF-0606-consulta-de-dominio.md:31-45 (parcela de consulta TA-0050, agent-compliance-governance — decisões D1-D7 como condicionantes, §2 e §3.0)
   - docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:36 (item B.4)
-  - .ai/specs/spec-req-0001-requisitos-review-round-1-v1.0.md:103 (GAP-04), :161 (US-004), :123 (C-04), :135 (OS-02), :178-179 (US-016/017)
+  - .ai/specs/spec-req-0001-requisitos-review-round-1-v1.0.md:103 (GAP-04), :161 (doc-user-story-004-us-004), :123 (C-04), :135 (OS-02), :178-179 (doc-user-story-016-us-016/017)
   - .ai/specs/spec-tech-0001-backend-mvp-v1.0.md:58-93 (§3 contrato), :120-130 (§5/§6), :33-56 (§2 regras)
   - docs/conhecimento/glossario.md:161-162 (PostgreSQL 15+ canônico; SQLite revogado — ADR-010)
   - constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:90 (P-04)
@@ -60,11 +60,11 @@ trace:
 
 # SPEC spec-007 — invoice-data-model-v1 — Modelo canônico de dados da invoice (GAP-04)
 
-Status: RATIFICADA — contrato de dados canônico emitido; decisão de persistência = PERSISTIR (condicionante D1 resolvida por ADR-016 emenda D4, RAT-2026-11-05-A16-D4). Esta spec complementa a `spec-004-backend-mvp-v1.spec.md` (contrato HTTP `POST /v1/invoice`) e alimenta a US-004 (spec-002:161, "modelo de dados pendente — GAP-04").
+Status: RATIFICADA — contrato de dados canônico emitido; decisão de persistência = PERSISTIR (condicionante D1 resolvida por ADR-016 emenda D4, RAT-2026-11-05-A16-D4). Esta spec complementa a `spec-004-backend-mvp-v1.spec.md` (contrato HTTP `POST /v1/invoice`) e alimenta a doc-user-story-004-us-004 (spec-002:161, "modelo de dados pendente — GAP-04").
 
 ## 1. Contexto e origem
 
-Emitida por TA-0052 / HF-0608 (agent-nexus-prime-ultimate → agent-sdd-specialist, action: spec, 2026-11-03) para fechar o item **B.4** da rodada 1 de specs pendentes (LISTA-SPECS-PENDENTES-2026-11-02.md:36): o modelo de dados da invoice — campos bancários, CPF/CNPJ, período — **não é canônico** e sobrevive apenas no legado (GAP-04, spec-002:103, com origem nos corpora `deepseek:58; qwen:18`). A `spec-004` especifica o contrato `POST /v1/invoice` (spec-004:58-93). A decisão de persistência (ADR-016 D4, RAT-2026-11-05-A16-D4) é **PERSISTIR** com rota de erase; a `spec-004:126` ("invoice nunca é persistida") é superada por esta emenda. A US-004 (spec-002:161) é condicionada a este modelo; US-016/US-017 (spec-002:178-179) o demandam condicionalmente.
+Emitida por TA-0052 / HF-0608 (agent-nexus-prime-ultimate → agent-sdd-specialist, action: spec, 2026-11-03) para fechar o item **B.4** da rodada 1 de specs pendentes (LISTA-SPECS-PENDENTES-2026-11-02.md:36): o modelo de dados da invoice — campos bancários, CPF/CNPJ, período — **não é canônico** e sobrevive apenas no legado (GAP-04, spec-002:103, com origem nos corpora `deepseek:58; qwen:18`). A `spec-004` especifica o contrato `POST /v1/invoice` (spec-004:58-93). A decisão de persistência (ADR-016 D4, RAT-2026-11-05-A16-D4) é **PERSISTIR** com rota de erase; a `spec-004:126` ("invoice nunca é persistida") é superada por esta emenda. A doc-user-story-004-us-004 (spec-002:161) é condicionada a este modelo; doc-user-story-016-us-016/doc-user-story-017-us-017 (spec-002:178-179) o demandam condicionalmente.
 
 Insumo normativo: a **parcela de consulta TA-0045 (agent-dba)**, retornada no meio-duplex de `.ai/handoffs/HF-0601-consulta-de-dominio.md:33-45`, é incorporada neste documento como fonte de domínio de dados (tipagem, constraints, índices, LGPD e lista de UNKNOWNs). As decisões D1-D7 da parcela de consulta TA-0050 (agent-compliance-governance, `.ai/handoffs/HF-0606-consulta-de-dominio.md:40`) entram apenas como **condicionantes, não como requisitos aprovados** (precedente de leitura: `.ai/handoffs/HF-0621-requisitos-repovoar.md:36`).
 
@@ -72,7 +72,7 @@ Insumo normativo: a **parcela de consulta TA-0045 (agent-dba)**, retornada no me
 
 | Tema | Decisão desta spec | Fonte vencedora | Texto superado / não promovido |
 |---|---|---|---|
-| **Persistência da invoice** (tensão obrigatória) | **DECIDIDA: PERSISTIR** com rota de erase (ADR-016 D4, RAT-2026-11-05-A16-D4). Esta spec define o **MODELO CANÔNICO de dados** (contrato de dados, §3). A decisão de persistência é norma vigente: invoices são gravadas na tabela `invoices`; rota de erase (direito ao esquecimento, LGPD art. 18) é obrigatória (condicionantes D1-D6 da spec-015). US-016/017 (spec-002:178-179) seguem KG-R-03, condicionadas à ratificação CCB. | ADR-016 D4 (RAT-2026-11-05-A16-D4) + HF-0608 | `spec-004:126` ("invoice nunca é persistida") **superada por esta emenda**; esta spec autoriza a migração de `invoices` (upgrade/downgrade Alembic, §3.4). |
+| **Persistência da invoice** (tensão obrigatória) | **DECIDIDA: PERSISTIR** com rota de erase (ADR-016 D4, RAT-2026-11-05-A16-D4). Esta spec define o **MODELO CANÔNICO de dados** (contrato de dados, §3). A decisão de persistência é norma vigente: invoices são gravadas na tabela `invoices`; rota de erase (direito ao esquecimento, LGPD art. 18) é obrigatória (condicionantes D1-D6 da spec-015). doc-user-story-016-us-016/017 (spec-002:178-179) seguem KG-R-03, condicionadas à ratificação CCB. | ADR-016 D4 (RAT-2026-11-05-A16-D4) + HF-0608 | `spec-004:126` ("invoice nunca é persistida") **superada por esta emenda**; esta spec autoriza a migração de `invoices` (upgrade/downgrade Alembic, §3.4). |
 | Banco canônico | PostgreSQL 15+ (ADR-010; glossario.md:161-162; spec-004:24 — resolução de conflitos da spec-004 §1) | ADR-010 via spec-004:24 + glossario.md:161-162 | SQLite do TAP congelado (plano-escopo.md:76, reproduzido em spec-002:123 e :135). Ratificação da ADR-010 por emenda Art. 1.3 é UNKNOWN - verify (§3.6, item 7). |
 | CPF/CNPJ no banco × contrato | Banco: `tax_id_digits char(14)` normalizado sem máscara, dígito validado app-side (CHECK SQL não faz mod-11) — parcela TA-0045 (HF-0601). Contrato HTTP continua `tax_id: str|None ≤40` (spec-004:74); normalização é responsabilidade da camada de aplicação. Contrato não é alterado por esta spec. | Parcela TA-0045 (HF-0601) para o banco; spec-004:74 para o contrato | Divergência de formato tratada por fronteira de normalização app-side; sem reescrita da spec-004. |
 | Endereço (coleta) | Parcela TA-0050 (inventário mínimo, HF-0606:40) propõe endereço "só se necessário à finalidade REQ-04"; parcela TA-0045 modela `address varchar(240) NULL`. Resolução: colunas **NULLable** (não NOT NULL) — a modelagem NULL **não decide** a coleta; obrigatoriedade de coleta é a condicionante **D4** (CCB/PO). | HF-0606:40 (D4) + HF-0601 | Nenhuma decisão de coleta promovida. |
@@ -115,10 +115,10 @@ Tabela única `invoices`; fonte primária = parcela TA-0045 (HF-0601:42); campos
 | `net_brl` | numeric(18,2) | NOT NULL | HF-0601; fórmula spec-004:50 |
 | `effective_rate` | numeric(18,6) | NOT NULL | HF-0601; fórmula spec-004:51 |
 | `created_at` | timestamptz | NOT NULL; `DEFAULT now()` explícito | HF-0601 |
-| `banco` | char(3) | NULL; só se o template US-004 exigir (minimização P-04) | §3.3 [alinhamento] |
-| `agencia` | varchar(10) | NULL; só se o template US-004 exigir (minimização P-04) | §3.3 [alinhamento] |
-| `conta_com_digito` | varchar(20) | NULL; só se o template US-004 exigir (minimização P-04) | §3.3 [alinhamento] |
-| `pix_key` | varchar(77) | NULL; só se o template US-004 exigir (minimização P-04) | §3.3 [alinhamento] |
+| `banco` | char(3) | NULL; só se o template doc-user-story-004-us-004 exigir (minimização P-04) | §3.3 [alinhamento] |
+| `agencia` | varchar(10) | NULL; só se o template doc-user-story-004-us-004 exigir (minimização P-04) | §3.3 [alinhamento] |
+| `conta_com_digito` | varchar(20) | NULL; só se o template doc-user-story-004-us-004 exigir (minimização P-04) | §3.3 [alinhamento] |
+| `pix_key` | varchar(77) | NULL; só se o template doc-user-story-004-us-004 exigir (minimização P-04) | §3.3 [alinhamento] |
 
 ### 3.2 Tipagem e aritmética
 
@@ -128,7 +128,7 @@ Tabela única `invoices`; fonte primária = parcela TA-0045 (HF-0601:42); campos
 
 ### 3.3 Dados bancários (mínimos — P-04)
 
-Conjunto **mínimo** (parcela TA-0045, HF-0601): `banco char(3)`, `agencia varchar(10)`, `conta_com_digito varchar(20)`, `pix_key varchar(77) NULL`. Declados na tabela §3.1 como colunas **NULL** (não-mandatórias), incluídos somente quando o template US-004 exigir (minimização P-04, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:90). Os **campos bancários exatos do template legado são `UNKNOWN - verify`** (§3.7, item 2) — nenhuma coluna bancária é mandatória nesta emissão.
+Conjunto **mínimo** (parcela TA-0045, HF-0601): `banco char(3)`, `agencia varchar(10)`, `conta_com_digito varchar(20)`, `pix_key varchar(77) NULL`. Declados na tabela §3.1 como colunas **NULL** (não-mandatórias), incluídos somente quando o template doc-user-story-004-us-004 exigir (minimização P-04, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:90). Os **campos bancários exatos do template legado são `UNKNOWN - verify`** (§3.7, item 2) — nenhuma coluna bancária é mandatória nesta emissão.
 
 ### 3.4 Constraints, índices e integridade (parcela TA-0045)
 
@@ -162,7 +162,7 @@ Conjunto **mínimo** (parcela TA-0045, HF-0601): `banco char(3)`, `agencia varch
 1. `periodo_inicio`/`periodo_fim` existem no modelo (HF-0601) mas **não em `InvoiceRequest`** (spec-004:75) — extensão do contrato condicionada a D1 e a decisão de semântica do período (§3.8, item 5).
 2. `description` e `gross_foreign` constam do contrato/derivação (spec-004:75, :46) mas não da parcela TA-0045 — incorporados por [alinhamento] em §3.1.
 3. Cotação usada (rate, source, quoted_at, bulletin): reprodutibilidade do reprocesso (§3.4) dependeria dessas colunas — **não definidas pela parcela TA-0045** → `UNKNOWN - verify` (lacuna declarada nesta emissão, ausente da lista de 7 da parcela).
-4. Coluna de estado (rascunho/finalizada): US-016/017 são KG-R-03 não ratificadas (spec-002:178-179) → `UNKNOWN - verify` (declarada nesta emissão).
+4. Coluna de estado (rascunho/finalizada): doc-user-story-016-us-016/017 são KG-R-03 não ratificadas (spec-002:178-179) → `UNKNOWN - verify` (declarada nesta emissão).
 
 ### 3.8 UNKNOWN - verify (P-08 — sem invenção)
 
@@ -176,7 +176,7 @@ Os 7 itens declarados pela parcela TA-0045 (HF-0601:42):
 6. **Retenção** (D6).
 7. **Ratificação da ADR-010** via emenda Art. 1.3 (TAP congelado diz SQLite — plano-escopo.md:76 via spec-002:123,:135).
 
-Mais 2 lacunas declaradas nesta emissão (não cobertas pela parcela): reprodutibilidade da cotação para reprocesso (§3.7.3) e coluna de estado US-016/017 (§3.7.4).
+Mais 2 lacunas declaradas nesta emissão (não cobertas pela parcela): reprodutibilidade da cotação para reprocesso (§3.7.3) e coluna de estado doc-user-story-016-us-016/017 (§3.7.4).
 
 ## 4. Critérios de aceite e testes
 
@@ -204,8 +204,8 @@ Critérios de implementação (CONDICIONAIS a D1 = persistir; **bloqueados até 
 | Fonte | Onde nesta spec |
 |---|---|
 | B.4 / GAP-04 (LISTA-SPECS-PENDENTES-2026-11-02.md:36; spec-002:103) | §1, §3.1 |
-| US-004 (spec-002:161) | H1/Status, §1, §3.3, §4 |
-| US-016/US-017 KG-R-03 (spec-002:178-179) | §2 (linha persistência), §3.7.4, §3.8 |
+| doc-user-story-004-us-004 (spec-002:161) | H1/Status, §1, §3.3, §4 |
+| doc-user-story-016-us-016/doc-user-story-017-us-017 KG-R-03 (spec-002:178-179) | §2 (linha persistência), §3.7.4, §3.8 |
 | Parcela TA-0045 agent-dba (HF-0601:33-45) | §2, §3.1-§3.6, §3.8.1-7, §4 (condicionais) |
 | Parcela TA-0050 compliance, D1-D7 (HF-0606:40) | §2, §3.0, §3.5, §3.6 |
 | spec-004 §2/§3/§5/§6 (spec-004:33-56, :58-93, :120-130) | §2, §3.1, §3.2, §3.4, §3.5, §3.7, §4 |
@@ -219,7 +219,7 @@ Critérios de implementação (CONDICIONAIS a D1 = persistir; **bloqueados até 
 
 - **Implementação**: DDL final, models ORM, repositório e migração são execução pós-D1 (custódia agent-dba/backend-dev; precede a spec-004 §9, T3) — esta spec é contrato de dados, não código.
 - **Edição da spec-004**: o contrato `POST /v1/invoice` (spec-004:58-93) não é alterado por aqui; extensões (§3.7) exigem nova task própria.
-- **Ciclo de estados da invoice** (US-016/017, spec-002:178-179): não ratificado (KG-R-03) — decisão CCB; nada de coluna `status` aqui.
+- **Ciclo de estados da invoice** (doc-user-story-016-us-016/017, spec-002:178-179): não ratificado (KG-R-03) — decisão CCB; nada de coluna `status` aqui.
 - **NF-e/NFS-e** (OS-05, spec-002:138) e plataformas de transferência (OS-04, spec-002:137): OUT do escopo congelado.
 - **Política de retenção/backup**: decisão D6 + B.3 (LGPD de produto, spec-015) — aqui só se referencia.
 - **Histórico de simulações**: fora do escopo declarado da spec-004 (spec-004:31).

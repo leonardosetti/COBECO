@@ -1,7 +1,7 @@
-# User Story — US-009
+# User Story — doc-user-story-009-us-009
 
 **Título:** Listar Minhas Listas  
-**ID Único:** US-009  
+**ID Único:** doc-user-story-009-us-009  
 **Status:** Done  
 **Sprint:** S2 | **Milestone:** S2: Listas e Catálogo  
 **Prioridade:** P0  
@@ -116,4 +116,4 @@ E metadados {total: 25, page: 2, size: 20, total_pages: 2}
 
 ---
 
-**Fim US-009**
+**Fim doc-user-story-009-us-009**

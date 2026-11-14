@@ -1,7 +1,7 @@
-# User Story — US-005
+# User Story — doc-user-story-005-us-005
 
 **Título:** Criar Lista em Memória (Efêmera)  
-**ID Único:** US-005  
+**ID Único:** doc-user-story-005-us-005  
 **Status:** Done  
 **Sprint:** S2 | **Milestone:** S2: Listas e Catálogo  
 **Prioridade:** P0  
@@ -123,10 +123,10 @@ Então minha lista efêmera ainda está lá com os 3 itens
 
 ## 7. Notas
 
-- **Visitante vs Autenticado:** Mesmo comportamento. Se autenticado, botão "Salvar" envia para backend (US-008). Se visitante, só "Exportar PDF" (US-019).
+- **Visitante vs Autenticado:** Mesmo comportamento. Se autenticado, botão "Salvar" envia para backend (doc-user-story-008-us-008). Se visitante, só "Exportar PDF" (doc-user-story-019-us-019).
 - **Autocomplete Endpoint:** `GET /v1/produtos/busca?q={termo}&limit=10` — retorna `[{id, nome, categoria, unidade}]`.
 - **Normalização:** `termo.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()` tanto client quanto server.
 
 ---
 
-**Fim US-005**
+**Fim doc-user-story-005-us-005**

@@ -1,7 +1,7 @@
-# User Story — US-012
+# User Story — doc-user-story-012-us-012
 
 **Título:** Selecionar Categorias (Pré-filtro)  
-**ID Único:** US-012  
+**ID Único:** doc-user-story-012-us-012  
 **Status:** Done  
 **Sprint:** S3 | **Milestone:** S3: Pré-filtro e Comparação  
 **Prioridade:** P0  
@@ -112,4 +112,4 @@ E tooltip "Selecione pelo menos uma categoria"
 
 ---
 
-**Fim US-012**
+**Fim doc-user-story-012-us-012**

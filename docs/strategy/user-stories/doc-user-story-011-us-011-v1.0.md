@@ -1,7 +1,7 @@
-# User Story — US-011
+# User Story — doc-user-story-011-us-011
 
 **Título:** Excluir Lista (Soft Delete)  
-**ID Único:** US-011  
+**ID Único:** doc-user-story-011-us-011  
 **Status:** Done  
 **Sprint:** S2 | **Milestone:** S2: Listas e Catálogo  
 **Prioridade:** P1  
@@ -78,7 +78,7 @@ Então chama DELETE API, fecha modal, toast "Lista excluída", remove linha da t
 | Task ID | Descrição | Camada | Est. | Resp. | Status | Branch |
 |---------|-----------|--------|------|-------|--------|--------|
 | TA-100 | Backend: DELETE /v1/listas/{id} — valida ownership, body confirmação, soft delete | Backend | 2 | Fabrício | ✅ | `feat/UC-13-editar-excluir-lista` |
-| TA-101 | Backend: Query `deletado_em IS NULL` em todos GET /v1/listas (já em US-009) | Backend | 0 | — | ✅ | — |
+| TA-101 | Backend: Query `deletado_em IS NULL` em todos GET /v1/listas (já em doc-user-story-009-us-009) | Backend | 0 | — | ✅ | — |
 | TA-102 | Testes: soft delete, confirmação, ownership, itens permanecem | Backend | 1 | Nicolas | ✅ | `feat/UC-13-editar-excluir-lista` |
 | TA-103 | Frontend: Modal Excluir — input nome, validação tempo real (habilita botão), loading, toast | Frontend | 3 | Eduardo | ✅ | `feat/UC-13-editar-excluir-lista` |
 
@@ -114,4 +114,4 @@ Então chama DELETE API, fecha modal, toast "Lista excluída", remove linha da t
 
 ---
 
-**Fim US-011**
+**Fim doc-user-story-011-us-011**
