@@ -997,12 +997,12 @@ graph TB
 ### 17.3 Verificação de Integridade
 
 ```bash
-# Verificar hash do documento ratificado
-sha256sum docs/operacao/GUIA-ARQUITETURAL-COBECO-v2.0.md
-# Deve retornar: 8ac1339d4723e5345db79c03812b45f808bf437414a1477640aa407e0594d03e
-
-# Verificar commit de ratificação
+# Verificar commit de ratificação (autoridade)
+git show 33fbdc3 --stat
 git log --oneline --grep="RATIFICAÇÃO: GUIA-ARQUITETURAL-COBECO-v2.0" -1
+
+# Verificar integridade do arquivo no commit
+git show 33fbdc3:docs/operacao/GUIA-ARQUITETURAL-COBECO-v2.0.md | sha256sum
 ```
 
 ---

@@ -92,6 +92,7 @@ IGNORE_PATHS = [
     'docs/rfc/TEMPLATE-*.md',
     'docs/arquitetura/TEMPLATE-*.md',
     'docs/operacao/GUIA-ARQUITETURAL-COBECO.md',
+    'docs/operacao/GUIA-ARQUITETURAL-COBECO-v2.0.md',
     'docs/operacao/LEVANTAMENTO-RUNBOOKS-HOOKS-SANITIZACAO.md',
     'docs/operacao/RELEASE-NOTES-*.md',
     'docs/strategy/user-stories/US-*.md',
