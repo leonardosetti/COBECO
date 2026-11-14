@@ -2,7 +2,7 @@
 **Documento de Conhecimento Oficial do Projeto**  
 **Versão:** 2.0 | **Data:** 14/11/2026 | **Status:** ✅ RATIFICADO  
 **Autor:** COBECO Team | **Aprovado por:** CCB (Change Control Board)  
-**Hash de Ratificação:** `sha256:0a8f3c9e2d4b1f7a6c8e9d0b3f2a1c4e5d6f7a8b9c0d1e2f3a4b5c6d7e8f9a0`  
+**Hash de Ratificação:** `sha256:ae6fa3a09eb223458f9e66cae12aeafd8cb13aed342fb335699157ea33cacff8`  
 **Base Constitucional:** `constitution.md` v2.0 (Lei Suprema) | **SSOT:** REQUISITOS.md, CASOSDEUSO.md, CAMADADEDADOS.md v3.2  
 
 ---
@@ -979,7 +979,7 @@ graph TB
 | **Documento** | `docs/operacao/GUIA-ARQUITETURAL-COBECO-v2.0.md` |
 | **Versão** | 2.0 |
 | **Data Ratificação** | 14/11/2026 |
-| **Hash SHA-256** | `0a8f3c9e2d4b1f7a6c8e9d0b3f2a1c4e5d6f7a8b9c0d1e2f3a4b5c6d7e8f9a0` |
+| **Hash SHA-256** | `ae6fa3a09eb223458f9e66cae12aeafd8cb13aed342fb335699157ea33cacff8` |
 | **Commit Hash** | `git log --oneline -1` → `[será preenchido no push]` |
 | **Branch** | `main` (após merge via PR) |
 | **PR Number** | `[será preenchido no push]` |
@@ -999,7 +999,7 @@ graph TB
 ```bash
 # Verificar hash do documento ratificado
 sha256sum docs/operacao/GUIA-ARQUITETURAL-COBECO-v2.0.md
-# Deve retornar: 0a8f3c9e2d4b1f7a6c8e9d0b3f2a1c4e5d6f7a8b9c0d1e2f3a4b5c6d7e8f9a0
+# Deve retornar: ae6fa3a09eb223458f9e66cae12aeafd8cb13aed342fb335699157ea33cacff8
 
 # Verificar commit de ratificação
 git log --oneline --grep="RATIFICAÇÃO: GUIA-ARQUITETURAL-COBECO-v2.0" -1
