@@ -43,13 +43,13 @@ status: ratificada
 custody: agent-sdd-specialist (.ai/specs/)
 created: 2026-11-03
 updated: 2026-11-05
-origin: HF-0614 (TA-0058) | sender: agent-nexus-prime-ultimate | handoff: HF-0614 | consulta de domínio incorporada (agent-iso-26514-specialist, autorizada em HF-0614:21)
+origin: hf-exec-0614 (TA-0058) | sender: agent-nexus-prime-ultimate | handoff: hf-exec-0614 | consulta de domínio incorporada (agent-iso-26514-specialist, autorizada em hf-exec-0614:21)
 task: TA-0058 | sender: agent-nexus-prime-ultimate
 kill_switch: inherited
 wave: WS-7 | Onda 7 — Commons e Meta (documentação técnica)
 lgpd-class: n/a (zero PII neste artefato; P-04, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:90 — precedente lgpd-class: spec-002-requisitos-review-round-1.spec.md:19)
 trace:
-  - .ai/handoffs/HF-0614-spec-013-documentacao-tecnica-v1.md:17-29 (tarefa, fontes obrigatórias, contrato de resposta meio-duplex)
+  - .ai/handoffs/hf-exec-0614-spec-013-documentacao-tecnica-v1-v1.0.md:17-29 (tarefa, fontes obrigatórias, contrato de resposta meio-duplex)
   - docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:41 (B.9 — origem desta emissão), :62 (D.4 — onda 7), :68 (E.2 — ADR-016 proposta), :71 (E.5 — REQ-12)
   - .ai/specs/spec-req-0001-requisitos-review-round-1-v1.0.md:75 (REQ-14), :170 (doc-user-story-014-us-014)
   - .ai/specs/spec-tech-0001-backend-mvp-v1.0.md:14 (H1 REQ-14), :58-93 (§3 contrato /v1), :230 (§11), :239 (§12 REQ-14 `UNKNOWN - verify`)
@@ -69,7 +69,7 @@ trace:
 
 # SPEC spec-013 — documentacao-tecnica-v1 — Documentação técnica: doc de arquitetura + revisão/aprovação da OpenAPI (REQ-14)
 
-Status: SPEC EMITIDA — PENDENTE DE REVISÃO E DE IMPLEMENTAÇÃO (onda seguinte, Art. 6.1 SDD) | Tarefa: TA-0058 (handoff `.ai/handoffs/HF-0614-spec-013-documentacao-tecnica-v1.md`) | Orquestrador: agent-nexus-prime-ultimate | Custódia: agent-sdd-specialist (`.ai/specs/`)
+Status: SPEC EMITIDA — PENDENTE DE REVISÃO E DE IMPLEMENTAÇÃO (onda seguinte, Art. 6.1 SDD) | Tarefa: TA-0058 (handoff `.ai/handoffs/hf-exec-0614-spec-013-documentacao-tecnica-v1-v1.0.md`) | Orquestrador: agent-nexus-prime-ultimate | Custódia: agent-sdd-specialist (`.ai/specs/`)
 
 Fonte única das decisões de documentação técnica do COBECO. Em conflito, vale a hierarquia do Art. 2 da Constituição (constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:41-50; resolução de cima para baixo, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:78).
 
@@ -77,8 +77,8 @@ Convenções: citação `arquivo:linha`; alegação sem fonte = literal `UNKNOWN
 
 ## 1. Contexto e origem
 
-Esta spec nasce da tarefa TA-0058, via handoff HF-0614 emitido por agent-nexus-prime-ultimate
-(.ai/handoffs/HF-0614-spec-013-documentacao-tecnica-v1.md:17-21), e implementa o item **B.9** da
+Esta spec nasce da tarefa TA-0058, via handoff hf-exec-0614 emitido por agent-nexus-prime-ultimate
+(.ai/handoffs/hf-exec-0614-spec-013-documentacao-tecnica-v1-v1.0.md:17-21), e implementa o item **B.9** da
 LISTA-SPECS-PENDENTES-2026-11-02.md:41, no quadro da onda 7 "Commons e Meta" (D.4, LISTA...:62).
 
 REQ-14 — "Documentação técnica consolidada | Arquitetura + APIs (OpenAPI) revisadas e aprovadas |
@@ -99,7 +99,7 @@ subdiretório de arquitetura; `docs/diagramas/` tem 9 subdiretórios sem "arquit
 A OpenAPI, em contraste, já está implementada e blindada: `tests/integration/test_openapi.py`
 (107 linhas, 10 testes sufixados `*_req14`) verifica o documento servido pela aplicação.
 
-Consulta de domínio incorporada (meio-duplex, autorizada em HF-0614:17,21): o contrato do
+Consulta de domínio incorporada (meio-duplex, autorizada em hf-exec-0614:17,21): o contrato do
 especialista ISO/IEC/IEEE 26514:2022 (.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-iso-26514-specialist.md) foi lido como
 insumo normativo e está citado em cada regra que dele deriva (§3). Nenhum número de cláusula ISO é
 afirmado aqui sem verificação — lacuna marcada `UNKNOWN - verify` (P-08; DON'T 7 do especialista
@@ -110,7 +110,7 @@ ISO, agent-iso-26514-specialist.md:100).
 | Tema | Decisão | Fonte vencedora | Texto superado |
 |---|---|---|---|
 | OpenAPI já coberta por spec-004 §3 | **Delimitação exata:** o CONTEÚDO do contrato `/v1` (rotas, schemas, erros) permanece normativo exclusivamente em spec-004-backend-mvp-v1.spec.md:58-93, verificado por tests/integration/test_openapi.py:1-107. Esta spec NÃO redeclara rota, schema, enum ou erro — cobre apenas (i) o doc de arquitetura, inexistente; (ii) o processo e os critérios de revisão/aprovação da OpenAPI em Code Review (doc-user-story-014-us-014, spec-002...:170); (iii) a regra anti-restyle (§3.4) | spec-004-backend-mvp-v1.spec.md:58-93 + test_openapi.py:16,51-53 | Qualquer re-declaração de contrato `/v1` nesta spec (nunca feita; se surgir, é defeito desta spec) |
-| REQ-14 sem seção dedicada na spec-004 (`UNKNOWN - verify`, spec-004:239) | A seção dedicada de REQ-14 para o lado DOCUMENTAÇÃO passa a ser esta SPEC (§3); a spec-004 permanece intocada — REQ-14 nela segue válido apenas pelo H1 (:14) e pela §3 (contrato) | HF-0614:17,24 + LISTA...:41 | Corrigir/editar spec-004-backend-mvp-v1.spec.md:239 nesta emissão (vedado — decisão TA-0031, MANIFEST.md:97) |
+| REQ-14 sem seção dedicada na spec-004 (`UNKNOWN - verify`, spec-004:239) | A seção dedicada de REQ-14 para o lado DOCUMENTAÇÃO passa a ser esta SPEC (§3); a spec-004 permanece intocada — REQ-14 nela segue válido apenas pelo H1 (:14) e pela §3 (contrato) | hf-exec-0614:17,24 + LISTA...:41 | Corrigir/editar spec-004-backend-mvp-v1.spec.md:239 nesta emissão (vedado — decisão TA-0031, MANIFEST.md:97) |
 | Quem escreve e quem aprova | Escrita do doc de arquitetura = custódia documental **agent-docker-specialist** ("documentation custody. Owns doc-readme-0001-readme-canon + docs/ tree", agent-docker-specialist.md:6; "the sole documentation custodian", agent-iso-26514-specialist.md:24); revisão/aprovação = **agent-reviewer** em Code Review (vereditos pass\|amend\|block, agent-reviewer.md:21; portão Art. 6.2/6.4, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:152,156); QA documental = **agent-iso-26514-specialist** (parcela de conformidade, agent-iso-26514-specialist.md:66-67). O SDD custodian especifica e custodia esta spec, não escreve o doc | agent-docker-specialist.md:6,22 + agent-reviewer.md:21 + constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:152,156 | Qualquer leitura de que o SDD custodian é redator técnico do produto (ele não é — DON'T de fronteira, .config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-sdd-specialist.md:24) |
 | ADR-016 como decisão de arquitetura no doc | O doc de arquitetura cita **apenas decisões ratificadas** como norma (ADR-001 v1.1.0, ADR-010 histórica, Constituição); ADR-016 está `status: proposta` (docs/decisoes/ADR-016-backend-mvp.md:5 — "não está ratificada... posição técnica proposta, não norma vigente") e deve ser citada somente com esse estado, jamais como decisão vigente | ADR-016-backend-mvp.md:5,13 + E.2 (LISTA...:68) | Citar ADR-016 como norma ratificada (P-08 — status inventado) |
 | Arquitetura do PRODUTO × arquitetura do ecossistema SDD | REQ-14 exige o doc de arquitetura do PRODUTO COBECO (simulador cambial). A arquitetura do ecossistema SDD (L1/L2/L3, stack local) já tem canon ratificado v2.0.0: docs/conhecimento/Canon_Stack_SDD.md:27,41,64 — este canon NÃO é substituído nem duplicado | Canon_Stack_SDD.md:27,41 | Reescrever o canon SDD num eventual doc de arquitetura de produto (duplicação de SSOT — P-03, Canon_Stack_SDD.md:79) |
@@ -249,7 +249,7 @@ Critérios verificáveis desta emissão (checkbox, DO #2 — .config-config-conf
 - [ ] AC-07: 100% dos itens do conteúdo mínimo do doc (§3.1) e das linhas da tabela de rastreabilidade documental (§3.5) possuem citação `arquivo:linha`; lacunas de decisão/cláusula marcadas `UNKNOWN - verify` (iso_clause, destino).
 - [ ] AC-08: nenhum número de cláusula ISO/IEC 26514:2022 foi afirmado sem verificação (P-08; DON'T 7 do especialista ISO, agent-iso-26514-specialist.md:100) — o campo iso_clause está `UNKNOWN - verify` (§3.5).
 - [ ] AC-09: zero PII neste artefato (P-04, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:90); kill_switch herdado sem instrução de bypass de gate (vetos 3-4, .config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-sdd-specialist.md:42-43); nenhum arquivo além deste criado/editado; nada commitado.
-- [ ] AC-10: validação — **quem valida:** agent-reviewer (veredito pass|amend|block sobre esta spec, auditando citações linha a linha e testabilidade dos ACs — padrão spec-002...:251-256) e, quando acionado, agent-iso-26514-specialist (parcela de conformidade documental, agent-iso-26514-specialist.md:66-67). **DoD desta spec:** (i) AC-01..AC-09 verificáveis por inspeção do arquivo; (ii) delimitação §2 sem redeclaração de contrato; (iii) parcela JSON meio-duplex devolvida ao orquestrador (HF-0614:28-29).
+- [ ] AC-10: validação — **quem valida:** agent-reviewer (veredito pass|amend|block sobre esta spec, auditando citações linha a linha e testabilidade dos ACs — padrão spec-002...:251-256) e, quando acionado, agent-iso-26514-specialist (parcela de conformidade documental, agent-iso-26514-specialist.md:66-67). **DoD desta spec:** (i) AC-01..AC-09 verificáveis por inspeção do arquivo; (ii) delimitação §2 sem redeclaração de contrato; (iii) parcela JSON meio-duplex devolvida ao orquestrador (hf-exec-0614:28-29).
 
 ## 5. Rastreabilidade
 
@@ -263,10 +263,10 @@ Critérios verificáveis desta emissão (checkbox, DO #2 — .config-config-conf
 | §3.4 | spec-004 §3; REQ-14 "revisada/aprovada"; doc-user-story-014-us-014 | spec-004...:58-93; spec-002...:75,170; agent-docker-specialist.md:6,22 |
 | §3.5 | Output schema ISO 26514; matriz REQ→spec→doc→test | agent-iso-26514-specialist.md:22,115-126 |
 
-Cadeia da emissão: TA-0058 ← HF-0614 (.ai/handoffs/HF-0614-spec-013-documentacao-tecnica-v1.md:17)
+Cadeia da emissão: TA-0058 ← hf-exec-0614 (.ai/handoffs/hf-exec-0614-spec-013-documentacao-tecnica-v1-v1.0.md:17)
 ← B.9 (LISTA...:41) / D.4 onda 7 (LISTA...:62) ← REQ-14 (spec-002...:75; plano-integral...:84) ←
 doc-user-story-014-us-014 (spec-002...:170). Consulta de domínio incorporada: agent-iso-26514-specialist (contrato lido
-como insumo, HF-0614:21) — a custódia ISO não recebe dispatch nesta emissão; sua atuação (parcela de
+como insumo, hf-exec-0614:21) — a custódia ISO não recebe dispatch nesta emissão; sua atuação (parcela de
 QA documental) é pós-implementação do doc. Adjacências NÃO cobertas aqui: N11.2 "Consolidação da
 Documentação Parcial" (plano-integral...:46, fase irmã); REQ-12/ADRs (E.5, LISTA...:71); spec-004 §12
 permanece `UNKNOWN - verify` intocado (imutabilidade TA-0031).
@@ -286,14 +286,14 @@ permanece `UNKNOWN - verify` intocado (imutabilidade TA-0031).
 
 ## CHANGELOG
 
-- 0.1.0 — 2026-11-03 (TA-0058 / HF-0614): emissão inicial. Documentação técnica (item B.9, LISTA...:41): escopo do doc de arquitetura (visão de camadas Art. 10.1, matriz de interfaces, Mermaid FOSS, ADRs ratificadas — §3.1); ciclo de vida draft → revisão Code Review (agent-reviewer, rubrica R-01..R-07) → aprovado (§3.2); documented truth = running truth com proibição de doc fabricado (§3.3); OpenAPI com fonte única de verdade no schema gerado + render nunca hand-restyled + 4 critérios binários de revisão (§3.4); mapa de rastreabilidade documental ISO 26514 com iso_clause `UNKNOWN - verify` e destino do doc registrado como inexistente (`docs/arquitetura/`, verificado 2026-11-03) — §3.5. Delimitação exata com spec-004 §3 (§2). Arquivo único; nada commitado.
+- 0.1.0 — 2026-11-03 (TA-0058 / hf-exec-0614): emissão inicial. Documentação técnica (item B.9, LISTA...:41): escopo do doc de arquitetura (visão de camadas Art. 10.1, matriz de interfaces, Mermaid FOSS, ADRs ratificadas — §3.1); ciclo de vida draft → revisão Code Review (agent-reviewer, rubrica R-01..R-07) → aprovado (§3.2); documented truth = running truth com proibição de doc fabricado (§3.3); OpenAPI com fonte única de verdade no schema gerado + render nunca hand-restyled + 4 critérios binários de revisão (§3.4); mapa de rastreabilidade documental ISO 26514 com iso_clause `UNKNOWN - verify` e destino do doc registrado como inexistente (`docs/arquitetura/`, verificado 2026-11-03) — §3.5. Delimitação exata com spec-004 §3 (§2). Arquivo único; nada commitado.
 - 0.2.0 — 2026-11-05 (refinamento de ratificação, Grupo B): frontmatter atualizado ao padrão TA-0031 ratificado (adicionado `wave: WS-7`, `handoff` em `origin`; `version` 0.1.0 → 0.2.0). Ratificação CCB 05/11/2026 (instrumento RAT-2026-11-05-A16, ADR-LOG-012). Aderência ao padrão de nomenclatura `spec-NNN-specname.spec.md` confirmada (ADR-018, RAT-2026-11-05-A18). Nenhuma decisão de negócio de §§1–6 reescrita.
 
 ## CAMADAS FUNDAMENTAIS — MAPA (TA-0031)
 
 | Camada | Seção nesta spec | Estado |
 |---|---|---|
-| (a) cabeçalho — spec_id, versão, status, custódia, datas, origem | frontmatter (`spec_id: spec-013`, `version: 0.2.0`, `status: ratificada`, `created/updated: 2026-11-03`/`2026-11-05`, `origin: HF-0614`, `task: TA-0058`) + linha `Status:` | aplicada |
+| (a) cabeçalho — spec_id, versão, status, custódia, datas, origem | frontmatter (`spec_id: spec-013`, `version: 0.2.0`, `status: ratificada`, `created/updated: 2026-11-03`/`2026-11-05`, `origin: hf-exec-0614`, `task: TA-0058`) + linha `Status:` | aplicada |
 | (b) Contexto/origem | §1 Contexto e origem | aplicada |
 | (c) Resolução de conflitos | §2 (tabela tema→decisão→fonte vencedora→texto superado) | aplicada |
 | (d) Corpo de decisões/requisitos/contratos | §3 (3.1–3.5) | aplicada |

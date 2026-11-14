@@ -43,14 +43,14 @@ status: ratificada
 custody: agent-sdd-specialist (.ai/specs/)
 created: 2026-11-03
 updated: 2026-11-05
-origin: HF-0612 (TA-0056) | sender: agent-nexus-prime-ultimate | incorpora parcela de consulta TA-0048 (agent-devops, HF-0604:33-46)
-task: TA-0056 | handoff: HF-0612 | sender: agent-nexus-prime-ultimate
+origin: hf-exec-0612 (TA-0056) | sender: agent-nexus-prime-ultimate | incorpora parcela de consulta TA-0048 (agent-devops, hf-exec-0604:33-46)
+task: TA-0056 | handoff: hf-exec-0612 | sender: agent-nexus-prime-ultimate
 kill_switch: inherited
 wave: WS-4 | Onda 4 — Execução Técnica (CI/CD)
 lgpd-class: filenames LGPD-safe (artefatos de CI sem PII; credenciais do banco dummy e efêmeras, ci.yml:120,130)
 trace:
-  - .ai/handoffs/HF-0612-spec-011-cicd-pipeline-v1.md (envelope da tarefa)
-  - .ai/handoffs/HF-0604-consulta-de-dominio.md:33-46 (parcela de consulta TA-0048, agent-devops, 2026-11-03)
+  - .ai/handoffs/hf-exec-0612-spec-011-cicd-pipeline-v1-v1.0.md (envelope da tarefa)
+  - .ai/handoffs/hf-exec-0604-consulta-de-dominio-v1.0.md:33-46 (parcela de consulta TA-0048, agent-devops, 2026-11-03)
   - docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:39 (B.7), :51 (C.4), :59 (D.2)
   - .ai/specs/spec-req-0001-requisitos-review-round-1-v1.0.md:72 (REQ-11), :164 (doc-user-story-008-us-008), :167 (doc-user-story-011-us-011)
   - .ai/specs/spec-arch-0001-container-layers-v1.0.md:184-195 (§7.3), :198-212 (§8), :210 (C.4), :211, :352
@@ -64,7 +64,7 @@ trace:
 
 # SPEC spec-011 — cicd-pipeline-v1 — Pipeline CI/CD do COBECO (lint+testes ≤5 min por push, falha bloqueando merge)
 
-Status: SPEC EMITIDA — PENDENTE DE REVISÃO E DE IMPLEMENTAÇÃO (onda seguinte, Art. 6.1 SDD) | Tarefa: TA-0056 (handoff `.ai/handoffs/HF-0612-spec-011-cicd-pipeline-v1.md`) | Orquestrador: agent-nexus-prime-ultimate | Custódia: agent-sdd-specialist (`.ai/specs/`)
+Status: SPEC EMITIDA — PENDENTE DE REVISÃO E DE IMPLEMENTAÇÃO (onda seguinte, Art. 6.1 SDD) | Tarefa: TA-0056 (handoff `.ai/handoffs/hf-exec-0612-spec-011-cicd-pipeline-v1-v1.0.md`) | Orquestrador: agent-nexus-prime-ultimate | Custódia: agent-sdd-specialist (`.ai/specs/`)
 
 Fonte única das decisões de pipeline CI/CD do COBECO. Em conflito, vale a hierarquia do Art. 2 da Constituição (constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:41-50; resolução de cima para baixo, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:78).
 
@@ -74,11 +74,11 @@ Convenções: citação `arquivo:linha`. Identificadores/status/caminhos em EN; 
 
 ## 1. Contexto e origem
 
-Nasce da task TA-0056 (HF-0612), item **B.7** da LISTA (docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:39): "Pipeline CI/CD — lint+testes ≤5 min/push, gates", parcialmente coberto pela `spec-005` §8 (fase única; spec-005:198-212), que deixou o nome exato do job de rede de contratos como **UNKNOWN - verify** (spec-005:210) — lacuna **C.4** (LISTA:51). Integra a onda 5 "Infraestrutura, Automação e Segurança" (D.2, LISTA:59; plano-proddoc-arch-0006-uc-v1ao-agentes.md:133-143).
+Nasce da task TA-0056 (hf-exec-0612), item **B.7** da LISTA (docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:39): "Pipeline CI/CD — lint+testes ≤5 min/push, gates", parcialmente coberto pela `spec-005` §8 (fase única; spec-005:198-212), que deixou o nome exato do job de rede de contratos como **UNKNOWN - verify** (spec-005:210) — lacuna **C.4** (LISTA:51). Integra a onda 5 "Infraestrutura, Automação e Segurança" (D.2, LISTA:59; plano-proddoc-arch-0006-uc-v1ao-agentes.md:133-143).
 
 Requisitos de origem: **REQ-11** — "Pipeline CI | lint+testes ≤5min/push (req_1.0.md:31) | N7.1 | **Must**" (spec-002-requisitos-review-round-1.spec.md:72) e **doc-user-story-011-us-011** — "Given um push em feature branch; When o pipeline executa; Then lint+testes concluem em ≤5min e falha bloqueia merge" (spec-002:167).
 
-**Insumo de domínio:** a parcela de consulta **TA-0048** (agent-devops, 2026-11-03, HF-0604:33-46) auditou o estado REAL do `ci.yml` e recomendou 6 correções; esta spec incorpora essa parcela com citação por item (§3.1-§3.7) e resolve as duas pendências que a consulta fixou: **G-05 fechável por implementação preexistente** (drift descritivo) e **C.4 fecha com nome fixado** (`contract-network`, §3.4).
+**Insumo de domínio:** a parcela de consulta **TA-0048** (agent-devops, 2026-11-03, hf-exec-0604:33-46) auditou o estado REAL do `ci.yml` e recomendou 6 correções; esta spec incorpora essa parcela com citação por item (§3.1-§3.7) e resolve as duas pendências que a consulta fixou: **G-05 fechável por implementação preexistente** (drift descritivo) e **C.4 fecha com nome fixado** (`contract-network`, §3.4).
 
 ---
 
@@ -86,9 +86,9 @@ Requisitos de origem: **REQ-11** — "Pipeline CI | lint+testes ≤5min/push (re
 
 | Tema | Decisão | Fonte vencedora | Texto superado |
 |---|---|---|---|
-| **G-05** — "`ci.yml` vazio" (plano-proddoc-arch-0006-uc-v1ao-agentes.md:33) × realidade de 189 linhas (ledger.yaml:24) | **FECHADO como drift descritivo.** O plano está obsoleto; o arquivo tem 189 linhas com 6 jobs (auditado diretamente, 2026-11-03, §3.1). A parcela TA-0048 registra: "DRIFT G-05 CONFIRMADO/FECHAVEL: plano-proddoc-arch-0006-uc-v1ao-agentes.md:33 ('ci.yml vazio') obsoleto; ledger.yaml:24 (TA-0029, HISTORICO nao editar) ja registrava 189 linhas; spec-011 registra G-05 como FECHADO por implementacao preexistente, delta only" (HF-0604:42) | Auditoria direta do filesystem (ci.yml, 2026-11-03) + parcela TA-0048 (HF-0604:42) | `docs/planos/plano-granular/plano-proddoc-arch-0006-uc-v1ao-agentes.md:33` ("G-05 \| `ci.yml` vazio") — registro histórico intocado; delta remanescente de G-05 declarado em §3.1 (nenhum job constrói as camadas Docker; timeout 15 min) |
+| **G-05** — "`ci.yml` vazio" (plano-proddoc-arch-0006-uc-v1ao-agentes.md:33) × realidade de 189 linhas (ledger.yaml:24) | **FECHADO como drift descritivo.** O plano está obsoleto; o arquivo tem 189 linhas com 6 jobs (auditado diretamente, 2026-11-03, §3.1). A parcela TA-0048 registra: "DRIFT G-05 CONFIRMADO/FECHAVEL: plano-proddoc-arch-0006-uc-v1ao-agentes.md:33 ('ci.yml vazio') obsoleto; ledger.yaml:24 (TA-0029, HISTORICO nao editar) ja registrava 189 linhas; spec-011 registra G-05 como FECHADO por implementacao preexistente, delta only" (hf-exec-0604:42) | Auditoria direta do filesystem (ci.yml, 2026-11-03) + parcela TA-0048 (hf-exec-0604:42) | `docs/planos/plano-granular/plano-proddoc-arch-0006-uc-v1ao-agentes.md:33` ("G-05 \| `ci.yml` vazio") — registro histórico intocado; delta remanescente de G-05 declarado em §3.1 (nenhum job constrói as camadas Docker; timeout 15 min) |
 | **doc-user-story-011-us-011** — ≤5 min/push × `timeout-minutes: 15` do `test-suite` (ci.yml:111) | Vence REQ-11 (Must, spec-002:72) e doc-user-story-011-us-011 (spec-002:167). doc-user-story-011-us-011 está **NÃO ATENDIDO** hoje; a redução 15→≤5 e a paralelização são obrigação de implementação (delta D-01/D-02, §3.3), jamais contornada (sem skip — kill switch #1) | spec-002:72,167; spec-005:208 ("enquanto não reduzido, doc-user-story-011-us-011 está não atendido"); parcela TA-0048 correção (1) | Estado atual do ci.yml:111 (timeout 15) e ci.yml:154-158 (flake8+mypy sequenciais dentro do test-suite) |
-| **C.4** — nome do job `contract-network` como `UNKNOWN - verify` (spec-005:210) | **FECHADO: o nome é FIXADO como `contract-network`** nesta spec (§3.4), conforme recomendação da parcela TA-0048 ("spec-011 FIXA nome contract-network como job novo"; HF-0604:42) e mandato do HF-0612:17 | HF-0612:17; HF-0604:42; LISTA:51 | `spec-005-container-layers-v1.spec.md:210` ("nome exato: UNKNOWN - verify") — texto histórico da spec-005 preservado; resolvido por spec posterior |
+| **C.4** — nome do job `contract-network` como `UNKNOWN - verify` (spec-005:210) | **FECHADO: o nome é FIXADO como `contract-network`** nesta spec (§3.4), conforme recomendação da parcela TA-0048 ("spec-011 FIXA nome contract-network como job novo"; hf-exec-0604:42) e mandato do hf-exec-0612:17 | hf-exec-0612:17; hf-exec-0604:42; LISTA:51 | `spec-005-container-layers-v1.spec.md:210` ("nome exato: UNKNOWN - verify") — texto histórico da spec-005 preservado; resolvido por spec posterior |
 | **C-07** (avaliada; NÃO relevante) | C-07 trata de ambiguidade de latência (cotação ≤2s × aplicação ≤3s P95, spec-002:126) — não toca CI/CD. Sem delta para este domínio | spec-002:126 | n/a |
 
 ---
@@ -121,7 +121,7 @@ Existe também `.github/workflows/sddai-verify.yml` com **44 linhas** (`wc -l`, 
 
 ### 3.3 Delta requerido sobre o estado atual (doc-user-story-011-us-011 NÃO ATENDIDO hoje)
 
-As seis correções recomendadas pela parcela TA-0048 (HF-0604:42, "CORRECOES RECOMENDADAS spec-011"), elevadas a delta normativo desta spec:
+As seis correções recomendadas pela parcela TA-0048 (hf-exec-0604:42, "CORRECOES RECOMENDADAS spec-011"), elevadas a delta normativo desta spec:
 
 | # | Delta | Estado atual (linha real) | Alvo |
 |---|---|---|---|
@@ -136,12 +136,12 @@ D-01..D-06 são **obrigações de implementação** da onda seguinte (Art. 6.1) 
 
 ### 3.4 Job `contract-network` (fecha C.4)
 
-O nome é **FIXADO**: `contract-network` (resolve o `UNKNOWN - verify` de spec-005:210; mandato HF-0612:17; recomendação parcela TA-0048, HF-0604:42 — "stack efemera digest-pinned, casos SS7.3 spec-005, needs:[test-suite], timeout <=10, sem porta no host"). Contrato completo do job:
+O nome é **FIXADO**: `contract-network` (resolve o `UNKNOWN - verify` de spec-005:210; mandato hf-exec-0612:17; recomendação parcela TA-0048, hf-exec-0604:42 — "stack efemera digest-pinned, casos SS7.3 spec-005, needs:[test-suite], timeout <=10, sem porta no host"). Contrato completo do job:
 
 - **Nome do job (id YAML):** `contract-network` — literal, inalterável (chave de rastreabilidade entre spec-005 §8.3, LISTA:51 e o workflow).
 - **Dependência:** `needs: [test-suite]` — só roda com a suíte verde (fail-closed).
 - **Stack efêmera digest-pinned:** sobe a stack de compose por run e descarta ao fim; todo `image:` com digest (precedente do Postgres do CI, ci.yml:117; Art. 10.2).
-- **Orçamento:** `timeout-minutes` ≤10 (parcela TA-0048, HF-0604:42).
+- **Orçamento:** `timeout-minutes` ≤10 (parcela TA-0048, hf-exec-0604:42).
 - **Rede/isolamento:** **nenhuma porta publicada no host**; comunicação só por rede interna de compose (Art. 10.1; análogo ao negativo de spec-005:190).
 - **Casos executados:** os 5 casos binários da §7.3 da spec-005 (spec-005:186-192) — (1) `back` conecta em `db:5432` (positivo); (2) `front` NÃO alcança `db:5432` (negativo); (3) `db` sem porta no host, `docker compose port` vazio (negativo); (4) `front` alcança `back:8000/v1/health` com 200 (positivo); (5) rotas `/v1` compatíveis com spec-004 §3 (contrato HTTP). Marcador pytest sugerido: `compose` (proposta de spec-005:210) — a escolha final do marker é da implementação; **o nome do JOB não é**.
 - **Fail-closed:** qualquer caso violado = job vermelho = pipeline vermelho = merge bloqueado (R-02).
@@ -155,11 +155,11 @@ O nome é **FIXADO**: `contract-network` (resolve o `UNKNOWN - verify` de spec-0
 
 ### 3.6 Merge-blocking como pré-condição (nunca substitui aprovação)
 
-CI verde é **pré-condição** de merge — **nunca** é a aprovação em si. O merge exige reviewer → gatekeeper (P-06, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:94; Art. 10.4, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:219; spec-005:211). A parcela TA-0048 fixa: "merge-bloqueio: CI green = pre-condicao, nunca aprovacao (gatekeeper+Humano)" (HF-0604:42). O mecanismo técnico de bloqueio (required status checks / branch protection) é configuração do GitHub, **não versionável no filesystem** — **UNKNOWN - verify** (§7a), declarado como AC-10 (condição pendente de verificação, não de invenção).
+CI verde é **pré-condição** de merge — **nunca** é a aprovação em si. O merge exige reviewer → gatekeeper (P-06, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:94; Art. 10.4, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:219; spec-005:211). A parcela TA-0048 fixa: "merge-bloqueio: CI green = pre-condicao, nunca aprovacao (gatekeeper+Humano)" (hf-exec-0604:42). O mecanismo técnico de bloqueio (required status checks / branch protection) é configuração do GitHub, **não versionável no filesystem** — **UNKNOWN - verify** (§7a), declarado como AC-10 (condição pendente de verificação, não de invenção).
 
 ### 3.7 Disciplina Free Tier (P-01 — Bypass registrado)
 
-Conforme constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:84 e spec-005:211, o uso do Free Tier do GitHub Actions é Bypass **registrado** (este parágrafo é o registro em spec). Disciplina da parcela TA-0048 (HF-0604:42, "FREE TIER P-01"): triggers mínimos (apenas `push`/`pull_request` em `main`, ci.yml:3-7), `cancel-in-progress` (ci.yml:9-11), **sem matriz** de versões/OS, **sem self-hosted runners com secrets**, auditoria mensal de minutes consumidos. O custo do job `contract-network` (compose no CI) no orçamento de minutes é **UNKNOWN - verify** (§7c).
+Conforme constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:84 e spec-005:211, o uso do Free Tier do GitHub Actions é Bypass **registrado** (este parágrafo é o registro em spec). Disciplina da parcela TA-0048 (hf-exec-0604:42, "FREE TIER P-01"): triggers mínimos (apenas `push`/`pull_request` em `main`, ci.yml:3-7), `cancel-in-progress` (ci.yml:9-11), **sem matriz** de versões/OS, **sem self-hosted runners com secrets**, auditoria mensal de minutes consumidos. O custo do job `contract-network` (compose no CI) no orçamento de minutes é **UNKNOWN - verify** (§7c).
 
 ---
 
@@ -193,7 +193,7 @@ Critérios binários, verificáveis na implementação (onda seguinte) — cada 
 | G-05 (plano-proddoc-arch-0006-uc-v1ao-agentes.md × ledger.yaml) | :33 × :24 | Drift auditado e FECHADO (§2, §3.1); ledger histórico intocado |
 | C.4 (LISTA-SPECS-PENDENTES) | :51 | Nome do job `UNKNOWN - verify` → FIXADO `contract-network` (§3.4, AC-07) |
 | B.7 / D.2 (LISTA) | :39, :59 | Origem B.7; encaixe na onda 5 (A.14-A.18, plano:133-143) |
-| Parcela TA-0048 (HF-0604) | :33-46 | Estado real 189 l/6 jobs, 6 correções (D-01..D-06), Free Tier P-01, merge-blocking, UNKNOWNs §7 |
+| Parcela TA-0048 (hf-exec-0604) | :33-46 | Estado real 189 l/6 jobs, 6 correções (D-01..D-06), Free Tier P-01, merge-blocking, UNKNOWNs §7 |
 | constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md | :84, :94, :124, :219 | P-01 (Bypass registrado), P-06 (gates humanos), Art. 4.6 (kill switch), Art. 10.4 (ortogonalidade barrada por reviewer→gatekeeper) |
 | agent-devops.md | :6 | "Automation serves gates, never bypasses them" — fundamento de R-03 |
 
@@ -201,8 +201,8 @@ Critérios binários, verificáveis na implementação (onda seguinte) — cada 
 
 ## 6. Fora de escopo (YAGNI)
 
-- **IMPLEMENTAÇÃO das correções D-01..D-06 e do job `contract-network` no `ci.yml`** — tarefa separada de devops, onda de implementação (Art. 6.1). Esta spec **DEFINE** o pipeline; **nenhum arquivo em `.github/workflows/` é editado nesta emissão** (AC-11; mandato HF-0612; prática de HF-0029/HF-0030 registrada em spec-005:348).
-- Camada CI como camada do Art. 10.1 e runtime L1 de agentes — item **B.10**, destinado à **spec-014** (LISTA:42; spec-005:352; parcela TA-0048 item (d), HF-0604:42).
+- **IMPLEMENTAÇÃO das correções D-01..D-06 e do job `contract-network` no `ci.yml`** — tarefa separada de devops, onda de implementação (Art. 6.1). Esta spec **DEFINE** o pipeline; **nenhum arquivo em `.github/workflows/` é editado nesta emissão** (AC-11; mandato hf-exec-0612; prática de hf-exec-0029/hf-exec-0030 registrada em spec-005:348).
+- Camada CI como camada do Art. 10.1 e runtime L1 de agentes — item **B.10**, destinado à **spec-014** (LISTA:42; spec-005:352; parcela TA-0048 item (d), hf-exec-0604:42).
 - CD/deploy contínuo, ambientes de staging/prod, gestão avançada de secrets, ambientes efêmeros por PR.
 - Matriz de versões/OS, self-hosted runners, cache remoto de imagens — vedados pela disciplina Free Tier (§3.7).
 - Configuração de branch protection (AC-10) — ato de configuração GitHub, não desta spec.
@@ -211,16 +211,16 @@ Critérios binários, verificáveis na implementação (onda seguinte) — cada 
 
 ## 7. Registro UNKNOWN - verify (P-08)
 
-- **(a) Branch protection / required status checks** — configuração do GitHub, não versionada no filesystem; wall-clock de bloqueio real dependente dela (parcela TA-0048, HF-0604:42, "UNKNOWN - verify: (a) required status checks/branch protection (config GitHub, nao filesystem)"). Caminho de verificação: UI Admin → Settings → Branches.
+- **(a) Branch protection / required status checks** — configuração do GitHub, não versionada no filesystem; wall-clock de bloqueio real dependente dela (parcela TA-0048, hf-exec-0604:42, "UNKNOWN - verify: (a) required status checks/branch protection (config GitHub, nao filesystem)"). Caminho de verificação: UI Admin → Settings → Branches.
 - **(b) Wall-clock real por run** — nenhum run histórico medido; AC-01 valida após a implementação (parcela item (b)).
 - **(c) Budget Free Tier do compose no CI** — wall-clock/minutes do `docker compose build`/stack efêmera do `contract-network` no orçamento Free Tier (parcela item (c)).
-- **(d) Verde do pipeline com o baseline atual de testes** — `pytest tests/` inclui `tests/agents` com baseline **4 failed / 149 passed / 1 skipped** (ledger.yaml:24; MANIFEST:118-120): **UNKNOWN - verify** se o CI fica verde hoje. Proibido skip de testes pelo CI — kill switch #1 do contrato devops ("gate bypass: CI skips, [skip ci] abuse, workflow disable", agent-devops.md:38), fonte da recomendação "proibido skip (kill switch #1)" da parcela TA-0048 (HF-0604:42); a implementação deve declarar escopo explícito de suíte (unit+integration+agents).
+- **(d) Verde do pipeline com o baseline atual de testes** — `pytest tests/` inclui `tests/agents` com baseline **4 failed / 149 passed / 1 skipped** (ledger.yaml:24; MANIFEST:118-120): **UNKNOWN - verify** se o CI fica verde hoje. Proibido skip de testes pelo CI — kill switch #1 do contrato devops ("gate bypass: CI skips, [skip ci] abuse, workflow disable", agent-devops.md:38), fonte da recomendação "proibido skip (kill switch #1)" da parcela TA-0048 (hf-exec-0604:42); a implementação deve declarar escopo explícito de suíte (unit+integration+agents).
 
 ---
 
 ## CHANGELOG
 
-- 0.1.0 — 2026-11-03 (TA-0056, HF-0612): emissão inicial. Auditoria do estado real do ci.yml (189 linhas, 6 jobs — §3.1); drift G-05 declarado FECHADO por implementação preexistente (§2, §3.1); doc-user-story-011-us-011 declarado NÃO ATENDIDO com 6 deltas normativos D-01..D-06 incorporados da parcela TA-0048 (HF-0604:33-46) (§3.3); C.4 FECHADO — nome do job fixado como `contract-network` com contrato completo (§3.4); gates intransferíveis (§3.5); merge-blocking como pré-condição, nunca aprovação (§3.6); disciplina Free Tier P-01 registrada (§3.7); 11 AC binários (§4); rastreabilidade dupla (§5); escopo negativo com implementação do ci.yml fora desta spec (§6); 4 UNKNOWNs registrados (§7).
+- 0.1.0 — 2026-11-03 (TA-0056, hf-exec-0612): emissão inicial. Auditoria do estado real do ci.yml (189 linhas, 6 jobs — §3.1); drift G-05 declarado FECHADO por implementação preexistente (§2, §3.1); doc-user-story-011-us-011 declarado NÃO ATENDIDO com 6 deltas normativos D-01..D-06 incorporados da parcela TA-0048 (hf-exec-0604:33-46) (§3.3); C.4 FECHADO — nome do job fixado como `contract-network` com contrato completo (§3.4); gates intransferíveis (§3.5); merge-blocking como pré-condição, nunca aprovação (§3.6); disciplina Free Tier P-01 registrada (§3.7); 11 AC binários (§4); rastreabilidade dupla (§5); escopo negativo com implementação do ci.yml fora desta spec (§6); 4 UNKNOWNs registrados (§7).
 - 0.2.0 — 2026-11-05 (refinamento de ratificação, Grupo A): frontmatter atualizado ao padrão TA-0031 ratificado (adicionado `wave: WS-4`, `handoff` em `origin`; `version` 0.1.0 → 0.2.0). Deltas D-01..D-06 já implementados no `ci.yml` (commit `d657118`..`2765903`): timeout 15→5 min, job lint separado, `permissions: contents: read`, SHA-pin de actions, artifacts `coverage.xml`+`junit.xml`, remoção de append em `.ai/agents/config-ledger-0001-ledger-v1.0.yaml`. Job `contract-network` fixado (spec-011 §3.4). Aderência ao padrão de nomenclatura `spec-NNN-specname.spec.md` confirmada (ADR-018, RAT-2026-11-05-A18). Nenhuma decisão de negócio de §§1–8 reescrita. **Ratificada CCB 05/11/2026 (instrumento RAT-2026-11-05-A16)**.
 
 ## CAMADAS FUNDAMENTAIS — MAPA (TA-0031)
@@ -228,7 +228,7 @@ Critérios binários, verificáveis na implementação (onda seguinte) — cada 
 | Camada | Seção nesta spec | Estado |
 |---|---|---|
 | (a) cabeçalho — spec_id, versão, status, custódia, datas, origem, task, kill_switch, trace, lgpd-class | frontmatter (`spec_id: spec-011`, `version: 0.2.0`) + linha `Status:` | aplicada |
-| (b) Contexto/origem | §1 (origem: HF-0612/TA-0056; parcela HF-0604/TA-0048) | aplicada |
+| (b) Contexto/origem | §1 (origem: hf-exec-0612/TA-0056; parcela hf-exec-0604/TA-0048) | aplicada |
 | (c) Resolução de conflitos | §2 (G-05, doc-user-story-011-us-011, C.4; C-07 avaliada e não relevante) | aplicada |
 | (d) Corpo de decisões/requisitos/contratos | §3 (estado auditado, R-01..R-04, D-01..D-06, job `contract-network`, gates, Free Tier) | aplicada |
 | (e) Critérios de aceite/testes | §4 (AC-01..AC-11, binários com método de verificação) | aplicada |

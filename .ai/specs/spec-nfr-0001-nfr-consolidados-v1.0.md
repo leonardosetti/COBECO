@@ -43,13 +43,13 @@ status: ratificada
 custody: agent-sdd-specialist (.ai/specs/)
 created: 2026-11-03
 updated: 2026-11-05
-origin: HF-0607 (.ai/handoffs/HF-0607-spec-006-nfr-consolidados-v1.md)
-task: TA-0051 | handoff: HF-0607 | sender: agent-nexus-prime-ultimate
+origin: hf-exec-0607 (.ai/handoffs/hf-exec-0607-spec-006-nfr-consolidados-v1-v1.0.md)
+task: TA-0051 | handoff: hf-exec-0607 | sender: agent-nexus-prime-ultimate
 kill_switch: inherited
 wave: WS-4 | Onda 4 — Execução Técnica (NFR consolidados)
 lgpd-class: n/a (zero PII neste artefato; P-04, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:90 — precedente lgpd-class: spec-002-requisitos-review-round-1.spec.md:19)
 trace:
-  - .ai/handoffs/HF-0607-spec-006-nfr-consolidados-v1.md:17-29 (tarefa, fontes obrigatórias, contrato de resposta)
+  - .ai/handoffs/hf-exec-0607-spec-006-nfr-consolidados-v1-v1.0.md:17-29 (tarefa, fontes obrigatórias, contrato de resposta)
   - docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:34 (item B.2 — origem desta emissão)
   - .ai/specs/spec-req-0001-requisitos-review-round-1-v1.0.md:78-79,101,105,107,126,249 (RNF embutidos nos REQ; GAP-02/GAP-06/GAP-08; C-07; KG-R-04)
   - docs/planos/plano-granular/plano-integral-tap-1-2-3-4-5.md:30,37,71-85,96,97,520,528,573,595 (EAP 12/37; fase N2.2; REQ-01..15; marcos M2/M3; whitelist de licenças; stack FOSS; métricas de qualidade; PDCA-N7)
@@ -66,8 +66,8 @@ trace:
 
 ## 1. Contexto e origem
 
-Esta spec nasce da tarefa TA-0051, via handoff HF-0607 emitido por agent-nexus-prime-ultimate
-(.ai/handoffs/HF-0607-spec-006-nfr-consolidados-v1.md:17-25), e implementa o item **B.2** da
+Esta spec nasce da tarefa TA-0051, via handoff hf-exec-0607 emitido por agent-nexus-prime-ultimate
+(.ai/handoffs/hf-exec-0607-spec-006-nfr-consolidados-v1-v1.0.md:17-25), e implementa o item **B.2** da
 LISTA-SPECS-PENDENTES-2026-11-02.md:34. Ela fecha o **GAP-02** (spec-002-requisitos-review-round-1.spec.md:101):
 a EAP previa a fase **N2.2 "Requisitos Não Funcionais"** (N2.2 integrada a N2. Levantamento de Requisitos,
 MF1 — plano-integral-tap-1-2-3-4-5.md:37; referência PDF:645 sob a convenção PDF:N do dump pdftotext,
@@ -77,7 +77,7 @@ A fonte da lacuna é explícita: "RNF canonicos estao EMBUTIDOS como criterios d
 (performance), REQ-08 (qualidade), REQ-11 (CI), REQ-15 (FOSS) — nao existe registro NFR separado"
 (spec-002-...spec.md:78-79). O objetivo desta emissão é registrar esses critérios dispersos — e os
 princípios P-01..P-08 da constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:84-98 — como **fonte única de verificação não funcional**
-(HF-0607:17), mapeando **P-04, P-06 e P-07 a critérios de produto** (HF-0607:17; LISTA...:34).
+(hf-exec-0607:17), mapeando **P-04, P-06 e P-07 a critérios de produto** (hf-exec-0607:17; LISTA...:34).
 
 Limites declarados: (i) este é um **registro NFR**, não spec executiva de domínio — UAT de produto
 (B.5, LISTA...:37), CI/CD executiva (B.7, LISTA...:39) e LGPD de produto executiva (B.3, LISTA...:35)
@@ -101,7 +101,7 @@ não registrada acima, marcar `UNKNOWN - verify` e escalar ao arquiteto (Art. 2.
 
 Convenção: cada NF carrega descrição, métrica mensurável (quando a fonte a fornece; lacuna =
 `UNKNOWN - verify`) e rastreabilidade `arquivo:linha`. Categorias conforme o mandato da tarefa
-(HF-0607:17; LISTA...:34).
+(hf-exec-0607:17; LISTA...:34).
 
 ### 3.1 Desempenho
 
@@ -193,7 +193,7 @@ Critérios verificáveis desta emissão (formato checkbox, contrato DO #2 —
 | NF-18..NF-22 | REQ-08 (N6.1), REQ-11 (N7.1), REQ-14 (N11.1), REQ-12 (N9.1); P-05/P-06; Art. 6.3/6.4 | plano-integral...:78,81,84,82; constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:92,94,154,156 |
 | NF-23..NF-25 | REQ-03 (N5.1); GMV; healthcheck | plano-integral...:73,573; spec-004...:64 |
 
-Rastreabilidade da emissão: tarefa TA-0051 ← HF-0607 (.ai/handoffs/HF-0607-spec-006-nfr-consolidados-v1.md:17) ← item B.2 (docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:34) ← GAP-02 (spec-002...:101) ← RNF embutidos nos REQ (spec-002...:78-79). Covização REQ→US que ancora NF-01..NF-25: spec-002 §C.1 (spec-002...:158-171). Adjacências NÃO cobertas aqui: fase N2.3 (conversão REQ→User Story — GAP-07, spec-002...:106; E.4, LISTA...:70) e fases N6.x/N7.1 (specs B.5/B.7, LISTA...:37,39).
+Rastreabilidade da emissão: tarefa TA-0051 ← hf-exec-0607 (.ai/handoffs/hf-exec-0607-spec-006-nfr-consolidados-v1-v1.0.md:17) ← item B.2 (docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:34) ← GAP-02 (spec-002...:101) ← RNF embutidos nos REQ (spec-002...:78-79). Covização REQ→US que ancora NF-01..NF-25: spec-002 §C.1 (spec-002...:158-171). Adjacências NÃO cobertas aqui: fase N2.3 (conversão REQ→User Story — GAP-07, spec-002...:106; E.4, LISTA...:70) e fases N6.x/N7.1 (specs B.5/B.7, LISTA...:37,39).
 
 ## 6. Fora de escopo (YAGNI)
 
@@ -209,14 +209,14 @@ Rastreabilidade da emissão: tarefa TA-0051 ← HF-0607 (.ai/handoffs/HF-0607-sp
 
 ## CHANGELOG
 
-- 0.1.0 — 2026-11-03 (TA-0051 / HF-0607): emissão inicial. Registro canônico de NFR (item B.2, LISTA...:34): 25 NFRs (NF-01..NF-25) em 7 categorias (desempenho, usabilidade, segurança P-07/OWASP, portabilidade/FOSS P-01/P-02, LGPD P-04, manutenibilidade, observabilidade); GAP-02 coberto — fase N2.2 (plano-integral...:37) com artefato; P-04/P-06/P-07 mapeados a critérios de produto (AC-03); 4 tensões registradas na §2; lacunas de métrica marcadas `UNKNOWN - verify` (NF-09, NF-13, NF-15, cache além do TTL em NF-04). Arquivo único; nada commitado.
+- 0.1.0 — 2026-11-03 (TA-0051 / hf-exec-0607): emissão inicial. Registro canônico de NFR (item B.2, LISTA...:34): 25 NFRs (NF-01..NF-25) em 7 categorias (desempenho, usabilidade, segurança P-07/OWASP, portabilidade/FOSS P-01/P-02, LGPD P-04, manutenibilidade, observabilidade); GAP-02 coberto — fase N2.2 (plano-integral...:37) com artefato; P-04/P-06/P-07 mapeados a critérios de produto (AC-03); 4 tensões registradas na §2; lacunas de métrica marcadas `UNKNOWN - verify` (NF-09, NF-13, NF-15, cache além do TTL em NF-04). Arquivo único; nada commitado.
 - 0.2.0 — 2026-11-05 (refinamento de ratificação, Grupo A): frontmatter atualizado ao padrão TA-0031 ratificado (adicionado `wave: WS-4`, `trace`; `version` 0.1.0 → 0.2.0). ADR-016 D4 (RAT-2026-11-05-A16-D4) incorporada: NF-25 menciona fórmula spread/IOF ratificada. NFR de cotação (NF-01..NF-04) alinhadas com spec-004 v1.2.0 e spec-005 v0.4.0. Aderência ao padrão de nomenclatura `spec-NNN-specname.spec.md` confirmada (ADR-018, RAT-2026-11-05-A18). Nenhuma decisão de negócio de §§1–6 reescrita. **Ratificada CCB 05/11/2026 (instrumento RAT-2026-11-05-A16)**.
 
 ## CAMADAS FUNDAMENTAIS — MAPA (TA-0031)
 
 | Camada | Seção nesta spec | Estado |
 |---|---|---|
-| (a) cabeçalho — spec_id, versão, status, custódia, datas, origem | frontmatter (`spec_id: spec-006`, `version: 0.2.0`, `status: draft`, `created/updated: 2026-11-03`/`2026-11-05`, `origin: HF-0607`, `task: TA-0051`) | aplicada |
+| (a) cabeçalho — spec_id, versão, status, custódia, datas, origem | frontmatter (`spec_id: spec-006`, `version: 0.2.0`, `status: draft`, `created/updated: 2026-11-03`/`2026-11-05`, `origin: hf-exec-0607`, `task: TA-0051`) | aplicada |
 | (b) Contexto/origem | §1 Contexto e origem | aplicada |
 | (c) Resolução de conflitos | §2 (tabela tema→decisão→fonte vencedora→texto superado) | aplicada |
 | (d) Corpo de decisões/requisitos/contratos | §3 (NF-01..NF-25 em 3.1–3.7) | aplicada |

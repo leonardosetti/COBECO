@@ -269,7 +269,7 @@ C4Component
 | ADR-002 | `docs/decisoes/ADR-002-clean-architecture.md` (a criar) |
 | Spec-004 | `.ai/specs/spec-tech-0001-backend-mvp-v1.0.md` |
 | Spec-008 | `.ai/specs/spec-ui-0001-frontend-web-responsive-v1.0.md` |
-| Handoffs | `.ai/handoffs/HF-0500` a `HF-0617` |
+| Handoffs | `.ai/handoffs/hf-exec-0500` a `hf-exec-0617` |
 | Código Fonte | `backend/src/` (estrutura 4 camadas) |
 
 ---

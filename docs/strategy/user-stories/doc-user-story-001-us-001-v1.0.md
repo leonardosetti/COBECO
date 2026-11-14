@@ -143,7 +143,7 @@ Então o sistema retorna erro 400 "Senha deve ter no mínimo 8 caracteres"
 - [x] **Infra:** Funciona via `docker compose up` sem config manual extra
 - [x] **Revisão:** Code review aprovado (rubrica R-01..R-07) + CI verde
 - [x] **Governança:** Aprovação humana (CCB) + merge em `main` → kanban "Done"
-- [x] **Documentação:** Spec-004 ratificada + Handoff HF-0500 processado
+- [x] **Documentação:** Spec-004 ratificada + Handoff hf-exec-0500 processado
 
 ---
 
@@ -154,7 +154,7 @@ Então o sistema retorna erro 400 "Senha deve ter no mínimo 8 caracteres"
 | **Origem (Negócio)** | req-func-0001-requisitos-funcionais-canon.md | RF01 |
 | **Origem (Caso de Uso)** | req-use-case-0001-casos-de-uso-canon.md | UC09 |
 | **Especificação (SDD)** | `.ai/specs/spec-tech-0001-backend-mvp-v1.0.md` | Spec ID |
-| **Handoff (Execução)** | `.ai/handoffs/HF-0500-backend-mvp.md` | Handoff ID |
+| **Handoff (Execução)** | `.ai/handoffs/hf-exec-0500-backend-mvp-v1.0.md` | Handoff ID |
 | **Implementação** | Branch Git | `feat/UC-09-cadastrar-usuario` |
 | **Testes** | `backend/tests/test_cadastrar_usuario.py` | Test IDs |
 | **Deploy** | Release / Tag | v0.1.0 |

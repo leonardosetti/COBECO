@@ -12,10 +12,10 @@
 
 | RF ID | Descrição RF | UC ID | User Story ID | Spec ID | Handoff ID | Test Unit ID | Test E2E ID | Branch / PR | Status | Deploy Tag |
 |-------|--------------|-------|---------------|---------|------------|--------------|-------------|-------------|--------|------------|
-| RF01 | Cadastrar Usuário | UC09 | doc-user-story-001-us-001 | spec-004 | HF-0500 | test_cadastrar_usuario.py | test_auth_flow.py | `feat/UC-09-cadastrar-usuario` | ☐ | v0.1.0 |
-| RF02 | Login JWT | UC10 | doc-user-story-002-us-002 | spec-004 | HF-0500 | test_login_jwt.py | test_auth_flow.py | `feat/UC-10-login-jwt` | ☐ | v0.1.0 |
-| RF03 | Logout | UC11 | doc-user-story-003-us-003 | spec-004 | HF-0500 | test_logout.py | test_auth_flow.py | `feat/UC-11-logout` | ☐ | v0.1.0 |
-| RF04 | Recuperar Senha | UC12 | doc-user-story-004-us-004 | spec-004 | HF-0500 | test_recuperar_senha.py | test_auth_flow.py | `feat/UC-12-recuperar-senha` | ☐ | v0.1.0 |
+| RF01 | Cadastrar Usuário | UC09 | doc-user-story-001-us-001 | spec-004 | hf-exec-0500 | test_cadastrar_usuario.py | test_auth_flow.py | `feat/UC-09-cadastrar-usuario` | ☐ | v0.1.0 |
+| RF02 | Login JWT | UC10 | doc-user-story-002-us-002 | spec-004 | hf-exec-0500 | test_login_jwt.py | test_auth_flow.py | `feat/UC-10-login-jwt` | ☐ | v0.1.0 |
+| RF03 | Logout | UC11 | doc-user-story-003-us-003 | spec-004 | hf-exec-0500 | test_logout.py | test_auth_flow.py | `feat/UC-11-logout` | ☐ | v0.1.0 |
+| RF04 | Recuperar Senha | UC12 | doc-user-story-004-us-004 | spec-004 | hf-exec-0500 | test_recuperar_senha.py | test_auth_flow.py | `feat/UC-12-recuperar-senha` | ☐ | v0.1.0 |
 | RF05 | Visualizar Perfil | UC18 | doc-user-story-005-us-005 | spec-004 | HF-XXXX | test_visualizar_perfil.py | test_perfil_flow.py | `feat/UC-18-visualizar-perfil` | ☐ | v0.1.0 |
 | RF06 | Gerenciar Perfil | UC16 | doc-user-story-006-us-006 | spec-004 | HF-XXXX | test_gerenciar_perfil.py | test_perfil_flow.py | `feat/UC-16-gerenciar-perfil` | ☐ | v0.1.0 |
 | RF07 | Criar Lista + Autocomplete | UC01, UC02 | doc-user-story-007-us-007, doc-user-story-008-us-008 | spec-008 | HF-XXXX | test_autocomplete.py, test_lista_memoria.py | test_lista_flow.py | `feat/UC-01-lista-memoria`, `feat/UC-02-autocomplete` | ☐ | v0.1.0 |

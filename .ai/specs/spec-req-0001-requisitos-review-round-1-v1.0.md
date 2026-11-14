@@ -315,7 +315,7 @@ especifica → implementa → valida) ate a fronteira do gate, sem saltar-la (co
 
 ## CAMADAS FUNDAMENTAIS — MAPA (TA-0031)
 
-Normalização estrutural (TA-0031, HF-0031): `spec_id` atualizado de `requisitos-review-round-1-1` para `spec-002` (slug `spec_id-specname.spec.md`); conteúdo das §0–§F e do CHANGELOG preservado; nenhuma linha anterior renumerada (referências `arquivo:linha` históricas permanecem válidas).
+Normalização estrutural (TA-0031, hf-exec-0031): `spec_id` atualizado de `requisitos-review-round-1-1` para `spec-002` (slug `spec_id-specname.spec.md`); conteúdo das §0–§F e do CHANGELOG preservado; nenhuma linha anterior renumerada (referências `arquivo:linha` históricas permanecem válidas).
 
 | Camada | Seção nesta spec | Estado |
 |---|---|---|

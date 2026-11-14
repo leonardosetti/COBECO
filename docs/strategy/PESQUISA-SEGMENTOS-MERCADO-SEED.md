@@ -157,4 +157,4 @@ Promover o perfil expandido como padrão exige CR e ratificação humana, confor
 - `req-use-case-0001-casos-de-uso-canon.md`: UC02–UC06 e UC23–UC26;
 - `doc-arch-0001-camada-de-dados-canon.md`: 8 tabelas, N:N de categorias e chaves compostas;
 - SPEC: `.ai/specs/spec-seed-0001-seed-segmentos-volume-v1.0.md`;
-- Handoff: `.ai/handoffs/HF-0622-seed-segmentos-volume.md`.
+- Handoff: `.ai/handoffs/hf-exec-0622-seed-segmentos-volume-v1.0.md`.

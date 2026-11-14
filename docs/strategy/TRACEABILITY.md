@@ -12,10 +12,10 @@
 
 | RF ID | Descrição RF | UC ID | User Story ID | Spec ID | Handoff ID | Test Unit ID | Test E2E ID | Branch / PR | Status | Deploy Tag |
 |-------|--------------|-------|---------------|---------|------------|--------------|-------------|-------------|--------|------------|
-| RF01 | Cadastrar Usuário | UC09 | doc-user-story-001-us-001 | spec-004 | HF-0500 | `test_cadastrar_usuario.py` | `test_auth_flow.py` | `feat/UC-09-cadastrar-usuario` / PR#12 | ✅ Done | v0.1.0 |
-| RF02 | Login JWT | UC10 | doc-user-story-002-us-002 | spec-004 | HF-0500 | `test_login_jwt.py` | `test_auth_flow.py` | `feat/UC-10-login-jwt` / PR#13 | ✅ Done | v0.1.0 |
-| RF03 | Logout | UC11 | doc-user-story-003-us-003 | spec-004 | HF-0500 | `test_logout.py` | `test_auth_flow.py` | `feat/UC-11-logout` / PR#14 | ✅ Done | v0.1.0 |
-| RF04 | Recuperar Senha | UC12 | doc-user-story-004-us-004 | spec-004 | HF-0500 | `test_recuperar_senha.py` | `test_auth_flow.py` | `feat/UC-12-recuperar-senha` / PR#15 | ✅ Done | v0.1.0 |
+| RF01 | Cadastrar Usuário | UC09 | doc-user-story-001-us-001 | spec-004 | hf-exec-0500 | `test_cadastrar_usuario.py` | `test_auth_flow.py` | `feat/UC-09-cadastrar-usuario` / PR#12 | ✅ Done | v0.1.0 |
+| RF02 | Login JWT | UC10 | doc-user-story-002-us-002 | spec-004 | hf-exec-0500 | `test_login_jwt.py` | `test_auth_flow.py` | `feat/UC-10-login-jwt` / PR#13 | ✅ Done | v0.1.0 |
+| RF03 | Logout | UC11 | doc-user-story-003-us-003 | spec-004 | hf-exec-0500 | `test_logout.py` | `test_auth_flow.py` | `feat/UC-11-logout` / PR#14 | ✅ Done | v0.1.0 |
+| RF04 | Recuperar Senha | UC12 | doc-user-story-004-us-004 | spec-004 | hf-exec-0500 | `test_recuperar_senha.py` | `test_auth_flow.py` | `feat/UC-12-recuperar-senha` / PR#15 | ✅ Done | v0.1.0 |
 | RF05 | Visualizar Perfil | UC18 | doc-user-story-019-us-019 | spec-004 | HF-XXXX | `test_visualizar_perfil.py` | `test_perfil_flow.py` | `feat/UC-18-visualizar-perfil` / PR#22 | ✅ Done | v0.1.0 |
 | RF06 | Gerenciar Perfil | UC16 | doc-user-story-020-us-020 | spec-004 | HF-XXXX | `test_gerenciar_perfil.py` | `test_perfil_flow.py` | `feat/UC-16-gerenciar-perfil` / PR#23 | ✅ Done | v0.1.0 |
 | RF07 | Criar Lista + Autocomplete | UC01, UC02 | doc-user-story-005-us-005, doc-user-story-006-us-006 | spec-008 | HF-XXXX | `test_lista_memoria.py`, `test_autocomplete.py` | `test_lista_flow.py` | `feat/UC-01-lista-memoria`, `feat/UC-02-autocomplete` / PR#16,17 | ✅ Done | v0.1.0 |
@@ -40,7 +40,7 @@
 | **Cobertura RF → Spec** | 100% dos 18 RFs têm pelo menos 1 Spec | ✅ Sim | 18/18 RFs mapeados acima |
 | **Cobertura Spec → Test** | 100% das Specs ratificadas têm testes unitários mapeados | ✅ Sim | Conferir coluna Test Unit ID |
 | **Cobertura RF → Test E2E** | 100% dos RFs cobertos por pelo menos 1 E2E | ✅ Sim | Conferir coluna Test E2E ID |
-| **Cobertura Spec → Handoff** | 100% das Specs ratificadas têm Handoff | ✅ Sim | 16 Specs → 16 Handoffs (HF-0500 a HF-0617) |
+| **Cobertura Spec → Handoff** | 100% das Specs ratificadas têm Handoff | ✅ Sim | 16 Specs → 16 Handoffs (hf-exec-0500 a hf-exec-0617) |
 | **Cobertura Branch → PR** | 100% das branches têm PR com CI verde | ✅ Sim | GitHub Projects — todos PRs merged |
 | **Cobertura PR → Deploy** | 100% dos PRs merged estão na tag de release | ✅ Sim | GitHub Releases v0.1.0 |
 | **Ausência Gold Plating** | Nenhum código sem RF/UC/Spec correspondente | ✅ Sim | Auditoria `git log --grep="RF\|UC\|US"` — 0 achados fora |

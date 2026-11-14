@@ -119,7 +119,7 @@ E redireciona para login
 | req-func-0001-requisitos-funcionais-canon.md | RF03 |
 | req-use-case-0001-casos-de-uso-canon.md | UC11 |
 | spec-004 | Spec ID |
-| HF-0500 | Handoff ID |
+| hf-exec-0500 | Handoff ID |
 | Branch | `feat/UC-11-logout` |
 
 ---

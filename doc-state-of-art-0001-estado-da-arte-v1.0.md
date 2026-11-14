@@ -534,7 +534,7 @@ volumes:
   db_data:
 ```
 
-### 7.3 Proxy Nginx (spec-005 / HF-0030)
+### 7.3 Proxy Nginx (spec-005 / hf-exec-0030)
 ```nginx
 # proxy/config-nginx-0003-proxy-nginx-v1.0.conf
 events { worker_connections 1024; }

@@ -43,8 +43,8 @@ status: ratificada
 custody: agent-sdd-specialist (.ai/specs/)
 created: 2026-11-03
 updated: 2026-11-05
-origin: HF-0609 (TA-0053) | sender: agent-nexus-prime-ultimate | rodada 1 de specs (LISTA-SPECS-PENDENTES-2026-11-02.md, item B.1)
-task: TA-0053 | handoff: HF-0609 | sender: agent-nexus-prime-ultimate
+origin: hf-exec-0609 (TA-0053) | sender: agent-nexus-prime-ultimate | rodada 1 de specs (LISTA-SPECS-PENDENTES-2026-11-02.md, item B.1)
+task: TA-0053 | handoff: hf-exec-0609 | sender: agent-nexus-prime-ultimate
 kill_switch: inherited
 wave: WS-4 | Onda 4 — Execução Técnica (frontend web)
 lgpd-class: formulários da invoice coletam dados pessoais/financeiros (P-04, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:90) — minimização normativa na §6.4; este artefato não contém PII; critério LGPD de produto consolidado é item B.3 da LISTA (docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:35), condicionado a decisão CCB/PO
@@ -55,8 +55,8 @@ trace:
   - .ai/specs/spec-req-0001-requisitos-review-round-1-v1.0.md (REQ-06 :67; REQ-01..05 :62-66; doc-user-story-001-us-001..doc-user-story-005-us-005 :158-162; doc-user-story-007-us-007 :177; doc-user-story-016-us-016/017 :178-179; C-07 :126; GAP-03 :102, GAP-04 :103, GAP-06 :105; OS-06 :139)
   - .ai/specs/spec-tech-0001-backend-mvp-v1.0.md (§3 contrato /v1 :62-93; schemas :69-75; notice :77; invoice §6 :128-130; sem CORS :134; estrutura :136-153)
   - .ai/specs/spec-arch-0001-container-layers-v1.0.md (camada front :62; estado vazio :30; custódia invoice.html :68; proxy 127.0.0.1:8080 :117; front encaminha /v1 :118; contrato front→back :221; compatibilidade /v1 :226; e2e navegador :181; UAT F-02/F-03 :324-325; evidências :342; numeração doc-user-story-018-us-018+ :232)
-  - .ai/handoffs/HF-0602-consulta-de-dominio.md (RESPOSTA — PARCELA DE CONSULTA TA-0046 / agent-ui-ux-advisor, :32-45 — insumo normativo meio-duplex, incorporado)
-  - .ai/handoffs/HF-0609-spec-008-frontend-web-responsive-v1.md (envelope desta emissão, :17, :19-25)
+  - .ai/handoffs/hf-exec-0602-consulta-de-dominio-v1.0.md (RESPOSTA — PARCELA DE CONSULTA TA-0046 / agent-ui-ux-advisor, :32-45 — insumo normativo meio-duplex, incorporado)
+  - .ai/handoffs/hf-exec-0609-spec-008-frontend-web-responsive-v1-v1.0.md (envelope desta emissão, :17, :19-25)
   - docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md (:33 item B.1; :58 item D.1; :36 item B.4; :37 item B.5)
   - docs/planos/plano-granular/plano-proddoc-arch-0006-uc-v1ao-agentes.md (:121-131 onda 4 — A.11 agent-ui-ux-advisor :129 → A.12 agent-frontend-dev :130)
   - Verificação local de filesystem (2026-11-05): src/frontend/templates/index.html = tela de simulação funcional (era 0 B); src/frontend/static/ vazio; src/frontend/templates/invoice.html = 4996 B; schemas em src/shared/schemas.py:445-654
@@ -65,7 +65,7 @@ trace:
 
 # SPEC spec-008 — frontend-web-responsive-v1 — Interface web responsiva 100% FOSS do MVP (camada `front`)
 
-Status: SPEC EMITIDA — PENDENTE DE REVISÃO E DE IMPLEMENTAÇÃO (onda seguinte, Art. 6.1, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:150 — especifica → implementa → valida → registra) | Tarefa: TA-0053 (handoff `.ai/handoffs/HF-0609-spec-008-frontend-web-responsive-v1.md`) | Orquestrador: agent-nexus-prime-ultimate | Custódia: agent-sdd-specialist (`.ai/specs/`)
+Status: SPEC EMITIDA — PENDENTE DE REVISÃO E DE IMPLEMENTAÇÃO (onda seguinte, Art. 6.1, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:150 — especifica → implementa → valida → registra) | Tarefa: TA-0053 (handoff `.ai/handoffs/hf-exec-0609-spec-008-frontend-web-responsive-v1-v1.0.md`) | Orquestrador: agent-nexus-prime-ultimate | Custódia: agent-sdd-specialist (`.ai/specs/`)
 
 Fonte única das decisões da camada `front`. Em conflito, vale a hierarquia do Art. 2 da Constituição. Convenções: citação `arquivo:linha`; identificadores/paths em EN; narrativa em PT-BR (P-10, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:102); alegação sem fonte = **UNKNOWN - verify** (P-08, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:98). Esta SPEC não implementa código (Art. 6.1).
 
@@ -75,19 +75,19 @@ Fonte única das decisões da camada `front`. Em conflito, vale a hierarquia do 
 
 Item **B.1** da lista de specs pendentes (docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:33): "nenhuma spec de frontend existe (só `spec-005` define a camada `front`)", com escopo derivado da onda 4 (A.11 `agent-ui-ux-advisor` → A.12 `agent-frontend-dev`, docs/planos/plano-granular/plano-proddoc-arch-0006-uc-v1ao-agentes.md:129-130; item D.1, :58). REQ-06 exige "Interface web responsiva FOSS — Chrome/Firefox/Edge ult. 2 versões" na fase N5.3 (.ai/specs/spec-req-0001-requisitos-review-round-1-v1.0.md:67).
 
-Estado atual verificado (2026-11-03): `src/frontend/templates/index.html` tem **0 B** e `src/frontend/static/` está **vazio** (fato também registrado em .ai/specs/spec-arch-0001-container-layers-v1.0.md:30); `src/frontend/templates/invoice.html` existe (4996 B) e permanece sob custódia do **Back** como insumo do `POST /v1/invoice` (spec-005:68). Ou seja: greenfield de UI — esta SPEC define o **primeiro template real de navegador** e o inventário de `src/frontend/` (parcela TA-0046, item 5, .ai/handoffs/HF-0602-consulta-de-dominio.md:41).
+Estado atual verificado (2026-11-03): `src/frontend/templates/index.html` tem **0 B** e `src/frontend/static/` está **vazio** (fato também registrado em .ai/specs/spec-arch-0001-container-layers-v1.0.md:30); `src/frontend/templates/invoice.html` existe (4996 B) e permanece sob custódia do **Back** como insumo do `POST /v1/invoice` (spec-005:68). Ou seja: greenfield de UI — esta SPEC define o **primeiro template real de navegador** e o inventário de `src/frontend/` (parcela TA-0046, item 5, .ai/handoffs/hf-exec-0602-consulta-de-dominio-v1.0.md:41).
 
-**Insumo normativo meio-duplex:** a parcela de consulta TA-0046 (agent-ui-ux-advisor, `.ai/handoffs/HF-0602-consulta-de-dominio.md:32-45`) é incorporada como norma desta SPEC nos eixos: matriz de browsers (REQ-06), templates/estados, fluxos cotação/invoice, acessibilidade baseline e estado vazio (:41). Recomendações dela que exijam decisão de camada superior (HTMX, defaults de spread/IOF, wording da defasagem) são resolvidas na §2 ou marcadas `UNKNOWN - verify`.
+**Insumo normativo meio-duplex:** a parcela de consulta TA-0046 (agent-ui-ux-advisor, `.ai/handoffs/hf-exec-0602-consulta-de-dominio-v1.0.md:32-45`) é incorporada como norma desta SPEC nos eixos: matriz de browsers (REQ-06), templates/estados, fluxos cotação/invoice, acessibilidade baseline e estado vazio (:41). Recomendações dela que exijam decisão de camada superior (HTMX, defaults de spread/IOF, wording da defasagem) são resolvidas na §2 ou marcadas `UNKNOWN - verify`.
 
 ## 2. Resolução de conflitos
 
 | Tema | Decisão | Fonte vencedora | Texto superado |
 |---|---|---|---|
-| HTMX vs JS vanilla | **JS vanilla** (HTML5+CSS3+JS, ADR-001-stack.md:34). Qualquer biblioteca JS/HTMX exige emenda de ADR específica (regime de emenda controlada, ADR-001-stack.md:53) — decisão é de ADR, não de spec | ADR-001-stack.md:34,53 | Hipótese HTMX da parcela TA-0046 — que já condicionava "HTMX so via ADR whiteliste" (.ai/handoffs/HF-0602-consulta-de-dominio.md:41) |
-| Default de spread/IOF na UI | Campos **informados pelo usuário; nenhuma alíquota no código** (.ai/specs/spec-tech-0001-backend-mvp-v1.0.md:29). Pré-preenchimento de valor default na UI = decisão de produto → **UNKNOWN - verify** (PO/CCB) | spec-004-backend-mvp-v1.spec.md:29 (Plano de Riscos RE-04) | "spread/IOF default" (HF-0602-consulta-de-dominio.md:41) |
+| HTMX vs JS vanilla | **JS vanilla** (HTML5+CSS3+JS, ADR-001-stack.md:34). Qualquer biblioteca JS/HTMX exige emenda de ADR específica (regime de emenda controlada, ADR-001-stack.md:53) — decisão é de ADR, não de spec | ADR-001-stack.md:34,53 | Hipótese HTMX da parcela TA-0046 — que já condicionava "HTMX so via ADR whiteliste" (.ai/handoffs/hf-exec-0602-consulta-de-dominio-v1.0.md:41) |
+| Default de spread/IOF na UI | Campos **informados pelo usuário; nenhuma alíquota no código** (.ai/specs/spec-tech-0001-backend-mvp-v1.0.md:29). Pré-preenchimento de valor default na UI = decisão de produto → **UNKNOWN - verify** (PO/CCB) | spec-004-backend-mvp-v1.spec.md:29 (Plano de Riscos RE-04) | "spread/IOF default" (hf-exec-0602-consulta-de-dominio-v1.0.md:41) |
 | Banner de defasagem da cotação | Indicador visual condicionado ao campo `quote.stale` — **dado já presente no contrato** (`RateQuote.stale`, spec-004:71). Política de fallback e wording exato ("dados com defasagem") = doc-user-story-007-us-007, KG-R-02, pendente de ratificação PO/CCB → **UNKNOWN - verify** | spec-004-backend-mvp-v1.spec.md:71 + spec-002-requisitos-review-round-1.spec.md:177 | Promessa comportamental de fallback da doc-user-story-007-us-007 tratada como norma vigente |
 | Custódia de `invoice.html` | Permanece do **Back** (insumo do PDF, spec-005:68); os templates de UI de navegador são arquivos novos e não alteram `invoice.html` | spec-005-container-layers-v1.spec.md:68 | Reescrita/reaproveitamento de `invoice.html` como página de navegador |
-| App nativo vs web responsivo | **Web responsivo mobile-first em CSS** (HF-0602-consulta-de-dominio.md:41); app mobile nativo permanece OUT (OS-06, spec-002-requisitos-review-round-1.spec.md:139) | spec-002:139 (Tabela 1 OUT) | Qualquer entrega nativa |
+| App nativo vs web responsivo | **Web responsivo mobile-first em CSS** (hf-exec-0602-consulta-de-dominio-v1.0.md:41); app mobile nativo permanece OUT (OS-06, spec-002-requisitos-review-round-1.spec.md:139) | spec-002:139 (Tabela 1 OUT) | Qualquer entrega nativa |
 | e2e de navegador nesta onda | e2e de navegador está em backlog YAGNI (spec-005:181); testes desta camada = render server-side + verificação manual/estrutural (§10). **UNKNOWN - verify** se o GP exige e2e de UI nesta onda | spec-005-container-layers-v1.spec.md:181 | Inserção de suíte Playwright/Selenium nesta onda |
 
 ## 3. Requisitos da interface (normas da camada `front`)
@@ -95,10 +95,10 @@ Estado atual verificado (2026-11-03): `src/frontend/templates/index.html` tem **
 1. **R-INT-01 — Stack FOSS server-side:** templates Jinja2 renderizados server-side pelo serviço `front` (precedente de motor de template: `invoice.html` Jinja2, spec-004:130); HTML5 + CSS3 + JS vanilla (ADR-001-stack.md:34). Sem framework SPA, sem HTMX (§2).
 2. **R-INT-02 — Origem única:** o usuário acessa tudo somente via `proxy` em `127.0.0.1:8080`; `front` não publica porta no host e encaminha `/v1/*` para `back:8000` (spec-005:117-118). Sem CORS — mesma origem (spec-004:134).
 3. **R-INT-03 — URLs relativas:** toda URL de asset, action de formulário e chamada `fetch` é relativa (sem host absoluto), para funcionar sob a origem única `127.0.0.1:8080` (R-INT-02).
-4. **R-INT-04 — Zero recursos remotos (100% FOSS):** nenhum asset externo, CDN, webfont remota ou chamada a serviço de terceiro em tempo de execução; assets de licença aberta são vendored em `static/` (parcela TA-0046, .ai/handoffs/HF-0602-consulta-de-dominio.md:41; precedente: `url_fetcher` do WeasyPrint recusa remotos, spec-004:130; P-02/P-03 intra-container, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:217). Fonte tipográfica: **font stack do sistema** (sem webfont) — elimina licenciamento e fetch remoto.
+4. **R-INT-04 — Zero recursos remotos (100% FOSS):** nenhum asset externo, CDN, webfont remota ou chamada a serviço de terceiro em tempo de execução; assets de licença aberta são vendored em `static/` (parcela TA-0046, .ai/handoffs/hf-exec-0602-consulta-de-dominio-v1.0.md:41; precedente: `url_fetcher` do WeasyPrint recusa remotos, spec-004:130; P-02/P-03 intra-container, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:217). Fonte tipográfica: **font stack do sistema** (sem webfont) — elimina licenciamento e fetch remoto.
 5. **R-INT-05 — Progressive enhancement:** os dois fluxos (simulação, invoice) completam **com JS desabilitado**, via POST nativo de formulário tratado server-side pelo `front` em rotas próprias fora do namespace `/v1` (rotas-alvo: `POST /simulate` e `POST /invoice` — decisão normativa desta SPEC; o contrato `/v1` não é alterado, spec-005:226). Com JS, submit via `fetch` para os mesmos endpoints `/v1/*` (mesma origem, spec-005:221).
 6. **R-INT-06 — Idioma:** `lang="pt-BR"` no `<html>`; copy de UI e mensagens de erro visíveis em PT-BR (P-10, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:102; "Mensagens em PT-BR", spec-004:93).
-7. **R-INT-07 — Sem promessa financeira (kill switch):** copy sem promessa de ganho; o aviso constante `notice` — "Simulação de caráter informativo; spread e IOF foram informados pelo usuário e não substituem a orientação de um profissional habilitado." (spec-004:77) — é renderizado integralmente na tela de resultado; sem dark patterns (HF-0602-consulta-de-dominio.md:41).
+7. **R-INT-07 — Sem promessa financeira (kill switch):** copy sem promessa de ganho; o aviso constante `notice` — "Simulação de caráter informativo; spread e IOF foram informados pelo usuário e não substituem a orientação de um profissional habilitado." (spec-004:77) — é renderizado integralmente na tela de resultado; sem dark patterns (hf-exec-0602-consulta-de-dominio-v1.0.md:41).
 8. **R-INT-08 — Fronteira de rede:** `front` nunca acessa `db` (não é membro de `data`, spec-005:91,108); sua única interface de saída é a API `back:8000/v1` (spec-005:62,104).
 
 ## 4. Estrutura de `src/frontend/` e inventário de templates
@@ -126,7 +126,7 @@ Regras: (a) cada tela herda de `base.html` — nada de markup de esqueleto dupli
 
 ## 5. Estados de tela
 
-Cada tela (simulação, invoice form) especifica os quatro estados (norma da parcela TA-0046, .ai/handoffs/HF-0602-consulta-de-dominio.md:41):
+Cada tela (simulação, invoice form) especifica os quatro estados (norma da parcela TA-0046, .ai/handoffs/hf-exec-0602-consulta-de-dominio-v1.0.md:41):
 
 | Estado | Simulação (`index.html`) | Invoice (`invoice_form.html`) |
 |---|---|---|
@@ -158,7 +158,7 @@ Vínculo normativo: cada rótulo renderizado corresponde a **exatamente um** cam
 | `quantity` (spec-004:72) | Quantidade de unidades | Numérico pt-BR; exibida/obrigatória só em `hourly/daily/weekly/monthly`; oculta em `fixed` |
 | `spread_pct` (spec-004:72) | Spread (%) | Numérico; 0–100, até 4 casas; sem default no código (§2) |
 | `iof_pct` (spec-004:72) | IOF (%) | Numérico; 0–100, até 4 casas; sem default no código (§2) |
-| `gross_foreign` / `gross_brl` (spec-004:73) | Bruto em moeda estrangeira / Bruto em BRL | 2 casas, pt-BR (1.234,56 — HF-0602-consulta-de-dominio.md:41) |
+| `gross_foreign` / `gross_brl` (spec-004:73) | Bruto em moeda estrangeira / Bruto em BRL | 2 casas, pt-BR (1.234,56 — hf-exec-0602-consulta-de-dominio-v1.0.md:41) |
 | `spread_brl` / `iof_brl` (spec-004:73) | Desconto de spread / IOF | 2 casas, pt-BR |
 | `net_brl` (spec-004:73) | Líquido a receber em BRL | Destaque visual; 2 casas, pt-BR |
 | `effective_rate` (spec-004:73) | Câmbio efetivo | 6 casas (precedente `q6`, spec-004:35,51) |
@@ -180,9 +180,9 @@ Vínculo normativo: cada rótulo renderizado corresponde a **exatamente um** cam
 - Só é coletado o que o contrato exige (spec-004:74-75): `tax_id` e `address` são **opcionais** — a UI não os marca como obrigatórios e não induz preenchimento; `name` é o único obrigatório de parte.
 - Nada de dado pessoal é persistido pela UI (a invoice nunca é persistida pelo Back — spec-004:126); sem autocomplete sensível para `tax_id` (`autocomplete="off"`), sem armazenamento local (`localStorage`) de dados de formulário.
 - Erros de validação nunca ecoam o valor enviado (spec-004:93); logs da camada `front` sem valores nem corpo de requisição (bloco LGPD spec-005:156).
-- Critério de produto LGPD consolidado: pendente (item B.3 da LISTA, docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:35; envelope `.ai/handoffs/HF-0616-spec-015-lgpd-produto-proposta-v1.md`) — **UNKNOWN - verify** até decisão CCB/PO.
+- Critério de produto LGPD consolidado: pendente (item B.3 da LISTA, docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:35; envelope `.ai/handoffs/hf-exec-0616-spec-015-lgpd-produto-proposta-v1-v1.0.md`) — **UNKNOWN - verify** até decisão CCB/PO.
 
-## 7. Acessibilidade baseline (norma da parcela TA-0046, .ai/handoffs/HF-0602-consulta-de-dominio.md:41)
+## 7. Acessibilidade baseline (norma da parcela TA-0046, .ai/handoffs/hf-exec-0602-consulta-de-dominio-v1.0.md:41)
 
 | # | Requisito | Verificação (§10) |
 |---|---|---|
@@ -197,7 +197,7 @@ Vínculo normativo: cada rótulo renderizado corresponde a **exatamente um** cam
 
 ## 8. Responsividade e matriz de browsers
 
-- **Browsers alvo (REQ-06, spec-002:67):** Chrome, Firefox e Edge — **últimas 2 versões** de cada; o layout responde sem quebra funcional em todos (doc-user-story-005-us-005, spec-002:162). Sem promessa para Safari ou outros (HF-0602-consulta-de-dominio.md:41).
+- **Browsers alvo (REQ-06, spec-002:67):** Chrome, Firefox e Edge — **últimas 2 versões** de cada; o layout responde sem quebra funcional em todos (doc-user-story-005-us-005, spec-002:162). Sem promessa para Safari ou outros (hf-exec-0602-consulta-de-dominio-v1.0.md:41).
 - **Mobile-first em CSS** (parcela TA-0046, :41): layout utilizável a partir de viewport de 360px (sem scroll horizontal), coluna única em larguras estreitas e aproveitamento de largura no desktop — desktop é o uso primário ("trabalhar a partir de qualquer desktop", doc-user-story-005-us-005, spec-002:162).
 - Breakpoints concretos e design tokens visuais = decisão de implementação da onda seguinte, dentro dos limites acima (Art. 6.1); esta SPEC fixa os limites verificáveis (360px, sem quebra funcional), não a estética.
 
@@ -250,7 +250,7 @@ Testes automatizados desta camada: render server-side dos templates por fixture 
 | ADR-001-stack.md:34,53 | §2 (vanilla vs HTMX), R-INT-01 |
 | spec-004 §3/§6 (contrato, schemas, notice, invoice) | §§5, 6.1-6.3, 10 (AC-7, AC-11) |
 | spec-005 (camada front :62; estado vazio :30; proxy :117-118; fronteira :68; e2e :181; UAT :324-325) | §§1, 3, 4, 10 |
-| Parcela TA-0046 (HF-0602:32-45) | §§1, 3, 5, 7, 8 (insumo normativo incorporado) |
+| Parcela TA-0046 (hf-exec-0602:32-45) | §§1, 3, 5, 7, 8 (insumo normativo incorporado) |
 | GAP-03/GAP-04/GAP-06 (spec-002:102-105) | §2, §6.3 (`UNKNOWN - verify`) |
 | doc-user-story-007-us-007/doc-user-story-016-us-016/doc-user-story-017-us-017 (spec-002:177-179) | §2, §6.3 (condicionais — `UNKNOWN - verify`) |
 | Onda 4 A.11→A.12 (plano-proddoc-arch-0006-uc-v1ao-agentes.md:129-130) | §§1, 9 (atribuição) |
@@ -273,7 +273,7 @@ Testes automatizados desta camada: render server-side dos templates por fixture 
 
 ## CHANGELOG
 
-- 0.1.0 — 2026-11-03 (TA-0053, HF-0609): emissão inicial. Normas da camada `front` (R-INT-01..08); inventário de `src/frontend/` e templates-alvo; estados de tela (empty/loading/error/sdoc-arch-0006-uc-v1cess); registro de labels 1:1 com os schemas da spec-004; fluxos `POST /v1/simulate` e `POST /v1/invoice` com minimização P-04; acessibilidade baseline A1..A8; matriz de browsers REQ-06 (Chrome/Firefox/Edge últ. 2 versões); parcela TA-0046 (HF-0602:32-45) incorporada como insumo normativo; tabela de conflitos (HTMX vs vanilla, default spread/IOF, stale banner, custódia invoice.html, mobile, e2e); 3 stories candidatas US-022..US-024; 13 ACs verificáveis; lacunas declaradas: GAP-03 (ratificação da fórmula), GAP-04 (modelo de dados invoice), GAP-06 (TTL/stale), ratificação doc-user-story-007-us-007/016/017, whitelist HTMX via ADR, destino de evidências UAT (spec-005:342), e2e de UI nesta onda.
+- 0.1.0 — 2026-11-03 (TA-0053, hf-exec-0609): emissão inicial. Normas da camada `front` (R-INT-01..08); inventário de `src/frontend/` e templates-alvo; estados de tela (empty/loading/error/sdoc-arch-0006-uc-v1cess); registro de labels 1:1 com os schemas da spec-004; fluxos `POST /v1/simulate` e `POST /v1/invoice` com minimização P-04; acessibilidade baseline A1..A8; matriz de browsers REQ-06 (Chrome/Firefox/Edge últ. 2 versões); parcela TA-0046 (hf-exec-0602:32-45) incorporada como insumo normativo; tabela de conflitos (HTMX vs vanilla, default spread/IOF, stale banner, custódia invoice.html, mobile, e2e); 3 stories candidatas US-022..US-024; 13 ACs verificáveis; lacunas declaradas: GAP-03 (ratificação da fórmula), GAP-04 (modelo de dados invoice), GAP-06 (TTL/stale), ratificação doc-user-story-007-us-007/016/017, whitelist HTMX via ADR, destino de evidências UAT (spec-005:342), e2e de UI nesta onda.
 - 0.2.0 — 2026-11-05 (refinamento de ratificação, Grupo A): frontmatter atualizado ao padrão TA-0031 ratificado (adicionado `wave: WS-4`, `trace`; `version` 0.1.0 → 0.2.0). `src/frontend/templates/index.html` agora é tela de simulação funcional (era 0 B, commit `abc7350`), chamando `POST /v1/simulate` pela mesma origem via proxy `127.0.0.1:8080`. GAP-04 (modelo de dados invoice) fechado por ADR-016 D4 (RAT-2026-11-05-A16-D4, spec-007 ratificada). Destino de evidências UAT fechado = `docs/uat/` (pendência #6 resolvida). Aderência ao padrão de nomenclatura `spec-NNN-specname.spec.md` confirmada (ADR-018, RAT-2026-11-05-A18). Nenhuma decisão de negócio de §§1–12 reescrita. **Ratificada CCB 05/11/2026 (instrumento RAT-2026-11-05-A16)**.
 
 ## CAMADAS FUNDAMENTAIS — MAPA (TA-0031)

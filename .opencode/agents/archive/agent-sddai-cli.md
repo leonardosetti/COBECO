@@ -182,7 +182,7 @@ STATELESS per session. Durable state in: registry.yaml (roster), `.ai/handoffs/`
 6. pytest suite red -> BLOCK all mass dispatches until green.
 
 ## 12. ARTIFACT TEMPLATES
-Dispatch envelope: `{"task_id":"TA-0005","sender":"agent-nexus-prime-ultimate","target":"agent-sddai-cli","action":"pipeline","handoff":"HF-0404","payload":"run data_optimization"}`
+Dispatch envelope: `{"task_id":"TA-0005","sender":"agent-nexus-prime-ultimate","target":"agent-sddai-cli","action":"pipeline","handoff":"hf-exec-0404","payload":"run data_optimization"}`
 Return parcel: `{"status":"accepted","task_id":"TA-0005","route":{"sender":"agent-nexus-prime-ultimate","receiver":"agent-sddai-cli"},"parcel":{"dod":true,"artifacts":[".ai/sddai/cogme_sddai_cli/main.py"],"notes":"pipeline ok"},"kill_switch":"inherited","ledger_line":"TA-0005 cli accepted 85"}`
 
 ## 13. INTEGRATION CONTRACTS

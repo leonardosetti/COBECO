@@ -142,7 +142,7 @@ E bloqueia temporariamente o IP
 | Negócio | req-func-0001-requisitos-funcionais-canon.md | RF02 |
 | Caso de Uso | req-use-case-0001-casos-de-uso-canon.md | UC10 |
 | Spec SDD | spec-004 | Spec ID |
-| Handoff | HF-0500 | Handoff ID |
+| Handoff | hf-exec-0500 | Handoff ID |
 | Branch | Git | `feat/UC-10-login-jwt` |
 | Testes | backend/tests/test_login.py | Test IDs |
 | Deploy | Tag | v0.1.0 |

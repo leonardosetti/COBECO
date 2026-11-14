@@ -43,7 +43,7 @@ status: ratificada
 custody: agent-sdd-specialist (.ai/specs/)
 created: 2026-10-25
 updated: 2026-11-05
-origin: TA-0002 | handoff: HF-0001 | sender: agent-nexus-prime-ultimate
+origin: TA-0002 | handoff: hf-exec-0001 | sender: agent-nexus-prime-ultimate
 task: TA-0002
 kill_switch: inherited
 wave: WS-1 | Rodada 1 — definição canônica da constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md
@@ -104,7 +104,7 @@ Hipóteses do envelope TA-0002 foram verificadas uma a uma; veredito por item.
   (verificação: busca textual completa).
 - `docs/planos/COBECO.pdf` (texto extraído, 3.861 linhas): zero ocorrências de
   "docker", "container", "ortogonal" (grep: 0 hits).
-- Canon do Humano (declarado no envelope TA-0002/HF-0001): "camadas ortogonais
+- Canon do Humano (declarado no envelope TA-0002/hf-exec-0001): "camadas ortogonais
   abrigadas em containers docker próprios".
 - `.ai/agents/config-registry-0001-registry-v1.0.yaml:277-285`: roster promulga `agent-docker-specialist`
   (L2) — porém `.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-docker-specialist.md:1-10` carrega o corpo de
@@ -284,12 +284,12 @@ artigo alvo → texto atual → texto proposto → justificativa → fonte.
   externa é operação de build pontual e registrada (P-05), nunca fluxo de dados.
   10.4. Violação de ortogonalidade (vazamento de estado/dependência entre camadas)
   é defeito tratado, barrado nos portões reviewer → gatekeeper (P-06)."
-- **Justificativa:** canon declarado pelo Humano (envelope TA-0002/HF-0001: "camadas
+- **Justificativa:** canon declarado pelo Humano (envelope TA-0002/hf-exec-0001: "camadas
   ortogonais abrigadas em containers docker próprios"). O roster já promulga um
   agente de Docker (registry:277-285), o que evidencia que a camada existe de fato
   sem lei que a governe. Sem este artigo, P-02/P-03 ficam sem instrumento de
   isolamento material.
-- **Fonte:** HF-0001 (canon do Humano) — KG-04 declarado (nem Constituição nem PDF
+- **Fonte:** hf-exec-0001 (canon do Humano) — KG-04 declarado (nem Constituição nem PDF
   registram o canon); registry:277-285; constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md Arts. 2, 7.2-7.3, P-02, P-03.
 
 ### E-04 [REQUER RATIFICAÇÃO CCB] — Codificação de YAGNI e primeiros princípios
@@ -306,7 +306,7 @@ artigo alvo → texto atual → texto proposto → justificativa → fonte.
   40) mas não existe na lei suprema — princípio usado sem codificação é vetor de
   drift. P-12 formaliza o método que o próprio Art. 9.2 e o protocolo
   anti-aldoc-arch-0006-uc-v1inação já exigem na prática.
-- **Fonte:** COBECO.pdf:2191 e Tabela 40 (YAGNI); HF-0001 (canon do Humano para
+- **Fonte:** COBECO.pdf:2191 e Tabela 40 (YAGNI); hf-exec-0001 (canon do Humano para
   first-principles — KG-01 declarado); constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md Art. 3, P-08.
 
 ### E-05 [REQUER RATIFICAÇÃO CCB] — Articulação do fluxo de mudança (CR → ADR → CCB → Emenda)
@@ -383,7 +383,7 @@ artigo alvo → texto atual → texto proposto → justificativa → fonte.
 |---|---|---|---|---|---|
 | 1 | registry.yaml:406-414; test_nexus_yaml.py:107-118; constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:46 | slug legado no Art. 4.5 | Art. 4.5 | E-01 | proposta |
 | 2 | constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:3, :52-54, :83 | co-assinatura pendente sem rito | Art. 5 (novo 5.4) + cabeçalho | E-02 | proposta |
-| 3 | HF-0001 (canon Humano); registry:277-285; constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md (0 hits Docker); COBECO.pdf (0 hits Docker) | sem cláusula Docker/ortogonalidade | Art. 10 (novo) | E-03 | proposta (KG-04) |
+| 3 | hf-exec-0001 (canon Humano); registry:277-285; constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md (0 hits Docker); COBECO.pdf (0 hits Docker) | sem cláusula Docker/ortogonalidade | Art. 10 (novo) | E-03 | proposta (KG-04) |
 | 4 | COBECO.pdf:2191 + Tabela 40; constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:27-38 | YAGNI/first-principles fora da lei | Art. 3 (P-11, P-12) | E-04 | proposta (KG-01 p/ P-12) |
 | 5 | COBECO.pdf:2330-2340, :2158-2161, Tabela 34; constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:76-79 | CR→ADR→CCB sem ponte com Art. 9 | Art. 9 (novo 9.3) | E-05 | proposta |
 | 6 | validate_afa_output.py:12-14,31,34-45,124-133; constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:48 | parêntese do Art. 4.7 impreciso | Art. 4.7 | E-06 | proposta |
@@ -402,7 +402,7 @@ artigo alvo → texto atual → texto proposto → justificativa → fonte.
 ## 4. KNOWLEDGE GAPS DECLARADOS (P-08)
 
 - **KG-01:** "first-principles" sem fonte escrita localizada (0 hits no PDF). A
-  proposta P-12 nasce do canon do Humano (HF-0001) — requer ratificação CCB para
+  proposta P-12 nasce do canon do Humano (hf-exec-0001) — requer ratificação CCB para
   existir como lei.
 - **KG-02:** texto integral das ADRs 001–005 NÃO existe no repositório (arquivos de
   0 bytes desde o commit de emissão). O que sobrevive: mensagens de commit dd3b087,
@@ -413,7 +413,7 @@ artigo alvo → texto atual → texto proposto → justificativa → fonte.
   integral em `docs/planos/plano-integral-tap-1-2-3-4-5.md:10`.
 - **KG-04:** canon Docker ("camadas ortogonais em containers docker próprios") sem
   registro em Constituição ou PDF; E-03 nasce exclusivamente do canon declarado no
-  envelope TA-0002/HF-0001 e do fato de o roster já promulgar agente Docker.
+  envelope TA-0002/hf-exec-0001 e do fato de o roster já promulgar agente Docker.
 
 ## 5. RESTRIÇÕES E CONFORMIDADE
 
@@ -445,11 +445,11 @@ artigo alvo → texto atual → texto proposto → justificativa → fonte.
 
 ## CAMADAS FUNDAMENTAIS — MAPA (TA-0031)
 
-Normalização estrutural (TA-0031, HF-0031): `spec_id` atualizado de `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-round-1-proposta-1` para `spec-001` (slug `spec_id-specname.spec.md`); conteúdo das §1–§5 e do CHANGELOG preservado; nenhuma linha anterior renumerada (referências `arquivo:linha` históricas permanecem válidas).
+Normalização estrutural (TA-0031, hf-exec-0031): `spec_id` atualizado de `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-round-1-proposta-1` para `spec-001` (slug `spec_id-specname.spec.md`); conteúdo das §1–§5 e do CHANGELOG preservado; nenhuma linha anterior renumerada (referências `arquivo:linha` históricas permanecem válidas).
 
 | Camada | Seção nesta spec | Estado |
 |---|---|---|
-| (a) cabeçalho — spec_id, versão, status, custódia, datas, origem | frontmatter (`spec_id: spec-001`, `version: 0.1.0`, `status: ratificada`, `created: 2026-10-25`, `updated: 2026-11-05`, `origin: TA-0002 | handoff: HF-0001`) | aplicada |
+| (a) cabeçalho — spec_id, versão, status, custódia, datas, origem | frontmatter (`spec_id: spec-001`, `version: 0.1.0`, `status: ratificada`, `created: 2026-10-25`, `updated: 2026-11-05`, `origin: TA-0002 | handoff: hf-exec-0001`) | aplicada |
 | (b) Contexto/origem | parágrafo inicial sob o H1 (rito Art. 9.1 e Art. 5.1; WS-1) | aplicada |
 | (c) Resolução de conflitos | §1 (inventário de gaps/drifts/contradições com veredito por item) | aplicada |
 | (d) Corpo de decisões/requisitos | §2 (emendas E-01..E-08 no formato Art. 9.1) | aplicada |

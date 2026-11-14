@@ -43,20 +43,20 @@ status: ratificada
 custody: agent-sdd-specialist (.ai/specs/)
 created: 2026-11-03
 updated: 2026-11-05
-origin: HF-0611 (TA-0055) | sender: agent-nexus-prime-ultimate | handoff: HF-0611
+origin: hf-exec-0611 (TA-0055) | sender: agent-nexus-prime-ultimate | handoff: hf-exec-0611
 task: TA-0055 | sender: agent-nexus-prime-ultimate
 kill_switch: inherited
 wave: WS-6 | Onda 6 — Corrente da Qualidade (qualidade PDCA + Ishikawa)
 lgpd-class: n/a (zero dados de terceiros; nomes próprios do plano-fonte não replicados — papéis usados em seu lugar, P-04 constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:90; precedente lgpd-class: spec-006-nfr-consolidados-v1.spec.md:12)
 trace:
-  - .ai/handoffs/HF-0611-spec-010-qualidade-pdca-ishikawa-v1.md:17-29 (tarefa, fontes obrigatórias, contrato de resposta)
+  - .ai/handoffs/hf-exec-0611-spec-010-qualidade-pdca-ishikawa-v1-v1.0.md:17-29 (tarefa, fontes obrigatórias, contrato de resposta)
   - docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:38 (item B.6 — origem desta emissão), :60 (D.3 — onda 6), :27 (A.3 — eap.md 0 B)
   - .ai/specs/spec-req-0001-requisitos-review-round-1-v1.0.md:71 (REQ-10 — 12 PDCAs + diagrama, fase N6.3, Should), :57 (MoSCoW Should)
   - docs/archive/tap-sections/req_1.0.md:25 (critério REQ-10 no termo autorizativo — "diagrama" no singular)
   - docs/planos/plano-granular/plano-integral-tap-1-2-3-4-5.md:30,36-47,41,62,80,95-98,272,418,606 (macro-fases MF1-MF3; EAP N1-N12; N6.3; marcos M1-M4; REQ-10; 3 diagramas)
   - docs/planos/plano-granular/plano-qualidade.md v1.1.0:6,15,25-35,51-69,143-147,149-281,283-335,361,369-370,384-398,400-421 (SSOT do plano; §§5.2, 5.3, 5.5.2, 5.6, 5.7, 5.10, 5.11; NC-Q1/NC-Q4; drift FIG-3/FIG-5 em :294,:326)
   - docs/planos/plano-granular/plano-proddoc-arch-0006-uc-v1ao-agentes.md:145-152 (onda 6 "Corrente da Qualidade" — A.19 qa-sdet, A.20 reviewer, A.21 gatekeeper, A.22 auditor)
-  - .ai/handoffs/HF-0605-consulta-de-dominio.md:32-45 (RESPOSTA — PARCELA DE CONSULTA TA-0049 / agent-quality-architect-specialist — incorporada por referência)
+  - .ai/handoffs/hf-exec-0605-consulta-de-dominio-v1.0.md:32-45 (RESPOSTA — PARCELA DE CONSULTA TA-0049 / agent-quality-architect-specialist — incorporada por referência)
   - .ai/specs/spec-nfr-0001-nfr-consolidados-v1.0.md:118-122,129 (NF-18/NF-19/NF-22/NF-24 — cross-ref cobertura de testes, CI, dívida técnica, GMV)
   - constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:84,86,90,98 (P-01, P-02, P-04, P-08)
   - .github/workflows/config-ci-0001-github-actions-v1.0.yml:111,170 (estado real do gate de coverage e do timeout — verificado por grep 2026-11-03)
@@ -70,8 +70,8 @@ trace:
 
 ## 1. Contexto e origem
 
-Esta spec nasce da tarefa TA-0055, via handoff HF-0611 emitido por agent-nexus-prime-ultimate
-(.ai/handoffs/HF-0611-spec-010-qualidade-pdca-ishikawa-v1.md:17), e implementa o item **B.6** da
+Esta spec nasce da tarefa TA-0055, via handoff hf-exec-0611 emitido por agent-nexus-prime-ultimate
+(.ai/handoffs/hf-exec-0611-spec-010-qualidade-pdca-ishikawa-v1-v1.0.md:17), e implementa o item **B.6** da
 LISTA-SPECS-PENDENTES-2026-11-02.md:38: especificar a entrega de qualidade da **REQ-10** —
 "12 PDCAs + diagrama", fase **N6.3** da EAP (.ai/specs/spec-req-0001-requisitos-review-round-1-v1.0.md:71;
 critério de aceite no termo autorizativo: "12 PDCAs consolidados + diagrama de causa e efeito
@@ -80,8 +80,8 @@ documentado no Plano de Qualidade", docs/archive/tap-sections/req_1.0.md:25) —
 item D.3, LISTA...:60).
 
 **Incorporação da parcela de consulta:** a consulta TA-0049 (agent-quality-architect-specialist)
-foi respondida em .ai/handoffs/HF-0605-consulta-de-dominio.md:32-45 e é incorporada a esta emissão
-por referência (HF-0605:41). Dois achados centrais da parcela dirigem esta spec: (i) **os 12 PDCAs
+foi respondida em .ai/handoffs/hf-exec-0605-consulta-de-dominio-v1.0.md:32-45 e é incorporada a esta emissão
+por referência (hf-exec-0605:41). Dois achados centrais da parcela dirigem esta spec: (i) **os 12 PDCAs
 JÁ EXISTEM** como baseline — plano-qualidade.md v1.1.0 §5.6 (PDCA-N1..N12, um por fase EAP, formato
 GMV de 6 campos: Problema → Ação → Responsável → Métrica → Verificação → Lição,
 plano-qualidade.md:147,149-281) — e **NÃO são recriados aqui**; esta spec referencia-os como
@@ -102,7 +102,7 @@ dos diagramas. Nenhum campo GMV é reescrito aqui.
 (plano-qualidade.md:17) e consolida 12 fases EAP, não 13 (NC-Q4, plano-qualidade.md:369-370). A
 fase N6.3 é canonicamente "Aplicação de Ferramentas da Qualidade (12 PDCAs + Ishikawa 6M)",
 atribuída à macro-fase MF2 (plano-integral-tap-1-2-3-4-5.md:41) — o que resolve o
-`UNKNOWN - verify` da parcela quanto à definição canônica de N6.3 (HF-0605:41).
+`UNKNOWN - verify` da parcela quanto à definição canônica de N6.3 (hf-exec-0605:41).
 
 ## 2. Resolução de conflitos
 
@@ -110,8 +110,8 @@ atribuída à macro-fase MF2 (plano-integral-tap-1-2-3-4-5.md:41) — o que reso
 |---|---|---|---|
 | REQ-10 no **singular** ("diagrama", req_1.0.md:25; spec-002...:71) × **3 diagramas** no plano (plano-qualidade.md:283 "3 ANÁLISES"; :289, :305, :321; plano-integral:606 "três diagramas") | Reconciliação: **3 diagramas ≥ 1 exigido** — superset satisfaz o mínimo do termo autorizativo; a enumeração de 3 análises é leitura operacional do plano sobre o REQ-10 congelado (mesma lógica NC-Q1, plano-qualidade.md:361). Esta spec especifica os 3 (§3.2) e registra a reconciliação (§3.3) | req_1.0.md:25 (termo autorizativo define o mínimo) + plano-integral:606 (estado operacional do plano) | Leitura que exigisse exatamente 1 diagrama ou que declarasse os 3 como "não conformes" |
 | **SSOT do plano de qualidade**: contrato do agente quality cita `.ai/specs/plano-qualidade.md` (agent-quality-architect-specialist.md:31) × arquivo real em `docs/planos/plano-granular/plano-qualidade.md` (430 linhas; inexistente em .ai/specs/ — verificado 2026-11-03) | SSOT real = `docs/planos/plano-granular/plano-qualidade.md` (v1.1.0, :6). O ponteiro do contrato é **drift registrado, não corrigido** nesta emissão (regra da tarefa: nenhum arquivo de terceiro editado) | docs/planos/plano-granular/plano-qualidade.md:1-6 (arquivo existente) | agent-quality-architect-specialist.md:31 (ponteiro morto — resolve-se por este mapa, nunca editando o prompt) |
-| **Agrupamento por marco**: parcela TA-0049 propõe "MF1=N1-N4; MF2=N5-N8+N10; MF3=N9+N11-N12" (HF-0605:41, seguindo os arquivos de Lição do plano §5.6 — N8→MF2.md :237, N9→MF3.md :248) × EAP canônica: **N1-N4, N8, N9 → MF1; N5, N6, N7, N10 → MF2; N11, N12 → MF3** (plano-integral:36-47,62 — "6 fases / 4 fases / 2 fases") | Prevalece a **atribuição canônica da EAP** (hierarquia Art. 2.1/2.5 — termo autorizativo > plano; divergência plano×TAP é leitura operacional, NC-Q1, plano-qualidade.md:361). Os grupos desta spec (§3.1) seguem a EAP; os caminhos de Lição do plano (`MF1.md/MF2.md/MF3.md`, :160,171,182,193,204,215,226,237,248,259,270,281) permanecem como destinos de registro operacional — **desalinhamento registrado como pendência de saneamento, não corrigido** (drift adicional: plano cita `MF1.md`, arquivo real é `MF1-licoes.md`, verificado 2026-11-03) | plano-integral-tap-1-2-3-4-5.md:36-47,62 | HF-0605:41 (agrupamento da parcela); plano-qualidade.md:160,171,237,248 (destinos de Lição desalinhados da EAP) |
-| **Drift gráfico**: FIG-5 aponta o mesmo PNG de FIG-3 (plano-qualidade.md:326 vs :294 — `fig-05-ishikawa-coverage.png`) e o diretório `diagrams/` não existe (FIG-1 :46, FIG-3 :294, FIG-4 :310, FIG-5 :326 — todos quebrados) | Esta spec **registra** o drift e substitui a **forma** de entrega dos diagramas por mermaid inline (§3.2), conforme parcela TA-0049 (HF-0605:41 "substituir PNGs"). O plano-qualidade.md **não é editado**; regeneração de PNGs é fora de escopo (§6) | parcela TA-0049 (HF-0605:41) + estado verificado do repositório (grep/find 2026-11-03) | plano-qualidade.md:294,326 (caminhos PNG duplicados/quebrados) |
+| **Agrupamento por marco**: parcela TA-0049 propõe "MF1=N1-N4; MF2=N5-N8+N10; MF3=N9+N11-N12" (hf-exec-0605:41, seguindo os arquivos de Lição do plano §5.6 — N8→MF2.md :237, N9→MF3.md :248) × EAP canônica: **N1-N4, N8, N9 → MF1; N5, N6, N7, N10 → MF2; N11, N12 → MF3** (plano-integral:36-47,62 — "6 fases / 4 fases / 2 fases") | Prevalece a **atribuição canônica da EAP** (hierarquia Art. 2.1/2.5 — termo autorizativo > plano; divergência plano×TAP é leitura operacional, NC-Q1, plano-qualidade.md:361). Os grupos desta spec (§3.1) seguem a EAP; os caminhos de Lição do plano (`MF1.md/MF2.md/MF3.md`, :160,171,182,193,204,215,226,237,248,259,270,281) permanecem como destinos de registro operacional — **desalinhamento registrado como pendência de saneamento, não corrigido** (drift adicional: plano cita `MF1.md`, arquivo real é `MF1-licoes.md`, verificado 2026-11-03) | plano-integral-tap-1-2-3-4-5.md:36-47,62 | hf-exec-0605:41 (agrupamento da parcela); plano-qualidade.md:160,171,237,248 (destinos de Lição desalinhados da EAP) |
+| **Drift gráfico**: FIG-5 aponta o mesmo PNG de FIG-3 (plano-qualidade.md:326 vs :294 — `fig-05-ishikawa-coverage.png`) e o diretório `diagrams/` não existe (FIG-1 :46, FIG-3 :294, FIG-4 :310, FIG-5 :326 — todos quebrados) | Esta spec **registra** o drift e substitui a **forma** de entrega dos diagramas por mermaid inline (§3.2), conforme parcela TA-0049 (hf-exec-0605:41 "substituir PNGs"). O plano-qualidade.md **não é editado**; regeneração de PNGs é fora de escopo (§6) | parcela TA-0049 (hf-exec-0605:41) + estado verificado do repositório (grep/find 2026-11-03) | plano-qualidade.md:294,326 (caminhos PNG duplicados/quebrados) |
 | Gate de coverage: ação Ishikawa-1 "Configurar `--cov-fail-under=80` no pipeline CI" (plano-qualidade.md:302) × CI real já contém o gate (`.github/workflows/config-ci-0001-github-actions-v1.0.yml:170`) | Status da ação: **implementado no CI atual** (ci.yml:170, verificado por grep 2026-11-03). A ação do plano permanece como fonte da causa ISH1-MED-01 (estado de origem); o status atual é reconciliado na tabela de IDs (§3.2, Ishikawa-1) | .github/workflows/config-ci-0001-github-actions-v1.0.yml:170 (estado verificado, P-08) | plano-qualidade.md:302 (formulação de origem, pré-implementação) |
 
 Nenhum outro conflito normativo conhecido entre as fontes citadas; tensão não registrada acima =
@@ -166,7 +166,7 @@ métricas e gatilhos §5.3 :55-69, premissas/restrições §5.11 :400-421, LA-00
 MF1-licoes.md). Causa sem fonte citável não é incluída — o branch fica `UNKNOWN - verify`.
 IDs rastreáveis no padrão `ISH<n>-<6M>-<NN>`, ligados às ações do plano-qualidade.md §5.7.
 Formato mermaid `flowchart LR`, efeito à direita, 6M como ramos, causas como folhas
-(HF-0605:41).
+(hf-exec-0605:41).
 
 #### Ishikawa-1 — Efeito: Coverage menor que 80% (plano-qualidade.md:289-303)
 
@@ -304,7 +304,7 @@ Critérios verificáveis desta emissão (checkbox, contrato DO #2 —
 - [ ] AC-07: drifts registrados **sem correção de terceiros**: FIG-5 = mesmo PNG de FIG-3
   (plano-qualidade.md:326 vs :294); diretório `diagrams/` inexistente (:46,:294,:310,:326);
   ponteiro SSOT morto (agent-quality-architect-specialist.md:31); nome de arquivo de lição
-  (`MF1.md` no plano :160 × real `MF1-licoes.md`); grouping MF da parcela (HF-0605:41) superado
+  (`MF1.md` no plano :160 × real `MF1-licoes.md`); grouping MF da parcela (hf-exec-0605:41) superado
   pela EAP (§2, linha 3). Nenhum desses arquivos foi editado por esta emissão.
 - [ ] AC-08: RACI da onda 6 presente (§3.4) com A.19–A.22 citados
   (plano-proddoc-arch-0006-uc-v1ao-agentes.md:149-152).
@@ -321,14 +321,14 @@ Critérios verificáveis desta emissão (checkbox, contrato DO #2 —
 
 | Entrega | REQ/Fonte | Cadeia |
 |---|---|---|
-| 12 PDCAs (baseline) | REQ-10, fase N6.3 | TA-0055 ← HF-0611:17 ← B.6 (LISTA...:38) ← REQ-10 (spec-002...:71) ← req_1.0.md:25 ← N6.3 (plano-integral:41,80) → plano-qualidade.md:149-281 (§5.6; NC-Q4 :369-370) |
-| 3 Ishikawa 6M (mermaid) | REQ-10, fase N6.3 | plano-qualidade.md:283-335 (§5.7; delimitação :287) ← plano-integral:606; parcela TA-0049 (HF-0605:32-45) |
+| 12 PDCAs (baseline) | REQ-10, fase N6.3 | TA-0055 ← hf-exec-0611:17 ← B.6 (LISTA...:38) ← REQ-10 (spec-002...:71) ← req_1.0.md:25 ← N6.3 (plano-integral:41,80) → plano-qualidade.md:149-281 (§5.6; NC-Q4 :369-370) |
+| 3 Ishikawa 6M (mermaid) | REQ-10, fase N6.3 | plano-qualidade.md:283-335 (§5.7; delimitação :287) ← plano-integral:606; parcela TA-0049 (hf-exec-0605:32-45) |
 | Consolidação por marco | REQ-10 + EAP | plano-integral:30,36-47,62 (macro-fases); :95-98,272,418 (marcos M1-M4 e gates MF) |
 | Onda 6 / RACI | D.3 | LISTA...:60 ← plano-proddoc-arch-0006-uc-v1ao-agentes.md:145-152 (A.19-A.22) |
 | Métricas verificadas | REQ-08/09/11 (cross-ref) | plano-qualidade.md:55-69; ci.yml:111,170; spec-006...:118-122,129 |
 | Lições (evidência parcial) | PDCA Lição (GMV) | MF1-licoes.md:1-31 (LA-001); MF2/MF3-licoes.md 0 B |
 
-Rastreabilidade da emissão: tarefa TA-0055 ← HF-0611 (.ai/handoffs/HF-0611-spec-010-qualidade-pdca-ishikawa-v1.md:17)
+Rastreabilidade da emissão: tarefa TA-0055 ← hf-exec-0611 (.ai/handoffs/hf-exec-0611-spec-010-qualidade-pdca-ishikawa-v1-v1.0.md:17)
 ← item B.6 (LISTA...:38) ← REQ-10 (spec-002...:71) ← req_1.0.md:25. Covização REQ→US: REQ-10 é
 Should (spec-002...:57,71) e não possui US própria — conversão REQ→US é GAP-07/E.4
 (spec-002...:106; LISTA...:70), fora do escopo desta emissão. Adjacências NÃO cobertas aqui:
@@ -340,7 +340,7 @@ rastreabilidade de prompts (B.8, LISTA...:40).
 - **NFR consolidados (B.2)** — já emitidos como spec-006 (LISTA...:34; cross-ref apenas:
   spec-006...:118-122,129); esta spec não redefine métricas NFR.
 - **UAT de produto (B.5)** — spec própria: `.ai/specs/spec-uat-0001-uat-produto-v1.0.md` (emissão
-  paralela TA-0054/HF-0610, verificada em disco 2026-11-03; LISTA...:37); aqui há apenas
+  paralela TA-0054/hf-exec-0610, verificada em disco 2026-11-03; LISTA...:37); aqui há apenas
   cross-ref (PDCA-N6 :206-215; Ishikawa-2 §3.2) — conteúdo da spec-009 não auditarizado aqui.
 - **CI/CD executiva (B.7)** — pendente (LISTA...:39; parcial em spec-005 §8); o delta G-05 é
   declarado lá — aqui apenas o gatilho ISH1-MAQ-01/ISH3-MAQ-01 com citação (§2, linha 5).
@@ -351,7 +351,7 @@ rastreabilidade de prompts (B.8, LISTA...:40).
   arquivo de lição) — saneamento pertence à custódia de cada artefato (análogo ao registro de
   saneamento do plano, plano-qualidade.md:375-382); esta emissão apenas registra (§2, §4 AC-07).
 - **Regeneração de PNGs / criação do diretório `diagrams/`** — forma substituída por mermaid
-  inline (HF-0605:41); decisão de volta a PNGs = nova versão do plano.
+  inline (hf-exec-0605:41); decisão de volta a PNGs = nova versão do plano.
 - **Recriação/transcrição dos 12 PDCAs nesta spec** — SSOT permanece no plano (§1); duplicação
   violaria a não-redundância e criaria dupla custódia.
 - **Dashboard próprio de qualidade** — decidido GMV: GitHub Insights + coverage.py + pytest
@@ -363,7 +363,7 @@ rastreabilidade de prompts (B.8, LISTA...:40).
 
 ## CHANGELOG
 
-- 0.1.0 — 2026-11-03 (TA-0055 / HF-0611): emissão inicial. Entrega de qualidade REQ-10, fase
+- 0.1.0 — 2026-11-03 (TA-0055 / hf-exec-0611): emissão inicial. Entrega de qualidade REQ-10, fase
   N6.3 (item B.6, LISTA...:38): 12 PDCAs do plano-qualidade.md v1.1.0 §5.6 referenciados como
   baseline (não recriados) e consolidados em 3 grupos por macro-fase canônica MF1/MF2/MF3
   (plano-integral:36-47,62) com status executado/pendente e `UNKNOWN - verify` onde não
@@ -372,7 +372,7 @@ rastreabilidade de prompts (B.8, LISTA...:40).
   reconciliação REQ-10 singular × 3 diagramas (3 ≥ 1); 4 drifts registrados sem correção de
   terceiros (FIG-5/FIG-3 :326 vs :294; diagrams/ inexistente; ponteiro SSOT morto
   agent-quality-architect-specialist.md:31; nome de arquivo de lição); RACI onda 6 (A.19-A.22);
-  parcela TA-0049 (HF-0605:32-45) incorporada por referência. Arquivo único; nada commitado.
+  parcela TA-0049 (hf-exec-0605:32-45) incorporada por referência. Arquivo único; nada commitado.
 - 0.2.0 — 2026-11-05 (refinamento de ratificação, Grupo B): frontmatter atualizado ao padrão
   TA-0031 ratificado (adicionado `wave: WS-6`, `handoff` em `origin`; `version` 0.1.0 → 0.2.0).
   Ratificação CCB 05/11/2026 (instrumento RAT-2026-11-05-A16, ADR-LOG-012). Aderência ao padrão
@@ -383,7 +383,7 @@ rastreabilidade de prompts (B.8, LISTA...:40).
 
 | Camada | Seção nesta spec | Estado |
 |---|---|---|
-| (a) cabeçalho — spec_id, versão, status, custódia, datas, origem | frontmatter (`spec_id: spec-010`, `version: 0.2.0`, `status: ratificada`, `created/updated: 2026-11-03`/`2026-11-05`, `origin: HF-0611`, `task: TA-0055`) | aplicada |
+| (a) cabeçalho — spec_id, versão, status, custódia, datas, origem | frontmatter (`spec_id: spec-010`, `version: 0.2.0`, `status: ratificada`, `created/updated: 2026-11-03`/`2026-11-05`, `origin: hf-exec-0611`, `task: TA-0055`) | aplicada |
 | (b) Contexto/origem | §1 Contexto e origem | aplicada |
 | (c) Resolução de conflitos | §2 (5 conflitos: singular/plural; SSOT; agrupamento MF; drift gráfico; gate coverage) | aplicada |
 | (d) Corpo de decisões/requisitos/contratos | §3 (3.1 baseline PDCA consolidada; 3.2 Ishikawa mermaid + tabelas de IDs; 3.3 reconciliação REQ-10; 3.4 RACI onda 6) | aplicada |
