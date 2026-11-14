@@ -1,0 +1,10 @@
+hardware_profile:
+  cpu: AMD Ryzen 7 8700G, Zen 4, 8C/16T, AVX-512
+  gpu: AMD Radeon 780M, RDNA 3, APU
+  ram: 58GB
+  systemd_limit: 32GB
+  os: Arch Linux
+  mesa: 26.2.2
+  vulkan_api: 1.4.354
+  vulkan_driver: 1.4.357
+  storage: /var/lib/llama.cpp/models

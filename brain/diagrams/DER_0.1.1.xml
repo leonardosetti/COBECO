@@ -1,0 +1,242 @@
+<mxfile host="Electron">
+  <diagram id="7xkgTj0L0lfutiDgHCD-" name="Page-1">
+    <mxGraphModel dx="2054" dy="847" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="users" parent="1" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;" value="users" vertex="1">
+          <mxGeometry height="180" width="300" x="100" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="users-header" parent="users" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="users-id" parent="users-header" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;fontStyle=1;" value="id : uuid PK" vertex="1">
+          <mxGeometry height="30" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="users-row1" parent="users" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="users-username" parent="users-row1" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="username : varchar(30) UNIQUE" vertex="1">
+          <mxGeometry height="30" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="users-row2" parent="users" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="users-name" parent="users-row2" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="name : varchar(100)" vertex="1">
+          <mxGeometry height="30" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="users-row3" parent="users" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="users-email" parent="users-row3" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="email : varchar(255) UNIQUE" vertex="1">
+          <mxGeometry height="30" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="users-row4" parent="users" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="users-password" parent="users-row4" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="password_hash : text" vertex="1">
+          <mxGeometry height="30" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="users-row5" parent="users" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="users-timestamps" parent="users-row5" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="created_at, updated_at : timestamptz" vertex="1">
+          <mxGeometry height="30" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="lists" parent="1" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;" value="lists" vertex="1">
+          <mxGeometry height="180" width="320" x="500" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="lists-header" parent="lists" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="320" as="geometry" />
+        </mxCell>
+        <mxCell id="lists-id" parent="lists-header" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;fontStyle=1;" value="id : uuid PK" vertex="1">
+          <mxGeometry height="30" width="320" as="geometry" />
+        </mxCell>
+        <mxCell id="lists-row1" parent="lists" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="lists-user_id" parent="lists-row1" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="user_id : uuid FK → users.id" vertex="1">
+          <mxGeometry height="30" width="320" as="geometry" />
+        </mxCell>
+        <mxCell id="lists-row2" parent="lists" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="320" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lists-name" parent="lists-row2" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="name : varchar(100)" vertex="1">
+          <mxGeometry height="30" width="320" as="geometry" />
+        </mxCell>
+        <mxCell id="lists-row3" parent="lists" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="320" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="lists-deleted_at" parent="lists-row3" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="deleted_at : timestamptz NULL (soft delete)" vertex="1">
+          <mxGeometry height="30" width="320" as="geometry" />
+        </mxCell>
+        <mxCell id="lists-row4" parent="lists" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="320" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="lists-timestamps" parent="lists-row4" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="created_at, updated_at : timestamptz" vertex="1">
+          <mxGeometry height="30" width="320" as="geometry" />
+        </mxCell>
+        <mxCell id="list_items" parent="1" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;" value="list_items" vertex="1">
+          <mxGeometry height="150" width="300" x="920" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="list_items-header" parent="list_items" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="list_items-id" parent="list_items-header" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;fontStyle=1;" value="id : uuid PK" vertex="1">
+          <mxGeometry height="30" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="list_items-row1" parent="list_items" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="list_items-list_id" parent="list_items-row1" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="list_id : uuid FK → lists.id" vertex="1">
+          <mxGeometry height="30" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="list_items-row2" parent="list_items" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="list_items-product_id" parent="list_items-row2" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="product_id : uuid FK → products.id" vertex="1">
+          <mxGeometry height="30" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="list_items-row3" parent="list_items" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="list_items-quantity" parent="list_items-row3" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="quantity : integer (1–9999)" vertex="1">
+          <mxGeometry height="30" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="list_items-row4" parent="list_items" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="list_items-created_at" parent="list_items-row4" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="created_at : timestamptz" vertex="1">
+          <mxGeometry height="30" width="300" as="geometry" />
+        </mxCell>
+        <mxCell id="products" parent="1" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;" value="products" vertex="1">
+          <mxGeometry height="150" width="280" x="1350" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="products-header" parent="products" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="280" as="geometry" />
+        </mxCell>
+        <mxCell id="products-id" parent="products-header" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;fontStyle=1;" value="id : uuid PK" vertex="1">
+          <mxGeometry height="30" width="280" as="geometry" />
+        </mxCell>
+        <mxCell id="products-row1" parent="products" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="products-name" parent="products-row1" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="name : varchar(100)" vertex="1">
+          <mxGeometry height="30" width="280" as="geometry" />
+        </mxCell>
+        <mxCell id="products-row2" parent="products" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="280" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="products-category" parent="products-row2" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="category : varchar(50)" vertex="1">
+          <mxGeometry height="30" width="280" as="geometry" />
+        </mxCell>
+        <mxCell id="products-row3" parent="products" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="280" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="products-unit" parent="products-row3" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="unit : varchar(20) (ex: kg, un, L)" vertex="1">
+          <mxGeometry height="30" width="280" as="geometry" />
+        </mxCell>
+        <mxCell id="products-row4" parent="products" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="280" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="products-created_at" parent="products-row4" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="created_at : timestamptz" vertex="1">
+          <mxGeometry height="30" width="280" as="geometry" />
+        </mxCell>
+        <mxCell id="suppliers" parent="1" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;" value="suppliers" vertex="1">
+          <mxGeometry height="150" width="280" x="100" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="suppliers-header" parent="suppliers" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="280" as="geometry" />
+        </mxCell>
+        <mxCell id="suppliers-id" parent="suppliers-header" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;fontStyle=1;" value="id : uuid PK" vertex="1">
+          <mxGeometry height="30" width="280" as="geometry" />
+        </mxCell>
+        <mxCell id="suppliers-row1" parent="suppliers" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="suppliers-name" parent="suppliers-row1" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="name : varchar(100)" vertex="1">
+          <mxGeometry height="30" width="280" as="geometry" />
+        </mxCell>
+        <mxCell id="suppliers-row2" parent="suppliers" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="280" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="suppliers-cnpj" parent="suppliers-row2" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="cnpj : char(14) UNIQUE NULL" vertex="1">
+          <mxGeometry height="30" width="280" as="geometry" />
+        </mxCell>
+        <mxCell id="suppliers-row3" parent="suppliers" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="280" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="suppliers-created_at" parent="suppliers-row3" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="created_at : timestamptz" vertex="1">
+          <mxGeometry height="30" width="280" as="geometry" />
+        </mxCell>
+        <mxCell id="prices" parent="1" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;" value="prices" vertex="1">
+          <mxGeometry height="210" width="340" x="500" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="prices-header" parent="prices" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="340" as="geometry" />
+        </mxCell>
+        <mxCell id="prices-id" parent="prices-header" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;fontStyle=1;" value="id : uuid PK" vertex="1">
+          <mxGeometry height="30" width="340" as="geometry" />
+        </mxCell>
+        <mxCell id="prices-row1" parent="prices" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="340" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="prices-supplier_id" parent="prices-row1" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="supplier_id : uuid FK → suppliers.id" vertex="1">
+          <mxGeometry height="30" width="340" as="geometry" />
+        </mxCell>
+        <mxCell id="prices-row2" parent="prices" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="340" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="prices-product_id" parent="prices-row2" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="product_id : uuid FK → products.id" vertex="1">
+          <mxGeometry height="30" width="340" as="geometry" />
+        </mxCell>
+        <mxCell id="prices-row3" parent="prices" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="340" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="prices-price" parent="prices-row3" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="price : numeric(10,2) &gt; 0" vertex="1">
+          <mxGeometry height="30" width="340" as="geometry" />
+        </mxCell>
+        <mxCell id="prices-row4" parent="prices" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="340" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="prices-valid_from" parent="prices-row4" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="valid_from : date NOT NULL" vertex="1">
+          <mxGeometry height="30" width="340" as="geometry" />
+        </mxCell>
+        <mxCell id="prices-row5" parent="prices" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="340" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="prices-valid_until" parent="prices-row5" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="valid_until : date NULL" vertex="1">
+          <mxGeometry height="30" width="340" as="geometry" />
+        </mxCell>
+        <mxCell id="prices-row6" parent="prices" style="shape=tableRow;horizontal=0;strokeColor=inherit;top=0;bottom=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="340" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="prices-created_at" parent="prices-row6" style="shape=tableCell;overflow=hidden;whiteSpace=wrap;strokeColor=inherit;align=left;html=1;" value="created_at : timestamptz" vertex="1">
+          <mxGeometry height="30" width="340" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-users-lists" edge="1" parent="1" source="users-id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;jettySize=auto;orthogonalLoop=1;" target="lists-user_id">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-lists-items" edge="1" parent="1" source="lists-id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;jettySize=auto;orthogonalLoop=1;" target="list_items-list_id">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-products-items" edge="1" parent="1" source="products-id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;jettySize=auto;orthogonalLoop=1;" target="list_items-product_id">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-suppliers-prices" edge="1" parent="1" source="suppliers-id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;jettySize=auto;orthogonalLoop=1;" target="prices-supplier_id">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-products-prices" edge="1" parent="1" source="products-id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="prices-product_id">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1670" y="130" />
+              <mxPoint x="1670" y="295" />
+              <mxPoint x="900" y="295" />
+              <mxPoint x="900" y="460" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

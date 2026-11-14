@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0047",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-qa-sdet",
+  "action": "consult",
+  "handoff": "HF-0603",
+  "payload": "consultar dominio QA para spec-009-uat-produto-v1 (B.5) e lacuna C.5"
+}

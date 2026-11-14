@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0109",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-project-auditor",
+  "action": "audit",
+  "handoff": "HF-0109",
+  "payload": "Auditar que todo processo termina terminal: accepted, rejected, escalated, ou erro explícito com código. Nenhum pendente indefinido. Relatório final de adoção da arquitetura ótima em .ai/specs/relatorio-adocao-arquitetura.md. kill_switch: inherited"
+}

@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0046",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-ui-ux-advisor",
+  "action": "consult",
+  "handoff": "HF-0602",
+  "payload": "consultar dominio UX/UI para spec-008-frontend-web-responsive-v1 (B.1)"
+}

@@ -1,0 +1,169 @@
+<mxfile host="app.diagrams.net" modified="2026-08-15T00:00:00.000Z" agent="MVP Comparador de Compras" version="24.0.0" type="device">
+  <diagram id="mvp-use-case" name="Caso de Uso - MVP">
+    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- BOUNDARY DO SISTEMA -->
+        <mxCell id="boundary" value="Sistema Comparador de Compras (MVP)" style="swimlane;startSize=30;fillColor=#E6F3FF;strokeColor=#0050B3;fontStyle=1;fontSize=16;rounded=1;arcSize=5;" vertex="1" parent="1">
+          <mxGeometry x="360" y="80" width="1100" height="1040" as="geometry"/>
+        </mxCell>
+
+        <!-- ATOR USUÁRIO -->
+        <mxCell id="actorUser" value="Usuário" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontStyle=1;fillColor=#FFF2CC;strokeColor=#D6B656;" vertex="1" parent="1">
+          <mxGeometry x="120" y="540" width="40" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- ATOR API MOCK -->
+        <mxCell id="actorAPI" value="API Mock de&#10;Fornecedores" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=13;fontStyle=1;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="540" width="40" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== FASE 1: CRIAÇÃO ==================== -->
+        <mxCell id="group1" value="Fase 1 — Criação da Lista" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontSize=11;fontColor=#0050B3;" vertex="1" parent="1">
+          <mxGeometry x="390" y="130" width="200" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="UC01" value="UC01 — Criar Lista de Compras" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="60" y="160" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="UC02" value="UC02 — Adicionar/Editar/Remover Itens" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="60" y="240" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="UC03" value="UC03 — Definir Categoria da Lista" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="60" y="320" width="260" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== FASE 2: SELEÇÃO ==================== -->
+        <mxCell id="group2" value="Fase 2 — Seleção de Fornecedores" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontSize=11;fontColor=#0050B3;" vertex="1" parent="1">
+          <mxGeometry x="390" y="420" width="220" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="UC04" value="UC04 — Visualizar Fornecedores por Categoria" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="60" y="450" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="UC05" value="UC05 — Selecionar Fornecedores para Comparação" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="60" y="530" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="UC06" value="UC06 — Normalizar Itens ao Catálogo" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="60" y="610" width="260" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== FASE 3: ANÁLISE ==================== -->
+        <mxCell id="group3" value="Fase 3 — Análise e Comparação" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontSize=11;fontColor=#0050B3;" vertex="1" parent="1">
+          <mxGeometry x="820" y="130" width="220" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="UC07" value="UC07 — Gerar Agrupamentos / Listas Paralelas" style="ellipse;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="160" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="UC08" value="UC08 — Visualizar Orçamento por Grupo" style="ellipse;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="240" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="UC09" value="UC09 — Visualizar Orçamento Geral" style="ellipse;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="320" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="UC10" value="UC10 — Destacar Menor ou Maior Orçamento" style="ellipse;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="400" width="260" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== FASE 4: EXPORTAÇÃO ==================== -->
+        <mxCell id="group4" value="Fase 4 — Exportação e Sessão" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontSize=11;fontColor=#0050B3;" vertex="1" parent="1">
+          <mxGeometry x="820" y="490" width="220" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="UC11" value="UC11 — Exportar Lista" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="520" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="UC12" value="UC12 — Exportar Orçamento" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="600" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="UC13" value="UC13 — Imprimir Lista/Orçamento" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="680" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="UC14" value="UC14 — Limpar Sessão Local" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="760" width="260" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== CASOS INTERNOS ==================== -->
+        <mxCell id="group5" value="Casos Internos (auxiliares)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontSize=11;fontColor=#0050B3;" vertex="1" parent="1">
+          <mxGeometry x="820" y="820" width="220" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="UC15" value="UC15 — Identificar Itens Faltantes" style="ellipse;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontColor=#333333;fontSize=12;dashed=1;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="850" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="UC16" value="UC16 — Calcular Total Estimado Completo" style="ellipse;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontColor=#333333;fontSize=12;dashed=1;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="930" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="UC17" value="UC17 — Consultar Catálogo Mock" style="ellipse;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontColor=#333333;fontSize=12;dashed=1;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="1010" width="260" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== ASSOCIAÇÕES USUÁRIO ==================== -->
+        <mxCell id="a1" style="endArrow=none;html=1;strokeColor=#0050B3;" edge="1" source="actorUser" target="UC01" parent="1"/>
+        <mxCell id="a2" style="endArrow=none;html=1;strokeColor=#0050B3;" edge="1" source="actorUser" target="UC02" parent="1"/>
+        <mxCell id="a3" style="endArrow=none;html=1;strokeColor=#0050B3;" edge="1" source="actorUser" target="UC03" parent="1"/>
+        <mxCell id="a4" style="endArrow=none;html=1;strokeColor=#0050B3;" edge="1" source="actorUser" target="UC04" parent="1"/>
+        <mxCell id="a5" style="endArrow=none;html=1;strokeColor=#0050B3;" edge="1" source="actorUser" target="UC05" parent="1"/>
+        <mxCell id="a6" style="endArrow=none;html=1;strokeColor=#0050B3;" edge="1" source="actorUser" target="UC06" parent="1"/>
+        <mxCell id="a7" style="endArrow=none;html=1;strokeColor=#0050B3;" edge="1" source="actorUser" target="UC07" parent="1"/>
+        <mxCell id="a8" style="endArrow=none;html=1;strokeColor=#0050B3;" edge="1" source="actorUser" target="UC08" parent="1"/>
+        <mxCell id="a9" style="endArrow=none;html=1;strokeColor=#0050B3;" edge="1" source="actorUser" target="UC09" parent="1"/>
+        <mxCell id="a10" style="endArrow=none;html=1;strokeColor=#0050B3;" edge="1" source="actorUser" target="UC10" parent="1"/>
+        <mxCell id="a11" style="endArrow=none;html=1;strokeColor=#0050B3;" edge="1" source="actorUser" target="UC11" parent="1"/>
+        <mxCell id="a12" style="endArrow=none;html=1;strokeColor=#0050B3;" edge="1" source="actorUser" target="UC12" parent="1"/>
+        <mxCell id="a13" style="endArrow=none;html=1;strokeColor=#0050B3;" edge="1" source="actorUser" target="UC13" parent="1"/>
+        <mxCell id="a14" style="endArrow=none;html=1;strokeColor=#0050B3;" edge="1" source="actorUser" target="UC14" parent="1"/>
+
+        <!-- ==================== ASSOCIAÇÕES API MOCK ==================== -->
+        <mxCell id="b1" style="endArrow=none;html=1;strokeColor=#82B366;" edge="1" source="actorAPI" target="UC04" parent="1"/>
+        <mxCell id="b2" style="endArrow=none;html=1;strokeColor=#82B366;" edge="1" source="actorAPI" target="UC06" parent="1"/>
+        <mxCell id="b3" style="endArrow=none;html=1;strokeColor=#82B366;" edge="1" source="actorAPI" target="UC17" parent="1"/>
+
+        <!-- ==================== <<include>> ==================== -->
+        <mxCell id="inc1" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#B85450;fontSize=10;" value="&lt;&lt;include&gt;&gt;" edge="1" source="UC07" target="UC15" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="inc2" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#B85450;fontSize=10;" value="&lt;&lt;include&gt;&gt;" edge="1" source="UC08" target="UC15" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="inc3" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#B85450;fontSize=10;" value="&lt;&lt;include&gt;&gt;" edge="1" source="UC09" target="UC15" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="inc4" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#B85450;fontSize=10;" value="&lt;&lt;include&gt;&gt;" edge="1" source="UC09" target="UC16" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="inc5" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#B85450;fontSize=10;" value="&lt;&lt;include&gt;&gt;" edge="1" source="UC08" target="UC16" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== <<extend>> ==================== -->
+        <mxCell id="ext1" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#9673A6;fontSize=10;" value="&lt;&lt;extend&gt;&gt;" edge="1" source="UC10" target="UC08" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ext2" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#9673A6;fontSize=10;" value="&lt;&lt;extend&gt;&gt;" edge="1" source="UC10" target="UC09" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ext3" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#9673A6;fontSize=10;" value="&lt;&lt;extend&gt;&gt;" edge="1" source="UC13" target="UC08" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ext4" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#9673A6;fontSize=10;" value="&lt;&lt;extend&gt;&gt;" edge="1" source="UC13" target="UC09" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ext5" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#9673A6;fontSize=10;" value="&lt;&lt;extend&gt;&gt;" edge="1" source="UC11" target="UC01" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ext6" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#9673A6;fontSize=10;" value="&lt;&lt;extend&gt;&gt;" edge="1" source="UC12" target="UC09" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== LEGENDA ==================== -->
+        <mxCell id="legend" value="&lt;b&gt;Legenda&lt;/b&gt;&lt;br&gt;—— Associação Ator↔Caso&lt;br&gt;- - → &lt;&lt;include&gt;&gt; (vermelho)&lt;br&gt;- - → &lt;&lt;extend&gt;&gt; (roxo)&lt;br&gt;⋯⋯ Caso Interno (tracejado)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#CCCCCC;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="860" width="240" height="120" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,21 @@
+{
+  "name": "cobeco-frontend",
+  "version": "0.1.0",
+  "description": "COBECO MVP Frontend — Vanilla JS + Tailwind CSS",
+  "private": true,
+  "scripts": {
+    "dev": "npx tailwindcss -i ./src/styles/input.css -o ./src/styles/output.css --watch",
+    "build": "npx tailwindcss -i ./src/styles/input.css -o ./src/styles/output.css --minify",
+    "build:prod": "npm run build"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.10",
+    "postcss": "^8.4.41",
+    "autoprefixer": "^10.4.20"
+  },
+  "browserslist": [
+    "last 2 versions",
+    "not dead",
+    "> 0.5%"
+  ]
+}

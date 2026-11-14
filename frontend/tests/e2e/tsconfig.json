@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "lib": ["ES2022", "DOM"],
+    "types": ["@playwright/test", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "@pages/*": ["pages/*"],
+      "@fixtures/*": ["fixtures/*"],
+      "@utils/*": ["utils/*"],
+      "@tests/*": ["tests/*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "global-setup.ts",
+    "global-teardown.ts"
+  ],
+  "exclude": ["node_modules", "playwright-report", "test-results"]
+}

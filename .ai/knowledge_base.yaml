@@ -1,0 +1,45 @@
+adr-016-ratificada: 'ADR-016 (Backend do MVP: cálculo, cotações, persistência e contrato
+  de erro) ratificada definitivamente em 05/11/2026 pelo GP/CCB (instrumento RAT-2026-11-05-A16).
+  Versão 1.1.0, status ratificada. Decisões D1-D12 norma vigente: D1 spread/IOF informados
+  pelo usuário; D2 ordem de cálculo (IOF após spread); D3 ROUND_HALF_EVEN; D4 somente
+  cotações persistidas; D5 Frankfurter primária/PTAX reserva; D6 cache sem idade máxima
+  com stale=true; D7 timeout 0.9s/circuit breaker; D8 aceite Decimal 0<taxa<1000;
+  D9 contrato de erro padronizado; D10 routers/common.py; D11 Python 3.11/3.12 pendência
+  não-bloqueante; D12 rede interna sem CORS. Aderente à entrega funcional de 16/11/2026.
+  Pendências P1-P8 não bloqueiam a entrega. Propagado para ADR-LOG (ADR-LOG-009),
+  spec-006 (NF-25), spec-009 (UAT-03), lista-specs-pendentes (E.2 fechado).'
+codigo-camadas-separadas: 'Camadas Dados/Back/Front separadas e proxy sempre ativo
+  (commit abc7350, 05/11/2026). docker-compose.yml: db+migrate+back+front+proxy; back
+  na rede data+edge, front na edge, db/migrate so na data; proxy sempre ativo em 127.0.0.1:8080
+  roteando / para front e /v1/ para back; sem CORS. front.conf serve src/frontend/templates
+  e proxa /v1/* para back:8000. index.html era 0 B, agora tela de simulacao funcional
+  chamando POST /v1/simulate pela mesma origem. docker compose config EXIT 0. Fecha
+  bloqueante de codigo da separacao de camadas (spec-005, US-018). Coerente com ADR-016
+  (RAT-2026-11-05-A16).'
+gap-d4-fatura-persistida: 'GAP-04 / D1 (persistência de invoice) DECIDIDO = PERSISTIR
+  em 05/11/2026 (ADR-016 emenda D4, instrumento RAT-2026-11-05-A16-D4, ADR-016 versão
+  1.2.0, ADR-LOG-010). Cada usuário pode gerar, armazenar persistentemente, baixar
+  e imprimir a invoice conforme sua regra de jornada e rating de pagamento. Simulações
+  não gravadas. Rota de erase (LGPD art. 18) obrigatória para invoices persistidas
+  (condicionantes D1-D6 da spec-015). Propagado para: spec-007 (modelo invoice, v0.2.0
+  ratificada), spec-004 (LGPD linha 126 atualizada), spec-015 (LGPD produto, v0.2.0,
+  D1 resolvido), spec-009 (UAT-04 e UNKNOWNs atualizados), lista-specs-pendentes (B.4
+  fechado, E.2 já fechado). KB e ADR-LOG atualizados.'
+destino-evidencias-uat: 'Destino das evidências de UAT DECIDIDO = docs/uat/, classificado
+  por rodada (docs/uat/rodada-NN/), com relatório analítico por rodada (taxa de aceite,
+  cobertura analizada, ciclo de implementação). Decisão GP/CCB fechada em 05/11/2026
+  (pendência #6 dos 7 bloqueantes resolvida). Criado: docs/uat/README.md (índice,
+  princípios P-04, estrutura por rodada, padrão de nomenclatura), docs/uat/rodada-001/relatorio-analitico.md
+  (taxa de aceite 0% não executada, cobertura 0/14 casos, ciclo EM EXECUÇÃO, schema
+  de defeitos DEF-UAT-NNN, rastreabilidade). Propagado para: spec-009 (§3.8 reescrito,
+  v0.3.0), spec-005 (§12 evidências atualizado, v0.4.0), lista-specs-pendentes (C.5
+  fechado). KB registrada.'
+gap-e4-backlog-req-us: 'Gap E.4 (conversao REQ->User Story, backlog inexistente) RESOLVIDO
+  como artefato versionado: docs/analise/BACKLOG-REQ-US-M3-M4.md (criado 05/11/2026).
+  Contem 17 cards (US-001..017) mapeados a REQ-01..15, com prioridade (10 must, 4
+  should, 3 conditional, 1 blocked), macro-fase (MF2-construcao/MF3-consolidacao),
+  status, trace id e spec de origem. Nao foi possivel publicar como Issues no GitHub:
+  o PAT tem apenas leitura (createIssue 403, label create 403). O documento esta pronto
+  para importacao manual via GitHub web pelo PO (agent-po). Marco alvo: M3 ja encerrou
+  (03/11/2026); backlog direcionado a M4 (17/11/2026). Condicionais (US-007, 016,
+  017) dependem de CCB/PO (KG-R-02/KG-R-03); US-012 bloqueada (gate E). KB registrada.'

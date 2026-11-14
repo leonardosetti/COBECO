@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0103",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-devops",
+  "action": "implement",
+  "handoff": "HF-0103",
+  "payload": "Lock por task_id para impedir racing condition: .ai/agents/locks/<task_id>.lock com fcntl flock, timeout aquisição 30s. Falha → LOCK_ACQUIRE_FAILED, nunca trava indefinido. Um lock por task_id impede racing condition. Lock por árvore alvo também (mesmo .lock derivado do target). kill_switch: inherited"
+}

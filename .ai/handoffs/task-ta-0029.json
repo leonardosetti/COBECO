@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0029",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-sdd-specialist",
+  "action": "spec",
+  "handoff": "HF-0029",
+  "payload": "SPEC de camadas de containers (Dados/Back/Front) para producao ortogonal conforme Art. 10.1; payload integral em .ai/handoffs/HF-0029-container-layers-spec.md"
+}

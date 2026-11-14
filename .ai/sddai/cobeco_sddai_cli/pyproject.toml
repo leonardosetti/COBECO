@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cobeco-sddai-cli"
+version = "1.0.0"
+description = "Interface de linha de comando unificada para o pipeline SDDAI (custom do zero)"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+cobeco-sddai = "cobeco_sddai_cli.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cobeco_sddai_cli*"]

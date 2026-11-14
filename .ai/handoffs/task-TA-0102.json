@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0102",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-compliance-governance",
+  "action": "comply",
+  "handoff": "HF-0102",
+  "payload": "Ledger .ai/agents/ledger.yaml: schema fixo obrigatório para ledger_append. Campos aceitos: task_id, sender, receiver, action, exit_status, timestamp, dod. Barrar linhas de texto livre. kill_switch: inherited"
+}

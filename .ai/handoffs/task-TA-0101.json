@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0101",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-sdd-specialist",
+  "action": "spec",
+  "handoff": "HF-0101",
+  "payload": "Definir schema único SSOT para envelope de saída e parcela de retorno half-duplex. Campos: task_id, sender, receiver, target, action, handoff, payload, kill_switch: inherited, dod (bool), status (accepted|rejected|escalated), artifacts, timestamp. Unificar contrato de scripts/nexus_dispatcher.py e scripts/agent_communication_hub.py (mesmos nomes de campo: task_id, não envelope_id). kill_switch: inherited"
+}

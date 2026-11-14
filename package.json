@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "postman-cli": "^1.90.0"
+  }
+}

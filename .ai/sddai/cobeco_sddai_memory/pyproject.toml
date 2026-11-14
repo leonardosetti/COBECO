@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cobeco-sddai-memory"
+version = "1.0.0"
+description = "Otimização de memória para SDDAI (custom do zero)"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+cobeco-sddai-memory = "cobeco_sddai_memory.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cobeco_sddai_memory*"]

@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>COBECO — Comparador de Compras</title>
+<style>
+:root{
+  --bg:#f4f7fb; --surface:#fff; --surface-2:#f8fafc; --text:#182238; --muted:#728099;
+  --line:#e2e8f0; --blue:#114ca6; --blue2:#0e3f89; --green:#12b878; --green2:#0e9b65;
+  --danger:#df5b5b; --danger2:#b73f3f; --warning:#f2b84b; --shadow:0 10px 30px rgba(24,34,56,.08);
+  --radius:16px; --radius-sm:10px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.55}
+a{color:inherit}
+.hidden{display:none!important}
+.app{min-height:100vh}
+.header{
+  height:70px;background:#fff;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;padding:0 42px;
+  position:sticky;top:0;z-index:30
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
+.brandmark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--blue),#2f68c5);display:grid;place-items:center;color:#fff;font-size:18px}
+.nav{display:flex;gap:22px;align-items:center}
+.nav button{border:0;background:none;color:var(--muted);padding:8px 0}
+.nav button.active{color:var(--blue);font-weight:700}
+.nav .auth-chip{padding:9px 14px;border-radius:10px;background:var(--blue);color:#fff}
+.primary,.secondary,.success,.danger,.ghost{border:0;border-radius:11px;padding:11px 16px;font-weight:700}
+.primary{background:var(--blue);color:#fff}.primary:hover{background:var(--blue2)}
+.success{background:var(--green);color:#fff}.success:hover{background:var(--green2)}
+.secondary{background:#fff;color:var(--blue);border:1px solid var(--line)}
+.secondary:hover{background:#f7f9fc}
+.danger{background:var(--danger);color:#fff}.danger:hover{background:var(--danger2)}
+.ghost{background:transparent;color:var(--muted);border:1px dashed var(--line)}
+.container{max-width:1180px;margin:0 auto;padding:34px 24px 54px}
+.screen{display:none}.screen.active{display:block}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;margin-bottom:26px}
+.hero h1{font-size:38px;line-height:1.05;margin:0 0 12px}
+.hero p{color:var(--muted);max-width:670px;line-height:1.6}
+.hero-card{background:linear-gradient(145deg,#0f6e51,#10a66e);color:#fff;padding:28px;border-radius:24px;box-shadow:var(--shadow);min-height:170px;display:flex;flex-direction:column;justify-content:space-between}
+.hero-card .stat{font-size:38px;font-weight:800}
+.hero-card small{opacity:.86}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.panel-h{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.panel-b{padding:22px}
+.grid2{display:grid;grid-template-columns:1fr 170px auto;gap:12px;align-items:end}
+.grid-two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font-size:13px;color:#4e5d76;font-weight:600}
+.input,.select{height:44px;border:1px solid var(--line);border-radius:10px;padding:0 12px;background:#fff;outline:none;color:var(--text)}
+.input:focus,.select:focus{border-color:#2e68c5;box-shadow:0 0 0 3px rgba(46,104,197,.1)}
+.input[readonly]{background:#f4f6f9;color:#7f8aa0}
+.autocomplete{position:relative}
+.menu{position:absolute;left:0;right:0;top:50px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:12px;overflow:hidden;display:none;z-index:10}
+.menu.open{display:block}
+.menu div{padding:11px 13px;cursor:pointer}
+.menu div:hover{background:#f0f5ff}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:14px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:middle}
+.table th{color:#65728a;background:#f8fafc;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.badge.green{background:#e9f9f2;color:#08784e}
+.badge.blue{background:#eef4ff;color:#2253a6}
+.badge.red{background:#fff0f0;color:#b33d3d}
+.badge.warn{background:#fff7e8;color:#8a5b00}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap}
+.iconbtn{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff}
+.footerbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:#f8fafc;border-top:1px solid var(--line)}
+.count{color:var(--muted);font-size:13px}
+.providers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.provider{border:1px solid var(--line);border-radius:14px;padding:18px;background:#fff;position:relative;transition:.15s}
+.provider.selected{border-color:var(--green);box-shadow:0 0 0 3px rgba(18,184,120,.09)}
+.provider.hidden-provider{display:none}
+.provider h3{margin:0 0 8px;font-size:16px}
+.availability{height:7px;background:#eef2f7;border-radius:20px;overflow:hidden;margin-top:11px}
+.availability span{display:block;height:100%;background:var(--green)}
+.best{background:#f1fcf7}
+.price{font-size:20px;font-weight:800}
+.empty{padding:34px;text-align:center;color:var(--muted)}
+.modalback{position:fixed;inset:0;background:rgba(18,27,45,.32);display:none;place-items:center;z-index:50;padding:20px}
+.modalback.open{display:grid}
+.modal{width:min(460px,94vw);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.2);padding:24px}
+.modal h2{margin:0 0 8px}
+.modal p{margin:0 0 18px;color:var(--muted)}
+.modal .stack{display:grid;gap:13px}
+.msg{padding:11px 12px;border-radius:10px;font-size:13px;display:none}
+.msg.show{display:block}
+.msg.err{background:#fff0f0;color:#a23b3b}
+.msg.ok{background:#eaf9f2;color:#08784e}
+.msg.warn{background:#fff7e8;color:#8a5b00}
+.auth-layout{min-height:calc(100vh - 70px);display:grid;grid-template-columns:1.05fr .95fr}
+.auth-left{background:linear-gradient(160deg,#0b6d50,#0f9c67);color:white;padding:70px;display:flex;flex-direction:column;justify-content:center}
+.auth-right{display:grid;place-items:center;padding:30px}
+.authcard{width:min(470px,100%);background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:30px}
+.authcard h2{margin-top:0}
+.muted{color:var(--muted)}
+.range-row{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.range-row input{flex:1}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.kpi strong{font-size:24px;display:block;margin-top:6px}
+.pagination{display:flex;justify-content:flex-end;gap:8px;padding:16px}
+.pagination button{min-width:38px;height:38px;border-radius:9px;border:1px solid var(--line);background:#fff}
+.pagination button.active{background:var(--blue);color:#fff}
+.stepper{display:flex;gap:8px;margin-bottom:18px}
+.step{flex:1;height:6px;background:#e9edf3;border-radius:10px}
+.step.active{background:var(--blue)}
+.password-rules{display:grid;gap:6px;margin-top:8px;font-size:12px}
+.rule.ok{color:#0d8f5f}.rule.no{color:#8b96a8}
+.toast-wrap{position:fixed;right:18px;bottom:18px;z-index:70;display:grid;gap:10px}
+.toast{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);padding:12px 14px;border-radius:12px;min-width:260px}
+.tooltip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1px solid var(--line);border-radius:50%;font-size:12px;color:var(--muted)}
+.tooltip:hover::after{content:attr(data-tip);position:absolute;bottom:120%;right:0;min-width:220px;max-width:300px;background:#172238;color:#fff;padding:8px 10px;border-radius:8px;font-size:12px;line-height:1.4;z-index:10}
+.profile-card{display:grid;grid-template-columns:120px 1fr;gap:22px;align-items:start}
+.avatar{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#2f68c5);display:grid;place-items:center;color:#fff;font-size:28px;font-weight:800}
+.loading{padding:32px;text-align:center;color:var(--muted)}
+.spinner{display:inline-block;width:24px;height:24px;border:3px solid #d9e0ec;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:900px){
+  .hero,.auth-layout,.profile-card{grid-template-columns:1fr}
+  .grid2,.grid-two{grid-template-columns:1fr}
+  .providers,.kpi-grid{grid-template-columns:1fr}
+  .header{padding:0 18px}
+  .nav{gap:10px}
+  .nav button:nth-child(2),.nav button:nth-child(3){display:none}
+  .auth-left{display:none}
+}
+
+/* --- Figma-aligned landing + authentication states --- */
+.landing{
+  background:
+    radial-gradient(circle at 86% 14%, rgba(190,216,245,.42), transparent 24%),
+    linear-gradient(180deg,#fbfdff 0%,#f5f8fc 70%,#eef3f8 100%);
+}
+.landing-shell{max-width:1180px;margin:0 auto;padding:58px 24px 72px}
+.landing-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:58px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:#0f8e60;font-weight:800;font-size:13px}
+.eyebrow-dot{width:9px;height:9px;border-radius:50%;background:#20c88a;box-shadow:0 0 0 6px rgba(32,200,138,.12)}
+.landing-copy h1{font-size:58px;line-height:1.02;letter-spacing:-.045em;margin:18px 0 18px;max-width:720px}
+.landing-copy h1 span{color:#0da36d}
+.landing-copy p{font-size:18px;color:var(--muted);line-height:1.65;max-width:650px}
+.landing-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.landing-primary{background:#13b978;color:#fff;border:0;border-radius:12px;padding:13px 19px;font-weight:800}
+.landing-primary:hover{background:#0e9b65}
+.landing-demo{position:relative;min-height:420px}
+.demo-window{position:absolute;right:0;top:18px;width:min(100%,460px);background:#fff;border:1px solid #e0e7ef;border-radius:22px;box-shadow:0 26px 60px rgba(29,54,85,.13);padding:20px}
+.demo-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.demo-dots{display:flex;gap:6px}.demo-dots i{width:8px;height:8px;border-radius:50%;background:#d8e0ea}
+.demo-list{display:grid;gap:10px}.demo-row{display:grid;grid-template-columns:1fr auto;gap:12px;padding:12px;border:1px solid #e9eef4;border-radius:12px;background:#fbfcfe}
+.demo-row strong{font-size:13px}.demo-row span{font-size:12px;color:var(--muted)}
+.demo-total{margin-top:16px;background:#eafaf3;border:1px solid #ccefe0;border-radius:14px;padding:16px;display:flex;justify-content:space-between;align-items:center}
+.demo-total strong{font-size:24px;color:#08784e}
+.float-card{position:absolute;left:-42px;bottom:48px;background:#fff;border:1px solid #e1e8ef;border-radius:15px;padding:14px 16px;box-shadow:0 18px 36px rgba(24,34,56,.10)}
+.float-card b{color:#0e9b65;font-size:20px}
+.landing-features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:34px}
+.feature-mini{background:rgba(255,255,255,.75);border:1px solid #e3eaf2;border-radius:14px;padding:16px}
+.feature-mini strong{display:block;margin-bottom:6px}.feature-mini span{font-size:13px;color:var(--muted);line-height:1.45}
+
+.fig-auth-stage{
+  min-height:calc(100vh - 70px);
+  background:
+    radial-gradient(circle at 88% 12%, rgba(199,219,242,.50), transparent 26%),
+    #f5f8fc;
+  display:grid;place-items:center;padding:54px 20px;position:relative
+}
+.fig-auth-stage::after{content:"© 2026 COBECO · Segurança e privacidade";position:absolute;bottom:18px;color:#8290a6;font-size:12px}
+.fig-auth-card{width:min(430px,94vw);background:#fff;border:1px solid #e4eaf1;border-radius:18px;box-shadow:0 18px 52px rgba(33,56,88,.10);padding:30px}
+.fig-auth-logo{display:flex;align-items:center;gap:9px;font-weight:800;margin-bottom:24px}
+.auth-state-strip{display:flex;gap:6px;margin:16px 0 20px}
+.auth-state-strip i{height:5px;flex:1;border-radius:999px;background:#e6ebf2}
+.auth-state-strip i.on{background:#1746a2}
+.inline-alert{padding:12px 13px;border-radius:10px;margin-bottom:14px;font-size:13px;line-height:1.45}
+.inline-alert.error{background:#fff0f0;color:#a23b3b}
+.inline-alert.warn{background:#fff7e8;color:#8a5b00}
+.login-loading{display:inline-block;width:17px;height:17px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-3px;margin-right:7px}
+.login-foot{display:flex;justify-content:center;gap:5px;margin-top:16px;font-size:13px;color:var(--muted)}
+.login-foot button{border:0;background:none;color:var(--blue);font-weight:800;padding:0}
+.fig-stage-label{position:absolute;left:26px;top:22px;color:#93a0b3;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+@media(max-width:900px){
+  .landing-grid{grid-template-columns:1fr}.landing-copy h1{font-size:44px}.landing-demo{min-height:350px}
+  .float-card{left:8px}.landing-features{grid-template-columns:1fr}
+}
+
+@media print{
+  body{background:#fff}
+  .header,.no-print,.footerbar,.pagination{display:none!important}
+  .container{max-width:none;padding:0}
+  .panel{box-shadow:none;border:0}
+  .screen{display:none!important}
+  #results.active{display:block!important}
+  @page{size:A4;margin:14mm}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="brand"><div class="brandmark">C</div>COBECO</div>
+    <nav class="nav">
+      <button onclick="go('landing')" id="n-landing" class="active">Início</button>
+      <button onclick="go('builder')" id="n-builder">Nova lista</button>
+      <button onclick="go('lists')" id="n-lists">Minhas listas</button>
+      <button onclick="go('providers')" id="n-providers">Fornecedores</button>
+      <button onclick="go('profile')" id="n-profile">Perfil</button>
+      <button onclick="handleAuthNav()" id="authBtn" class="auth-chip">Entrar</button>
+    </nav>
+  </header>
+
+
+  <!-- LANDING / FIGMA HOME -->
+  <main id="landing" class="screen active landing">
+    <div class="landing-shell">
+      <div class="landing-grid">
+        <section class="landing-copy">
+          <div class="eyebrow"><span class="eyebrow-dot"></span> compras mais inteligentes</div>
+          <h1>Compare preços. <span>Economize de verdade.</span></h1>
+          <p>Crie sua lista de compras em poucos minutos, compare fornecedores por preço e disponibilidade e escolha a melhor opção para o seu bolso.</p>
+          <div class="landing-actions">
+            <button class="landing-primary" onclick="go('builder')">Criar minha lista</button>
+            <button class="secondary" onclick="go('login')">Entrar na minha conta</button>
+          </div>
+          <div class="landing-features">
+            <div class="feature-mini"><strong>Lista rápida</strong><span>Adicione produtos do catálogo e ajuste quantidades em segundos.</span></div>
+            <div class="feature-mini"><strong>Comparação clara</strong><span>Veja preço total, disponibilidade e itens ausentes por fornecedor.</span></div>
+            <div class="feature-mini"><strong>Sem cadastro obrigatório</strong><span>Crie e exporte sua lista antes mesmo de entrar na conta.</span></div>
+          </div>
+        </section>
+        <section class="landing-demo" aria-label="Prévia de comparação">
+          <div class="demo-window">
+            <div class="demo-head">
+              <div><strong>Comparação da sua lista</strong><div class="muted" style="font-size:12px;margin-top:4px">4 produtos · 3 fornecedores</div></div>
+              <div class="demo-dots"><i></i><i></i><i></i></div>
+            </div>
+            <div class="demo-list">
+              <div class="demo-row"><div><strong>Mercado Econômico</strong><br><span>100% disponível</span></div><b>R$ 184,90</b></div>
+              <div class="demo-row"><div><strong>SuperMais</strong><br><span>92% disponível</span></div><b>R$ 176,50</b></div>
+              <div class="demo-row"><div><strong>Compra Fácil</strong><br><span>84% disponível</span></div><b>R$ 169,30</b></div>
+            </div>
+            <div class="demo-total"><span><small>Menor preço</small><br><strong>R$ 169,30</strong></span><span class="badge green">Economize 8%</span></div>
+          </div>
+          <div class="float-card"><span class="muted" style="font-size:12px">economia estimada</span><br><b>R$ 15,60</b></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- BUILDER / RF07 -->
+  <main id="builder" class="screen">
+    <div class="container">
+      <section class="hero">
+        <div>
+          <span class="badge blue">Comparador inteligente</span>
+          <h1>Crie sua lista e compare preços.</h1>
+          <p>Monte sua lista de compras, selecione fornecedores e encontre rapidamente a opção com melhor custo e disponibilidade.</p>
+        </div>
+        <div class="hero-card">
+          <div><small>Economia estimada com comparação</small><div class="stat">até 18%</div></div>
+          <small>Protótipo funcional COBECO</small>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-h">
+          <div><strong>Lista de compras</strong><div class="muted" style="font-size:13px;margin-top:3px">Adicione produtos do catálogo.</div></div>
+          <span class="badge blue" id="memoryBadge">Em memória</span>
+        </div>
+        <div class="panel-b">
+          <div class="field" style="margin-bottom:16px">
+            <label>Nome da lista</label>
+            <input id="listName" class="input" value="Compras do mês">
+          </div>
+          <div class="grid2">
+            <div class="field autocomplete">
+              <label>Produto</label>
+              <input id="search" class="input" placeholder="Digite para buscar..." autocomplete="off">
+              <div id="menu" class="menu"></div>
+            </div>
+            <div class="field">
+              <label>Quantidade</label>
+              <input id="qty" class="input" type="number" min="1" max="9999" value="1">
+            </div>
+            <button class="primary" onclick="addItem()">Adicionar item</button>
+          </div>
+        </div>
+        <div id="itemsWrap"></div>
+        <div class="footerbar">
+          <div class="count" id="count">0 produtos · 0 unidades</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="secondary" onclick="exportCSV()">Exportar CSV</button>
+            <button class="secondary" onclick="saveList()">Salvar lista</button>
+            <button class="success" id="compareBtn" onclick="go('providers')" disabled>Comparar preços</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- REGISTER / RF01 -->
+  <main id="register" class="screen">
+    <div class="auth-layout">
+      <div class="auth-left">
+        <span class="badge green" style="width:max-content">COBECO</span>
+        <h1 style="font-size:44px;margin:18px 0 12px">Economize com inteligência.</h1>
+        <p style="max-width:560px;line-height:1.6;opacity:.92">Crie sua conta para salvar listas, comparar fornecedores e manter seu histórico de compras organizado.</p>
+      </div>
+      <div class="auth-right">
+        <div class="authcard">
+          <h2>Criar conta</h2>
+          <p class="muted">Preencha seus dados para começar.</p>
+          <div id="regMsg" class="msg"></div>
+          <div class="stack">
+            <div class="field"><label>Username</label><input id="regUser" class="input" maxlength="30" placeholder="3 a 30 caracteres alfanuméricos"></div>
+            <div class="field"><label>Nome</label><input id="regName" class="input" placeholder="Seu nome"></div>
+            <div class="field"><label>Email</label><input id="regEmail" class="input" type="email" placeholder="voce@exemplo.com"></div>
+            <div class="field"><label>Senha</label><input id="regPass" class="input" type="password" oninput="updatePasswordRules()"></div>
+            <div class="password-rules" id="pwdRules">
+              <div class="rule no" data-rule="len">• mínimo 8 caracteres</div>
+              <div class="rule no" data-rule="upper">• 1 letra maiúscula</div>
+              <div class="rule no" data-rule="num">• 1 número</div>
+              <div class="rule no" data-rule="spec">• 1 caractere especial</div>
+            </div>
+            <div class="field"><label>Confirmar senha</label><input id="regPass2" class="input" type="password"></div>
+            <div class="field"><label>Pergunta de segurança</label>
+              <select id="regQuestion" class="select">
+                <option value="">Selecione</option>
+                <option>Qual era o nome do seu primeiro animal de estimação?</option>
+                <option>Qual é o nome da sua cidade natal?</option>
+                <option>Qual era o nome da sua escola de infância?</option>
+              </select>
+            </div>
+            <div class="field"><label>Resposta</label><input id="regAnswer" class="input"></div>
+            <button class="primary" onclick="registerUser()">Criar conta</button>
+            <button class="secondary" onclick="go('login')">Já tenho conta</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- LOGIN / RF02 + FIGMA TELAS 1–5 -->
+  <main id="login" class="screen">
+    <div class="fig-auth-stage">
+      <div class="fig-stage-label">Autenticação · estados 1–5</div>
+      <div class="fig-auth-card">
+        <div class="fig-auth-logo"><div class="brandmark">C</div> COBECO</div>
+        <h2 style="margin:0 0 7px">Entre na sua conta</h2>
+        <p class="muted" style="margin:0">Acesse suas listas e comparações salvas.</p>
+
+        <div class="auth-state-strip" aria-hidden="true">
+          <i id="stateDot1" class="on"></i><i id="stateDot2"></i><i id="stateDot3"></i><i id="stateDot4"></i><i id="stateDot5"></i>
+        </div>
+
+        <div id="loginPageMsg"></div>
+
+        <div class="stack">
+          <div class="field"><label>Username</label><input id="loginUser" class="input" autocomplete="username" placeholder="Digite seu username"></div>
+          <div class="field"><label>Senha</label><input id="loginPass" class="input" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+          <button class="primary" id="loginPageBtn" onclick="doLogin(false)">Entrar</button>
+          <button class="ghost" id="recoverLinkBtn" onclick="go('recover')">Esqueci minha senha</button>
+        </div>
+
+        <div class="login-foot">Ainda não possui uma conta? <button onclick="go('register')">Criar conta</button></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- RECOVERY / RF04 -->
+  <main id="recover" class="screen">
+    <div class="container">
+      <div class="authcard" style="margin:0 auto">
+        <h2>Recuperar senha</h2>
+        <p class="muted">Recuperação por pergunta de segurança.</p>
+        <div class="stepper"><div class="step active" id="s1"></div><div class="step" id="s2"></div><div class="step" id="s3"></div></div>
+        <div id="recoverMsg" class="msg"></div>
+        <div id="recoverStep1" class="stack">
+          <div class="field"><label>Username</label><input id="recUser" class="input"></div>
+          <button class="primary" onclick="recoverFind()">Continuar</button>
+        </div>
+        <div id="recoverStep2" class="stack hidden">
+          <div class="field"><label>Pergunta</label><input id="recQuestion" class="input" readonly></div>
+          <div class="field"><label>Resposta</label><input id="recAnswer" class="input"></div>
+          <div class="muted" style="font-size:12px">Máximo de 3 tentativas.</div>
+          <button class="primary" onclick="recoverValidate()">Validar resposta</button>
+        </div>
+        <div id="recoverStep3" class="stack hidden">
+          <div class="field"><label>Nova senha</label><input id="recPass" class="input" type="password"></div>
+          <div class="field"><label>Confirmar nova senha</label><input id="recPass2" class="input" type="password"></div>
+          <button class="primary" onclick="recoverReset()">Alterar senha</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- LISTS / RF09 RF10 RF11 -->
+  <main id="lists" class="screen">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:16px">
+        <div><h1 style="margin:0">Minhas listas</h1><p class="muted">Listas salvas, ordenadas da mais recente para a mais antiga.</p></div>
+        <button class="primary" onclick="startNewList()">+ Nova lista</button>
+      </div>
+      <section class="panel">
+        <div id="listsWrap"></div>
+        <div class="pagination" id="pagination"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- PROVIDERS / RF12 RF13 -->
+  <main id="providers" class="screen">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:20px">
+        <div><h1 style="margin:0 0 8px">Escolha os fornecedores</h1><div class="muted">Selecione pelo menos dois para comparar.</div></div>
+        <button class="success" id="providerCompareBtn" onclick="compare()">Comparar preços</button>
+      </div>
+      <section class="panel">
+        <div class="panel-b">
+          <div class="range-row">
+            <strong>Disponibilidade mínima</strong>
+            <input id="range" type="range" min="0" max="100" value="0" oninput="filterProviders()">
+            <span id="rangeVal" class="badge blue">0%</span>
+          </div>
+          <div id="providerGrid" class="providers"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- RESULTS / RF14 RF15 RF17 -->
+  <main id="results" class="screen">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:18px;gap:16px">
+        <div><h1 style="margin:0 0 8px">Comparação de preços</h1><div class="muted" id="resultSummary">Resultados ordenados pelo menor preço.</div></div>
+        <div class="row-actions no-print">
+          <button class="secondary" onclick="go('providers')">Editar fornecedores</button>
+          <button class="secondary" onclick="exportCSV()">Exportar CSV</button>
+          <button class="secondary" onclick="window.print()">Imprimir</button>
+        </div>
+      </div>
+      <section class="panel">
+        <div id="compareLoading" class="loading hidden"><span class="spinner"></span><div style="margin-top:10px">Calculando orçamento...</div></div>
+        <div id="resultsWrap">
+          <table class="table">
+            <thead><tr><th>Fornecedor</th><th>Disponibilidade</th><th>Itens disponíveis</th><th>Ausentes</th><th>Preço total</th></tr></thead>
+            <tbody id="resultBody"></tbody>
+          </table>
+          <div class="panel-b" style="padding-top:14px"><span class="badge warn">Atenção</span> <span class="muted" style="font-size:13px">O menor preço pode não incluir todos os itens da sua lista.</span></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- PROFILE / RF05 RF06 -->
+  <main id="profile" class="screen">
+    <div class="container">
+      <h1>Meu perfil</h1>
+      <section class="panel">
+        <div class="panel-b profile-card">
+          <div class="avatar" id="profileAvatar">U</div>
+          <div>
+            <div id="profileMsg" class="msg"></div>
+            <div class="grid-two">
+              <div class="field"><label>Username</label><input id="profUser" class="input" readonly></div>
+              <div class="field"><label>Nome</label><input id="profName" class="input"></div>
+              <div class="field"><label>Email</label><input id="profEmail" class="input"></div>
+              <div class="field"><label>Senha atual</label><input id="profOldPass" type="password" class="input" placeholder="Obrigatória para salvar alterações"></div>
+              <div class="field"><label>Nova senha (opcional)</label><input id="profNewPass" type="password" class="input"></div>
+              <div class="field"><label>Confirmar nova senha</label><input id="profNewPass2" type="password" class="input"></div>
+            </div>
+            <div style="margin-top:18px"><button class="primary" onclick="saveProfile()">Salvar alterações</button></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<!-- SAVE LOGIN MODAL -->
+<div id="modalback" class="modalback" onclick="if(event.target===this)closeLoginModal()">
+  <div class="modal">
+    <h2>Entre para salvar sua lista</h2>
+    <p>Sua lista continuará aqui enquanto você faz login.</p>
+    <div id="loginMsg" class="msg"></div>
+    <div class="stack">
+      <div class="field"><label>Username</label><input id="modalUser" class="input"></div>
+      <div class="field"><label>Senha</label><input id="modalPass" class="input" type="password"></div>
+      <button class="primary" id="modalLoginBtn" onclick="doLogin(true)">Entrar e salvar</button>
+      <button class="secondary" onclick="goRegisterFromModal()">Criar conta</button>
+      <button class="ghost" onclick="goRecoverFromModal()">Esqueci minha senha</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div id="confirmBack" class="modalback">
+  <div class="modal">
+    <h2 id="confirmTitle">Confirmar</h2>
+    <p id="confirmText"></p>
+    <div class="row-actions">
+      <button class="secondary" onclick="closeConfirm()">Cancelar</button>
+      <button class="danger" id="confirmActionBtn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+const PRODUCTS = [
+ {id:1,name:'Arroz 5kg',cat:'Alimentos',unit:'pacote'},
+ {id:2,name:'Feijão Carioca 1kg',cat:'Alimentos',unit:'pacote'},
+ {id:3,name:'Leite Integral 1L',cat:'Bebidas',unit:'unidade'},
+ {id:4,name:'Café 500g',cat:'Alimentos',unit:'pacote'},
+ {id:5,name:'Açúcar Refinado 1kg',cat:'Mercearia',unit:'pacote'},
+ {id:6,name:'Óleo de Soja 900ml',cat:'Mercearia',unit:'garrafa'},
+ {id:7,name:'Macarrão Espaguete 500g',cat:'Alimentos',unit:'pacote'},
+ {id:8,name:'Detergente 500ml',cat:'Limpeza',unit:'garrafa'},
+ {id:9,name:'Sabão em Pó 1kg',cat:'Limpeza',unit:'pacote'},
+ {id:10,name:'Farinha de Trigo 1kg',cat:'Mercearia',unit:'pacote'},
+ {id:11,name:'Manteiga 200g',cat:'Laticínios',unit:'unidade'},
+ {id:12,name:'Queijo Mussarela 500g',cat:'Laticínios',unit:'pacote'}
+];
+
+const PROVIDERS = [
+ {id:1,name:'Mercado Econômico',avail:100,base:184.90,missing:[]},
+ {id:2,name:'SuperMais',avail:92,base:176.50,missing:['Queijo Mussarela 500g']},
+ {id:3,name:'Compra Fácil',avail:84,base:169.30,missing:['Queijo Mussarela 500g','Manteiga 200g']},
+ {id:4,name:'Mega Mercado',avail:78,base:161.40,missing:['Leite Integral 1L','Manteiga 200g','Detergente 500ml']},
+ {id:5,name:'BomPreço',avail:65,base:158.90,missing:['Café 500g','Óleo de Soja 900ml','Manteiga 200g','Queijo Mussarela 500g']}
+];
+
+const state = {
+  currentListId:null,
+  list:[],
+  selectedProduct:null,
+  selectedProviders:new Set([1,2]),
+  users: JSON.parse(localStorage.getItem('cobeco_users')||'null') || [
+    {id:1,username:'cobeco',name:'Usuário COBECO',email:'cobeco@demo.com',password:'Cobeco@123',question:'Qual é o nome da sua cidade natal?',answer:'maua'}
+  ],
+  currentUser: JSON.parse(sessionStorage.getItem('cobeco_user')||'null'),
+  savedLists: JSON.parse(localStorage.getItem('cobeco_lists')||'[]'),
+  lockouts: JSON.parse(localStorage.getItem('cobeco_lockouts')||'{}'),
+  loginAttempts: JSON.parse(localStorage.getItem('cobeco_attempts')||'{}'),
+  recoveryUser:null,
+  recoveryAttempts:0,
+  page:1
+};
+
+function persistUsers(){localStorage.setItem('cobeco_users',JSON.stringify(state.users))}
+function persistLists(){localStorage.setItem('cobeco_lists',JSON.stringify(state.savedLists))}
+function persistAuthMeta(){localStorage.setItem('cobeco_lockouts',JSON.stringify(state.lockouts));localStorage.setItem('cobeco_attempts',JSON.stringify(state.loginAttempts))}
+function toast(text){const el=document.createElement('div');el.className='toast';el.textContent=text;document.getElementById('toastWrap').appendChild(el);setTimeout(()=>el.remove(),2800)}
+function showMsg(id,text,type='err'){const el=document.getElementById(id);el.className='msg show '+type;el.textContent=text}
+function clearMsg(id){const el=document.getElementById(id);el.className='msg';el.textContent=''}
+
+function go(id){
+  if((id==='lists'||id==='profile') && !state.currentUser){go('login');toast('Faça login para acessar esta área.');return}
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const target=document.getElementById(id); if(!target) return; target.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  const n=document.getElementById('n-'+id); if(n)n.classList.add('active');
+  if(id==='lists')renderSavedLists();
+  if(id==='providers')renderProviders();
+  if(id==='profile')renderProfile();
+  if(id==='login'){setTimeout(()=>{setLoginVisualState(1);setLoginLoading(false)},0)}
+  updateAuthUI();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateAuthUI(){
+  const b=document.getElementById('authBtn');
+  b.textContent=state.currentUser?'Sair':'Entrar';
+  document.getElementById('memoryBadge').textContent=state.currentUser?'Conta autenticada':'Em memória';
+}
+function handleAuthNav(){
+  if(state.currentUser){logout()}else{go('login')}
+}
+function logout(){
+  state.currentUser=null;sessionStorage.removeItem('cobeco_user');state.currentListId=null;updateAuthUI();go('landing');toast('Sessão encerrada.')
+}
+
+const search=document.getElementById('search'), menu=document.getElementById('menu');
+search.addEventListener('input',()=>{
+ const q=search.value.toLowerCase().trim();
+ const m=PRODUCTS.filter(p=>p.name.toLowerCase().includes(q)).slice(0,6);
+ menu.innerHTML=m.map(p=>`<div onclick="choose(${p.id})"><strong>${p.name}</strong><br><small>${p.cat}</small></div>`).join('');
+ menu.classList.toggle('open',q.length>0&&m.length>0);
+ state.selectedProduct=null;
+});
+document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete'))menu.classList.remove('open')});
+function choose(id){state.selectedProduct=PRODUCTS.find(p=>p.id===id);search.value=state.selectedProduct.name;menu.classList.remove('open')}
+function clampQty(v){return Math.max(1,Math.min(9999,parseInt(v)||1))}
+function addItem(){
+  if(!state.selectedProduct){toast('Selecione um produto existente no catálogo.');return}
+  const q=clampQty(document.getElementById('qty').value);
+  const x=state.list.find(i=>i.product.id===state.selectedProduct.id);
+  if(x)x.qty=Math.min(9999,x.qty+q); else state.list.push({product:state.selectedProduct,qty:q});
+  search.value='';document.getElementById('qty').value=1;state.selectedProduct=null;renderItems();
+}
+function renderItems(){
+  const wrap=document.getElementById('itemsWrap');
+  if(!state.list.length){
+    wrap.innerHTML='<div class="empty">Sua lista ainda está vazia. Adicione ao menos 1 item.</div>';
+    document.getElementById('count').textContent='0 produtos · 0 unidades';
+    document.getElementById('compareBtn').disabled=true; return;
+  }
+  wrap.innerHTML=`<table class="table"><thead><tr><th>Produto</th><th>Categoria</th><th>Qtd.</th><th>Ações</th></tr></thead><tbody>${state.list.map(i=>`<tr>
+    <td><strong>${i.product.name}</strong><div class="muted" style="font-size:12px">${i.product.unit}</div></td>
+    <td>${i.product.cat}</td>
+    <td><input class="input" style="width:88px;height:36px" type="number" min="1" max="9999" value="${i.qty}" onchange="setQty(${i.product.id},this.value)"></td>
+    <td><button class="danger" onclick="requestRemove(${i.product.id})">Remover</button></td>
+  </tr>`).join('')}</tbody></table>`;
+  const total=state.list.reduce((a,b)=>a+b.qty,0);
+  document.getElementById('count').textContent=`${state.list.length} produtos · ${total} unidades`;
+  document.getElementById('compareBtn').disabled=false;
+}
+function setQty(id,v){const x=state.list.find(i=>i.product.id===id);if(x)x.qty=clampQty(v);renderItems()}
+function requestRemove(id){
+  const item=state.list.find(i=>i.product.id===id);
+  openConfirm('Remover item',`Deseja remover "${item.product.name}" da lista?`,()=>{state.list=state.list.filter(i=>i.product.id!==id);renderItems();closeConfirm()})
+}
+
+function exportCSV(){
+  const bom='\uFEFF', d=new Date(), y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  let csv='Produto;Categoria;Unidade;Quantidade\n'+state.list.map(i=>`${i.product.name};${i.product.cat};${i.product.unit};${i.qty}`).join('\n');
+  const blob=new Blob([bom+csv],{type:'text/csv;charset=utf-8'}), url=URL.createObjectURL(blob), a=document.createElement('a');
+  a.href=url;a.download=`lista_${y}${m}${day}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);
+}
+function saveList(){
+  if(!state.list.length){toast('Adicione ao menos 1 item antes de salvar.');return}
+  if(!state.currentUser){openLoginModal();return}
+  const name=document.getElementById('listName').value.trim()||'Lista sem nome';
+  const now=new Date().toISOString();
+  if(state.currentListId){
+    const idx=state.savedLists.findIndex(x=>x.id===state.currentListId && x.userId===state.currentUser.id);
+    if(idx>=0){state.savedLists[idx]={...state.savedLists[idx],name,items:structuredClone(state.list),updatedAt:now};}
+  }else{
+    state.currentListId=Date.now();
+    state.savedLists.push({id:state.currentListId,userId:state.currentUser.id,name,items:structuredClone(state.list),createdAt:now,updatedAt:now,deletedAt:null});
+  }
+  persistLists();toast('Lista salva com sucesso.');
+}
+
+function renderSavedLists(){
+  const all=state.savedLists.filter(x=>x.userId===state.currentUser.id&&!x.deletedAt).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  const per=20,totalPages=Math.max(1,Math.ceil(all.length/per)); if(state.page>totalPages)state.page=totalPages;
+  const rows=all.slice((state.page-1)*per,state.page*per);
+  const wrap=document.getElementById('listsWrap');
+  if(!rows.length){wrap.innerHTML='<div class="empty">Nenhuma lista salva ainda.</div>';document.getElementById('pagination').innerHTML='';return}
+  wrap.innerHTML=`<table class="table"><thead><tr><th>Nome</th><th>Itens</th><th>Criada em</th><th>Atualizada em</th><th>Ações</th></tr></thead><tbody>${rows.map(l=>`<tr>
+    <td><strong>${l.name}</strong></td><td>${l.items.length}</td>
+    <td>${fmtDate(l.createdAt)}</td><td>${fmtDate(l.updatedAt)}</td>
+    <td><div class="row-actions">
+      <button class="secondary" onclick="openSavedList(${l.id})">Abrir</button>
+      <button class="secondary" onclick="openSavedList(${l.id},true)">Editar</button>
+      <button class="danger" onclick="requestDeleteList(${l.id})">Excluir</button>
+    </div></td>
+  </tr>`).join('')}</tbody></table>`;
+  document.getElementById('pagination').innerHTML=Array.from({length:totalPages},(_,i)=>`<button class="${state.page===i+1?'active':''}" onclick="state.page=${i+1};renderSavedLists()">${i+1}</button>`).join('');
+}
+function fmtDate(v){return new Date(v).toLocaleDateString('pt-BR')}
+function openSavedList(id){const l=state.savedLists.find(x=>x.id===id&&x.userId===state.currentUser.id&&!x.deletedAt);if(!l)return;state.currentListId=l.id;state.list=structuredClone(l.items);document.getElementById('listName').value=l.name;renderItems();go('builder')}
+function requestDeleteList(id){openConfirm('Excluir lista','Esta lista será removida das suas listas salvas.',()=>{const l=state.savedLists.find(x=>x.id===id&&x.userId===state.currentUser.id);if(l)l.deletedAt=new Date().toISOString();persistLists();renderSavedLists();closeConfirm();toast('Lista excluída.')})}
+function startNewList(){state.currentListId=null;state.list=[];document.getElementById('listName').value='Nova lista';renderItems();go('builder')}
+
+function openLoginModal(){document.getElementById('modalback').classList.add('open');clearMsg('loginMsg')}
+function closeLoginModal(){document.getElementById('modalback').classList.remove('open')}
+function goRegisterFromModal(){closeLoginModal();go('register')}
+function goRecoverFromModal(){closeLoginModal();go('recover')}
+
+function getLockRemaining(username){
+  const until=state.lockouts[username]||0;
+  const rem=until-Date.now();
+  if(rem<=0){if(until){delete state.lockouts[username];persistAuthMeta()}return 0}
+  return rem;
+}
+function lockText(ms){const s=Math.ceil(ms/1000),m=Math.floor(s/60),sec=String(s%60).padStart(2,'0');return `${m}:${sec}`}
+function setLoginVisualState(n,message='',type=''){
+  for(let i=1;i<=5;i++){
+    const d=document.getElementById('stateDot'+i);
+    if(d)d.classList.toggle('on',i<=n);
+  }
+  const box=document.getElementById('loginPageMsg');
+  if(box){
+    if(message){
+      box.className='inline-alert '+(type||'error');
+      box.textContent=message;
+    }else{
+      box.className='';
+      box.textContent='';
+    }
+  }
+}
+function setLoginLoading(loading){
+  const btn=document.getElementById('loginPageBtn');
+  if(!btn)return;
+  btn.disabled=loading;
+  btn.innerHTML=loading?'<span class="login-loading"></span>Entrando…':'Entrar';
+}
+function doLogin(fromModal){
+  const userEl=document.getElementById(fromModal?'modalUser':'loginUser');
+  const passEl=document.getElementById(fromModal?'modalPass':'loginPass');
+  const msgId=fromModal?'loginMsg':'loginPageMsg';
+  const username=userEl.value.trim(),password=passEl.value;
+  const rem=getLockRemaining(username);
+
+  if(!fromModal){
+    if(rem){
+      setLoginVisualState(5,`Conta temporariamente bloqueada. Tente novamente em ${lockText(rem)}.`,'warn');
+      return;
+    }
+    setLoginVisualState(2);
+    setLoginLoading(true);
+  }else if(rem){
+    showMsg(msgId,`Conta temporariamente bloqueada. Tente novamente em ${lockText(rem)}.`,'warn');return;
+  }
+
+  setTimeout(()=>{
+    const user=state.users.find(u=>u.username===username&&u.password===password);
+
+    if(user){
+      state.currentUser={id:user.id,username:user.username,name:user.name,email:user.email};
+      sessionStorage.setItem('cobeco_user',JSON.stringify(state.currentUser));
+      state.loginAttempts[username]=0;persistAuthMeta();updateAuthUI();
+      if(!fromModal){setLoginVisualState(1);setLoginLoading(false)}
+      if(fromModal){closeLoginModal();saveList()}else{go('builder');toast('Login realizado com sucesso.')}
+      return;
+    }
+
+    state.loginAttempts[username]=(state.loginAttempts[username]||0)+1;
+    const attempts=state.loginAttempts[username];
+
+    if(attempts>=6){
+      state.lockouts[username]=Date.now()+15*60*1000;
+      state.loginAttempts[username]=0;
+      if(fromModal) showMsg(msgId,'Conta temporariamente bloqueada por 15 minutos.','warn');
+      else setLoginVisualState(5,'Conta temporariamente bloqueada por 15 minutos.','warn');
+    }else if(attempts===5){
+      if(fromModal) showMsg(msgId,'Credenciais inválidas. Mais uma tentativa inválida bloqueará temporariamente o acesso.','warn');
+      else setLoginVisualState(4,'Credenciais inválidas. Mais uma tentativa inválida bloqueará temporariamente o acesso.','warn');
+    }else{
+      if(fromModal) showMsg(msgId,'Credenciais inválidas.','err');
+      else setLoginVisualState(3,'Credenciais inválidas.','error');
+    }
+
+    if(!fromModal)setLoginLoading(false);
+    persistAuthMeta();
+  },650);
+}
+
+function validPassword(p){return p.length>=8&&/[A-Z]/.test(p)&&/\d/.test(p)&&/[^A-Za-z0-9]/.test(p)}
+function updatePasswordRules(){
+  const p=document.getElementById('regPass').value;
+  const tests={len:p.length>=8,upper:/[A-Z]/.test(p),num:/\d/.test(p),spec:/[^A-Za-z0-9]/.test(p)};
+  Object.entries(tests).forEach(([k,v])=>{const el=document.querySelector(`[data-rule="${k}"]`);el.className='rule '+(v?'ok':'no')});
+}
+function registerUser(){
+  clearMsg('regMsg');
+  const username=document.getElementById('regUser').value.trim(),name=document.getElementById('regName').value.trim(),email=document.getElementById('regEmail').value.trim();
+  const p=document.getElementById('regPass').value,p2=document.getElementById('regPass2').value,q=document.getElementById('regQuestion').value,a=document.getElementById('regAnswer').value.trim();
+  if(!/^[A-Za-z0-9]{3,30}$/.test(username))return showMsg('regMsg','Username deve ter 3 a 30 caracteres alfanuméricos.','err');
+  if(state.users.some(u=>u.username.toLowerCase()===username.toLowerCase()))return showMsg('regMsg','Username já está em uso.','err');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return showMsg('regMsg','Informe um email válido.','err');
+  if(state.users.some(u=>u.email.toLowerCase()===email.toLowerCase()))return showMsg('regMsg','Email já cadastrado.','err');
+  if(!validPassword(p))return showMsg('regMsg','A senha não atende aos requisitos.','err');
+  if(p!==p2)return showMsg('regMsg','A confirmação de senha não corresponde.','err');
+  if(!q||!a)return showMsg('regMsg','Pergunta e resposta de segurança são obrigatórias.','err');
+  state.users.push({id:Date.now(),username,name,email,password:p,question:q,answer:a.toLowerCase()});persistUsers();showMsg('regMsg','Conta criada com sucesso.','ok');setTimeout(()=>go('login'),700);
+}
+
+function recoverFind(){
+  clearMsg('recoverMsg');
+  const u=state.users.find(x=>x.username===document.getElementById('recUser').value.trim());
+  if(!u)return showMsg('recoverMsg','Usuário não encontrado.','err');
+  state.recoveryUser=u;state.recoveryAttempts=0;document.getElementById('recQuestion').value=u.question;
+  document.getElementById('recoverStep1').classList.add('hidden');document.getElementById('recoverStep2').classList.remove('hidden');document.getElementById('s2').classList.add('active');
+}
+function recoverValidate(){
+  const ans=document.getElementById('recAnswer').value.trim().toLowerCase();
+  if(ans===state.recoveryUser.answer){document.getElementById('recoverStep2').classList.add('hidden');document.getElementById('recoverStep3').classList.remove('hidden');document.getElementById('s3').classList.add('active');clearMsg('recoverMsg');return}
+  state.recoveryAttempts++; if(state.recoveryAttempts>=3){showMsg('recoverMsg','Limite de 3 tentativas atingido. Reinicie o processo.','warn');document.getElementById('recoverStep2').classList.add('hidden');document.getElementById('recoverStep1').classList.remove('hidden');state.recoveryUser=null}else showMsg('recoverMsg',`Resposta incorreta. Tentativas restantes: ${3-state.recoveryAttempts}.`,'err');
+}
+function recoverReset(){
+  const p=document.getElementById('recPass').value,p2=document.getElementById('recPass2').value;
+  if(!validPassword(p))return showMsg('recoverMsg','A nova senha não atende aos requisitos.','err');
+  if(p!==p2)return showMsg('recoverMsg','As senhas não coincidem.','err');
+  state.recoveryUser.password=p;persistUsers();showMsg('recoverMsg','Senha alterada com sucesso.','ok');setTimeout(()=>go('login'),700);
+}
+
+function renderProviders(){
+  const min=+document.getElementById('range').value;
+  document.getElementById('rangeVal').textContent=min+'%';
+  const visible=PROVIDERS.filter(p=>p.avail>=min);
+  document.getElementById('providerGrid').innerHTML=visible.map(p=>`<article class="provider ${state.selectedProviders.has(p.id)?'selected':''}" onclick="toggleProvider(${p.id})">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h3>${p.name}</h3><input type="checkbox" ${state.selectedProviders.has(p.id)?'checked':''} onclick="event.stopPropagation();toggleProvider(${p.id})"></div>
+    <div class="muted">${p.avail}% da lista disponível</div><div class="availability"><span style="width:${p.avail}%"></span></div>
+  </article>`).join('');
+  document.getElementById('providerCompareBtn').disabled=state.selectedProviders.size<2;
+}
+function toggleProvider(id){state.selectedProviders.has(id)?state.selectedProviders.delete(id):state.selectedProviders.add(id);renderProviders()}
+function filterProviders(){renderProviders()}
+
+const comparisonCache = new Map();
+function compare(){
+  if(state.selectedProviders.size<2){toast('Selecione pelo menos dois fornecedores.');return}
+  if(!state.list.length){toast('Sua lista está vazia.');go('builder');return}
+  go('results');
+  document.getElementById('compareLoading').classList.remove('hidden');document.getElementById('resultsWrap').classList.add('hidden');
+  const key=JSON.stringify({items:state.list.map(i=>[i.product.id,i.qty]),providers:[...state.selectedProviders].sort()});
+  const cached=comparisonCache.get(key);
+  if(cached&&Date.now()-cached.ts<5*60*1000){setTimeout(()=>renderComparison(cached.data),250);return}
+  const started=Date.now();
+  setTimeout(()=>{
+    const data=PROVIDERS.filter(p=>state.selectedProviders.has(p.id)).map(p=>{
+      const missing=state.list.filter(i=>p.missing.includes(i.product.name)).map(i=>i.product.name);
+      const available=state.list.length-missing.length;
+      const total=Math.max(1,state.list.reduce((s,i)=>s+i.qty,0));
+      const price=+(p.base*(0.65+total/Math.max(total,12)*0.35)).toFixed(2);
+      return {...p,missing,available,price};
+    }).sort((a,b)=>a.price-b.price);
+    comparisonCache.set(key,{ts:Date.now(),data});
+    renderComparison(data);
+  },Math.min(1200,Math.max(500,10000-(Date.now()-started))));
+}
+function renderComparison(data){
+  document.getElementById('compareLoading').classList.add('hidden');document.getElementById('resultsWrap').classList.remove('hidden');
+  document.getElementById('resultSummary').textContent=`${document.getElementById('listName').value} · ${state.list.length} produtos · ${data.length} fornecedores`;
+  document.getElementById('resultBody').innerHTML=data.map((p,idx)=>`<tr class="${idx===0?'best':''}">
+    <td><strong>${p.name}</strong>${idx===0?' <span class="badge green">Menor preço</span>':''}</td>
+    <td><span class="badge ${p.avail===100?'green':'blue'}">${p.avail}%</span></td>
+    <td>${p.available}/${state.list.length}</td>
+    <td>${p.missing.length?`<span class="tooltip" data-tip="${p.missing.join(', ')}">i</span> ${p.missing.length}`:'0'}</td>
+    <td class="price">R$ ${p.price.toFixed(2).replace('.',',')}</td>
+  </tr>`).join('');
+}
+
+function renderProfile(){
+  const full=state.users.find(u=>u.id===state.currentUser.id); if(!full)return;
+  document.getElementById('profUser').value=full.username;document.getElementById('profName').value=full.name;document.getElementById('profEmail').value=full.email;
+  document.getElementById('profileAvatar').textContent=(full.name||full.username).slice(0,1).toUpperCase();clearMsg('profileMsg');
+}
+function saveProfile(){
+  const full=state.users.find(u=>u.id===state.currentUser.id); if(!full)return;
+  const old=document.getElementById('profOldPass').value,name=document.getElementById('profName').value.trim(),email=document.getElementById('profEmail').value.trim(),np=document.getElementById('profNewPass').value,np2=document.getElementById('profNewPass2').value;
+  if(old!==full.password)return showMsg('profileMsg','Senha atual inválida.','err');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return showMsg('profileMsg','Email inválido.','err');
+  if(state.users.some(u=>u.id!==full.id&&u.email.toLowerCase()===email.toLowerCase()))return showMsg('profileMsg','Email já está em uso.','err');
+  if(np){if(!validPassword(np))return showMsg('profileMsg','A nova senha não atende aos requisitos.','err');if(np!==np2)return showMsg('profileMsg','A confirmação da nova senha não corresponde.','err');full.password=np}
+  full.name=name;full.email=email;state.currentUser={id:full.id,username:full.username,name:full.name,email:full.email};sessionStorage.setItem('cobeco_user',JSON.stringify(state.currentUser));persistUsers();showMsg('profileMsg','Perfil atualizado com sucesso.','ok');document.getElementById('profOldPass').value='';document.getElementById('profNewPass').value='';document.getElementById('profNewPass2').value='';
+}
+
+function openConfirm(title,text,fn){document.getElementById('confirmTitle').textContent=title;document.getElementById('confirmText').textContent=text;document.getElementById('confirmActionBtn').onclick=fn;document.getElementById('confirmBack').classList.add('open')}
+function closeConfirm(){document.getElementById('confirmBack').classList.remove('open')}
+
+renderItems();renderProviders();updateAuthUI();setLoginVisualState(1);
+</script>
+</body>
+</html>

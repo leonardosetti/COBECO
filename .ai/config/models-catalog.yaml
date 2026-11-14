@@ -1,0 +1,9 @@
+models_catalog:
+  primary: nvidia/nemotron-3-ultra
+  fallback: Qwen3-30B-A3B Q4_K_M
+  batch: Qwen 72B Q4_K_M
+  deprecated: Qwen3.8-27B Q4_K_M
+  context_configured: 128000
+  context_effective: 96000
+  output_max: 8192
+  performance_target: "NVIDIA NIM cloud - latency dependent on network"

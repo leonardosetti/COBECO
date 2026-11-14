@@ -1,0 +1,9 @@
+{
+  "task_id": "TA-0022",
+  "sender": "nexus-prime-ultimate",
+  "target": "agent-architect",
+  "action": "document",
+  "handoff": "HF-0022",
+  "kill_switch": "inherited",
+  "payload": "ADR canonicalization sweep: consolidate ADR artifacts under docs/decisoes/ per OKB v3.1 §3.2 and lst.txt canonical tree; quarantine stray docs/ADR-001-005.md (fabricated ONNX/microservices content) to docs/archive/apocrifo/md/; populate ADR-001..005 from authorized sources (commit dd3b087, OKB §2, NC-00 plano-cronograma §3.8) with version header scheme v1.0.X and unified index (registry of records) docs/decisoes/INDEX.md; flag ADR-005 as late regularization per OKB §2.3-2.4; reconcile ADR-006; no content invention — divergence register only."
+}

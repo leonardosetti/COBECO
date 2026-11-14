@@ -1,0 +1,104 @@
+<mxfile host="Electron" agent="COBECO MVP">
+  <diagram id="auth-state-machine" name="Máquina de Estado - Autenticação">
+    <mxGraphModel dx="2054" dy="847" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontColor=#1A237E;" value="&lt;b&gt;Máquina de Estado - Autenticação do Usuário&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#666&quot;&gt;Fluxo de Login, Cadastro e Sessão • 31/08/2026&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="800" x="400" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;aspect=fixed;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="92" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="idle" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=12;shadow=1;strokeWidth=2;" value="&lt;b&gt;Idle&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Não Autenticado&lt;/font&gt;" vertex="1">
+          <mxGeometry height="70" width="140" x="192" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="loading" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=12;shadow=1;strokeWidth=2;" value="&lt;b&gt;Loading&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Processando...&lt;/font&gt;" vertex="1">
+          <mxGeometry height="70" width="140" x="546" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="success" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=12;shadow=1;strokeWidth=2;" value="&lt;b&gt;Success&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Autenticado&lt;/font&gt;" vertex="1">
+          <mxGeometry height="70" width="140" x="846" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="error" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;fontSize=12;shadow=1;strokeWidth=2;" value="&lt;b&gt;Error&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Falha na Autenticação&lt;/font&gt;" vertex="1">
+          <mxGeometry height="70" width="140" x="546" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="redirect" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=12;shadow=1;strokeWidth=2;" value="&lt;b&gt;Redirect&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Redirecionando&lt;/font&gt;" vertex="1">
+          <mxGeometry height="70" width="140" x="1117" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="logout" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#455A64;fontSize=12;shadow=1;strokeWidth=2;" value="&lt;b&gt;Logout&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Sessão Encerrada&lt;/font&gt;" vertex="1">
+          <mxGeometry height="70" width="140" x="1117" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="end" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;aspect=fixed;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="1367" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="endCircle" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;aspect=fixed;strokeWidth=3;" value="" vertex="1">
+          <mxGeometry height="20" width="20" x="1372" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="t1" edge="1" parent="1" source="idle" style="endArrow=block;endFill=1;html=1;strokeColor=#1565C0;strokeWidth=2;fontSize=10;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="loading" value="submit(loginForm)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t2" edge="1" parent="1" source="loading" style="endArrow=block;endFill=1;html=1;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="success" value="[credenciais válidas]&lt;br&gt;gerarToken()">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t3" edge="1" parent="1" source="loading" style="endArrow=block;endFill=1;html=1;strokeColor=#C62828;strokeWidth=2;fontSize=10;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="error" value="[credenciais inválidas]&lt;br&gt;exibirErro()">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t4" edge="1" parent="1" source="success" style="endArrow=block;endFill=1;html=1;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="redirect" value="redirecionar()">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t5" edge="1" parent="1" source="redirect" style="endArrow=block;endFill=1;html=1;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="end" value="navegarDashboard()">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t6" edge="1" parent="1" source="error" style="endArrow=block;endFill=1;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=10;fontStyle=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" target="idle" value="retry()">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t7" edge="1" parent="1" source="success" style="endArrow=block;endFill=1;html=1;strokeColor=#455A64;strokeWidth=2;fontSize=10;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;libavoidRouting=1;" target="logout" value="logout()">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="916" y="320" />
+              <mxPoint x="1187" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t8" edge="1" parent="1" source="logout" style="endArrow=block;endFill=1;html=1;strokeColor=#455A64;strokeWidth=2;fontSize=10;fontStyle=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" target="idle" value="redirecionarLogin()">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="405" />
+              <mxPoint x="390" y="235" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t0" edge="1" parent="1" source="start" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="idle" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A237E;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontSize=12;shadow=1;strokeWidth=1.5;" value="&lt;b&gt;Legenda&lt;/b&gt;" vertex="1">
+          <mxGeometry height="150" width="300" x="100" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="20" width="30" x="120" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1t" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" value="Estado Inicial/Neutro" vertex="1">
+          <mxGeometry height="20" width="150" x="160" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="20" width="30" x="120" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2t" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" value="Estado de Processamento" vertex="1">
+          <mxGeometry height="20" width="150" x="160" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="20" width="30" x="120" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3t" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" value="Estado de Sucesso" vertex="1">
+          <mxGeometry height="20" width="150" x="160" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="20" width="30" x="120" y="820" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4t" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" value="Estado de Erro" vertex="1">
+          <mxGeometry height="20" width="150" x="160" y="820" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

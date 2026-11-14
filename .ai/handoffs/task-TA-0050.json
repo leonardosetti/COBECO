@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0050",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-compliance-governance",
+  "action": "consult",
+  "handoff": "HF-0606",
+  "payload": "consultar dominio compliance para spec-015-lgpd-produto-proposta (B.3); NAO emitir spec"
+}

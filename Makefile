@@ -1,0 +1,142 @@
+# COBECO MVP — Makefile
+# Comandos padronizados para desenvolvimento e deploy
+
+.PHONY: help up down logs build test lint seed seed-generate seed-expanded migrate shell clean
+
+# ============================================================
+# Variáveis
+# ============================================================
+COMPOSE = docker compose
+COMPOSE_DEV = docker compose -f docker-compose.yml -f docker-compose.override.yml
+BACKEND = $(COMPOSE_DEV) exec backend
+FRONTEND = $(COMPOSE_DEV) exec frontend
+
+# ============================================================
+# Help
+# ============================================================
+help: ## Mostra esta ajuda
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+# ============================================================
+# Desenvolvimento
+# ============================================================
+up: ## Sobe containers em modo desenvolvimento (hot reload)
+	$(COMPOSE_DEV) up -d --build
+
+down: ## Para e remove containers
+	$(COMPOSE_DEV) down -v
+
+logs: ## Mostra logs de todos os serviços
+	$(COMPOSE_DEV) logs -f
+
+logs-backend: ## Logs apenas do backend
+	$(COMPOSE_DEV) logs -f backend
+
+logs-frontend: ## Logs apenas do frontend
+	$(COMPOSE_DEV) logs -f frontend
+
+logs-db: ## Logs apenas do banco
+	$(COMPOSE_DEV) logs -f db
+
+shell-backend: ## Abre shell no container backend
+	$(BACKEND) sh
+
+shell-db: ## Abre shell MySQL
+	$(COMPOSE_DEV) exec db mysql -u cobeco -pcobeco cobeco
+
+# ============================================================
+# Build & Test
+# ============================================================
+build: ## Build das imagens (produção)
+	$(COMPOSE) build --no-cache
+
+test: ## Roda testes do backend (pytest)
+	$(BACKEND) pytest -v --tb=short
+
+test-cov: ## Roda testes com cobertura
+	$(BACKEND) pytest --cov=src --cov-report=term-missing --cov-fail-under=80
+
+lint: ## Lint do backend (ruff)
+	$(BACKEND) ruff check src tests
+
+lint-fix: ## Lint com auto-fix
+	$(BACKEND) ruff check --fix src tests
+
+format: ## Formata código (black)
+	$(BACKEND) black src tests
+
+type-check: ## Type checking (mypy)
+	$(BACKEND) mypy src
+
+# ============================================================
+# Banco de Dados
+# ============================================================
+migrate: ## Roda migrações Alembic
+	$(BACKEND) alembic upgrade head
+
+migrate-create: ## Cria nova migração (usage: make migrate-create MSG="descrição")
+	$(BACKEND) alembic revision --autogenerate -m "$(MSG)"
+
+seed: ## Executa seed do banco (dados mockados)
+	$(COMPOSE_DEV) exec -T db mysql -u cobeco -pcobeco cobeco < backend/seed.sql
+
+seed-generate: ## Regenera o seed baseline a partir da fonte canônica
+	python3 backend/scripts/generate_seed.py --profile baseline --output backend/seed.sql
+
+seed-expanded: ## Carrega o seed expandido (requer SEED_EXPANDED_CONFIRM=SIM)
+	@test "$(SEED_EXPANDED_CONFIRM)" = "SIM" || (echo "Use: make seed-expanded SEED_EXPANDED_CONFIRM=SIM"; exit 1)
+	@tmp=$$(mktemp); trap 'rm -f "$$tmp"' EXIT; python3 backend/scripts/generate_seed.py --profile expanded --output "$$tmp"; $(COMPOSE_DEV) exec -T db mysql -u cobeco -pcobeco cobeco < "$$tmp"
+
+db-reset: ## Reset completo do banco (CUIDADO: apaga dados)
+	$(COMPOSE_DEV) down -v
+	$(COMPOSE_DEV) up -d db
+	@echo "Aguardando DB ficar saudável..."
+	@sleep 10
+	$(MAKE) migrate
+	$(MAKE) seed
+
+# ============================================================
+# Frontend
+# ============================================================
+frontend-build: ## Build do frontend (Tailwind)
+	$(FRONTEND) npm run build
+
+frontend-dev: ## Inicia watch do Tailwind
+	$(FRONTEND) npm run dev
+
+# ============================================================
+# Produção
+# ============================================================
+prod-up: ## Sobe stack de produção
+	$(COMPOSE) up -d --build
+
+prod-down: ## Para stack de produção
+	$(COMPOSE) down
+
+prod-logs: ## Logs produção
+	$(COMPOSE) logs -f
+
+# ============================================================
+# Utilitários
+# ============================================================
+clean: ## Remove containers, volumes, redes e imagens não usadas
+	$(COMPOSE_DEV) down -v --rmi local --remove-orphans
+	docker system prune -f
+
+ps: ## Lista containers
+	$(COMPOSE_DEV) ps
+
+health: ## Verifica saúde dos serviços
+	@curl -sf http://localhost:8080/health && echo "Proxy: OK" || echo "Proxy: FALHOU"
+	@curl -sf http://localhost:8080/v1/health && echo "Backend: OK" || echo "Backend: FALHOU"
+
+# ============================================================
+# CI/CD Local (simula pipeline)
+# ============================================================
+ci: lint test ## Roda pipeline CI localmente
+	@echo "✅ CI passou!"
+
+# ============================================================
+# Default
+# ============================================================
+default: help

@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0048",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-devops",
+  "action": "consult",
+  "handoff": "HF-0604",
+  "payload": "consultar dominio devops para spec-011-cicd-pipeline-v1 (B.7) e spec-014 (B.10)"
+}
