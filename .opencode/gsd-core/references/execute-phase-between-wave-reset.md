@@ -1,3 +1,40 @@
+---
+id: execute-phase-between-wave-reset
+type: execute-phase
+title: EXECUTE PHASE — Wave
+version: reset
+status: rascunho
+canonical: false
+canonical_slug: wave
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: general
+layer: artifact
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 7b. **Pre-wave dependency check (waves 2+ only):**
     Before wave N+1, run `gsd_run query verify.key-links {phase_dir}/{plan}-PLAN.md` for each upcoming plan.
     If any PRIOR-wave artifact link fails, present:

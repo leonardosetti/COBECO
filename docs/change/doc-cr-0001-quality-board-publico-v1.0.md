@@ -1,3 +1,40 @@
+---
+id: doc-cr-0001-quality-board-publico-v1.0
+type: doc-cr
+title: DOC CR — Quality Board Publico
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: quality-board-publico
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: change
+layer: change
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # CR-001 — Quality Board Público (Página de Qualidade, Testes e Saúde do App)
 
 **Documento:** Change Request (Solicitação de Mudança)  

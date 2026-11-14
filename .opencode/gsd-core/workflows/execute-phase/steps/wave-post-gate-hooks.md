@@ -1,3 +1,40 @@
+---
+id: wave-post-gate--hooks
+type: wave-post
+title: 'WAVE POST — '
+version: hooks
+status: rascunho
+canonical: false
+canonical_slug: ''
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: general
+layer: artifact
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # Wave-Post Gate Hook Evaluation (execute:wave:post)
 
 Detail for the `kind == "gate"` dispatch at the execute:wave:post hook point, extracted from the host step 5.7 (#3606 — the host file carries a frozen pre-phase-6 byte ceiling, #1168; evaluation detail lives here).

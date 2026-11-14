@@ -50,7 +50,7 @@ class TestLoginUseCase:
     async def test_executar_sucesso(self, usecase, mock_repo, criar_token_fn):
         usuario = Usuario(
             id=1,
-            nome_usuario="usuario_teste",
+            nome_usuario="usuarioteste",
             email=Email("teste@exemplo.com"),
             nome="Usuário Teste",
             senha_hash=SenhaHash("hashed_Senha@123"),
@@ -60,7 +60,7 @@ class TestLoginUseCase:
         mock_repo.buscar_por_nome_usuario = AsyncMock(return_value=usuario)
 
         input_data = LoginInput(
-            nome_usuario="usuario_teste",
+            nome_usuario="usuarioteste",
             senha="Senha@123",
         )
 
@@ -98,7 +98,7 @@ class TestLoginUseCase:
         mock_repo.buscar_por_nome_usuario = AsyncMock(return_value=usuario)
 
         input_data = LoginInput(
-            nome_usuario="usuario_teste",
+            nome_usuario="usuarioteste",
             senha="Senha@123",
         )
 
@@ -137,7 +137,7 @@ class TestLoginUseCase:
         )
 
         input_data = LoginInput(
-            nome_usuario="usuario_teste",
+            nome_usuario="usuarioteste",
             senha="Senha@123",
         )
 
@@ -156,7 +156,7 @@ class TestLoginUseCase:
         mock_repo.buscar_por_nome_usuario = AsyncMock(return_value=usuario)
 
         input_data = LoginInput(
-            nome_usuario="usuario_teste",
+            nome_usuario="usuarioteste",
             senha="Senha@123",
         )
 

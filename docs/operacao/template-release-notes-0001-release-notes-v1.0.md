@@ -1,3 +1,40 @@
+---
+id: template-release-notes-0001-release-notes-v1.0
+type: template-release
+title: TEMPLATE RELEASE — 0001 Release Notes
+version: v1.0
+status: rascunho
+canonical: false
+canonical_slug: 0001-release-notes
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: gh-sig:owner:leonardosetti:14863508
+ratified_at: '2026-11-14'
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: general
+layer: artifact
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # Release Notes — COBECO v<X.Y.Z>
 
 **Versão:** v<X.Y.Z> (SemVer)  

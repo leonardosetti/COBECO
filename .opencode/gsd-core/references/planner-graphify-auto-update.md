@@ -1,3 +1,40 @@
+---
+id: planner-graphify-auto--update
+type: planner-graphify
+title: 'PLANNER GRAPHIFY — '
+version: update
+status: rascunho
+canonical: false
+canonical_slug: ''
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: general
+layer: artifact
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # Graphify Auto-Update — Status Surfacing
 
 > Documents how `gsd-planner` and `gsd-phase-researcher` surface the opt-in graphify auto-update state (issue #3347). The status surface lives inside `graphifyStatus()` in `gsd-core/bin/lib/graphify.cjs`; no planner-side prompt changes are required.

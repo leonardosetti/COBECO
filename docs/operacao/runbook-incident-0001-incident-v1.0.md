@@ -1,3 +1,40 @@
+---
+id: runbook-incident-0001-incident-v1.0
+type: runbook-incident
+title: RUNBOOK INCIDENT — Incident
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: incident
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: operation
+layer: runbook
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # Runbook — Resposta a Incidentes (COBECO MVP)
 
 **Documento:** Runbook Operacional  

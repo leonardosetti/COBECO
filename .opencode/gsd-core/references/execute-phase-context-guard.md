@@ -1,3 +1,40 @@
+---
+id: execute-phase-context--guard
+type: execute-phase
+title: 'EXECUTE PHASE — '
+version: guard
+status: rascunho
+canonical: false
+canonical_slug: ''
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: general
+layer: artifact
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 0. **Context exhaustion guard — `context_guard` (BEFORE spawning, #1452):**
 
    Before spawning any agents for this wave, self-assess context pressure using the

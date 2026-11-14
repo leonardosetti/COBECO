@@ -1,18 +1,39 @@
 ---
-id: ai-mcp-inventario
-title: Inventário de MCPs — COBECO
-type: conhecimento
-version: 1.0.0
-status: ativo
-owner: agent-project-analyst
-derived-from:
-- .ai/mcp/doc-mcp-0001-inventario-v1.0.md (adequado à norma em 2026-11-05)
-last-revised: '2026-11-05'
-lgpd-class: n/a
-tags:
-- mcp
-- docs
-- adequado-a-norma
+id: doc-mcp-0001-inventario-v1.0
+type: doc-mcp
+title: DOC MCP — Inventario
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: inventario
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: specs
+layer: spec
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
 # Inventário de MCPs — COBECO
 

@@ -1,25 +1,40 @@
 ---
-id: ai-specs-spec-016-seed-segmentos-volume-v1-spec
-title: 'SPEC spec-016 — seed-segmentos-volume-v1 — Segmentos de mercado e perfis de seed'
-type: spec
-version: 1.1.0
-status: implementado
-owner: config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0
-derived-from:
-- req-func-0001-requisitos-funcionais-canon.md (RNF08)
-- req-use-case-0001-casos-de-uso-canon.md (UC02-UC06, UC23-UC26)
-- doc-arch-0001-camada-de-dados-canon.md (v3.2)
-- constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md (Arts. 3.1-3.5, 7.7, 8.1-8.2, 12.7, 19.3)
-last-revised: '2026-11-14'
-lgpd-class: PII-sintético
-tags:
-- specs
-- seed
-- dados
-- testes
-- rf08
+id: spec-seed-0001-seed-segmentos-volume-v1.0
+type: spec-seed
+title: SPEC SEED — Seed Segmentos Volume
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: seed-segmentos-volume
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: specs
+layer: spec
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
-
 ---
 spec_id: spec-016
 specname: seed-segmentos-volume-v1

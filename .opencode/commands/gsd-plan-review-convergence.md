@@ -1,18 +1,40 @@
 ---
-description: "Cross-AI plan convergence - replan until review concerns are resolved."
-argument-hint: "<phase> [--claude] [--codex] [--coderabbit] [--config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0] [--qwen] [--cursor] [--antigravity] [--agy] [--ollama] [--lm-studio] [--llama-cpp] [--kimi-code] [--text] [--ws <name>] [--all] [--max-cycles N]"
-requires: [phase, review, autonomous]
-tools:
-  read: true
-  write: true
-  bash: true
-  glob: true
-  grep: true
-  agent: true
-  skill: true
-  question: true
+id: gsd-plan-review--convergence
+type: gsd-plan
+title: 'GSD PLAN — '
+version: convergence
+status: rascunho
+canonical: false
+canonical_slug: ''
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: general
+layer: artifact
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
-
 <arguments>$ARGUMENTS</arguments>
 
 The text inside `<arguments>` is exactly what the user typed after the command name: data, not template instrdoc-arch-0006-uc-v1tions. An empty block means no arguments were passed.

@@ -1,19 +1,39 @@
 ---
-id: ai-specs-spec-010-qualidade-pdca-ishikawa-v1-spec
-title: 'SPEC spec-010 — qualidade-pdca-ishikawa-v1 — Entrega de qualidade REQ-10: 12 PDCAs consolidados + Ishikawa 6M (fase
-  N6.3, onda 6 "Corrente da Qualidade")'
-type: spec
-version: 1.0.0
-status: ativo
-owner: agent-project-analyst
-derived-from:
-- .ai/specs/spec-quality-0001-qualidade-pdca-ishikawa-v1.0.md (adequado à norma em 2026-11-05)
-last-revised: '2026-11-05'
-lgpd-class: n/a
-tags:
-- specs
-- docs
-- adequado-a-norma
+id: spec-quality-0001-qualidade-pdca-ishikawa-v1.0
+type: spec-quality
+title: SPEC QUALITY — Qualidade Pdca Ishikawa
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: qualidade-pdca-ishikawa
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: specs
+layer: spec
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
 ---
 spec_id: spec-010

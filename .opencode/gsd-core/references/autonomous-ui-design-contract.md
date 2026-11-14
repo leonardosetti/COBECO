@@ -1,3 +1,40 @@
+---
+id: autonomous-ui-design--contract
+type: autonomous-ui
+title: 'AUTONOMOUS UI — '
+version: contract
+status: rascunho
+canonical: false
+canonical_slug: ''
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: general
+layer: artifact
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # UI Design Contract (Frontend Phases) — Autonomous Mode
 
 Step 3a.5 of `/gsd-autonomous`: resolve whether the current phase needs a UI-SPEC.md generated before planning, and generate one via active `plan:pre` step hooks if so. Non-blocking for every answer it gets — proceeds to step 3b (Plan) — except a gate that could not look (below), which is surfaced and stops.

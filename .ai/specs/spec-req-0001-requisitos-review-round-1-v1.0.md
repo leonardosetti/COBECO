@@ -1,18 +1,39 @@
 ---
-id: ai-specs-spec-002-requisitos-review-round-1-spec
-title: req-func-0001-requisitos-funcionais-canon REVIEW — ROUND 1 (WS-3 · COBECO)
-type: spec
-version: 1.0.0
-status: ativo
-owner: agent-project-analyst
-derived-from:
-- .ai/specs/spec-req-0001-requisitos-review-round-1-v1.0.md (adequado à norma em 2026-11-05)
-last-revised: '2026-11-05'
-lgpd-class: n/a
-tags:
-- specs
-- docs
-- adequado-a-norma
+id: spec-req-0001-requisitos-review-round-1-v1.0
+type: spec-req
+title: SPEC REQ — Requisitos Review Round 1
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: requisitos-review-round-1
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: specs
+layer: spec
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
 ---
 spec_id: spec-002

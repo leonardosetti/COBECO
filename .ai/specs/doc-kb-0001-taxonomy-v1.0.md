@@ -1,24 +1,40 @@
 ---
-id: ai-specs-kb-taxonomy
-title: Taxonomia unificada da base de conhecimento COBECO (SSOT particionado ortogonal)
-type: spec
-version: 1.1.0
-status: ativo
-owner: agent-sdd-specialist
-derived-from:
-- TA-0007 (analyst), TA-0008 (pm), TA-0009 (architect), TA-0010 (auditor AUD-2610-01) via .ai/agents/config-ledger-0001-ledger-v1.0.yaml
-- constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md Art. 2, Art. 4.6, Art. 6.1, Art. 9, principios P-04/P-05/P-08
-- docs/decisoes/ADR-004-tasklists.md
-- docs/decisoes/ADR-005-freeze.md (escopo congelado Arts. 1.2-1.3)
-- .config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-sdd-specialist.md (custodia .ai/specs)
-last-revised: '2026-10-23'
-lgpd-class: n/a
-tags:
-- specs
-- docs
-- adequado-a-norma
+id: doc-kb-0001-taxonomy-v1.0
+type: doc-kb
+title: DOC KB — Taxonomy
+version: v1.0
+status: ratificado
+canonical: false
+canonical_slug: taxonomy
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: specs
+layer: knowledge-base
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
 ---
-
 # 1. METADADOS DE VERSIONAMENTO (frontmatter YAML obrigatorio)
 
 Todo artefato de conhecimento (novo ou migrado) carrega YAML frontmatter com EXATAMENTE estes 10 campos:

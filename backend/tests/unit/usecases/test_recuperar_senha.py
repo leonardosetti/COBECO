@@ -48,7 +48,7 @@ class TestRecuperarSenhaUseCase:
         try:
             usuario = Usuario(
                 id=1,
-                nome_usuario="usuario_teste",
+                nome_usuario="usuarioteste",
                 email=Email("teste@exemplo.com"),
                 nome="Usuário Teste",
                 senha_hash=SenhaHash("hashed_Senha@123"),
@@ -57,11 +57,11 @@ class TestRecuperarSenhaUseCase:
             )
             mock_repo.buscar_por_nome_usuario = AsyncMock(return_value=usuario)
 
-            token = await usecase.solicitar_reset("usuario_teste")
+            token = await usecase.solicitar_reset("usuarioteste")
 
             # Em modo email, não retorna token (deve enviar por email)
             assert token is None
-            mock_repo.buscar_por_nome_usuario.assert_called_once_with("usuario_teste")
+            mock_repo.buscar_por_nome_usuario.assert_called_once_with("usuarioteste")
         finally:
             settings.RECOVERY_MODE = original_mode
 
@@ -74,7 +74,7 @@ class TestRecuperarSenhaUseCase:
         try:
             usuario = Usuario(
                 id=1,
-                nome_usuario="usuario_teste",
+                nome_usuario="usuarioteste",
                 email=Email("teste@exemplo.com"),
                 nome="Usuário Teste",
                 senha_hash=SenhaHash("hashed_Senha@123"),
@@ -83,12 +83,12 @@ class TestRecuperarSenhaUseCase:
             )
             mock_repo.buscar_por_nome_usuario = AsyncMock(return_value=usuario)
 
-            token = await usecase.solicitar_reset("usuario_teste")
+            token = await usecase.solicitar_reset("usuarioteste")
 
             # Em modo log, retorna token
             assert token is not None
             assert len(token) > 20  # token_urlsafe(32) gera ~43 chars
-            mock_repo.buscar_por_nome_usuario.assert_called_once_with("usuario_teste")
+            mock_repo.buscar_por_nome_usuario.assert_called_once_with("usuarioteste")
         finally:
             settings.RECOVERY_MODE = original_mode
 
@@ -110,7 +110,7 @@ class TestRecuperarSenhaUseCase:
         try:
             usuario = Usuario(
                 id=1,
-                nome_usuario="usuario_teste",
+                nome_usuario="usuarioteste",
                 email=Email("teste@exemplo.com"),
                 nome="Usuário Teste",
                 senha_hash=SenhaHash("hashed_Senha@123"),
@@ -122,7 +122,7 @@ class TestRecuperarSenhaUseCase:
 
             # Em modo log, aceita qualquer token (dev)
             result = await usecase.confirmar_reset(
-                "usuario_teste",
+                "usuarioteste",
                 "qualquer_token",
                 "NovaSenha@456",
             )
@@ -141,7 +141,7 @@ class TestRecuperarSenhaUseCase:
         try:
             usuario = Usuario(
                 id=1,
-                nome_usuario="usuario_teste",
+                nome_usuario="usuarioteste",
                 email=Email("teste@exemplo.com"),
                 nome="Usuário Teste",
                 senha_hash=SenhaHash("hashed_Senha@123"),
@@ -152,7 +152,7 @@ class TestRecuperarSenhaUseCase:
             mock_repo.atualizar = AsyncMock(return_value=usuario)
 
             result = await usecase.confirmar_reset(
-                "usuario_teste",
+                "usuarioteste",
                 "Maria",  # resposta de segurança
                 "NovaSenha@456",
             )
@@ -170,7 +170,7 @@ class TestRecuperarSenhaUseCase:
         try:
             usuario = Usuario(
                 id=1,
-                nome_usuario="usuario_teste",
+                nome_usuario="usuarioteste",
                 email=Email("teste@exemplo.com"),
                 nome="Usuário Teste",
                 senha_hash=SenhaHash("hashed_Senha@123"),
@@ -181,7 +181,7 @@ class TestRecuperarSenhaUseCase:
 
             with pytest.raises(CredenciaisInvalidas):
                 await usecase.confirmar_reset(
-                    "usuario_teste",
+                    "usuarioteste",
                     "Resposta Errada",
                     "NovaSenha@456",
                 )
