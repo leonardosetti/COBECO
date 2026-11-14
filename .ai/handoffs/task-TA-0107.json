@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0107",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-digital-security",
+  "action": "harden",
+  "handoff": "HF-0107",
+  "payload": "Códigos de erro e logs verbatim por transição com timestamp e motivo: TASK_ID_INVALID, TARGET_NOT_PROMULGADO, SELF_DELEGATION, LAYER_MISMATCH, TIMEOUT_EXCEEDED, LOCK_ACQUIRE_FAILED, KILL_SWITCH, CONSTITUTIONAL_VIOLATION, DOD_MISSING, RETRY_EXHAUSTED. Logs PT-BR para humano, códigos EN. kill_switch: inherited"
+}

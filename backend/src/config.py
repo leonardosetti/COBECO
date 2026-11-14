@@ -60,10 +60,11 @@ class Settings(BaseSettings):
     PASSWORD_REQUIRE_SPECIAL: bool = True
     BCRYPT_ROUNDS: int = 12
 
-    # Recovery Mode (RF04)
+    # Recovery Mode (RF04) - SECURITY: default to "email" to avoid token logging
+    # "log" mode is only for development and logs recovery tokens to stdout
     RECOVERY_MODE: str = Field(
-        default="log",
-        description="Modo de recuperação de senha: 'log' (stdout) ou 'email'",
+        default="email",
+        description="Modo de recuperação de senha: 'email' (produção) ou 'log' (apenas dev)",
         pattern="^(log|email)$",
     )
 

@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0057",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-sdd-specialist",
+  "action": "spec",
+  "handoff": "HF-0613",
+  "payload": "emitir spec-012-rastreabilidade-prompts-sdd-v1.spec.md — rastreabilidade de prompts (B.8)"
+}

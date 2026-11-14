@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0106",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-python-specialist",
+  "action": "implement",
+  "handoff": "HF-0106",
+  "payload": "Retry --retry N (padrão 3) com backoff 5s, 15s, 60s. Idempotência por task_id: antes de cada envio, ledger já tem task_id com dod=true ou terminal? Não reenvia; retorna parcela existente. Só retry se sem parcela e sem efeito colateral (verificar artifacts filesystem). Kill Switch ou violação constitucional → bloqueia retry, ERROR com código. kill_switch: inherited"
+}

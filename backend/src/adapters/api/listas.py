@@ -87,8 +87,13 @@ class ListaRepositoryImpl(ListaRepository):
             self.session.add(item_model)
 
         await self.session.flush()
-        await self.session.refresh(model)
-        return model
+        # Re-query with itens eager loaded
+        result = await self.session.execute(
+            select(ListaModel)
+            .options(selectinload(ListaModel.itens))
+            .where(ListaModel.id == model.id)
+        )
+        return result.scalar_one()
 
     async def buscar_por_id(self, lista_id: int, usuario_id: int):
         result = await self.session.execute(
@@ -124,6 +129,8 @@ class ListaRepositoryImpl(ListaRepository):
         # Paginação
         query = query.order_by(ListaModel.criado_em.desc())
         query = query.offset((pagina - 1) * por_pagina).limit(por_pagina)
+        # Eager load dos itens (total_itens) — evita lazy load fora do event loop
+        query = query.options(selectinload(ListaModel.itens))
 
         result = await self.session.execute(query)
         listas = result.scalars().all()
@@ -136,18 +143,18 @@ class ListaRepositoryImpl(ListaRepository):
             model.nome = lista.nome
             model.atualizado_em = datetime.now()
 
-            # Remove itens antigos
-            await self.session.execute(
-                select(ItemListaModel).where(ItemListaModel.lista_id == model.id)
-            )
-            # Adiciona novos itens
+            # Remove itens antigos (delete-orphan) antes de inserir os novos
+            # (flush intermediário evita violar uq_item_lista_produto)
+            model.itens.clear()
+            await self.session.flush()
+
             for item in lista.itens:
-                item_model = ItemListaModel(
+                model.itens.append(ItemListaModel(
                     lista_id=model.id,
                     produto_id=item.produto_id,
                     quantidade=item.quantidade,
-                )
-                self.session.add(item_model)
+                ))
+            await self.session.flush()
 
         return model
 

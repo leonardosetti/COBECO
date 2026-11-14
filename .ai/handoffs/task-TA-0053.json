@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0053",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-sdd-specialist",
+  "action": "spec",
+  "handoff": "HF-0609",
+  "payload": "emitir spec-008-frontend-web-responsive-v1.spec.md — frontend responsivo (B.1)"
+}

@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0055",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-sdd-specialist",
+  "action": "spec",
+  "handoff": "HF-0611",
+  "payload": "emitir spec-010-qualidade-pdca-ishikawa-v1.spec.md — qualidade (B.6)"
+}

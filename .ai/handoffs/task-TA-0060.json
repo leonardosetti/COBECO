@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0060",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-sdd-specialist",
+  "action": "spec",
+  "handoff": "HF-0616",
+  "payload": "emitir spec-015-lgpd-produto-proposta-v1.spec.md — LGPD de produto (B.3) como PROPOSTA"
+}

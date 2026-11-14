@@ -43,6 +43,7 @@ class CredenciaisInvalidas(DomainError):
 
 class RateLimitExcedido(DomainError):
     def __init__(self, minutos: int):
+        self.minutos = minutos
         super().__init__("RATE_LIMIT_EXCEDIDO", f"Tente novamente em {minutos} minutos")
 
 
@@ -81,6 +82,7 @@ class LoginOutput:
     refresh_token: str
     token_type: str = "bearer"
     expires_in: int = settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
+    usuario_id: int = 0
 
 
 @dataclass
@@ -176,6 +178,7 @@ class LoginUseCase:
         return LoginOutput(
             access_token=access_token,
             refresh_token=refresh_token,
+            usuario_id=usuario.id,
         )
 
 
@@ -190,7 +193,7 @@ class LogoutUseCase:
 
 
 class RecuperarSenhaUseCase:
-    """UC12 / RF04 — Recuperar Senha (pergunta segurança ou log)"""
+    """UC12 / RF04 — Recuperar Senha (pergunta de segurança ou token por email)"""
 
     def __init__(self, repo: UsuarioRepository, hash_senha_fn, rate_limiter_fn):
         self.repo = repo
@@ -198,22 +201,25 @@ class RecuperarSenhaUseCase:
         self.rate_limiter = rate_limiter_fn
 
     async def solicitar_reset(self, nome_usuario: str) -> Optional[str]:
-        """Retorna token se RECOVERY_MODE=log, None se pergunta segurança"""
-        await self.rate_limiter(nome_usuario, "recovery")
+        """Retorna token se modo email, None se pergunta de segurança"""
+        await self.rate_limiter(nome_usuario)
 
         usuario = await self.repo.buscar_por_nome_usuario(nome_usuario)
         if not usuario:
             # Mensagem genérica (não revela existência)
             return None
 
-        if settings.RECOVERY_MODE == "log":
-            # Gera token e loga no stdout do container
-            import secrets
-            token = secrets.token_urlsafe(32)
-            print(f"[RECOVERY_TOKEN] usuario={nome_usuario} token={token}")
-            return token
+        if settings.RECOVERY_MODE == "email":
+            # Em produção: enviar token por email
+            # Por enquanto, retorna None para forçar uso de pergunta de segurança
+            # TODO: Implementar envio de email real
+            return None
 
-        return None  # Fluxo via pergunta de segurança
+        # Modo "log" (apenas desenvolvimento) - retorna token mas NÃO loga
+        import secrets
+        token = secrets.token_urlsafe(32)
+        # SECURITY: NÃO logar token - usar store temporário em produção
+        return token
 
     async def confirmar_reset(
         self,
@@ -227,6 +233,7 @@ class RecuperarSenhaUseCase:
 
         if settings.RECOVERY_MODE == "log":
             # Validar token (implementar store temporário)
+            # Em dev: aceita qualquer token por simplicidade
             pass
         else:
             # Validar resposta da pergunta de segurança (bcrypt)
@@ -274,7 +281,7 @@ class GerenciarPerfilUseCase:
         if email and email != usuario.email.valor:
             if await self.repo.buscar_por_email(email):
                 raise UsuarioJaExiste("email")
-            usuario.email = email
+            usuario.email = Email(email)
 
         if nome:
             usuario.nome = nome
@@ -284,7 +291,7 @@ class GerenciarPerfilUseCase:
                 raise DomainError("SENHA_ATUAL_OBRIGATORIA", "Senha atual é obrigatória")
             if not self.verificar_senha(senha_atual, usuario.senha_hash.valor):
                 raise DomainError("SENHA_ATUAL_INCORRETA", "Senha atual incorreta")
-            usuario.senha_hash = self.hash_senha(nova_senha)
+            usuario.senha_hash = SenhaHash(self.hash_senha(nova_senha))
 
         return await self.repo.atualizar(usuario)
 
@@ -369,8 +376,8 @@ class EditarListaUseCase:
         self.produto_repo = produto_repo
 
     async def executar(self, lista_id: int, usuario_id: int, input: CriarListaInput) -> Lista:
-        lista = await self.repo.buscar_por_id(lista_id, usuario_id)
-        if not lista:
+        model = await self.repo.buscar_por_id(lista_id, usuario_id)
+        if not model:
             raise ListaNaoEncontrada()
 
         # Validar produtos
@@ -379,12 +386,16 @@ class EditarListaUseCase:
         if len(produtos) != len(produto_ids):
             raise DomainError("PRODUTO_NAO_ENCONTRADO", "Um ou mais produtos não existem")
 
-        lista.nome = input.nome
-        lista.itens = [
-            ItemLista(produto_id=item["produto_id"], quantidade=item["quantidade"])
-            for item in input.itens
-        ]
-        lista.atualizado_em = datetime.now()
+        # Entidade de domínio — o repositório aplica no modelo ORM
+        lista = Lista(
+            id=model.id,
+            usuario_id=model.usuario_id,
+            nome=input.nome,
+            itens=[
+                ItemLista(produto_id=item["produto_id"], quantidade=item["quantidade"])
+                for item in input.itens
+            ],
+        )
 
         return await self.repo.atualizar(lista)
 

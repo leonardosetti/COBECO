@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0045",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-dba",
+  "action": "consult",
+  "handoff": "HF-0601",
+  "payload": "consultar dominio de dados para spec-007-invoice-data-model-v1 (B.4)"
+}

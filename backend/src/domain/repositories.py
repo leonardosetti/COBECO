@@ -7,7 +7,8 @@ from decimal import Decimal
 from src.domain.entities import (
     Usuario, Categoria, Fornecedor, Produto,
     FornecedorProduto, Lista, ItemLista,
-    OrcamentoComparacao, FornecedorComparacao, ItemComparacao
+    OrcamentoComparacao, FornecedorComparacao, ItemComparacao,
+    Sessao
 )
 from src.config import settings
 
@@ -198,4 +199,39 @@ class ExportacaoRepository(ABC):
         - Formato A4
         - <5s para até 100 itens (RNF11)
         """
+        ...
+
+
+# ============================================================
+# Sessao Repository (RF02 - Refresh Tokens)
+# ============================================================
+class SessaoRepository(ABC):
+    @abstractmethod
+    async def criar(self, sessao: Sessao) -> Sessao:
+        """Cria nova sessão (refresh token)"""
+        ...
+
+    @abstractmethod
+    async def buscar_por_token_hash(self, token_hash: str) -> Optional[Sessao]:
+        """Busca sessão por hash do refresh token"""
+        ...
+
+    @abstractmethod
+    async def buscar_ativas_por_usuario(self, usuario_id: int) -> List[Sessao]:
+        """Lista sessões ativas do usuário"""
+        ...
+
+    @abstractmethod
+    async def revogar(self, sessao_id: int) -> bool:
+        """Revoga sessão (logout)"""
+        ...
+
+    @abstractmethod
+    async def revogar_todas_do_usuario(self, usuario_id: int) -> int:
+        """Revoga todas as sessões do usuário (logout everywhere)"""
+        ...
+
+    @abstractmethod
+    async def limpar_expiradas(self) -> int:
+        """Limpa sessões expiradas (job de manutenção)"""
         ...

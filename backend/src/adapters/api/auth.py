@@ -4,9 +4,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Cookie
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
-from datetime import timedelta
+from typing import Optional, List
+from datetime import datetime, timedelta
 import bcrypt
+import hashlib
 from jose import jwt
 from jose.exceptions import ExpiredSignatureError, JWTError
 
@@ -15,7 +16,7 @@ from src.domain.usecases import (
     CadastrarUsuarioUseCase, LoginUseCase, LogoutUseCase,
     RecuperarSenhaUseCase, VisualizarPerfilUseCase, GerenciarPerfilUseCase,
     CriarUsuarioInput, LoginInput, RecuperarSenhaInput,
-    UsuarioJaExiste, CredenciaisInvalidas, RateLimitExcedido,
+    UsuarioJaExiste, CredenciaisInvalidas, RateLimitExcedido, DomainError,
 )
 from src.domain.repositories import UsuarioRepository
 from src.adapters.db.models import UsuarioModel
@@ -204,9 +205,128 @@ def get_usuario_repo(session: AsyncSession = Depends(get_db)) -> UsuarioReposito
     return UsuarioRepositoryImpl(session)
 
 
+# ============================================================
+# Sessao Repository Implementation (Refresh Tokens)
+# ============================================================
+from src.domain.repositories import SessaoRepository
+from src.domain.entities import Sessao
+
+class SessaoRepositoryImpl(SessaoRepository):
+    def __init__(self, session: AsyncSession):
+        self.session = session
+
+    def _to_domain(self, model: "SessaoModel") -> Sessao:
+        from src.domain.entities import Sessao
+        return Sessao(
+            id=model.id,
+            usuario_id=model.usuario_id,
+            refresh_token_hash=model.refresh_token_hash,
+            user_agent=model.user_agent,
+            ip=model.ip,
+            criado_em=model.criado_em,
+            expira_em=model.expira_em,
+            revogada_em=model.revogada_em,
+        )
+
+    def _to_model(self, sessao: Sessao) -> "SessaoModel":
+        from src.adapters.db.models import SessaoModel
+        return SessaoModel(
+            id=sessao.id,
+            usuario_id=sessao.usuario_id,
+            refresh_token_hash=sessao.refresh_token_hash,
+            user_agent=sessao.user_agent,
+            ip=sessao.ip,
+            criado_em=sessao.criado_em,
+            expira_em=sessao.expira_em,
+            revogada_em=sessao.revogada_em,
+        )
+
+    async def criar(self, sessao: Sessao) -> Sessao:
+        model = self._to_model(sessao)
+        self.session.add(model)
+        await self.session.flush()
+        await self.session.refresh(model)
+        return self._to_domain(model)
+
+    async def buscar_por_token_hash(self, token_hash: str) -> Optional[Sessao]:
+        from src.adapters.db.models import SessaoModel
+        from sqlalchemy import select
+        result = await self.session.execute(
+            select(SessaoModel).where(SessaoModel.refresh_token_hash == token_hash)
+        )
+        model = result.scalar_one_or_none()
+        return self._to_domain(model) if model else None
+
+    async def buscar_ativas_por_usuario(self, usuario_id: int) -> List[Sessao]:
+        from src.adapters.db.models import SessaoModel
+        from sqlalchemy import select
+        from datetime import datetime
+        result = await self.session.execute(
+            select(SessaoModel).where(
+                SessaoModel.usuario_id == usuario_id,
+                SessaoModel.revogada_em.is_(None),
+                SessaoModel.expira_em > datetime.now()
+            )
+        )
+        return [self._to_domain(m) for m in result.scalars().all()]
+
+    async def revogar(self, sessao_id: int) -> bool:
+        from src.adapters.db.models import SessaoModel
+        from sqlalchemy import select
+        result = await self.session.execute(
+            select(SessaoModel).where(SessaoModel.id == sessao_id)
+        )
+        model = result.scalar_one_or_none()
+        if model:
+            model.revogada_em = datetime.now()
+            return True
+        return False
+
+    async def revogar_todas_do_usuario(self, usuario_id: int) -> int:
+        from src.adapters.db.models import SessaoModel
+        from sqlalchemy import select, update
+        from datetime import datetime
+        result = await self.session.execute(
+            select(SessaoModel).where(
+                SessaoModel.usuario_id == usuario_id,
+                SessaoModel.revogada_em.is_(None)
+            )
+        )
+        count = 0
+        for model in result.scalars().all():
+            model.revogada_em = datetime.now()
+            count += 1
+        return count
+
+    async def limpar_expiradas(self) -> int:
+        from src.adapters.db.models import SessaoModel
+        from sqlalchemy import select, update
+        from datetime import datetime
+        result = await self.session.execute(
+            select(SessaoModel).where(
+                SessaoModel.revogada_em.is_(None),
+                SessaoModel.expira_em <= datetime.now()
+            )
+        )
+        count = 0
+        for model in result.scalars().all():
+            model.revogada_em = datetime.now()
+            count += 1
+        return count
+
+
+def get_sessao_repo(session: AsyncSession = Depends(get_db)) -> SessaoRepository:
+    return SessaoRepositoryImpl(session)
+
+
 def hash_senha(senha: str) -> str:
     """Hash bcrypt com salt=12 (RF01)"""
     return bcrypt.hashpw(senha.encode(), bcrypt.gensalt(rounds=12)).decode()
+
+
+def hash_refresh_token(token: str) -> str:
+    """Hash SHA256 para refresh tokens (JWT são longos >72 bytes, bcrypt truncaria)"""
+    return hashlib.sha256(token.encode()).hexdigest()
 
 
 def verificar_senha(senha: str, hash: str) -> bool:
@@ -270,10 +390,10 @@ async def rate_limiter_login(nome_usuario: str):
     # Limpa tentativas antigas (>15min)
     _tentativas_login[chave] = [t for t in _tentativas_login[chave] if agora - t < 900]
 
-    if len(_tentativas_login[chave]) >= 6:
-        raise RateLimitExcedido(15)
-
+    # Adiciona a tentativa atual e verifica limite (máx 5 tentativas = 6ª bloqueia)
     _tentativas_login[chave].append(agora)
+    if len(_tentativas_login[chave]) > 5:
+        raise RateLimitExcedido(15)
 
 
 async def rate_limiter_recovery(nome_usuario: str):
@@ -335,9 +455,8 @@ async def login(
     response: Response,
     request: LoginRequest,
     repo: UsuarioRepository = Depends(get_usuario_repo),
+    sessao_repo: SessaoRepository = Depends(get_sessao_repo),
 ):
-    await rate_limiter_login(request.nome_usuario)
-
     usecase = LoginUseCase(repo, verificar_senha, criar_token, rate_limiter_login)
     try:
         tokens = await usecase.executar(LoginInput(
@@ -346,6 +465,17 @@ async def login(
         ))
     except CredenciaisInvalidas:
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
+    except RateLimitExcedido as e:
+        raise HTTPException(status_code=429, detail=f"Tente novamente em {e.minutos} minutos")
+
+    # Salva refresh token no banco (hash SHA256)
+    refresh_hash = hash_refresh_token(tokens.refresh_token)
+    sessao = Sessao(
+        usuario_id=tokens.usuario_id,
+        refresh_token_hash=refresh_hash,
+        expira_em=datetime.now() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
+    )
+    await sessao_repo.criar(sessao)
 
     # Set refresh token como httpOnly cookie (SameSite=Strict)
     response.set_cookie(
@@ -373,8 +503,15 @@ async def login(
 async def logout(
     response: Response,
     refresh_token: Optional[str] = Cookie(None),
+    sessao_repo: SessaoRepository = Depends(get_sessao_repo),
 ):
-    # Invalida refresh token (implementar blacklist em produção)
+    # Revoga sessão no banco se refresh token fornecido
+    if refresh_token:
+        refresh_hash = hash_refresh_token(refresh_token)
+        sessao = await sessao_repo.buscar_por_token_hash(refresh_hash)
+        if sessao:
+            await sessao_repo.revogar(sessao.id)
+
     response.delete_cookie(key="refresh_token", path="/", httponly=True, samesite="strict")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
@@ -429,12 +566,12 @@ async def confirmar_recuperacao_senha(
     summary="UC18/RF05 - Visualizar Perfil",
 )
 async def visualizar_perfil(
-    current_user: UsuarioModel = Depends(get_current_user),
+    current_user = Depends(get_current_user),  # Domain entity Usuario
 ):
     return PerfilResponse(
         id=current_user.id,
         nome_usuario=current_user.nome_usuario,
-        email=current_user.email,
+        email=current_user.email.valor,
         nome=current_user.nome,
         criado_em=current_user.criado_em.isoformat(),
     )

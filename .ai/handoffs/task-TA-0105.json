@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0105",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-sldc-process-specialist",
+  "action": "implement",
+  "handoff": "HF-0105",
+  "payload": "Watchdog nexus_watchdog.py (ou --watch no dispatcher): varre ledger a cada 60s. Tarefa com status=dispatched e (agora - timestamp) > T → ledger status=escalated, WARNING TIMEOUT_EXCEEDED, avisa humano PT-BR. Não trava: fecha terminal ou erro explícito. kill_switch: inherited"
+}

@@ -1,1 +1,1 @@
-# COBECO Backend — Integration Tests Package
+# Integration Tests Package

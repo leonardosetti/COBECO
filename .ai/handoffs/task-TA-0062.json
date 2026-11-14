@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0062",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-project-auditor",
+  "action": "audit",
+  "handoff": "HF-0618",
+  "payload": "auditar integridade total da rodada de criacao de specs 2026-11-03"
+}

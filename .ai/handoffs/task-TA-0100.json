@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0100",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-project-analyst",
+  "action": "analyze",
+  "handoff": "HF-0100",
+  "payload": "Shadow temporário da estrutura arquitetural do ecossistema agentes --> Smart SDDAI: mapear todos os scripts de controle (nexus_dispatcher, agent_communication_hub, mcp_nexus_*), registry, ledger, handoffs e topologia AGENT_TOPOLOGY. Relatório de estado atual em .ai/specs/shadow-estrutura-arquitetural.md. Será descartado após sucesso da implementação da arquitetura ótima. kill_switch: inherited"
+}

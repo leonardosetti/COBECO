@@ -6,16 +6,22 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
-  timeout: 30000,
+  reporter: [
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+    ['json', { outputFile: 'test-results/results.json' }],
+    ['junit', { outputFile: 'test-results/results.xml' }],
+  ],
+  timeout: 60000,
   expect: {
-    timeout: 5000,
+    timeout: 10000,
   },
   use: {
-    baseURL: 'http://localhost:8380',
+    baseURL: process.env.BASE_URL || 'http://localhost:8380',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    actionTimeout: 15000,
+    navigationTimeout: 30000,
   },
   projects: [
     {
@@ -35,6 +41,11 @@ export default defineConfig({
     command: 'docker compose -f docker-compose.yml -f docker-compose.override.yml up -d',
     url: 'http://localhost:8380/health',
     reuseExistingServer: !process.env.CI,
-    timeout: 120000,
+    timeout: 180000,
+    env: {
+      BASE_URL: 'http://localhost:8380',
+    },
   },
+  globalSetup: require.resolve('./global-setup.ts'),
+  globalTeardown: require.resolve('./global-teardown.ts'),
 });

@@ -10,6 +10,7 @@ from src.adapters.db.models import CategoriaModel, FornecedorModel, ProdutoModel
 from src.adapters.db.database import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
+from sqlalchemy.orm import selectinload
 
 router = APIRouter(tags=["Catálogo"])
 
@@ -108,7 +109,9 @@ class FornecedorRepositoryImpl(FornecedorRepository):
 
     async def buscar_por_id(self, fornecedor_id: int):
         result = await self.session.execute(
-            select(FornecedorModel).where(FornecedorModel.id == fornecedor_id)
+            select(FornecedorModel)
+            .options(selectinload(FornecedorModel.categorias))
+            .where(FornecedorModel.id == fornecedor_id)
         )
         return result.scalar_one_or_none()
 

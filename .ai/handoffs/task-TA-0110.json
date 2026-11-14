@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0110",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-backend-dev",
+  "action": "implement",
+  "handoff": "HF-0110",
+  "payload": "Implementar componente de delivery half-duplex que fecha o ciclo de mensagem: ler task JSON de .ai/handoffs/task-TA-*.json, entregar ao agente alvo, aguardar parcela de retorno com mesmo task_id, gravar parcela no ledger .ai/agents/ledger.yaml com schema fixo (task_id, sender, receiver, action, exit_status, timestamp, dod). Implementar lock por task_id (.ai/agents/locks/<task_id>.lock, fcntl flock, timeout 30s), watchdog timeout (escalada após T min sem parcela), retry com idempotência (task_id já com dod=true ou terminal não reenvia), códigos de erro verbatim (TASK_ID_INVALID, TARGET_NOT_PROMULGADO, SELF_DELEGATION, LAYER_MISMATCH, TIMEOUT_EXCEEDED, LOCK_ACQUIRE_FAILED, KILL_SWITCH, CONSTITUTIONAL_VIOLATION, DOD_MISSING, RETRY_EXHAUSTED) e logs PT-BR para humano/códigos EN. kill_switch: inherited"
+}

@@ -7,11 +7,29 @@
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
+    "test:ci": "playwright test --reporter=line",
+    "test:crud": "playwright test tests/crud/",
+    "test:cadastro": "playwright test tests/crud/cadastro.spec.ts",
+    "test:auth": "playwright test tests/crud/auth.spec.ts",
+    "test:perfil": "playwright test tests/crud/perfil.spec.ts",
+    "test:listas": "playwright test tests/crud/listas.spec.ts",
+    "test:itens": "playwright test tests/crud/itens.spec.ts",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
     "install": "playwright install --with-deps",
-    "report": "playwright show-report"
+    "report": "playwright show-report",
+    "report:html": "playwright show-report playwright-report",
+    "codegen": "playwright codegen",
+    "lint": "eslint . --ext .ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.47.0",
-    "@types/node": "^22.0.0"
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0",
+    "eslint": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint-plugin-playwright": "^1.5.0"
   }
 }

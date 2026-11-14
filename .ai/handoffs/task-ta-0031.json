@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0031",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-sdd-specialist",
+  "action": "spec",
+  "handoff": "HF-0031",
+  "payload": "Normalizacao integral do corpus .ai/specs: template canonico de corpo, slug spec_id-specname.spec.md, versionamento de todas, realocacao de nao-specs com integridade de referencia, MANIFEST e lista de specs pendentes (decreto GP/Humano 2026-11-02, Art. 5.1); payload em .ai/handoffs/HF-0031-specs-normalizacao.md"
+}

@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0058",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-sdd-specialist",
+  "action": "spec",
+  "handoff": "HF-0614",
+  "payload": "emitir spec-013-documentacao-tecnica-v1.spec.md — documentacao tecnica (B.9)"
+}

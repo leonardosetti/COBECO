@@ -306,3 +306,44 @@ class FornecedorProdutoModel(Base):
             estoque=self.estoque,
             ativo=self.ativo,
         )
+
+
+# ============================================================
+# Tabela: sessoes (Refresh Tokens / Session Management)
+# ============================================================
+class SessaoModel(Base):
+    __tablename__ = "sessoes"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    usuario_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("usuarios.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    refresh_token_hash: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
+    user_agent: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    ip: Mapped[Optional[str]] = mapped_column(String(45), nullable=True)  # IPv6 max 45 chars
+    criado_em: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=func.now()
+    )
+    expira_em: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
+    revogada_em: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+
+    # Relacionamento
+    usuario: Mapped["UsuarioModel"] = relationship("UsuarioModel")
+
+    __table_args__ = (
+        Index("ix_sessao_usuario_expira", "usuario_id", "expira_em"),
+        Index("ix_sessao_token_hash", "refresh_token_hash"),
+    )
+
+    def to_domain(self) -> "Sessao":
+        from src.domain.entities import Sessao
+        return Sessao(
+            id=self.id,
+            usuario_id=self.usuario_id,
+            refresh_token_hash=self.refresh_token_hash,
+            user_agent=self.user_agent,
+            ip=self.ip,
+            criado_em=self.criado_em,
+            expira_em=self.expira_em,
+            revogada_em=self.revogada_em,
+        )

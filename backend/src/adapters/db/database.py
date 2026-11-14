@@ -118,3 +118,14 @@ async def check_db_connection() -> bool:
         return True
     except Exception:
         return False
+
+
+# ============================================================
+# Module-level lazy accessors for backward compatibility
+# ============================================================
+def __getattr__(name: str):
+    if name == "engine":
+        return get_engine()
+    if name == "AsyncSessionLocal":
+        return get_async_session_local()
+    raise AttributeError(f"module 'src.adapters.db.database' has no attribute '{name}'")

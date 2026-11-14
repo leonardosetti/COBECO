@@ -190,6 +190,40 @@
     @apply inline-block w-5 h-5 border-2 border-gray-200 border-t-primary-600 rounded-full animate-spin;
   }
 
+  /* Skeleton variants */
+  .skeleton-text {
+    @apply skeleton h-4 w-full;
+  }
+
+  .skeleton-title {
+    @apply skeleton h-6 w-3/4;
+  }
+
+  .skeleton-card {
+    @apply skeleton h-32 w-full;
+  }
+
+  .skeleton-table-row {
+    @apply skeleton h-12 w-full;
+  }
+
+  .skeleton-avatar {
+    @apply skeleton w-10 h-10 rounded-full;
+  }
+
+  .skeleton-button {
+    @apply skeleton h-10 w-24 rounded-lg;
+  }
+
+  /* Loading overlay */
+  .loading-overlay {
+    @apply fixed inset-0 bg-white/80 z-50 flex items-center justify-center;
+  }
+
+  .loading-spinner {
+    @apply w-12 h-12 border-4 border-gray-200 border-t-primary-600 rounded-full animate-spin;
+  }
+
   /* Form groups */
   .form-group {
     @apply mb-4;
@@ -246,10 +280,11 @@
 
     body {
       @apply bg-white text-black;
+      font-size: 12pt;
     }
 
     .card {
-      @apply shadow-none border-gray-300;
+      @apply shadow-none border-gray-300 break-inside-avoid;
     }
 
     .table th {
@@ -262,6 +297,36 @@
       @apply bg-green-200 text-green-900 !important;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
+    }
+
+    /* Header repeat for tables */
+    thead {
+      display: table-header-group;
+    }
+
+    /* Page margins */
+    @page {
+      margin: 2cm;
+      size: A4;
+    }
+
+    /* Ensure content fits */
+    .max-w-6xl, .max-w-4xl, .max-w-2xl, .max-w-md {
+      max-width: none !important;
+    }
+
+    .container {
+      padding: 0 !important;
+    }
+
+    /* Hide scrollbars */
+    .overflow-y-auto, .overflow-x-auto {
+      overflow: visible !important;
+    }
+
+    /* Table borders */
+    .table, .table th, .table td {
+      border: 1px solid #999 !important;
     }
   }
 }

@@ -1,0 +1,16 @@
+rag_pipeline:
+  enabled: true
+  model: qwen30b-moe
+  cpu_optimized: true
+  cache_size: 256MB
+
+workflow:
+  dag_nodes:
+    - data_ingestion
+    - preprocessing
+    - vectorization
+    - query_handling
+  dependencies:
+    preprocessing: [data_ingestion]
+    vectorization: [preprocessing]
+    query_handling: [vectorization]

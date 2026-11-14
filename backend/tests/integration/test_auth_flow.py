@@ -3,7 +3,9 @@
 
 import pytest
 from httpx import AsyncClient, ASGITransport
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, async_sessionmaker, create_async_engine
+from sqlalchemy import text
+from pathlib import Path
 
 from src.main import app
 from src.adapters.db.database import get_db, init_db, close_db
@@ -14,14 +16,28 @@ from src.config import settings
 # ============================================================
 # Fixtures
 # ============================================================
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 async def test_app():
     """App FastAPI para testes de integração"""
-    # Override get_db para usar banco de teste
-    from src.adapters.db.database import engine, AsyncSessionLocal
+    # Cria engine e session factory específicos para testes (no event loop do teste)
+    test_engine: AsyncEngine = create_async_engine(
+        settings.DATABASE_URL,
+        echo=settings.DATABASE_ECHO,
+        pool_size=settings.DATABASE_POOL_SIZE,
+        max_overflow=settings.DATABASE_MAX_OVERFLOW,
+        pool_pre_ping=False,
+        pool_recycle=3600,
+    )
+    test_async_session_local = async_sessionmaker(
+        bind=test_engine,
+        class_=AsyncSession,
+        expire_on_commit=False,
+        autoflush=False,
+        autocommit=False,
+    )
     
     async def override_get_db():
-        async with AsyncSessionLocal() as session:
+        async with test_async_session_local() as session:
             try:
                 yield session
                 await session.commit()
@@ -34,15 +50,33 @@ async def test_app():
     app.dependency_overrides[get_db] = override_get_db
     
     # Inicializa tabelas
-    async with engine.begin() as conn:
+    async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    
+    # Carrega seed data
+    seed_path = Path("/app/seed.sql")
+    if seed_path.exists():
+        seed_sql = seed_path.read_text()
+        async with test_engine.begin() as conn:
+            # Split by semicolon and execute each non-empty, non-comment statement
+            for statement in seed_sql.split(';'):
+                stmt = statement.strip()
+                # Remove comment lines
+                lines = [line for line in stmt.split('\n') if not line.strip().startswith('--')]
+                stmt = '\n'.join(lines).strip()
+                if stmt:
+                    await conn.execute(text(stmt))
+    
+    # Store test session factory on app state for other fixtures
+    app.state.test_async_session_local = test_async_session_local
+    app.state.test_engine = test_engine
     
     yield app
     
-    # Cleanup
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-    await close_db()
+    # Cleanup — não derruba o schema: o banco é compartilhado com a app local
+    # (dados são limpos pelo seed.sql na próxima execução)
+    await test_engine.dispose()
+    app.dependency_overrides.clear()
 
 
 @pytest.fixture
@@ -53,11 +87,47 @@ async def client(test_app):
         yield ac
 
 
+@pytest.fixture(autouse=True)
+def clear_rate_limiter():
+    """Limpa rate limiters entre testes (estado é global no módulo auth)"""
+    from src.adapters.api.auth import _tentativas_login, _tentativas_recovery
+    _tentativas_login.clear()
+    _tentativas_recovery.clear()
+    yield
+    _tentativas_login.clear()
+    _tentativas_recovery.clear()
+
+
+@pytest.fixture(autouse=True)
+async def setup_user(client):
+    """Cria usuário base (testuser) usado pelos fixtures de auth"""
+    await client.post("/auth/cadastrar", json={
+        "nome_usuario": "testuser",
+        "email": "test@teste.com",
+        "nome": "Test User",
+        "senha": "Senha@123",
+        "confirmar_senha": "Senha@123",
+        "pergunta_seguranca": "Pet name?",
+        "resposta_seguranca": "Fluffy"
+    })
+    yield
+
+
+@pytest.fixture
+async def auth_headers(client):
+    """Faz login e retorna headers de autorização"""
+    login_resp = await client.post("/auth/login", json={
+        "nome_usuario": "testuser",
+        "senha": "Senha@123"
+    })
+    token = login_resp.json()["access_token"]
+    return {"Authorization": f"Bearer {token}"}
+
+
 @pytest.fixture
 async def db_session(test_app):
     """Sessão DB para setup/teardown direto"""
-    from src.adapters.db.database import AsyncSessionLocal
-    async with AsyncSessionLocal() as session:
+    async with test_app.state.test_async_session_local() as session:
         yield session
 
 
@@ -80,7 +150,7 @@ class TestCadastroUsuario:
             "resposta_seguranca": "Rex"
         }
         
-        response = await client.post("/v1/auth/cadastrar", json=payload)
+        response = await client.post("/auth/cadastrar", json=payload)
         
         assert response.status_code == 201
         data = response.json()
@@ -101,18 +171,18 @@ class TestCadastroUsuario:
         }
         
         # Primeiro cadastro
-        await client.post("/v1/auth/cadastrar", json=payload)
+        await client.post("/auth/cadastrar", json=payload)
         
         # Segundo cadastro com mesmo nome_usuario
         payload["email"] = "maria2@teste.com"
-        response = await client.post("/v1/auth/cadastrar", json=payload)
+        response = await client.post("/auth/cadastrar", json=payload)
         
         assert response.status_code == 400
         assert "Credenciais inválidas" in response.json()["detail"]
 
     @pytest.mark.asyncio
     async def test_cadastrar_usuario_senha_fraca(self, client):
-        """E2: Senha fraca retorna 400"""
+        """E2: Senha fraca retorna 422 (validação Pydantic)"""
         payload = {
             "nome_usuario": "pedro",
             "email": "pedro@teste.com",
@@ -123,9 +193,9 @@ class TestCadastroUsuario:
             "resposta_seguranca": "SP"
         }
         
-        response = await client.post("/v1/auth/cadastrar", json=payload)
+        response = await client.post("/auth/cadastrar", json=payload)
         
-        assert response.status_code == 400
+        assert response.status_code == 422  # Pydantic validation error
 
     @pytest.mark.asyncio
     async def test_cadastrar_usuario_senhas_diferentes(self, client):
@@ -140,7 +210,7 @@ class TestCadastroUsuario:
             "resposta_seguranca": "Corinthians"
         }
         
-        response = await client.post("/v1/auth/cadastrar", json=payload)
+        response = await client.post("/auth/cadastrar", json=payload)
         
         assert response.status_code == 400
         assert "não coincidem" in response.json()["detail"].lower()
@@ -152,26 +222,10 @@ class TestCadastroUsuario:
 class TestLogin:
     """UC10 — Realizar Login"""
 
-    @pytest.fixture(autouse=True)
-    async def setup_user(self, client):
-        """Cria usuário para testes de login"""
-        payload = {
-            "nome_usuario": "testuser",
-            "email": "test@teste.com",
-            "nome": "Test User",
-            "senha": "Senha@123",
-            "confirmar_senha": "Senha@123",
-            "pergunta_seguranca": "Pet name?",
-            "resposta_seguranca": "Fluffy"
-        }
-        await client.post("/v1/auth/cadastrar", json=payload)
-        yield
-        # Cleanup handled by fixture scope
-
     @pytest.mark.asyncio
     async def test_login_sucesso(self, client):
         """HP1: Login com credenciais válidas retorna tokens"""
-        response = await client.post("/v1/auth/login", json={
+        response = await client.post("/auth/login", json={
             "nome_usuario": "testuser",
             "senha": "Senha@123"
         })
@@ -189,7 +243,7 @@ class TestLogin:
     @pytest.mark.asyncio
     async def test_login_credenciais_invalidas(self, client):
         """E2: Credenciais inválidas retorna 401 genérico"""
-        response = await client.post("/v1/auth/login", json={
+        response = await client.post("/auth/login", json={
             "nome_usuario": "testuser",
             "senha": "SenhaErrada@123"
         })
@@ -200,7 +254,7 @@ class TestLogin:
     @pytest.mark.asyncio
     async def test_login_usuario_inexistente(self, client):
         """E2: Usuário inexistente retorna 401 genérico (não revela existência)"""
-        response = await client.post("/v1/auth/login", json={
+        response = await client.post("/auth/login", json={
             "nome_usuario": "naoexiste",
             "senha": "Senha@123"
         })
@@ -213,14 +267,14 @@ class TestLogin:
         """E1: 6 tentativas falhas → lockout 15min (429)"""
         # Faz 5 tentativas (ainda permite)
         for i in range(5):
-            response = await client.post("/v1/auth/login", json={
+            response = await client.post("/auth/login", json={
                 "nome_usuario": "testuser",
                 "senha": f"Errada{i}"
             })
             assert response.status_code == 401
         
         # 6ª tentativa → 429
-        response = await client.post("/v1/auth/login", json={
+        response = await client.post("/auth/login", json={
             "nome_usuario": "testuser",
             "senha": "Errada6"
         })
@@ -239,14 +293,14 @@ class TestLogout:
     async def test_logout_invalida_cookie(self, client):
         """HP1: Logout remove cookie refresh_token"""
         # Login primeiro
-        login_resp = await client.post("/v1/auth/login", json={
+        login_resp = await client.post("/auth/login", json={
             "nome_usuario": "testuser",
             "senha": "Senha@123"
         })
         assert login_resp.status_code == 200
         
         # Logout
-        response = await client.post("/v1/auth/logout", cookies=login_resp.cookies)
+        response = await client.post("/auth/logout", cookies=login_resp.cookies)
         
         assert response.status_code == 204
         # Cookie deve ser deletado
@@ -262,7 +316,7 @@ class TestRecuperarSenha:
     @pytest.mark.asyncio
     async def test_recuperar_senha_modo_log(self, client):
         """HP2: Modo log retorna token no stdout (não na resposta)"""
-        response = await client.post("/v1/auth/recuperar-senha/solicitar", json={
+        response = await client.post("/auth/recuperar-senha/solicitar", json={
             "nome_usuario": "testuser"
         })
         
@@ -274,7 +328,7 @@ class TestRecuperarSenha:
     @pytest.mark.asyncio
     async def test_recuperar_senha_usuario_inexistente(self, client):
         """E1: Usuário inexistente retorna sucesso genérico (não revela existência)"""
-        response = await client.post("/v1/auth/recuperar-senha/solicitar", json={
+        response = await client.post("/auth/recuperar-senha/solicitar", json={
             "nome_usuario": "naoexiste"
         })
         
@@ -288,20 +342,10 @@ class TestRecuperarSenha:
 class TestPerfil:
     """UC18 — Visualizar Perfil | UC16 — Gerenciar Perfil"""
 
-    @pytest.fixture
-    async def auth_headers(self, client):
-        """Faz login e retorna headers de autorização"""
-        login_resp = await client.post("/v1/auth/login", json={
-            "nome_usuario": "testuser",
-            "senha": "Senha@123"
-        })
-        token = login_resp.json()["access_token"]
-        return {"Authorization": f"Bearer {token}"}
-
     @pytest.mark.asyncio
     async def test_visualizar_perfil(self, client, auth_headers):
         """UC18: Visualizar perfil retorna dados do usuário"""
-        response = await client.get("/v1/auth/perfil", headers=auth_headers)
+        response = await client.get("/auth/perfil", headers=auth_headers)
         
         assert response.status_code == 200
         data = response.json()
@@ -313,7 +357,7 @@ class TestPerfil:
     @pytest.mark.asyncio
     async def test_atualizar_perfil_nome(self, client, auth_headers):
         """UC16: Atualizar nome do perfil"""
-        response = await client.put("/v1/auth/perfil", headers=auth_headers, json={
+        response = await client.put("/auth/perfil", headers=auth_headers, json={
             "nome": "Test User Atualizado"
         })
         
@@ -324,18 +368,18 @@ class TestPerfil:
     async def test_atualizar_perfil_email_duplicado(self, client, auth_headers):
         """E1: Email duplicado retorna 400"""
         # Cria outro usuário
-        await client.post("/v1/auth/cadastrar", json={
+        await client.post("/auth/cadastrar", json={
             "nome_usuario": "outrouser",
             "email": "outro@teste.com",
             "nome": "Outro User",
             "senha": "Senha@123",
             "confirmar_senha": "Senha@123",
-            "pergunta_seguranca": "Pet?",
+            "pergunta_seguranca": "Pet name?",
             "resposta_seguranca": "Dog"
         })
         
         # Tenta atualizar email para o do outro usuário
-        response = await client.put("/v1/auth/perfil", headers=auth_headers, json={
+        response = await client.put("/auth/perfil", headers=auth_headers, json={
             "email": "outro@teste.com"
         })
         
@@ -345,7 +389,7 @@ class TestPerfil:
     @pytest.mark.asyncio
     async def test_alterar_senha_sucesso(self, client, auth_headers):
         """UC16: Alterar senha com senha atual correta"""
-        response = await client.put("/v1/auth/perfil", headers=auth_headers, json={
+        response = await client.put("/auth/perfil", headers=auth_headers, json={
             "senha_atual": "Senha@123",
             "nova_senha": "NovaSenha@456",
             "confirmar_nova_senha": "NovaSenha@456"
@@ -354,7 +398,7 @@ class TestPerfil:
         assert response.status_code == 200
         
         # Verifica que nova senha funciona
-        login_resp = await client.post("/v1/auth/login", json={
+        login_resp = await client.post("/auth/login", json={
             "nome_usuario": "testuser",
             "senha": "NovaSenha@456"
         })
@@ -363,7 +407,7 @@ class TestPerfil:
     @pytest.mark.asyncio
     async def test_alterar_senha_atual_incorreta(self, client, auth_headers):
         """E2: Senha atual incorreta retorna 400"""
-        response = await client.put("/v1/auth/perfil", headers=auth_headers, json={
+        response = await client.put("/auth/perfil", headers=auth_headers, json={
             "senha_atual": "SenhaErrada",
             "nova_senha": "NovaSenha@456",
             "confirmar_nova_senha": "NovaSenha@456"
@@ -381,12 +425,12 @@ class TestAuthProtection:
 
     @pytest.mark.asyncio
     async def test_rotas_protegidas_sem_token(self, client):
-        """Rotas /v1/auth/perfil, /v1/listas, etc exigem token"""
+        """Rotas /auth/perfil, /listas, etc exigem token"""
         protected_routes = [
-            ("GET", "/v1/auth/perfil"),
-            ("GET", "/v1/listas"),
-            ("POST", "/v1/listas"),
-            ("GET", "/v1/comparacao/calcular"),
+            ("GET", "/auth/perfil"),
+            ("GET", "/listas"),
+            ("POST", "/listas"),
+            ("POST", "/comparacao/calcular"),
         ]
         
         for method, route in protected_routes:
@@ -396,7 +440,7 @@ class TestAuthProtection:
     @pytest.mark.asyncio
     async def test_token_expirado(self, client):
         """Token expirado retorna 401"""
-        import jwt
+        from jose import jwt
         from datetime import datetime, timedelta, timezone
         
         # Cria token expirado
@@ -407,7 +451,7 @@ class TestAuthProtection:
         )
         
         response = await client.get(
-            "/v1/auth/perfil",
+            "/auth/perfil",
             headers={"Authorization": f"Bearer {expired_token}"}
         )
         
@@ -420,15 +464,6 @@ class TestAuthProtection:
 # ============================================================
 class TestListas:
     """Testes de integração para CRUD de listas"""
-
-    @pytest.fixture
-    async def auth_headers(self, client):
-        login_resp = await client.post("/v1/auth/login", json={
-            "nome_usuario": "testuser",
-            "senha": "Senha@123"
-        })
-        token = login_resp.json()["access_token"]
-        return {"Authorization": f"Bearer {token}"}
 
     @pytest.fixture
     async def sample_products(self, db_session):
@@ -457,7 +492,7 @@ class TestListas:
             ]
         }
         
-        response = await client.post("/v1/listas", headers=auth_headers, json=payload)
+        response = await client.post("/listas", headers=auth_headers, json=payload)
         
         assert response.status_code == 201
         data = response.json()
@@ -470,13 +505,13 @@ class TestListas:
         """UC15/RF09: Listar listas com paginação"""
         # Cria 3 listas
         for i in range(3):
-            await client.post("/v1/listas", headers=auth_headers, json={
+            await client.post("/listas", headers=auth_headers, json={
                 "nome": f"Lista {i}",
                 "itens": [{"produto_id": sample_products[0].id, "quantidade": 1}]
             })
         
         # Lista primeira página
-        response = await client.get("/v1/listas?pagina=1&por_pagina=2", headers=auth_headers)
+        response = await client.get("/listas?pagina=1&por_pagina=2", headers=auth_headers)
         
         assert response.status_code == 200
         data = response.json()
@@ -489,13 +524,13 @@ class TestListas:
     @pytest.mark.asyncio
     async def test_buscar_lista_por_id(self, client, auth_headers, sample_products):
         """Buscar lista específica por ID"""
-        create_resp = await client.post("/v1/listas", headers=auth_headers, json={
+        create_resp = await client.post("/listas", headers=auth_headers, json={
             "nome": "Lista Específica",
             "itens": [{"produto_id": sample_products[0].id, "quantidade": 3}]
         })
         lista_id = create_resp.json()["id"]
         
-        response = await client.get(f"/v1/listas/{lista_id}", headers=auth_headers)
+        response = await client.get(f"/listas/{lista_id}", headers=auth_headers)
         
         assert response.status_code == 200
         data = response.json()
@@ -505,13 +540,13 @@ class TestListas:
     @pytest.mark.asyncio
     async def test_editar_lista(self, client, auth_headers, sample_products):
         """UC13/RF10: Editar lista salva"""
-        create_resp = await client.post("/v1/listas", headers=auth_headers, json={
+        create_resp = await client.post("/listas", headers=auth_headers, json={
             "nome": "Lista Original",
             "itens": [{"produto_id": sample_products[0].id, "quantidade": 1}]
         })
         lista_id = create_resp.json()["id"]
         
-        response = await client.put(f"/v1/listas/{lista_id}", headers=auth_headers, json={
+        response = await client.put(f"/listas/{lista_id}", headers=auth_headers, json={
             "nome": "Lista Editada",
             "itens": [
                 {"produto_id": sample_products[0].id, "quantidade": 5},
@@ -527,7 +562,7 @@ class TestListas:
     @pytest.mark.asyncio
     async def test_excluir_lista_soft_delete(self, client, auth_headers, sample_products):
         """UC13/RF11: Excluir lista (soft delete com confirmação)"""
-        create_resp = await client.post("/v1/listas", headers=auth_headers, json={
+        create_resp = await client.post("/listas", headers=auth_headers, json={
             "nome": "Para Excluir",
             "itens": [{"produto_id": sample_products[0].id, "quantidade": 1}]
         })
@@ -535,28 +570,28 @@ class TestListas:
         
         # Confirmação correta
         response = await client.delete(
-            f"/v1/listas/{lista_id}?confirmacao_nome=Para Excluir",
+            f"/listas/{lista_id}?confirmacao_nome=Para Excluir",
             headers=auth_headers
         )
         
         assert response.status_code == 204
         
         # Lista não deve mais aparecer na listagem
-        list_resp = await client.get("/v1/listas", headers=auth_headers)
+        list_resp = await client.get("/listas", headers=auth_headers)
         ids = [l["id"] for l in list_resp.json()["items"]]
         assert lista_id not in ids
 
     @pytest.mark.asyncio
     async def test_excluir_lista_confirmacao_incorreta(self, client, auth_headers, sample_products):
         """Confirmação incorreta retorna 400"""
-        create_resp = await client.post("/v1/listas", headers=auth_headers, json={
+        create_resp = await client.post("/listas", headers=auth_headers, json={
             "nome": "Nome Correto",
             "itens": [{"produto_id": sample_products[0].id, "quantidade": 1}]
         })
         lista_id = create_resp.json()["id"]
         
         response = await client.delete(
-            f"/v1/listas/{lista_id}?confirmacao_nome=Nome Errado",
+            f"/listas/{lista_id}?confirmacao_nome=Nome Errado",
             headers=auth_headers
         )
         
@@ -572,7 +607,7 @@ class TestCatalogo:
     @pytest.mark.asyncio
     async def test_listar_categorias(self, client):
         """UC03/RF12: Listar categorias para pré-filtro"""
-        response = await client.get("/v1/catalogo/categorias")
+        response = await client.get("/catalogo/categorias")
         
         assert response.status_code == 200
         data = response.json()
@@ -582,7 +617,7 @@ class TestCatalogo:
     @pytest.mark.asyncio
     async def test_listar_fornecedores_filtrado_por_categoria(self, client):
         """UC04/RF13: Fornecedores filtrados por categoria"""
-        response = await client.get("/v1/catalogo/fornecedores?categorias=1")  # Mercado
+        response = await client.get("/catalogo/fornecedores?categorias=1")  # Mercado
         
         assert response.status_code == 200
         data = response.json()
@@ -592,7 +627,7 @@ class TestCatalogo:
     @pytest.mark.asyncio
     async def test_autocomplete_produtos(self, client):
         """UC02/RF07: Autocomplete de produtos (debounce simulado)"""
-        response = await client.get("/v1/catalogo/produtos/autocomplete?q=Arroz&limit=5")
+        response = await client.get("/catalogo/produtos/autocomplete?q=Arroz&limit=5")
         
         assert response.status_code == 200
         data = response.json()
@@ -603,7 +638,7 @@ class TestCatalogo:
     async def test_calcular_disponibilidade_fornecedor(self, client):
         """UC04/UC05: Disponibilidade de fornecedor para lista de produtos"""
         # Precisa de produtos existentes
-        response = await client.get("/v1/catalogo/fornecedores/1/disponibilidade?produtos=1,2,3")
+        response = await client.get("/catalogo/fornecedores/1/disponibilidade?produtos=1,2,3")
         
         assert response.status_code == 200
         data = response.json()
@@ -618,15 +653,6 @@ class TestCatalogo:
 # ============================================================
 class TestComparacao:
     """Testes de integração para comparação de preços"""
-
-    @pytest.fixture
-    async def auth_headers(self, client):
-        login_resp = await client.post("/v1/auth/login", json={
-            "nome_usuario": "testuser",
-            "senha": "Senha@123"
-        })
-        token = login_resp.json()["access_token"]
-        return {"Authorization": f"Bearer {token}"}
 
     @pytest.fixture
     async def lista_com_itens(self, client, auth_headers, db_session):
@@ -644,7 +670,7 @@ class TestComparacao:
             await db_session.refresh(p)
         
         # Cria lista
-        response = await client.post("/v1/listas", headers=auth_headers, json={
+        response = await client.post("/listas", headers=auth_headers, json={
             "nome": "Para Comparar",
             "itens": [
                 {"produto_id": produtos[0].id, "quantidade": 2},
@@ -657,7 +683,7 @@ class TestComparacao:
     @pytest.mark.asyncio
     async def test_calcular_orcamento_sucesso(self, client, auth_headers, lista_com_itens):
         """UC06/RF15: Calcular orçamento retorna tabela flat ordenada por preço"""
-        response = await client.post("/v1/comparacao/calcular", headers=auth_headers, json={
+        response = await client.post("/comparacao/calcular", headers=auth_headers, json={
             "lista_id": lista_com_itens["id"],
             "fornecedor_ids": [1, 6, 9],  # Leroy Merlin, Pão de Açúcar, Carrefour
             "disponibilidade_minima": 0
@@ -680,7 +706,7 @@ class TestComparacao:
     @pytest.mark.asyncio
     async def test_calcular_orcamento_fornecedores_insuficientes(self, client, auth_headers, lista_com_itens):
         """Menos de 2 fornecedores retorna 400"""
-        response = await client.post("/v1/comparacao/calcular", headers=auth_headers, json={
+        response = await client.post("/comparacao/calcular", headers=auth_headers, json={
             "lista_id": lista_com_itens["id"],
             "fornecedor_ids": [1],  # Apenas 1
             "disponibilidade_minima": 0
@@ -692,7 +718,7 @@ class TestComparacao:
     @pytest.mark.asyncio
     async def test_filtro_disponibilidade_minima(self, client, auth_headers, lista_com_itens):
         """UC05/RF14: Filtro por disponibilidade mínima"""
-        response = await client.post("/v1/comparacao/calcular", headers=auth_headers, json={
+        response = await client.post("/comparacao/calcular", headers=auth_headers, json={
             "lista_id": lista_com_itens["id"],
             "fornecedor_ids": [1, 2, 6, 7, 9, 10],
             "disponibilidade_minima": 50  # 50%
@@ -711,15 +737,6 @@ class TestComparacao:
 class TestExportacaoPDF:
     """Testes de integração para exportação PDF"""
 
-    @pytest.fixture
-    async def auth_headers(self, client):
-        login_resp = await client.post("/v1/auth/login", json={
-            "nome_usuario": "testuser",
-            "senha": "Senha@123"
-        })
-        token = login_resp.json()["access_token"]
-        return {"Authorization": f"Bearer {token}"}
-
     @pytest.mark.asyncio
     async def test_exportar_pdf_lista(self, client, auth_headers, db_session):
         """UC08/RF17: Exportar lista em PDF (ReportLab)"""
@@ -735,7 +752,7 @@ class TestExportacaoPDF:
         for p in produtos:
             await db_session.refresh(p)
         
-        list_resp = await client.post("/v1/listas", headers=auth_headers, json={
+        list_resp = await client.post("/listas", headers=auth_headers, json={
             "nome": "Lista para PDF",
             "itens": [
                 {"produto_id": produtos[0].id, "quantidade": 2},
@@ -745,7 +762,7 @@ class TestExportacaoPDF:
         lista_id = list_resp.json()["id"]
         
         # Exporta PDF
-        response = await client.post(f"/v1/export/pdf?lista_id={lista_id}", headers=auth_headers)
+        response = await client.post(f"/export/pdf?lista_id={lista_id}", headers=auth_headers)
         
         assert response.status_code == 200
         assert response.headers["content-type"] == "application/pdf"

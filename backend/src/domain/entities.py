@@ -225,3 +225,26 @@ class OrcamentoComparacao:
         self.fornecedores.sort(key=lambda f: f.preco_total)
         if self.fornecedores:
             self.melhor_fornecedor_id = self.fornecedores[0].fornecedor_id
+
+
+# ============================================================
+# Entidade: Sessao (Refresh Tokens / Session Management)
+# ============================================================
+
+@dataclass
+class Sessao:
+    """Entidade Sessao — Tabela: sessoes (refresh tokens)"""
+    id: Optional[int] = None
+    usuario_id: int = 0
+    refresh_token_hash: str = ""
+    user_agent: Optional[str] = None
+    ip: Optional[str] = None
+    criado_em: datetime = field(default_factory=datetime.now)
+    expira_em: datetime = field(default_factory=datetime.now)
+    revogada_em: Optional[datetime] = None
+
+    def esta_ativa(self) -> bool:
+        return self.revogada_em is None and datetime.now() < self.expira_em
+
+    def revogar(self) -> None:
+        self.revogada_em = datetime.now()
