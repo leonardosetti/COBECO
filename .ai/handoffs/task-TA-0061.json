@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0061",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-sdd-specialist",
+  "action": "spec",
+  "handoff": "HF-0617",
+  "payload": "emendar spec-004 (C.1, C.2) e spec-005 (C.4, C.5) — lacunas de conteudo C.1-C.5 da LISTA"
+}

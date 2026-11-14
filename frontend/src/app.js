@@ -18,6 +18,14 @@ const STORAGE_KEYS = {
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
+// SECURITY: Escape HTML para prevenir XSS
+const escapeHtml = (text) => {
+    if (text === null || text === undefined) return '';
+    const div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+};
+
 const formatCurrency = (value) => {
   if (value === null || value === undefined) return 'N/D';
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -33,9 +41,11 @@ const formatDate = (isoString) => {
 const showToast = (message, type = 'info') => {
   const container = $('#toast-container');
   const toast = document.createElement('div');
-  toast.className = `toast toast-${type}`;
+  toast.className = `toast toast-${type} animate-slide-in`;
+  toast.setAttribute('role', 'alert');
+  toast.setAttribute('aria-live', 'polite');
   toast.innerHTML = `
-    <span class="flex-1">${message}</span>
+    <span class="flex-1">${escapeHtml(message)}</span>
     <button class="text-white/80 hover:text-white" aria-label="Fechar">&times;</button>
   `;
   toast.querySelector('button').onclick = () => toast.remove();
@@ -43,12 +53,61 @@ const showToast = (message, type = 'info') => {
   setTimeout(() => toast.remove(), 5000);
 };
 
+const showConfirm = (message, options = {}) => {
+  return new Promise((resolve) => {
+    const container = $('#modal-container');
+    const title = options.title || 'Confirmação';
+    const confirmText = options.confirmText || 'Confirmar';
+    const cancelText = options.cancelText || 'Cancelar';
+    const confirmClass = options.confirmClass || 'btn-primary';
+    const cancelClass = options.cancelClass || 'btn-secondary';
+    const danger = options.danger || false;
+
+    container.innerHTML = `
+      <div class="modal-overlay" data-close-overlay>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+          <div class="modal-header">
+            <h2 id="modal-title" class="text-lg font-semibold">${escapeHtml(title)}</h2>
+            <button class="text-gray-400 hover:text-gray-600" data-close-modal>&times;</button>
+          </div>
+          <div class="modal-body">
+            <p class="text-gray-700">${escapeHtml(message)}</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn ${cancelClass}" data-action="cancel">${escapeHtml(cancelText)}</button>
+            <button class="btn ${danger ? 'btn-danger' : confirmClass}" data-action="confirm">${escapeHtml(confirmText)}</button>
+          </div>
+        </div>
+      </div>
+    `;
+    container.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+
+    const close = (result) => {
+      container.classList.add('hidden');
+      container.innerHTML = '';
+      document.body.style.overflow = '';
+      resolve(result);
+    };
+
+    container.querySelector('[data-close-overlay]').onclick = (e) => {
+      if (e.target === e.currentTarget) close(false);
+    };
+    container.querySelectorAll('[data-close-modal]').forEach(btn => btn.onclick = () => close(false));
+    container.querySelector('[data-action="cancel"]').onclick = () => close(false);
+    container.querySelector('[data-action="confirm"]').onclick = () => close(true);
+    document.addEventListener('keydown', function esc(e) {
+      if (e.key === 'Escape') { close(false); document.removeEventListener('keydown', esc); }
+    });
+  });
+};
+
 const showModal = (content, options = {}) => {
   const container = $('#modal-container');
   container.innerHTML = `
     <div class="modal-overlay" data-close-overlay>
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        ${options.title ? `<div class="modal-header"><h2 id="modal-title" class="text-lg font-semibold">${options.title}</h2><button class="text-gray-400 hover:text-gray-600" data-close-modal>&times;</button></div>` : ''}
+        ${options.title ? `<div class="modal-header"><h2 id="modal-title" class="text-lg font-semibold">${escapeHtml(options.title)}</h2><button class="text-gray-400 hover:text-gray-600" data-close-modal>&times;</button></div>` : ''}
         <div class="modal-body">${content}</div>
         ${options.footer ? `<div class="modal-footer">${options.footer}</div>` : ''}
       </div>
@@ -307,8 +366,8 @@ const State = {
       $('#btn-logout')?.addEventListener('click', () => AuthViews.logout());
     } else {
       nav.innerHTML = `
-        <a href="/login" class="btn btn-ghost text-sm">Entrar</a>
-        <a href="/cadastrar" class="btn btn-primary text-sm">Cadastrar</a>
+        <a href="#/login" class="btn btn-ghost text-sm">Entrar</a>
+        <a href="#/cadastrar" class="btn btn-primary text-sm">Cadastrar</a>
       `;
     }
   },
@@ -391,10 +450,10 @@ const Views = {
               <button type="submit" class="btn btn-primary w-full">Entrar</button>
             </form>
             <p class="text-center text-sm text-gray-600 mt-6">
-              Não tem conta? <a href="/cadastrar" class="text-primary-600 hover:underline" data-link>Cadastre-se</a>
+              Não tem conta? <a href="#/cadastrar" class="text-primary-600 hover:underline" data-link>Cadastre-se</a>
             </p>
             <p class="text-center text-sm text-gray-600 mt-2">
-              <a href="/recuperar-senha" class="text-primary-600 hover:underline" data-link>Esqueci minha senha</a>
+              <a href="#/recuperar-senha" class="text-primary-600 hover:underline" data-link>Esqueci minha senha</a>
             </p>
           </div>
         </div>
@@ -446,7 +505,7 @@ const Views = {
               <button type="submit" class="btn btn-primary w-full">Criar conta</button>
             </form>
             <p class="text-center text-sm text-gray-600 mt-6">
-              Já tem conta? <a href="/login" class="text-primary-600 hover:underline" data-link>Entre</a>
+              Já tem conta? <a href="#/login" class="text-primary-600 hover:underline" data-link>Entre</a>
             </p>
           </div>
         </div>
@@ -586,7 +645,7 @@ const Views = {
                   </div>
                 </div>
               ` : ''}
-            }
+            `}
           </div>
         </div>
       `;
@@ -802,6 +861,145 @@ const Views = {
       </div>
     `;
   },
+
+  // Recuperar Senha - Solicitar
+  async recuperarSenha() {
+    return `
+      <div class="max-w-md mx-auto">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="text-xl font-semibold">Recuperar Senha</h2>
+          </div>
+          <div class="card-body">
+            <p class="text-gray-600 mb-6">Digite seu nome de usuário para receber instruções de recuperação.</p>
+            <form id="form-recuperar-senha" class="space-y-4">
+              <div class="form-group">
+                <label for="rec-nome-usuario" class="label">Nome de usuário <span class="text-red-500">*</span></label>
+                <input type="text" id="rec-nome-usuario" name="nome_usuario" class="input" required autocomplete="username">
+              </div>
+              <button type="submit" class="btn btn-primary w-full">Solicitar Recuperação</button>
+            </form>
+            <p class="text-center text-sm text-gray-600 mt-6">
+              <a href="#/login" class="text-primary-600 hover:underline" data-link>← Voltar ao login</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // Recuperar Senha - Confirmar (via pergunta de segurança)
+  async recuperarSenhaConfirmar() {
+    return `
+      <div class="max-w-md mx-auto">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="text-xl font-semibold">Confirmar Recuperação</h2>
+          </div>
+          <div class="card-body">
+            <p class="text-gray-600 mb-6">Responda sua pergunta de segurança para definir uma nova senha.</p>
+            <form id="form-recuperar-senha-confirmar" class="space-y-4">
+              <div class="form-group">
+                <label for="rec-conf-nome-usuario" class="label">Nome de usuário <span class="text-red-500">*</span></label>
+                <input type="text" id="rec-conf-nome-usuario" name="nome_usuario" class="input" required autocomplete="username">
+              </div>
+              <div class="form-group">
+                <label for="rec-conf-resposta" class="label">Resposta da pergunta de segurança <span class="text-red-500">*</span></label>
+                <input type="text" id="rec-conf-resposta" name="resposta_seguranca" class="input" required minlength="3" autocomplete="off">
+              </div>
+              <div class="form-group">
+                <label for="rec-conf-nova-senha" class="label">Nova senha <span class="text-red-500">*</span></label>
+                <input type="password" id="rec-conf-nova-senha" name="nova_senha" class="input" required minlength="8" autocomplete="new-password">
+              </div>
+              <div class="form-group">
+                <label for="rec-conf-confirmar-nova-senha" class="label">Confirmar nova senha <span class="text-red-500">*</span></label>
+                <input type="password" id="rec-conf-confirmar-nova-senha" name="confirmar_nova_senha" class="input" required autocomplete="new-password">
+              </div>
+              <button type="submit" class="btn btn-primary w-full">Alterar Senha</button>
+            </form>
+            <p class="text-center text-sm text-gray-600 mt-6">
+              <a href="#/login" class="text-primary-600 hover:underline" data-link>← Voltar ao login</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // Editar Lista
+  async editarLista(params) {
+    if (!State.user) { State.navigate('login'); return ''; }
+
+    try {
+      const lista = await ApiClient.buscarLista(params.id);
+      return `
+        <div class="max-w-4xl mx-auto">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold">Editar Lista: ${lista.nome}</h2>
+            <span class="badge badge-info" id="badge-itens">${lista.itens.length} itens</span>
+          </div>
+
+          <div class="card mb-6">
+            <div class="card-body">
+              <div class="form-group">
+                <label for="lista-nome" class="label">Nome da lista <span class="text-red-500">*</span></label>
+                <input type="text" id="lista-nome" class="input" value="${lista.nome}" maxlength="100">
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-6">
+            <div class="card-header flex items-center justify-between">
+              <h3 class="font-semibold">Itens da Lista (<span id="count-itens">${lista.itens.length}</span>)</h3>
+            </div>
+            <div class="card-body">
+              <div class="form-row mb-4">
+                <div class="form-group flex-1">
+                  <label for="item-produto" class="label">Adicionar Produto</label>
+                  <div class="relative">
+                    <input type="text" id="item-produto" class="input" placeholder="Digite para buscar..." autocomplete="off">
+                    <div id="autocomplete-results" class="absolute z-10 w-full mt-1 hidden bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"></div>
+                  </div>
+                  <input type="hidden" id="item-produto-id">
+                </div>
+                <div class="form-group w-32">
+                  <label for="item-quantidade" class="label">Qtd</label>
+                  <input type="number" id="item-quantidade" class="input" value="1" min="1" max="9999">
+                </div>
+              </div>
+              <button type="button" id="btn-add-item" class="btn btn-primary" disabled>Adicionar Item</button>
+            </div>
+          </div>
+
+          <div class="card" id="card-itens-lista">
+            <div class="card-body">
+              <div class="table-container">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th class="w-1/2">Produto</th>
+                      <th class="w-1/6">Un.</th>
+                      <th class="w-1/6">Qtd</th>
+                      <th class="w-1/6"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody-itens"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer flex justify-end gap-3">
+              <button type="button" id="btn-cancelar-edicao" class="btn btn-secondary">Cancelar</button>
+              <button type="button" id="btn-salvar-edicao" class="btn btn-primary">Salvar Alterações</button>
+            </div>
+          </div>
+        </div>
+      `;
+    } catch (e) {
+      showToast('Erro ao carregar lista: ' + e.message, 'error');
+      State.navigate('minhas-listas');
+      return '';
+    }
+  },
 };
 
 // ============================================================
@@ -890,6 +1088,7 @@ const AuthViews = {
         email: form.email.value,
         nome: form.nome.value,
         senha: form.senha.value,
+        confirmar_senha: form.confirmar_senha.value,
         pergunta_seguranca: form.pergunta_seguranca.value,
         resposta_seguranca: form.resposta_seguranca.value,
       };
@@ -951,6 +1150,78 @@ const AuthViews = {
         State.setUser(perfil, ApiClient.getToken());
       } catch (e) {
         showToast(e.message, 'error');
+      }
+    };
+  },
+
+  async recuperarSenha() {
+    const form = $('#form-recuperar-senha');
+    if (!form) return;
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const data = {
+        nome_usuario: form.nome_usuario.value,
+      };
+
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Enviando...';
+
+      try {
+        const response = await ApiClient.request('/auth/recuperar-senha/solicitar', {
+          method: 'POST',
+          body: JSON.stringify(data),
+        });
+
+        if (response.message && response.message.includes('logado no servidor')) {
+          showToast('Se o usuário existir, o token foi logado no servidor (veja console do backend)', 'info');
+        } else {
+          showToast('Se o usuário existir, instruções foram enviadas', 'success');
+        }
+        setTimeout(() => State.navigate('login'), 2000);
+      } catch (e) {
+        showToast(e.message, 'error');
+        btn.disabled = false;
+        btn.textContent = 'Solicitar Recuperação';
+      }
+    };
+  },
+
+  async recuperarSenhaConfirmar() {
+    const form = $('#form-recuperar-senha-confirmar');
+    if (!form) return;
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+
+      if (form.nova_senha.value !== form.confirmar_nova_senha.value) {
+        showToast('As senhas não coincidem', 'error');
+        return;
+      }
+
+      const data = {
+        nome_usuario: form.nome_usuario.value,
+        resposta_seguranca: form.resposta_seguranca.value,
+        nova_senha: form.nova_senha.value,
+        confirmar_nova_senha: form.confirmar_nova_senha.value,
+      };
+
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Alterando...';
+
+      try {
+        await ApiClient.request('/auth/recuperar-senha/confirmar', {
+          method: 'POST',
+          body: JSON.stringify(data),
+        });
+        showToast('Senha alterada com sucesso!', 'success');
+        setTimeout(() => State.navigate('login'), 1500);
+      } catch (e) {
+        showToast(e.message, 'error');
+        btn.disabled = false;
+        btn.textContent = 'Alterar Senha';
       }
     };
   },
@@ -1143,7 +1414,7 @@ const ListaViews = {
 
   bindVerLista(params) {
     $('#btn-editar-lista')?.addEventListener('click', () => {
-      State.navigate('editar-lista', { id: params.id });
+      State.navigate('/editar-lista/' + params.id);
     });
 
     $('#btn-excluir-lista')?.addEventListener('click', async () => {
@@ -1180,6 +1451,161 @@ const ListaViews = {
         btn.textContent = 'Exportar PDF';
       }
     });
+  },
+
+  async bindEditarLista(params) {
+    const listaId = parseInt(params.id);
+    const produtoInput = $('#item-produto');
+    const produtoIdInput = $('#item-produto-id');
+    const autocompleteResults = $('#autocomplete-results');
+    const qtdInput = $('#item-quantidade');
+    const addBtn = $('#btn-add-item');
+    const tbody = $('#tbody-itens');
+    const countEl = $('#count-itens');
+    const badge = $('#badge-itens');
+    const cardItens = $('#card-itens-lista');
+    const cancelBtn = $('#btn-cancelar-edicao');
+    const saveBtn = $('#btn-salvar-edicao');
+    const nomeInput = $('#lista-nome');
+
+    let itens = [];
+    let debounceTimer;
+
+    // Carrega lista existente
+    const loadLista = async () => {
+      try {
+        const lista = await ApiClient.buscarLista(listaId);
+        nomeInput.value = lista.nome;
+        itens = lista.itens.map(item => ({
+          produto_id: item.produto_id,
+          produto_nome: item.produto_nome,
+          unidade: item.unidade || 'un',
+          quantidade: item.quantidade,
+        }));
+        renderItens();
+      } catch (e) {
+        showToast('Erro ao carregar lista: ' + e.message, 'error');
+        State.navigate('minhas-listas');
+      }
+    };
+
+    const renderItens = () => {
+      tbody.innerHTML = itens.map((item, idx) => `
+        <tr>
+          <td>${item.produto_nome}</td>
+          <td>${item.unidade}</td>
+          <td>${item.quantidade}</td>
+          <td><button class="text-red-600 hover:text-red-800" data-remove="${idx}">✕</button></td>
+        </tr>
+      `).join('');
+
+      countEl.textContent = itens.length;
+      badge.textContent = `${itens.length} itens`;
+      cardItens.style.display = itens.length ? 'block' : 'none';
+      addBtn.disabled = !produtoIdInput.value || !qtdInput.value;
+      saveBtn.disabled = itens.length === 0 || !nomeInput.value.trim();
+
+      tbody.querySelectorAll('[data-remove]').forEach(btn => {
+        btn.onclick = () => {
+          itens.splice(parseInt(btn.dataset.remove), 1);
+          renderItens();
+        };
+      });
+    };
+
+    // Autocomplete
+    produtoInput.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      const q = produtoInput.value.trim();
+      if (q.length < 2) {
+        autocompleteResults.classList.add('hidden');
+        return;
+      }
+      debounceTimer = setTimeout(async () => {
+        try {
+          const produtos = await ApiClient.autocompleteProdutos(q, 10);
+          if (produtos.length === 0) {
+            autocompleteResults.classList.add('hidden');
+            return;
+          }
+          autocompleteResults.innerHTML = produtos.map(p => `
+            <button type="button" class="w-full px-3 py-2 text-left hover:bg-gray-100" data-id="${p.id}" data-nome="${p.nome}" data-unidade="${p.unidade}">
+              ${p.nome} <span class="text-gray-500">(${p.unidade})</span>
+            </button>
+          `).join('');
+          autocompleteResults.classList.remove('hidden');
+
+          autocompleteResults.querySelectorAll('button').forEach(btn => {
+            btn.onclick = () => {
+              produtoInput.value = btn.dataset.nome;
+              produtoIdInput.value = btn.dataset.id;
+              qtdInput.focus();
+              autocompleteResults.classList.add('hidden');
+              addBtn.disabled = !qtdInput.value;
+            };
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }, 300);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!autocompleteResults.contains(e.target) && e.target !== produtoInput) {
+        autocompleteResults.classList.add('hidden');
+      }
+    });
+
+    // Add item
+    addBtn.onclick = () => {
+      const produtoId = parseInt(produtoIdInput.value);
+      const produtoNome = produtoInput.value;
+      const unidade = 'un';
+      const quantidade = parseInt(qtdInput.value);
+
+      if (!produtoId || !quantidade) return;
+
+      const existing = itens.findIndex(i => i.produto_id === produtoId);
+      if (existing >= 0) {
+        itens[existing].quantidade += quantidade;
+      } else {
+        itens.push({ produto_id: produtoId, produto_nome: produtoNome, unidade, quantidade });
+      }
+
+      produtoInput.value = '';
+      produtoIdInput.value = '';
+      qtdInput.value = 1;
+      autocompleteResults.classList.add('hidden');
+      renderItens();
+    };
+
+    // Cancel
+    cancelBtn.onclick = () => {
+      State.navigate('minhas-listas');
+    };
+
+    // Save
+    saveBtn.onclick = async () => {
+      const nome = nomeInput.value.trim();
+      if (!nome || itens.length === 0) return;
+
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<span class="spinner"></span> Salvando...';
+
+      try {
+        await ApiClient.atualizarLista(listaId, { nome, itens });
+        showToast('Lista atualizada com sucesso!', 'success');
+        State.navigate('minhas-listas');
+      } catch (e) {
+        showToast('Erro ao salvar: ' + e.message, 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Salvar Alterações';
+      }
+    };
+
+    // Initial load
+    await loadLista();
   },
 };
 
@@ -1330,7 +1756,7 @@ function renderResultado(data) {
   container.innerHTML = `
     <div class="mb-6">
       <div class="flex items-center gap-2 mb-2">
-        <span class="badge badge-success">Lista: ${data.lista_nome}</span>
+        <span class="badge badge-success">Lista: ${escapeHtml(data.lista_nome)}</span>
         ${data.melhor_fornecedor_id ? `
           <span class="badge badge-success">🏆 Melhor: Fornecedor #${data.melhor_fornecedor_id}</span>
         ` : ''}
@@ -1351,7 +1777,7 @@ function renderResultado(data) {
         <tbody>
           ${data.fornecedores.map(f => `
             <tr class="${f.eh_melhor ? 'bg-green-50' : ''}">
-              <td class="font-medium">${f.fornecedor_nome} ${f.eh_melhor ? '<span class="badge badge-success ml-2">MELHOR</span>' : ''}</td>
+              <td class="font-medium">${escapeHtml(f.fornecedor_nome)} ${f.eh_melhor ? '<span class="badge badge-success ml-2">MELHOR</span>' : ''}</td>
               <td class="text-center">${f.itens_disponiveis}</td>
               <td class="text-center text-red-600">${f.itens_ausentes}</td>
               <td class="text-center">${f.percentual_disponibilidade.toFixed(1)}%</td>
@@ -1368,7 +1794,7 @@ function renderResultado(data) {
         ${data.fornecedores.map(f => `
           <div class="card ${f.eh_melhor ? 'ring-2 ring-green-500' : ''}">
             <div class="card-header flex items-center justify-between">
-              <h4 class="font-semibold">${f.fornecedor_nome} ${f.eh_melhor ? '<span class="badge badge-success">MELHOR OFERTA</span>' : ''}</h4>
+              <h4 class="font-semibold">${escapeHtml(f.fornecedor_nome)} ${f.eh_melhor ? '<span class="badge badge-success">MELHOR OFERTA</span>' : ''}</h4>
               <span class="text-right">Total: <strong>${formatCurrency(f.preco_total)}</strong></span>
             </div>
             <div class="card-body p-0">
@@ -1422,7 +1848,10 @@ const routes = {
   '/': Views.home,
   '/login': Views.login,
   '/cadastrar': Views.cadastrar,
+  '/recuperar-senha': Views.recuperarSenha,
+  '/recuperar-senha/confirmar': Views.recuperarSenhaConfirmar,
   '/criar-lista': Views.criarLista,
+  '/editar-lista/:id': Views.editarLista,
   '/minhas-listas': Views.minhasListas,
   '/lista/:id': Views.verLista,
   '/comparar': Views.comparar,
@@ -1430,14 +1859,23 @@ const routes = {
 };
 
 const router = {
+  currentPath: null,
+  requestId: 0,
+
   async navigate(path, params = {}) {
+    // Normaliza caminho: aceita '/login', 'login' e 'home'
+    let target = path.startsWith('/') ? path : `/${path}`;
+    if (target === '/home') target = '/';
+
+    const requestId = ++this.requestId;
+
     // Match route
     let matchedRoute = null;
     let matchedParams = {};
 
     for (const [routePath, viewFn] of Object.entries(routes)) {
       const regex = new RegExp('^' + routePath.replace(/:(\w+)/g, '([^/]+)') + '$');
-      const match = path.match(regex);
+      const match = target.match(regex);
       if (match) {
         matchedRoute = viewFn;
         const paramNames = routePath.match(/:(\w+)/g) || [];
@@ -1450,8 +1888,7 @@ const router = {
 
     if (!matchedRoute) {
       // 404 -> home
-      window.location.hash = '#/';
-      return;
+      return this.navigate('/');
     }
 
     // Render
@@ -1460,10 +1897,17 @@ const router = {
 
     try {
       const html = await matchedRoute(matchedParams);
+      if (requestId !== this.requestId) return; // navegação mais recente assumiu
       main.innerHTML = html;
+      this.currentPath = target;
+
+      // Mantém URL sincronizada com a rota renderizada
+      if (window.location.hash !== `#${target}`) {
+        window.location.hash = target;
+      }
 
       // Bind events based on route
-      this.bindEvents(path, matchedParams);
+      this.bindEvents(target, matchedParams);
     } catch (e) {
       console.error(e);
       main.innerHTML = '<div class="card"><div class="card-body text-center text-red-600">Erro ao carregar página</div></div>';
@@ -1488,7 +1932,10 @@ const router = {
     // Route-specific bindings
     if (path === '/login') AuthViews.login();
     else if (path === '/cadastrar') AuthViews.cadastrar();
+    else if (path === '/recuperar-senha') AuthViews.recuperarSenha();
+    else if (path === '/recuperar-senha/confirmar') AuthViews.recuperarSenhaConfirmar();
     else if (path === '/criar-lista') ListaViews.bindCriarLista();
+    else if (path.startsWith('/editar-lista/')) ListaViews.bindEditarLista(params);
     else if (path === '/minhas-listas') ListaViews.bindMinhasListas();
     else if (path.startsWith('/lista/')) ListaViews.bindVerLista(params);
     else if (path === '/comparar') ComparacaoViews.bindComparar();
@@ -1507,7 +1954,8 @@ const router = {
   init() {
     // Handle hash changes
     window.addEventListener('hashchange', () => {
-      this.navigate(window.location.hash.slice(1) || '/');
+      const path = window.location.hash.slice(1) || '/';
+      if (path !== this.currentPath) this.navigate(path);
     });
 
     // Initial load

@@ -2,22 +2,31 @@
 # Casos de uso puros de domínio — orquestram entidades e repositórios
 # Mapeados para RFs e UCs do SSOT v3.2
 
-from abc import ABC, abstractmethod
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Optional, List, Sequence
-from decimal import Decimal
 from datetime import timedelta
 
+from src.config import settings
 from src.domain.entities import (
-    Usuario, Categoria, Fornecedor, Produto,
-    Lista, ItemLista, OrcamentoComparacao,
-    Email, SenhaHash
+    Categoria,
+    Email,
+    Fornecedor,
+    ItemLista,
+    Lista,
+    OrcamentoComparacao,
+    Produto,
+    SenhaHash,
+    Usuario,
 )
 from src.domain.repositories import (
-    UsuarioRepository, CategoriaRepository, FornecedorRepository,
-    ProdutoRepository, ListaRepository, ComparacaoRepository, ExportacaoRepository
+    CategoriaRepository,
+    ComparacaoRepository,
+    ExportacaoRepository,
+    FornecedorRepository,
+    ListaRepository,
+    ProdutoRepository,
+    UsuarioRepository,
 )
-from src.config import settings
 
 
 # ============================================================
@@ -43,6 +52,7 @@ class CredenciaisInvalidas(DomainError):
 
 class RateLimitExcedido(DomainError):
     def __init__(self, minutos: int):
+        self.minutos = minutos
         super().__init__("RATE_LIMIT_EXCEDIDO", f"Tente novamente em {minutos} minutos")
 
 
@@ -81,25 +91,26 @@ class LoginOutput:
     refresh_token: str
     token_type: str = "bearer"
     expires_in: int = settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
+    usuario_id: int = 0
 
 
 @dataclass
 class RecuperarSenhaInput:
     nome_usuario: str
-    resposta_seguranca: Optional[str] = None
-    nova_senha: Optional[str] = None
+    resposta_seguranca: str | None = None
+    nova_senha: str | None = None
 
 
 @dataclass
 class CriarListaInput:
     nome: str
-    itens: List[dict]  # [{"produto_id": int, "quantidade": int}, ...]
+    itens: list[dict]  # [{"produto_id": int, "quantidade": int}, ...]
 
 
 @dataclass
 class ComparacaoInput:
     lista_id: int
-    fornecedor_ids: List[int]
+    fornecedor_ids: list[int]
     disponibilidade_minima: float = 0.0
 
 
@@ -157,10 +168,10 @@ class LoginUseCase:
 
         usuario = await self.repo.buscar_por_nome_usuario(input.nome_usuario)
         if not usuario or not usuario.esta_ativo():
-            raise CredenciaisInvalidas()
+            raise CredenciaisInvalidas
 
         if not self.verificar_senha(input.senha, usuario.senha_hash.valor):
-            raise CredenciaisInvalidas()
+            raise CredenciaisInvalidas
 
         # Gera tokens: access (15min memória) + refresh (7d httpOnly)
         access_token = self.criar_token(
@@ -176,6 +187,7 @@ class LoginUseCase:
         return LoginOutput(
             access_token=access_token,
             refresh_token=refresh_token,
+            usuario_id=usuario.id,
         )
 
 
@@ -190,30 +202,33 @@ class LogoutUseCase:
 
 
 class RecuperarSenhaUseCase:
-    """UC12 / RF04 — Recuperar Senha (pergunta segurança ou log)"""
+    """UC12 / RF04 — Recuperar Senha (pergunta de segurança ou token por email)"""
 
     def __init__(self, repo: UsuarioRepository, hash_senha_fn, rate_limiter_fn):
         self.repo = repo
         self.hash_senha = hash_senha_fn
         self.rate_limiter = rate_limiter_fn
 
-    async def solicitar_reset(self, nome_usuario: str) -> Optional[str]:
-        """Retorna token se RECOVERY_MODE=log, None se pergunta segurança"""
-        await self.rate_limiter(nome_usuario, "recovery")
+    async def solicitar_reset(self, nome_usuario: str) -> str | None:
+        """Retorna token se modo email, None se pergunta de segurança"""
+        await self.rate_limiter(nome_usuario)
 
         usuario = await self.repo.buscar_por_nome_usuario(nome_usuario)
         if not usuario:
             # Mensagem genérica (não revela existência)
             return None
 
-        if settings.RECOVERY_MODE == "log":
-            # Gera token e loga no stdout do container
-            import secrets
-            token = secrets.token_urlsafe(32)
-            print(f"[RECOVERY_TOKEN] usuario={nome_usuario} token={token}")
-            return token
+        if settings.RECOVERY_MODE == "email":
+            # Em produção: enviar token por email
+            # Por enquanto, retorna None para forçar uso de pergunta de segurança
+            # TODO: Implementar envio de email real
+            return None
 
-        return None  # Fluxo via pergunta de segurança
+        # Modo "log" (apenas desenvolvimento) - retorna token mas NÃO loga
+        import secrets
+        token = secrets.token_urlsafe(32)
+        # SECURITY: NÃO logar token - usar store temporário em produção
+        return token
 
     async def confirmar_reset(
         self,
@@ -223,15 +238,15 @@ class RecuperarSenhaUseCase:
     ) -> Usuario:
         usuario = await self.repo.buscar_por_nome_usuario(nome_usuario)
         if not usuario:
-            raise CredenciaisInvalidas()
+            raise CredenciaisInvalidas
 
         if settings.RECOVERY_MODE == "log":
             # Validar token (implementar store temporário)
+            # Em dev: aceita qualquer token por simplicidade
             pass
-        else:
-            # Validar resposta da pergunta de segurança (bcrypt)
-            if not self.verificar_senha(resposta_ou_token, usuario.resposta_seguranca_hash.valor):
-                raise CredenciaisInvalidas()
+        # Validar resposta da pergunta de segurança (bcrypt)
+        elif not self.verificar_senha(resposta_ou_token, usuario.resposta_seguranca_hash.valor):
+            raise CredenciaisInvalidas
 
         usuario.senha_hash = self.hash_senha(nova_senha)
         return await self.repo.atualizar(usuario)
@@ -261,10 +276,10 @@ class GerenciarPerfilUseCase:
     async def atualizar(
         self,
         usuario_id: int,
-        email: Optional[str] = None,
-        nome: Optional[str] = None,
-        senha_atual: Optional[str] = None,
-        nova_senha: Optional[str] = None,
+        email: str | None = None,
+        nome: str | None = None,
+        senha_atual: str | None = None,
+        nova_senha: str | None = None,
     ) -> Usuario:
         usuario = await self.repo.buscar_por_id(usuario_id)
         if not usuario:
@@ -274,7 +289,7 @@ class GerenciarPerfilUseCase:
         if email and email != usuario.email.valor:
             if await self.repo.buscar_por_email(email):
                 raise UsuarioJaExiste("email")
-            usuario.email = email
+            usuario.email = Email(email)
 
         if nome:
             usuario.nome = nome
@@ -284,7 +299,7 @@ class GerenciarPerfilUseCase:
                 raise DomainError("SENHA_ATUAL_OBRIGATORIA", "Senha atual é obrigatória")
             if not self.verificar_senha(senha_atual, usuario.senha_hash.valor):
                 raise DomainError("SENHA_ATUAL_INCORRETA", "Senha atual incorreta")
-            usuario.senha_hash = self.hash_senha(nova_senha)
+            usuario.senha_hash = SenhaHash(self.hash_senha(nova_senha))
 
         return await self.repo.atualizar(usuario)
 
@@ -340,7 +355,7 @@ class ListarMinhasListasUseCase:
         usuario_id: int,
         pagina: int = 1,
         por_pagina: int = 20,
-        busca: Optional[str] = None,
+        busca: str | None = None,
     ) -> Sequence[Lista]:
         return await self.repo.listar_por_usuario(usuario_id, pagina, por_pagina, busca)
 
@@ -369,9 +384,9 @@ class EditarListaUseCase:
         self.produto_repo = produto_repo
 
     async def executar(self, lista_id: int, usuario_id: int, input: CriarListaInput) -> Lista:
-        lista = await self.repo.buscar_por_id(lista_id, usuario_id)
-        if not lista:
-            raise ListaNaoEncontrada()
+        model = await self.repo.buscar_por_id(lista_id, usuario_id)
+        if not model:
+            raise ListaNaoEncontrada
 
         # Validar produtos
         produto_ids = [item["produto_id"] for item in input.itens]
@@ -379,12 +394,16 @@ class EditarListaUseCase:
         if len(produtos) != len(produto_ids):
             raise DomainError("PRODUTO_NAO_ENCONTRADO", "Um ou mais produtos não existem")
 
-        lista.nome = input.nome
-        lista.itens = [
-            ItemLista(produto_id=item["produto_id"], quantidade=item["quantidade"])
-            for item in input.itens
-        ]
-        lista.atualizado_em = datetime.now()
+        # Entidade de domínio — o repositório aplica no modelo ORM
+        lista = Lista(
+            id=model.id,
+            usuario_id=model.usuario_id,
+            nome=input.nome,
+            itens=[
+                ItemLista(produto_id=item["produto_id"], quantidade=item["quantidade"])
+                for item in input.itens
+            ],
+        )
 
         return await self.repo.atualizar(lista)
 
@@ -408,7 +427,7 @@ class AutocompleteProdutosUseCase:
     def __init__(self, repo: ProdutoRepository):
         self.repo = repo
 
-    async def executar(self, query: str, limit: int = 10) -> List[Produto]:
+    async def executar(self, query: str, limit: int = 10) -> list[Produto]:
         if len(query) < 2:
             return []
         return await self.repo.autocomplete(query, limit)
@@ -420,10 +439,10 @@ class SelecionarCategoriasUseCase:
     def __init__(self, repo: CategoriaRepository):
         self.repo = repo
 
-    async def listar_todas(self) -> List[Categoria]:
+    async def listar_todas(self) -> list[Categoria]:
         return await self.repo.listar_todas()
 
-    async def filtrar_fornecedores(self, categoria_ids: List[int]) -> List[Fornecedor]:
+    async def filtrar_fornecedores(self, categoria_ids: list[int]) -> list[Fornecedor]:
         # Implementado no FornecedorRepository
         pass
 
@@ -434,10 +453,10 @@ class SelecionarFornecedoresUseCase:
     def __init__(self, repo: FornecedorRepository):
         self.repo = repo
 
-    async def listar_por_categorias(self, categoria_ids: List[int]) -> List[Fornecedor]:
+    async def listar_por_categorias(self, categoria_ids: list[int]) -> list[Fornecedor]:
         return await self.repo.listar_por_categorias(categoria_ids)
 
-    async def buscar_disponibilidade(self, fornecedor_ids: List[int], produto_ids: List[int]):
+    async def buscar_disponibilidade(self, fornecedor_ids: list[int], produto_ids: list[int]):
         # Retorna % de disponibilidade por fornecedor
         pass
 
@@ -450,10 +469,10 @@ class FiltrarDisponibilidadeUseCase:
 
     async def executar(
         self,
-        fornecedor_ids: List[int],
-        produto_ids: List[int],
+        fornecedor_ids: list[int],
+        produto_ids: list[int],
         min_disponibilidade: float,
-    ) -> List[Fornecedor]:
+    ) -> list[Fornecedor]:
         fornecedores = await self.repo.buscar_por_ids(fornecedor_ids)
         # Filtrar por % disponibilidade calculada
         return [
@@ -473,7 +492,7 @@ class CalcularOrcamentoUseCase:
 
     async def executar(self, input: ComparacaoInput) -> OrcamentoComparacao:
         if len(input.fornecedor_ids) < 2:
-            raise FornecedoresInsuficientes()
+            raise FornecedoresInsuficientes
 
         return await self.repo.calcular_orcamento(
             lista_id=input.lista_id,

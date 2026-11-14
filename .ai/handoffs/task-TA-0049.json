@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0049",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-quality-architect-specialist",
+  "action": "consult",
+  "handoff": "HF-0605",
+  "payload": "consultar dominio qualidade para spec-010-qualidade-pdca-ishikawa-v1 (B.6)"
+}

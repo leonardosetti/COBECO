@@ -1,24 +1,28 @@
 # COBECO Backend — Comparação Router (FastAPI)
 # Endpoints: POST /v1/comparacao/calcular (RF15, RF16)
 
-from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import BaseModel, Field
-from typing import List, Optional
 from decimal import Decimal
 
-from src.domain.usecases import (
-    CalcularOrcamentoUseCase, VisualizarResultadosUseCase,
-    ComparacaoInput, FornecedoresInsuficientes,
-)
-from src.domain.repositories import ComparacaoRepository, ListaRepository
-from src.adapters.db.models import (
-    ListaModel, ItemListaModel, FornecedorModel, ProdutoModel,
-    FornecedorProdutoModel, FornecedorCategoriaModel, CategoriaModel
-)
-from src.adapters.db.database import get_db
+from fastapi import APIRouter, Depends, HTTPException, Query
+from pydantic import BaseModel, Field
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+
 from src.adapters.api.auth import get_current_user
+from src.adapters.db.database import get_db
+from src.adapters.db.models import (
+    FornecedorModel,
+    FornecedorProdutoModel,
+    ItemListaModel,
+    ListaModel,
+    ProdutoModel,
+)
+from src.domain.repositories import ComparacaoRepository
+from src.domain.usecases import (
+    CalcularOrcamentoUseCase,
+    ComparacaoInput,
+    FornecedoresInsuficientes,
+)
 
 router = APIRouter(tags=["Comparação"])
 
@@ -31,8 +35,8 @@ class ItemComparacaoResponse(BaseModel):
     produto_nome: str
     unidade: str
     quantidade: int
-    preco_unitario: Optional[float] = None
-    preco_total: Optional[float] = None
+    preco_unitario: float | None = None
+    preco_total: float | None = None
     disponivel: bool
 
 
@@ -44,20 +48,20 @@ class FornecedorComparacaoResponse(BaseModel):
     preco_total: float
     percentual_disponibilidade: float
     eh_melhor: bool
-    itens: List[ItemComparacaoResponse]
+    itens: list[ItemComparacaoResponse]
 
 
 class CalcularOrcamentoRequest(BaseModel):
     lista_id: int
-    fornecedor_ids: List[int] = Field(..., min_length=2)
+    fornecedor_ids: list[int] = Field(..., min_length=2)
     disponibilidade_minima: float = Field(0.0, ge=0.0, le=100.0)
 
 
 class OrcamentoResponse(BaseModel):
     lista_id: int
     lista_nome: str
-    melhor_fornecedor_id: Optional[int] = None
-    fornecedores: List[FornecedorComparacaoResponse]
+    melhor_fornecedor_id: int | None = None
+    fornecedores: list[FornecedorComparacaoResponse]
 
 
 # ============================================================
@@ -70,7 +74,7 @@ class ComparacaoRepositoryImpl(ComparacaoRepository):
     async def calcular_orcamento(
         self,
         lista_id: int,
-        fornecedor_ids: List[int],
+        fornecedor_ids: list[int],
         disponibilidade_minima: float = 0.0,
     ):
         # 1. Busca lista e itens
@@ -193,8 +197,8 @@ class ComparacaoRepositoryImpl(ComparacaoRepository):
 
     async def buscar_precos_para_comparacao(
         self,
-        produto_ids: List[int],
-        fornecedor_ids: List[int],
+        produto_ids: list[int],
+        fornecedor_ids: list[int],
     ):
         result = await self.session.execute(
             select(FornecedorProdutoModel).where(

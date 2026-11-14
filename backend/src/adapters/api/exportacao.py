@@ -1,23 +1,18 @@
 # COBECO Backend — Exportação Router (FastAPI)
 # Endpoints: POST /v1/export/pdf (RF17) - ReportLab server-side
 
-from fastapi import APIRouter, Depends, HTTPException, Response
-from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
-from typing import List, Optional
-from decimal import Decimal
-from datetime import datetime
 import io
+from datetime import datetime
 
-from src.domain.repositories import ExportacaoRepository, ListaRepository, ComparacaoRepository
-from src.adapters.db.models import (
-    ListaModel, ItemListaModel, FornecedorModel, ProdutoModel,
-    FornecedorProdutoModel, UsuarioModel
-)
-from src.adapters.db.database import get_db
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from sqlalchemy import select
-from src.adapters.api.auth import get_current_user, UsuarioRepositoryImpl
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.adapters.api.auth import get_current_user
+from src.adapters.db.database import get_db
+from src.adapters.db.models import ItemListaModel, ListaModel, ProdutoModel
+from src.domain.repositories import ExportacaoRepository, ListaRepository
 
 router = APIRouter(tags=["Exportação"])
 
@@ -29,7 +24,7 @@ class ListaRepositoryImpl(ListaRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def buscar_por_id(self, lista_id: int, usuario_id: Optional[int] = None):
+    async def buscar_por_id(self, lista_id: int, usuario_id: int | None = None):
         query = select(ListaModel).where(ListaModel.id == lista_id, ListaModel.deletado_em.is_(None))
         if usuario_id:
             query = query.where(ListaModel.usuario_id == usuario_id)
@@ -43,13 +38,18 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
 
     async def gerar_pdf_lista(self, lista_id: int) -> bytes:
         """Gera PDF da lista (RF17) - ReportLab server-side"""
-        from reportlab.lib.pagesizes import A4
-        from reportlab.lib.units import cm
-        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.colors import HexColor, grey, white
         from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
-        from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
-        from reportlab.lib.colors import HexColor, white, black, grey
-        from reportlab.lib import colors
+        from reportlab.lib.pagesizes import A4
+        from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+        from reportlab.lib.units import cm
+        from reportlab.platypus import (
+            Paragraph,
+            SimpleDocTemplate,
+            Spacer,
+            Table,
+            TableStyle,
+        )
 
         # Busca dados da lista
         lista = await self.session.execute(

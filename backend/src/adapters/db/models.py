@@ -3,13 +3,23 @@
 # Clean Architecture: Adapters não vazam para Domain
 
 from datetime import datetime
-from typing import Optional, List
 from decimal import Decimal
+
 from sqlalchemy import (
-    Integer, String, Text, DateTime, Boolean, ForeignKey, UniqueConstraint,
-    CheckConstraint, Index, DECIMAL, func
+    DECIMAL,
+    Boolean,
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    func,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from src.adapters.db.database import Base
 
 
@@ -36,10 +46,10 @@ class UsuarioModel(Base):
     atualizado_em: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=func.now(), onupdate=func.now()
     )
-    deletado_em: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    deletado_em: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     # Relacionamentos
-    listas: Mapped[List["ListaModel"]] = relationship(
+    listas: Mapped[list["ListaModel"]] = relationship(
         "ListaModel", back_populates="usuario", cascade="all, delete-orphan"
     )
 
@@ -51,7 +61,7 @@ class UsuarioModel(Base):
     )
 
     def to_domain(self) -> "Usuario":
-        from src.domain.entities import Usuario, Email, SenhaHash
+        from src.domain.entities import Email, SenhaHash, Usuario
         return Usuario(
             id=self.id,
             nome_usuario=self.nome_usuario,
@@ -83,11 +93,11 @@ class ListaModel(Base):
     atualizado_em: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=func.now(), onupdate=func.now()
     )
-    deletado_em: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    deletado_em: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     # Relacionamentos
     usuario: Mapped["UsuarioModel"] = relationship("UsuarioModel", back_populates="listas")
-    itens: Mapped[List["ItemListaModel"]] = relationship(
+    itens: Mapped[list["ItemListaModel"]] = relationship(
         "ItemListaModel", back_populates="lista", cascade="all, delete-orphan"
     )
 
@@ -98,7 +108,7 @@ class ListaModel(Base):
     )
 
     def to_domain(self) -> "Lista":
-        from src.domain.entities import Lista, ItemLista
+        from src.domain.entities import Lista
         return Lista(
             id=self.id,
             usuario_id=self.usuario_id,
@@ -157,10 +167,10 @@ class CategoriaModel(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     nome: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
-    descricao: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    descricao: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     # Relacionamentos N:N via fornecedores_categorias
-    fornecedores: Mapped[List["FornecedorModel"]] = relationship(
+    fornecedores: Mapped[list["FornecedorModel"]] = relationship(
         "FornecedorModel", secondary="fornecedores_categorias", back_populates="categorias"
     )
 
@@ -192,10 +202,10 @@ class FornecedorModel(Base):
     )
 
     # Relacionamentos
-    categorias: Mapped[List["CategoriaModel"]] = relationship(
+    categorias: Mapped[list["CategoriaModel"]] = relationship(
         "CategoriaModel", secondary="fornecedores_categorias", back_populates="fornecedores"
     )
-    produtos: Mapped[List["FornecedorProdutoModel"]] = relationship(
+    produtos: Mapped[list["FornecedorProdutoModel"]] = relationship(
         "FornecedorProdutoModel", back_populates="fornecedor", cascade="all, delete-orphan"
     )
 
@@ -205,7 +215,7 @@ class FornecedorModel(Base):
     )
 
     def to_domain(self) -> "Fornecedor":
-        from src.domain.entities import Fornecedor, CNPJ
+        from src.domain.entities import CNPJ, Fornecedor
         return Fornecedor(
             id=self.id,
             nome=self.nome,
@@ -250,8 +260,8 @@ class ProdutoModel(Base):
     )
 
     # Relacionamentos
-    itens_lista: Mapped[List["ItemListaModel"]] = relationship("ItemListaModel")
-    fornecedores: Mapped[List["FornecedorProdutoModel"]] = relationship(
+    itens_lista: Mapped[list["ItemListaModel"]] = relationship("ItemListaModel")
+    fornecedores: Mapped[list["FornecedorProdutoModel"]] = relationship(
         "FornecedorProdutoModel", back_populates="produto"
     )
 
@@ -305,4 +315,45 @@ class FornecedorProdutoModel(Base):
             preco=self.preco,
             estoque=self.estoque,
             ativo=self.ativo,
+        )
+
+
+# ============================================================
+# Tabela: sessoes (Refresh Tokens / Session Management)
+# ============================================================
+class SessaoModel(Base):
+    __tablename__ = "sessoes"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    usuario_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("usuarios.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    refresh_token_hash: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
+    user_agent: Mapped[str | None] = mapped_column(Text, nullable=True)
+    ip: Mapped[str | None] = mapped_column(String(45), nullable=True)  # IPv6 max 45 chars
+    criado_em: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=func.now()
+    )
+    expira_em: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
+    revogada_em: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    # Relacionamento
+    usuario: Mapped["UsuarioModel"] = relationship("UsuarioModel")
+
+    __table_args__ = (
+        Index("ix_sessao_usuario_expira", "usuario_id", "expira_em"),
+        Index("ix_sessao_token_hash", "refresh_token_hash"),
+    )
+
+    def to_domain(self) -> "Sessao":
+        from src.domain.entities import Sessao
+        return Sessao(
+            id=self.id,
+            usuario_id=self.usuario_id,
+            refresh_token_hash=self.refresh_token_hash,
+            user_agent=self.user_agent,
+            ip=self.ip,
+            criado_em=self.criado_em,
+            expira_em=self.expira_em,
+            revogada_em=self.revogada_em,
         )

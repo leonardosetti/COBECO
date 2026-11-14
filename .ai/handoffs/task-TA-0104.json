@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0104",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-python-specialist",
+  "action": "implement",
+  "handoff": "HF-0104",
+  "payload": "nexus_dispatcher.py --check --wait T: escreve ledger status=dispatched, aguarda parcela com task_id, polling 5s, timeout T (padrão 3600s). Sem parcela até T → escalada. kill_switch: inherited"
+}

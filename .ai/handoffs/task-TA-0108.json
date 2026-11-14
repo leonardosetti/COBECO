@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0108",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-qa-sdet",
+  "action": "test",
+  "handoff": "HF-0108",
+  "payload": "pytest tests/agents verde (FAIL-CLOSED #6). Testes: idempotência (duplo despacho mesmo task_id → 1 envio), timeout simulado (escalada), lock concorrência (segundo falha LOCK_ACQUIRE_FAILED). kill_switch: inherited"
+}

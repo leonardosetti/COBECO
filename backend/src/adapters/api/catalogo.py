@@ -1,15 +1,21 @@
 # COBECO Backend — Catálogo Router (FastAPI)
 # Endpoints: Categorias, Fornecedores, Produtos (Autocomplete)
 
+
 from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
-from typing import List, Optional
-
-from src.domain.repositories import CategoriaRepository, FornecedorRepository, ProdutoRepository
-from src.adapters.db.models import CategoriaModel, FornecedorModel, ProdutoModel, FornecedorCategoriaModel
-from src.adapters.db.database import get_db
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy.orm import selectinload
+
+from src.adapters.db.database import get_db
+from src.adapters.db.models import (
+    CategoriaModel,
+    FornecedorCategoriaModel,
+    FornecedorModel,
+    ProdutoModel,
+)
+from src.domain.repositories import CategoriaRepository, FornecedorRepository, ProdutoRepository
 
 router = APIRouter(tags=["Catálogo"])
 
@@ -20,7 +26,7 @@ router = APIRouter(tags=["Catálogo"])
 class CategoriaResponse(BaseModel):
     id: int
     nome: str
-    descricao: Optional[str] = None
+    descricao: str | None = None
 
     class Config:
         from_attributes = True
@@ -30,7 +36,7 @@ class FornecedorResponse(BaseModel):
     id: int
     nome: str
     cnpj: str
-    categorias: List[CategoriaResponse] = []
+    categorias: list[CategoriaResponse] = []
 
     class Config:
         from_attributes = True
@@ -71,7 +77,7 @@ class CategoriaRepositoryImpl(CategoriaRepository):
         )
         return result.scalar_one_or_none()
 
-    async def buscar_por_ids(self, ids: List[int]):
+    async def buscar_por_ids(self, ids: list[int]):
         result = await self.session.execute(
             select(CategoriaModel).where(CategoriaModel.id.in_(ids))
         )
@@ -88,11 +94,11 @@ class FornecedorRepositoryImpl(FornecedorRepository):
         )
         return list(result.scalars().all())
 
-    async def listar_por_categorias(self, categoria_ids: List[int]):
+    async def listar_por_categorias(self, categoria_ids: list[int]):
         # Fornecedores que têm TODAS as categorias selecionadas (interseção)
         # Ou PELO MENOS UMA (união) - conforme RF12/UC03
         # Usando união (pelo menos uma categoria)
-        from sqlalchemy import select, func
+        from sqlalchemy import select
 
         subquery = select(FornecedorCategoriaModel.fornecedor_id).where(
             FornecedorCategoriaModel.categoria_id.in_(categoria_ids)
@@ -108,11 +114,13 @@ class FornecedorRepositoryImpl(FornecedorRepository):
 
     async def buscar_por_id(self, fornecedor_id: int):
         result = await self.session.execute(
-            select(FornecedorModel).where(FornecedorModel.id == fornecedor_id)
+            select(FornecedorModel)
+            .options(selectinload(FornecedorModel.categorias))
+            .where(FornecedorModel.id == fornecedor_id)
         )
         return result.scalar_one_or_none()
 
-    async def buscar_por_ids(self, ids: List[int]):
+    async def buscar_por_ids(self, ids: list[int]):
         result = await self.session.execute(
             select(FornecedorModel).where(FornecedorModel.id.in_(ids))
         )
@@ -121,7 +129,7 @@ class FornecedorRepositoryImpl(FornecedorRepository):
     async def calcular_disponibilidade(
         self,
         fornecedor_id: int,
-        produto_ids: List[int],
+        produto_ids: list[int],
     ):
         from src.adapters.db.models import FornecedorProdutoModel
         result = await self.session.execute(
@@ -151,7 +159,7 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         )
         return result.scalar_one_or_none()
 
-    async def buscar_por_ids(self, ids: List[int]):
+    async def buscar_por_ids(self, ids: list[int]):
         result = await self.session.execute(
             select(ProdutoModel).where(ProdutoModel.id.in_(ids), ProdutoModel.ativo == True)
         )
@@ -190,7 +198,7 @@ def get_produto_repo(session: AsyncSession = Depends(get_db)) -> ProdutoReposito
 # ============================================================
 @router.get(
     "/categorias",
-    response_model=List[CategoriaResponse],
+    response_model=list[CategoriaResponse],
     summary="UC03/RF12 - Listar Categorias (Pré-filtro)",
 )
 async def listar_categorias(
@@ -202,11 +210,11 @@ async def listar_categorias(
 
 @router.get(
     "/fornecedores",
-    response_model=List[FornecedorResponse],
+    response_model=list[FornecedorResponse],
     summary="UC04/RF13 - Listar Fornecedores (filtrado por categorias)",
 )
 async def listar_fornecedores(
-    categorias: Optional[str] = Query(None, description="IDs de categorias separados por vírgula"),
+    categorias: str | None = Query(None, description="IDs de categorias separados por vírgula"),
     repo: FornecedorRepository = Depends(get_fornecedor_repo),
     categoria_repo: CategoriaRepository = Depends(get_categoria_repo),
 ):
@@ -267,7 +275,7 @@ async def calcular_disponibilidade_fornecedor(
 
 @router.get(
     "/produtos/autocomplete",
-    response_model=List[ProdutoResponse],
+    response_model=list[ProdutoResponse],
     summary="UC02/RF07 - Autocomplete de Produtos",
 )
 async def autocomplete_produtos(
@@ -281,7 +289,7 @@ async def autocomplete_produtos(
 
 @router.get(
     "/produtos",
-    response_model=List[ProdutoResponse],
+    response_model=list[ProdutoResponse],
     summary="Listar Produtos Ativos",
 )
 async def listar_produtos(

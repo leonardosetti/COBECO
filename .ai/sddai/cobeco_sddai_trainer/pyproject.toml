@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cobeco-sddai-trainer"
+version = "1.0.0"
+description = "Treinamento de modelos ML para SDDAI (custom do zero)"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+cobeco-sddai-trainer = "cobeco_sddai_trainer.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cobeco_sddai_trainer*"]

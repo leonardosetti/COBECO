@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0030",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-sdd-specialist",
+  "action": "spec",
+  "handoff": "HF-0030",
+  "payload": "Amenda SPEC container-layers-v1: Nginx aceito e mantido + comunicacao integrada entre todos os containers + caminho de demo local pos-clone (ratificacao GP/Humano 2026-11-02, Art. 5.1); payload em .ai/handoffs/HF-0030-nginx-aceito-demo.md"
+}

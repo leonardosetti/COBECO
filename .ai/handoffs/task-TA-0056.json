@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0056",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-sdd-specialist",
+  "action": "spec",
+  "handoff": "HF-0612",
+  "payload": "emitir spec-011-cicd-pipeline-v1.spec.md — CI/CD (B.7)"
+}

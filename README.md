@@ -203,7 +203,9 @@ make lint-fix     # Lint com auto-fix
 make format       # Formata (black)
 make type-check   # Type checking (mypy)
 make migrate      # Roda migrações Alembic
-make seed         # Executa seed SQL
+make seed         # Executa seed SQL baseline
+make seed-generate # Regenera backend/seed.sql a partir da fonte canônica
+make seed-expanded SEED_EXPANDED_CONFIRM=SIM # Seed expandido (destrutivo no mock local)
 make db-reset     # Reset completo do banco (CUIDADO)
 make frontend-build  # Build Tailwind CSS
 make ci           # Simula pipeline CI local
@@ -271,6 +273,7 @@ COBECO/
 │   │   ├── adapters/           # API (FastAPI), DB (SQLAlchemy), External
 │   │   └── infrastructure/     # Config, Security, External services
 │   ├── tests/                  # Unit + Integration tests
+│   ├── scripts/                # Fonte canônica e gerador do seed
 │   ├── alembic/                # Migrations
 │   ├── requirements.txt
 │   ├── pyproject.toml

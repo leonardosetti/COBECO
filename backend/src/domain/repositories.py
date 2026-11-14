@@ -2,14 +2,19 @@
 # Clean Architecture: Domain define interfaces, Adapters implementam
 
 from abc import ABC, abstractmethod
-from typing import Optional, List, Sequence
+from collections.abc import Sequence
 from decimal import Decimal
+
 from src.domain.entities import (
-    Usuario, Categoria, Fornecedor, Produto,
-    FornecedorProduto, Lista, ItemLista,
-    OrcamentoComparacao, FornecedorComparacao, ItemComparacao
+    Categoria,
+    Fornecedor,
+    FornecedorProduto,
+    Lista,
+    OrcamentoComparacao,
+    Produto,
+    Sessao,
+    Usuario,
 )
-from src.config import settings
 
 
 # ============================================================
@@ -22,16 +27,16 @@ class UsuarioRepository(ABC):
         ...
 
     @abstractmethod
-    async def buscar_por_id(self, usuario_id: int) -> Optional[Usuario]:
+    async def buscar_por_id(self, usuario_id: int) -> Usuario | None:
         ...
 
     @abstractmethod
-    async def buscar_por_nome_usuario(self, nome_usuario: str) -> Optional[Usuario]:
+    async def buscar_por_nome_usuario(self, nome_usuario: str) -> Usuario | None:
         """Busca por login (RF02)"""
         ...
 
     @abstractmethod
-    async def buscar_por_email(self, email: str) -> Optional[Usuario]:
+    async def buscar_por_email(self, email: str) -> Usuario | None:
         """Verifica unicidade de email (RF01, RF06)"""
         ...
 
@@ -50,16 +55,16 @@ class UsuarioRepository(ABC):
 # ============================================================
 class CategoriaRepository(ABC):
     @abstractmethod
-    async def listar_todas(self) -> List[Categoria]:
+    async def listar_todas(self) -> list[Categoria]:
         """Lista categorias para pré-filtro (RF12, UC03)"""
         ...
 
     @abstractmethod
-    async def buscar_por_id(self, categoria_id: int) -> Optional[Categoria]:
+    async def buscar_por_id(self, categoria_id: int) -> Categoria | None:
         ...
 
     @abstractmethod
-    async def buscar_por_ids(self, ids: List[int]) -> List[Categoria]:
+    async def buscar_por_ids(self, ids: list[int]) -> list[Categoria]:
         ...
 
 
@@ -68,28 +73,28 @@ class CategoriaRepository(ABC):
 # ============================================================
 class FornecedorRepository(ABC):
     @abstractmethod
-    async def listar_ativos(self) -> List[Fornecedor]:
+    async def listar_ativos(self) -> list[Fornecedor]:
         """Lista fornecedores ativos para seleção (RF13, UC04)"""
         ...
 
     @abstractmethod
-    async def listar_por_categorias(self, categoria_ids: List[int]) -> List[Fornecedor]:
+    async def listar_por_categorias(self, categoria_ids: list[int]) -> list[Fornecedor]:
         """Filtra fornecedores por categorias selecionadas (RF12, RF13)"""
         ...
 
     @abstractmethod
-    async def buscar_por_id(self, fornecedor_id: int) -> Optional[Fornecedor]:
+    async def buscar_por_id(self, fornecedor_id: int) -> Fornecedor | None:
         ...
 
     @abstractmethod
-    async def buscar_por_ids(self, ids: List[int]) -> List[Fornecedor]:
+    async def buscar_por_ids(self, ids: list[int]) -> list[Fornecedor]:
         ...
 
     @abstractmethod
     async def calcular_disponibilidade(
         self,
         fornecedor_id: int,
-        produto_ids: List[int],
+        produto_ids: list[int],
     ) -> tuple[int, int, Decimal]:
         """
         Calcula disponibilidade para um fornecedor dado uma lista de produtos.
@@ -103,20 +108,20 @@ class FornecedorRepository(ABC):
 # ============================================================
 class ProdutoRepository(ABC):
     @abstractmethod
-    async def buscar_por_id(self, produto_id: int) -> Optional[Produto]:
+    async def buscar_por_id(self, produto_id: int) -> Produto | None:
         ...
 
     @abstractmethod
-    async def buscar_por_ids(self, ids: List[int]) -> List[Produto]:
+    async def buscar_por_ids(self, ids: list[int]) -> list[Produto]:
         ...
 
     @abstractmethod
-    async def autocomplete(self, query: str, limit: int = 10) -> List[Produto]:
+    async def autocomplete(self, query: str, limit: int = 10) -> list[Produto]:
         """Autocomplete para criação de lista (RF07, UC02)"""
         ...
 
     @abstractmethod
-    async def listar_ativos(self) -> List[Produto]:
+    async def listar_ativos(self) -> list[Produto]:
         ...
 
 
@@ -130,7 +135,7 @@ class ListaRepository(ABC):
         ...
 
     @abstractmethod
-    async def buscar_por_id(self, lista_id: int, usuario_id: int) -> Optional[Lista]:
+    async def buscar_por_id(self, lista_id: int, usuario_id: int) -> Lista | None:
         ...
 
     @abstractmethod
@@ -139,7 +144,7 @@ class ListaRepository(ABC):
         usuario_id: int,
         pagina: int = 1,
         por_pagina: int = 20,
-        busca: Optional[str] = None,
+        busca: str | None = None,
     ) -> Sequence[Lista]:
         """Lista paginada do usuário (RF09)"""
         ...
@@ -163,7 +168,7 @@ class ComparacaoRepository(ABC):
     async def calcular_orcamento(
         self,
         lista_id: int,
-        fornecedor_ids: List[int],
+        fornecedor_ids: list[int],
         disponibilidade_minima: float = 0.0,
     ) -> OrcamentoComparacao:
         """
@@ -177,9 +182,9 @@ class ComparacaoRepository(ABC):
     @abstractmethod
     async def buscar_precos_para_comparacao(
         self,
-        produto_ids: List[int],
-        fornecedor_ids: List[int],
-    ) -> List[FornecedorProduto]:
+        produto_ids: list[int],
+        fornecedor_ids: list[int],
+    ) -> list[FornecedorProduto]:
         """Busca preços ativos para produtos/fornecedores"""
         ...
 
@@ -198,4 +203,39 @@ class ExportacaoRepository(ABC):
         - Formato A4
         - <5s para até 100 itens (RNF11)
         """
+        ...
+
+
+# ============================================================
+# Sessao Repository (RF02 - Refresh Tokens)
+# ============================================================
+class SessaoRepository(ABC):
+    @abstractmethod
+    async def criar(self, sessao: Sessao) -> Sessao:
+        """Cria nova sessão (refresh token)"""
+        ...
+
+    @abstractmethod
+    async def buscar_por_token_hash(self, token_hash: str) -> Sessao | None:
+        """Busca sessão por hash do refresh token"""
+        ...
+
+    @abstractmethod
+    async def buscar_ativas_por_usuario(self, usuario_id: int) -> list[Sessao]:
+        """Lista sessões ativas do usuário"""
+        ...
+
+    @abstractmethod
+    async def revogar(self, sessao_id: int) -> bool:
+        """Revoga sessão (logout)"""
+        ...
+
+    @abstractmethod
+    async def revogar_todas_do_usuario(self, usuario_id: int) -> int:
+        """Revoga todas as sessões do usuário (logout everywhere)"""
+        ...
+
+    @abstractmethod
+    async def limpar_expiradas(self) -> int:
+        """Limpa sessões expiradas (job de manutenção)"""
         ...

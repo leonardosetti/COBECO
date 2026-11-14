@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0032",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-project-auditor",
+  "action": "audit",
+  "handoff": "HF-0032",
+  "payload": "Auditoria dedicada registry.yaml + ledger.yaml: circuito de agentes, regras de roteamento, subutilização, desvio de função, root-cause dos 4 testes vermelhos e propostas de normatização por custodia (rodada garantidora GP 2026-11-02, Art. 5.1); payload em .ai/handoffs/HF-0032-auditoria-registry-ledger.md"
+}

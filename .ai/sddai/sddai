@@ -1,0 +1,103 @@
+#!/usr/bin/env python3
+"""sddai — CLI unificado do ecossistema SDDAI (custom do zero).
+
+Uso:
+    sddai run data_optimization --source <arquivo> [--epochs N] [--memory-threshold GB]
+    sddai status <workflow>
+    sddai --version
+"""
+
+import argparse
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+PACKAGE_MAP = {
+    "loader": "cogme_sddai_loader.cli",
+    "engineer": "cogme_sddai_engineer.cli",
+    "trainer": "cogme_sddai_trainer.cli",
+    "memory": "cogme_sddai_memory.cli",
+}
+
+WORKFLOWS = {
+    "data_optimization": ["loader", "memory", "engineer", "trainer"],
+}
+
+
+def cmd_version() -> int:
+    print("sddai 1.0.0 (custom do zero, ecossistema COGME)")
+    return 0
+
+
+def cmd_status(workflow: str) -> int:
+    if workflow not in WORKFLOWS:
+        print(f"Workflow desconhecido: {workflow}")
+        print(f"Workflows disponíveis: {', '.join(WORKFLOWS.keys())}")
+        return 1
+    steps = WORKFLOWS[workflow]
+    print(json.dumps(
+        {
+            "workflow": workflow,
+            "steps": steps,
+            "components": [f"cogme-sddai-{s}" for s in steps],
+            "status": "defined",
+        },
+        indent=2,
+        ensure_ascii=False,
+    ))
+    return 0
+
+
+def cmd_run(workflow: str, source: str, epochs: int, memory_threshold: float) -> int:
+    if workflow not in WORKFLOWS:
+        print(f"Workflow desconhecido: {workflow}")
+        return 1
+
+    # Importa e executa o orquestrador
+    cli_dir = Path(__file__).resolve().parent / "cogme_sddai_cli"
+    sys.path.insert(0, str(cli_dir))
+    from main import run_pipeline  # noqa: E402
+
+    result = run_pipeline(
+        source_path=source,
+        epochs=epochs,
+        memory_threshold_gb=memory_threshold,
+    )
+
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    return 0 if result["all_components_ok"] else 1
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(prog="sddai", description="CLI SDDAI (custom do zero)")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    p_ver = sub.add_parser("version", help="Mostra versão")
+    p_st = sub.add_parser("status", help="Mostra status de um workflow")
+    p_st.add_argument("workflow", help="Nome do workflow (ex: data_optimization)")
+    p_run = sub.add_parser("run", help="Executa um workflow SDDAI")
+    p_run.add_argument("workflow", help="Nome do workflow (ex: data_optimization)")
+    p_run.add_argument("--source", required=True, help="Arquivo de dados de entrada")
+    p_run.add_argument("--epochs", type=int, default=1, help="Épocas de treinamento")
+    p_run.add_argument(
+        "--memory-threshold",
+        type=float,
+        default=10.0,
+        help="Limite de memória em GB",
+    )
+
+    args = parser.parse_args()
+
+    if args.command == "version":
+        return cmd_version()
+    if args.command == "status":
+        return cmd_status(args.workflow)
+    if args.command == "run":
+        return cmd_run(args.workflow, args.source, args.epochs, args.memory_threshold)
+
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

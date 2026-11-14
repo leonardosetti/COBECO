@@ -2,14 +2,15 @@
 # Clean Architecture: main.py apenas configura e roda a aplicação
 
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request, Response
+
+import structlog
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import structlog
 
+from src.adapters.api import auth, catalogo, comparacao, exportacao, listas, perfil
+from src.adapters.db.database import close_db, init_db
 from src.config import settings
-from src.adapters.db.database import init_db, close_db
-from src.adapters.api import auth, listas, catalogo, comparacao, exportacao, perfil
 
 # ============================================================
 # Structured Logging
@@ -24,6 +25,39 @@ structlog.configure(
 )
 
 logger = structlog.get_logger()
+
+# ============================================================
+# Security Headers Middleware
+# ============================================================
+async def security_headers_middleware(request: Request, call_next):
+    """Adiciona headers de segurança (CSP, HSTS, etc.)"""
+    response = await call_next(request)
+
+    # Content Security Policy
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self'; "
+        "style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data:; "
+        "font-src 'self'; "
+        "connect-src 'self'; "
+        "frame-ancestors 'none'; "
+        "base-uri 'self'; "
+        "form-action 'self'"
+    )
+
+    # Security Headers
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+
+    # HSTS (apenas em produção com HTTPS)
+    if not settings.DEBUG:
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+
+    return response
 
 
 # ============================================================
@@ -67,6 +101,9 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allow_headers=["*"],
     )
+
+# Security Headers Middleware (deve ser adicionado antes do logging)
+app.middleware("http")(security_headers_middleware)
 
 
 # ============================================================

@@ -2,7 +2,7 @@
 # Single source of truth para todas as variáveis de ambiente
 
 from functools import lru_cache
-from typing import List, Optional
+
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -60,17 +60,18 @@ class Settings(BaseSettings):
     PASSWORD_REQUIRE_SPECIAL: bool = True
     BCRYPT_ROUNDS: int = 12
 
-    # Recovery Mode (RF04)
+    # Recovery Mode (RF04) - SECURITY: default to "email" to avoid token logging
+    # "log" mode is only for development and logs recovery tokens to stdout
     RECOVERY_MODE: str = Field(
-        default="log",
-        description="Modo de recuperação de senha: 'log' (stdout) ou 'email'",
+        default="email",
+        description="Modo de recuperação de senha: 'email' (produção) ou 'log' (apenas dev)",
         pattern="^(log|email)$",
     )
 
     # ============================================================
     # CORS (se necessário para desenvolvimento)
     # ============================================================
-    BACKEND_CORS_ORIGINS: List[str] = Field(
+    BACKEND_CORS_ORIGINS: list[str] = Field(
         default=["http://localhost:8080", "http://127.0.0.1:8080"],
         description="Origens permitidas para CORS",
     )

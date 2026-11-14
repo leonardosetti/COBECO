@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0033",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-project-analyst",
+  "action": "analyze",
+  "handoff": "HF-0033",
+  "payload": "Levantamento exaustivo de artefatos com status draft/pending para submissao a CCB (Humano, Art. 5.1), com origem, pendencia e acao CCB recomendada por item (rodada garantidora GP 2026-11-02); payload em .ai/handoffs/HF-0033-levantamento-drafts-ccb.md"
+}

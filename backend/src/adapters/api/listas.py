@@ -1,24 +1,27 @@
 # COBECO Backend — Listas Router (FastAPI)
 # Endpoints CRUD de listas: POST/GET/PUT/DELETE /v1/listas
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from pydantic import BaseModel, Field
-from typing import Optional, List
 from datetime import datetime
 
-from src.config import settings
-from src.domain.usecases import (
-    SalvarListaUseCase, ListarMinhasListasUseCase,
-    PromoverListaEfemeraUseCase, EditarListaUseCase, ExcluirListaUseCase,
-    CriarListaInput, ListaNaoEncontrada,
-)
-from src.domain.repositories import ListaRepository, ProdutoRepository
-from src.adapters.db.models import ListaModel, ItemListaModel, ProdutoModel
-from src.adapters.db.database import get_db
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from pydantic import BaseModel, Field
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
+
 from src.adapters.api.auth import get_current_user
+from src.adapters.db.database import get_db
+from src.adapters.db.models import ItemListaModel, ListaModel, ProdutoModel
+from src.domain.repositories import ListaRepository, ProdutoRepository
+from src.domain.usecases import (
+    CriarListaInput,
+    EditarListaUseCase,
+    ExcluirListaUseCase,
+    ListaNaoEncontrada,
+    ListarMinhasListasUseCase,
+    PromoverListaEfemeraUseCase,
+    SalvarListaUseCase,
+)
 
 router = APIRouter(tags=["Listas"])
 
@@ -33,13 +36,13 @@ class ItemListaRequest(BaseModel):
 
 class CriarListaRequest(BaseModel):
     nome: str = Field(..., min_length=1, max_length=100)
-    itens: List[ItemListaRequest] = Field(..., min_length=1)
+    itens: list[ItemListaRequest] = Field(..., min_length=1)
 
 
 class ListaResponse(BaseModel):
     id: int
     nome: str
-    itens: List[dict]
+    itens: list[dict]
     criado_em: str
     atualizado_em: str
 
@@ -55,7 +58,7 @@ class ListaResumoResponse(BaseModel):
 
 
 class PaginatedResponse(BaseModel):
-    items: List[ListaResumoResponse]
+    items: list[ListaResumoResponse]
     total: int
     pagina: int
     por_pagina: int
@@ -87,8 +90,13 @@ class ListaRepositoryImpl(ListaRepository):
             self.session.add(item_model)
 
         await self.session.flush()
-        await self.session.refresh(model)
-        return model
+        # Re-query with itens eager loaded
+        result = await self.session.execute(
+            select(ListaModel)
+            .options(selectinload(ListaModel.itens))
+            .where(ListaModel.id == model.id)
+        )
+        return result.scalar_one()
 
     async def buscar_por_id(self, lista_id: int, usuario_id: int):
         result = await self.session.execute(
@@ -107,7 +115,7 @@ class ListaRepositoryImpl(ListaRepository):
         usuario_id: int,
         pagina: int = 1,
         por_pagina: int = 20,
-        busca: Optional[str] = None,
+        busca: str | None = None,
     ):
         query = select(ListaModel).where(
             ListaModel.usuario_id == usuario_id,
@@ -124,6 +132,8 @@ class ListaRepositoryImpl(ListaRepository):
         # Paginação
         query = query.order_by(ListaModel.criado_em.desc())
         query = query.offset((pagina - 1) * por_pagina).limit(por_pagina)
+        # Eager load dos itens (total_itens) — evita lazy load fora do event loop
+        query = query.options(selectinload(ListaModel.itens))
 
         result = await self.session.execute(query)
         listas = result.scalars().all()
@@ -136,18 +146,18 @@ class ListaRepositoryImpl(ListaRepository):
             model.nome = lista.nome
             model.atualizado_em = datetime.now()
 
-            # Remove itens antigos
-            await self.session.execute(
-                select(ItemListaModel).where(ItemListaModel.lista_id == model.id)
-            )
-            # Adiciona novos itens
+            # Remove itens antigos (delete-orphan) antes de inserir os novos
+            # (flush intermediário evita violar uq_item_lista_produto)
+            model.itens.clear()
+            await self.session.flush()
+
             for item in lista.itens:
-                item_model = ItemListaModel(
+                model.itens.append(ItemListaModel(
                     lista_id=model.id,
                     produto_id=item.produto_id,
                     quantidade=item.quantidade,
-                )
-                self.session.add(item_model)
+                ))
+            await self.session.flush()
 
         return model
 
@@ -169,7 +179,7 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         )
         return result.scalar_one_or_none()
 
-    async def buscar_por_ids(self, ids: List[int]):
+    async def buscar_por_ids(self, ids: list[int]):
         result = await self.session.execute(
             select(ProdutoModel).where(ProdutoModel.id.in_(ids), ProdutoModel.ativo == True)
         )
@@ -224,7 +234,6 @@ async def salvar_lista(
         raise HTTPException(status_code=400, detail=str(e))
 
     # Busca itens com nomes dos produtos para resposta
-    from src.domain.entities import Produto
     itens_resposta = []
     for item in lista.itens:
         produto = await produto_repo.buscar_por_id(item.produto_id)
@@ -251,7 +260,7 @@ async def salvar_lista(
 async def listar_minhas_listas(
     pagina: int = Query(1, ge=1),
     por_pagina: int = Query(20, ge=1, le=100),
-    busca: Optional[str] = Query(None),
+    busca: str | None = Query(None),
     current_user = Depends(get_current_user),
     lista_repo: ListaRepository = Depends(get_lista_repo),
 ):
@@ -399,4 +408,3 @@ async def excluir_lista(
     sucesso = await usecase.executar(lista_id, current_user.id, confirmacao_nome)
     if not sucesso:
         raise HTTPException(status_code=400, detail="Nome de confirmação incorreto ou lista não encontrada")
-    return None

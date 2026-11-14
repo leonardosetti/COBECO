@@ -1,0 +1,8 @@
+{
+  "task_id": "TA-0054",
+  "sender": "agent-nexus-prime-ultimate",
+  "target": "agent-sdd-specialist",
+  "action": "spec",
+  "handoff": "HF-0610",
+  "payload": "emitir spec-009-uat-produto-v1.spec.md — UAT de produto (B.5)"
+}
