@@ -17,6 +17,7 @@ TYPE_CLASS_CONFIG = {
     "constitution": ("governance", "constitution", "ratificado"),
     "req-func": ("requirements", "requirements", "ratificado"),
     "req-use-case": ("requirements", "requirements", "ratificado"),
+    "req-nfunc": ("requirements", "requirements", "ratificado"),
     "doc-arch": ("architecture", "architecture", "ratificado"),
     "board-roadmap": ("strategy", "roadmap", "ratificado"),
     "doc-readme": ("documentation", "documentation", "ratificado"),
