@@ -52,6 +52,7 @@ VALID_TYPE_CLASSES = {
     "config-hardware", "config-models", "config-rag-dag",
     "doc-mcp", "doc-mcp-deprecated", "script-mcp-deprecated",
     "config-gsd", "config-planning",
+    "hf-exec",
 }
 
 # Campos obrigatórios do frontmatter universal (P2)

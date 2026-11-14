@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-020-us-020-v1.0
+id: doc-user-story-0020-us-020-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 020
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-020-us-020
+# User Story — doc-user-story-0020-us-020
 
 **Título:** Gerenciar Perfil (Editar Email, Nome, Senha)  
-**ID Único:** doc-user-story-020-us-020  
+**ID Único:** doc-user-story-0020-us-020  
 **Status:** Done  
 **Sprint:** S4 | **Milestone:** S4: Export, Perfil e Polish  
 **Prioridade:** P1  
@@ -185,4 +185,4 @@ E estado final consistente
 
 ---
 
-**Fim doc-user-story-020-us-020**
+**Fim doc-user-story-0020-us-020**

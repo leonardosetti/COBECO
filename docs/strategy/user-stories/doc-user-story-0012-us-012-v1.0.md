@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-012-us-012-v1.0
+id: doc-user-story-0012-us-012-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 012
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-012-us-012
+# User Story — doc-user-story-0012-us-012
 
 **Título:** Selecionar Categorias (Pré-filtro)  
-**ID Único:** doc-user-story-012-us-012  
+**ID Único:** doc-user-story-0012-us-012  
 **Status:** Done  
 **Sprint:** S3 | **Milestone:** S3: Pré-filtro e Comparação  
 **Prioridade:** P0  
@@ -149,4 +149,4 @@ E tooltip "Selecione pelo menos uma categoria"
 
 ---
 
-**Fim doc-user-story-012-us-012**
+**Fim doc-user-story-0012-us-012**

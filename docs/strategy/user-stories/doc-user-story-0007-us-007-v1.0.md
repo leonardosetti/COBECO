@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-007-us-007-v1.0
+id: doc-user-story-0007-us-007-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 007
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-007-us-007
+# User Story — doc-user-story-0007-us-007
 
 **Título:** Salvar Lista (Persistir no Banco)  
-**ID Único:** doc-user-story-007-us-007  
+**ID Único:** doc-user-story-0007-us-007  
 **Status:** Done  
 **Sprint:** S2 | **Milestone:** S2: Listas e Catálogo  
 **Prioridade:** P0  
@@ -146,9 +146,9 @@ E loga erro no backend
 ## 7. Notas
 
 - **Transação:** `session.begin()` → `session.add(lista)` → `session.flush()` (pega ID) → `session.add_all(itens)` → `session.commit()`. Em exceção: `session.rollback()`.
-- **Categorias Pré-selecionadas:** Vêm do estado do pré-filtro (doc-user-story-012-us-012 a doc-user-story-014-us-014). Salvas em `sessionStorage` ou context do usuário autenticado.
+- **Categorias Pré-selecionadas:** Vêm do estado do pré-filtro (doc-user-story-0012-us-012 a doc-user-story-0014-us-014). Salvas em `sessionStorage` ou context do usuário autenticado.
 - **Itens:** Cada item valida `produto_id` existe + `quantidade` 1-9999.
 
 ---
 
-**Fim doc-user-story-007-us-007**
+**Fim doc-user-story-0007-us-007**

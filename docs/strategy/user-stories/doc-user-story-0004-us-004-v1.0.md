@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-004-us-004-v1.0
+id: doc-user-story-0004-us-004-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 004
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-004-us-004
+# User Story — doc-user-story-0004-us-004
 
 **Título:** Recuperar Senha  
-**ID Único:** doc-user-story-004-us-004  
+**ID Único:** doc-user-story-0004-us-004  
 **Status:** Done  
 **Sprint:** S1 | **Milestone:** S1: Setup, Docs e Auth  
 **Prioridade:** P1  
@@ -145,9 +145,9 @@ Então retorna 200 com mensagem genérica (não vaza existência) "Se o usuário
 ## 7. Notas
 
 - **RECOVERY_MODE=log:** Apenas desenvolvimento. Em produção, enviaria email (fora escopo MVP).
-- **Pergunta Segurança:** Definida no cadastro (doc-user-story-001-us-001). Resposta armazenada como hash bcrypt.
+- **Pergunta Segurança:** Definida no cadastro (doc-user-story-0001-us-001). Resposta armazenada como hash bcrypt.
 - **Frontend:** 2 páginas — "Solicitar recuperação" (input usuário) → "Redefinir senha" (token + nova senha + confirmar).
 
 ---
 
-**Fim doc-user-story-004-us-004**
+**Fim doc-user-story-0004-us-004**

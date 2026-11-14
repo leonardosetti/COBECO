@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-014-us-014-v1.0
+id: doc-user-story-0014-us-014-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 014
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-014-us-014
+# User Story — doc-user-story-0014-us-014
 
 **Título:** Filtrar por Disponibilidade (Slider 0-100%)  
-**ID Único:** doc-user-story-014-us-014  
+**ID Único:** doc-user-story-0014-us-014  
 **Status:** Done  
 **Sprint:** S3 | **Milestone:** S3: Pré-filtro e Comparação  
 **Prioridade:** P1  
@@ -133,10 +133,10 @@ E se nenhum tem 100%, mostra "Nenhum fornecedor com 100% disponibilidade"
 
 ## 7. Notas
 
-- **Filtro Local:** Não chama backend — usa array de fornecedores já carregado no doc-user-story-012-us-012/doc-user-story-013-us-013. Performance instantânea.
+- **Filtro Local:** Não chama backend — usa array de fornecedores já carregado no doc-user-story-0012-us-012/doc-user-story-0013-us-013. Performance instantânea.
 - **Step:** 5% (0, 5, 10, ..., 100).
 - **Feedback Visual:** Toast sutil quando fornecedor selecionado é removido pelo filtro.
 
 ---
 
-**Fim doc-user-story-014-us-014**
+**Fim doc-user-story-0014-us-014**

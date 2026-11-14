@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-017-us-017-v1.0
+id: doc-user-story-0017-us-017-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 017
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-017-us-017
+# User Story — doc-user-story-0017-us-017
 
 **Título:** Exportar Lista em PDF (ReportLab)  
-**ID Único:** doc-user-story-017-us-017  
+**ID Único:** doc-user-story-0017-us-017  
 **Status:** Done  
 **Sprint:** S4 | **Milestone:** S4: Export, Perfil e Polish  
 **Prioridade:** P0  
@@ -164,4 +164,4 @@ E loga erro completo no backend
 
 ---
 
-**Fim doc-user-story-017-us-017**
+**Fim doc-user-story-0017-us-017**

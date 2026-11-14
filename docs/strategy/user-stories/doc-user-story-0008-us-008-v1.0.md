@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-008-us-008-v1.0
+id: doc-user-story-0008-us-008-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 008
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-008-us-008
+# User Story — doc-user-story-0008-us-008
 
 **Título:** Promover Lista Efêmera (Login → Migração)  
-**ID Único:** doc-user-story-008-us-008  
+**ID Único:** doc-user-story-0008-us-008  
 **Status:** Done  
 **Sprint:** S2 | **Milestone:** S2: Listas e Catálogo  
 **Prioridade:** P0  
@@ -73,7 +73,7 @@ Com botões: "Salvar no banco" / "Manter efêmera" / "Descartar"
 ```gherkin
 Dado que modal de promoção está aberto
 Quando clico "Salvar no banco"
-Então o sistema reutiliza POST /v1/listas (doc-user-story-007-us-007) com os itens da sessionStorage
+Então o sistema reutiliza POST /v1/listas (doc-user-story-0007-us-007) com os itens da sessionStorage
 E em sdoc-arch-0006-uc-v1esso: limpa sessionStorage, fecha modal, toast "Lista salva!", redireciona Minhas Listas
 E em falha: mantém modal aberto, mostra erro, opção tentar novamente
 ```
@@ -124,7 +124,7 @@ E redireciona normal para Dashboard
 |---------|-----------|--------|------|-------|--------|--------|
 | TA-070 | Frontend: Interceptor login → verifica sessionStorage `cobeco_lista_efemera` | Frontend | 2 | Eduardo | ✅ | `feat/UC-17-promover-lista` |
 | TA-071 | Frontend: Componente Modal Promoção (3 botões, loading, erros) | Frontend | 3 | Eduardo | ✅ | `feat/UC-17-promover-lista` |
-| TA-072 | Frontend: "Salvar" → chama POST /v1/listas (reusa doc-user-story-007-us-007) | Frontend | 1 | Eduardo | ✅ | `feat/UC-17-promover-lista` |
+| TA-072 | Frontend: "Salvar" → chama POST /v1/listas (reusa doc-user-story-0007-us-007) | Frontend | 1 | Eduardo | ✅ | `feat/UC-17-promover-lista` |
 | TA-073 | Testes E2E: fluxo completo login + modal + 3 opções | Frontend | 2 | Nicolas | ✅ | `feat/UC-17-promover-lista` |
 
 ---
@@ -153,9 +153,9 @@ E redireciona normal para Dashboard
 ## 7. Notas
 
 - **Momento da Verificação:** Após response 200 do `/v1/auth/login`, antes de redirect.
-- **Estado Compartilhado:** `sessionStorage` chave `cobeco_lista_efemera` — mesma da doc-user-story-005-us-005.
-- **Reutilização:** Chama mesmo endpoint `POST /v1/listas` da doc-user-story-007-us-007 (evita duplicação).
+- **Estado Compartilhado:** `sessionStorage` chave `cobeco_lista_efemera` — mesma da doc-user-story-0005-us-005.
+- **Reutilização:** Chama mesmo endpoint `POST /v1/listas` da doc-user-story-0007-us-007 (evita duplicação).
 
 ---
 
-**Fim doc-user-story-008-us-008**
+**Fim doc-user-story-0008-us-008**

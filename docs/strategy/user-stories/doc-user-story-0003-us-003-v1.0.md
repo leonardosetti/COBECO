@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-003-us-003-v1.0
+id: doc-user-story-0003-us-003-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 003
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-003-us-003
+# User Story — doc-user-story-0003-us-003
 
 **Título:** Logout  
-**ID Único:** doc-user-story-003-us-003  
+**ID Único:** doc-user-story-0003-us-003  
 **Status:** Done  
 **Sprint:** S1 | **Milestone:** S1: Setup, Docs e Auth  
 **Prioridade:** P1  
@@ -132,4 +132,4 @@ E redireciona para login
 
 ---
 
-**Fim doc-user-story-003-us-003**
+**Fim doc-user-story-0003-us-003**

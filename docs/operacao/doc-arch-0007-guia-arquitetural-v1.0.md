@@ -214,7 +214,7 @@ flowchart TD
 | **ADR** | `ADR-<NNN>-<slug>.md` | `docs/decisoes/` | `ADR-001-stack-decision.md` |
 | **RFC** | `RFC-<NNN>-<slug>.md` | `docs/rfc/` | `RFC-001-auth-pattern.md` |
 | **CR** | `CR-<NNN>-<slug>.md` | `docs/change/` | `CR-001-quality-board-publico.md` |
-| **User Story** | `US-<NNN>.md` | `docs/strategy/user-stories/` | `doc-user-story-001-us-001-v1.0.md` |
+| **User Story** | `US-<NNN>.md` | `docs/strategy/user-stories/` | `doc-user-story-0001-us-001-v1.0.md` |
 | **Spec Template** | `TEMPLATE-SPEC.md` | `.ai/specs/` | — |
 | **Handoff Template** | `TEMPLATE-HANDOFF.md` | `.ai/handoffs/` | — |
 
@@ -272,7 +272,7 @@ graph LR
     
     T1 -.->|docs/strategy/| D1[Instância: PROJECT-CHARTER.md]
     T7 -.->|docs/strategy/| D2[Instância: PRD.md]
-    T8 -.->|docs/strategy/user-stories/| D3[Instâncias: doc-user-story-001-us-001..doc-user-story-020-us-020-v1.0.md]
+    T8 -.->|docs/strategy/user-stories/| D3[Instâncias: doc-user-story-0001-us-001..doc-user-story-0020-us-020-v1.0.md]
     T9 -.->|docs/strategy/| D4[Instância: TRACEABILITY.md]
     T10 -.->|docs/arquitetura/| D5[Instâncias: C4-*.md]
     T11 -.->|docs/decisoes/| D6[Instância: ADR-001-*.md]
@@ -416,10 +416,10 @@ flowchart LR
 
 | RF | UC | User Story | Spec | Handoff | Test Unit | Test E2E | Branch | Deploy |
 |----|----|------------|------|---------|-----------|----------|--------|--------|
-| RF01 | UC09 | doc-user-story-001-us-001 | spec-004 | hf-exec-0500 | `test_cadastrar_usuario.py` | `test_auth_flow.py` | `feat/UC-09` | v0.1.0 |
-| RF02 | UC10 | doc-user-story-002-us-002 | spec-004 | hf-exec-0500 | `test_login_jwt.py` | `test_auth_flow.py` | `feat/UC-10` | v0.1.0 |
+| RF01 | UC09 | doc-user-story-0001-us-001 | spec-004 | hf-exec-0500 | `test_cadastrar_usuario.py` | `test_auth_flow.py` | `feat/UC-09` | v0.1.0 |
+| RF02 | UC10 | doc-user-story-0002-us-002 | spec-004 | hf-exec-0500 | `test_login_jwt.py` | `test_auth_flow.py` | `feat/UC-10` | v0.1.0 |
 | ... | ... | ... | ... | ... | ... | ... | ... | ... |
-| RF18 | UC09 | doc-user-story-020-us-020 | spec-008 | HF-XXXX | `test_print_css.py` | `test_export_flow.py` | `feat/UC-09-imprimir` | v0.1.0 |
+| RF18 | UC09 | doc-user-story-0020-us-020 | spec-008 | HF-XXXX | `test_print_css.py` | `test_export_flow.py` | `feat/UC-09-imprimir` | v0.1.0 |
 
 **Validações Obrigatórias (CI Gate):**
 - ✅ 100% RFs → Spec
@@ -659,7 +659,7 @@ flowchart TD
 | Constitution v2.0 | `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md` |
 | Project Charter | `docs/strategy/PROJECT-CHARTER.md` |
 | PRD | `docs/strategy/PRD.md` |
-| User Stories | `docs/strategy/user-stories/doc-user-story-001-us-001-v1.0.md` a `doc-user-story-020-us-020-v1.0.md` |
+| User Stories | `docs/strategy/user-stories/doc-user-story-0001-us-001-v1.0.md` a `doc-user-story-0020-us-020-v1.0.md` |
 | Traceability | `docs/strategy/TRACEABILITY.md` |
 | WBS + Schedule | `docs/strategy/WBS.md` + `SCHEDULE.md` |
 | C4 Diagrams | `docs/arquitetura/doc-arch-0010-c4-context-v1.0.md`, `C4-Containers.md`, `C4-Components-*.md` |

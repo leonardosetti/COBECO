@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-002-us-002-v1.0
+id: doc-user-story-0002-us-002-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 002
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-002-us-002
+# User Story — doc-user-story-0002-us-002
 
 **Título:** Login com JWT  
-**ID Único:** doc-user-story-002-us-002  
+**ID Único:** doc-user-story-0002-us-002  
 **Status:** Done  
 **Sprint:** S1 | **Milestone:** S1: Setup, Docs e Auth  
 **Prioridade:** P0  
@@ -168,4 +168,4 @@ E bloqueia temporariamente o IP
 
 ---
 
-**Fim da User Story doc-user-story-002-us-002**
+**Fim da User Story doc-user-story-0002-us-002**

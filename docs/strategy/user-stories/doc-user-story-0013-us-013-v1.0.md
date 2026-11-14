@@ -1,5 +1,5 @@
 ---
-id: doc-user-story-013-us-013-v1.0
+id: doc-user-story-0013-us-013-v1.0
 type: doc-user-story
 title: DOC USER STORY — Us 013
 version: v1.0
@@ -35,10 +35,10 @@ workflow:
   approval_hash: null
   board_url: null
 ---
-# User Story — doc-user-story-013-us-013
+# User Story — doc-user-story-0013-us-013
 
 **Título:** Selecionar Fornecedores  
-**ID Único:** doc-user-story-013-us-013  
+**ID Único:** doc-user-story-0013-us-013  
 **Status:** Done  
 **Sprint:** S3 | **Milestone:** S3: Pré-filtro e Comparação  
 **Prioridade:** P0  
@@ -62,7 +62,7 @@ para **escolher onde comprar e ver apenas ofertas desses fornecedores**.
 
 ### Cenário 1: Exibir fornecedores filtrados por categorias
 ```gherkin
-Dado que selecionei categorias "Alimentos" e "Bebidas" (doc-user-story-012-us-012)
+Dado que selecionei categorias "Alimentos" e "Bebidas" (doc-user-story-0012-us-012)
 Quando avanço para "Selecionar Fornecedores"
 Então exibe lista de fornecedores que têm produtos nas categorias selecionadas
 E cada fornecedor: checkbox + nome + % disponibilidade (ex: "Supermercado A — 85%")
@@ -110,7 +110,7 @@ Então minhas seleções de fornecedores estão mantidas
 
 | Task ID | Descrição | Camada | Est. | Resp. | Status | Branch |
 |---------|-----------|--------|------|-------|--------|--------|
-| TA-120 | Backend: GET /v1/fornecedores?categorias= — já em doc-user-story-012-us-012 (reusa) | Backend | 0 | — | ✅ | — |
+| TA-120 | Backend: GET /v1/fornecedores?categorias= — já em doc-user-story-0012-us-012 (reusa) | Backend | 0 | — | ✅ | — |
 | TA-121 | Frontend: Componente FornecedoresChecklist — checkboxes, % badge, ordenação, validação min 2 | Frontend | 4 | Eduardo | ✅ | `feat/UC-04-fornecedores` |
 | TA-122 | Frontend: Persistência seleções em sessionStorage `cobeco_fornecedores_selecionados` | Frontend | 1 | Eduardo | ✅ | `feat/UC-04-fornecedores` |
 | TA-123 | Testes: exibição, validação min 2, persistência estado | Frontend | 2 | Nicolas | ✅ | `feat/UC-04-fornecedores` |
@@ -119,7 +119,7 @@ Então minhas seleções de fornecedores estão mantidas
 
 ## 5. DoD
 
-- [x] Reusa endpoint doc-user-story-012-us-012 (GET /v1/fornecedores?categorias=)
+- [x] Reusa endpoint doc-user-story-0012-us-012 (GET /v1/fornecedores?categorias=)
 - [x] % Disponibilidade badge colorido: ≥80% verde, 50-79% amarelo, <50% vermelho
 - [x] Ordenação % DESC
 - [x] Validação mínimo 2 fornecedores (regra de negócio)
@@ -147,4 +147,4 @@ Então minhas seleções de fornecedores estão mantidas
 
 ---
 
-**Fim doc-user-story-013-us-013**
+**Fim doc-user-story-0013-us-013**
