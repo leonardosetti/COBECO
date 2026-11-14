@@ -127,5 +127,5 @@ class TestSalvarListaUseCase:
             itens=[{"produto_id": 1, "quantidade": 1}],
         )
 
-        with pytest.raises(ValueError, match="nome da lista deve ter 1-10 caracteres"):
+        with pytest.raises(ValueError, match="nome da lista deve ter 1-100 caracteres"):
             await usecase.executar(usuario_id=1, input=input_data)
