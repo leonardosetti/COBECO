@@ -78,7 +78,7 @@ migrate-create: ## Cria nova migração (usage: make migrate-create MSG="descri�
 	$(BACKEND) alembic revision --autogenerate -m "$(MSG)"
 
 seed: ## Executa seed do banco (dados mockados)
-	$(COMPOSE_DEV) exec db mysql -u cobeco -pcobeco cobeco < backend/seed.sql
+	$(COMPOSE_DEV) exec -T db mysql -u cobeco -pcobeco cobeco < backend/seed.sql
 
 seed-generate: ## Regenera o seed baseline a partir da fonte canônica
 	python3 backend/scripts/generate_seed.py --profile baseline --output backend/seed.sql
