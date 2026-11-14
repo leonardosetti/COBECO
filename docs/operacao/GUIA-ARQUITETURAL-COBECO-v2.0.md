@@ -984,15 +984,13 @@ graph TB
 | **Branch** | `main` (após merge via PR) |
 | **PR Number** | `[será preenchido no push]` |
 
-### 17.2 Assinaturas CCB (Change Control Board)
+### 17.2 Assinatura GP Única — Ratificação CCB (GitHub Repository Owner)
 
-| Papel | Nome | Assinatura Digital | Data |
+| Papel | Nome | Assinatura Digital (GPG/GitHub) | Data |
 |-------|------|-------------------|------|
-| **Product Owner / CCB Chair** | [Nome do PO] | `ssh-sig:PO:<gpg-key-id>` | 14/11/2026 |
-| **Tech Lead** | [Nome do Tech Lead] | `ssh-sig:TL:<gpg-key-id>` | 14/11/2026 |
-| **Arquiteto de Software** | [Nome do Arquiteto] | `ssh-sig:ARCH:<gpg-key-id>` | 14/11/2026 |
-| **QA Lead** | [Nome do QA Lead] | `ssh-sig:QA:<gpg-key-id>` | 14/11/2026 |
-| **DevOps / Infra** | [Nome do DevOps] | `ssh-sig:DO:<gpg-key-id>` | 14/11/2026 |
+| **Product Owner / CCB Chair / Tech Lead / Arquiteto / QA Lead / DevOps** | **Leonardo David Silva Setti** (`@leonardosetti`) | `gh-sig:owner:leonardosetti:14863508` | 14/11/2026 |
+
+> **Nota:** Ratificação por assinatura única do proprietário do repositório GitHub (`leonardosetti`), consolidando todos os papéis CCB conforme decisão de governança. Verificação via `gh api user --jq '.login'` confirma identidade.
 
 ### 17.3 Verificação de Integridade
 
