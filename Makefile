@@ -1,7 +1,7 @@
 # COBECO MVP — Makefile
 # Comandos padronizados para desenvolvimento e deploy
 
-.PHONY: help up down logs build test lint seed migrate shell clean
+.PHONY: help up down logs build test lint seed seed-generate seed-expanded migrate shell clean
 
 # ============================================================
 # Variáveis
@@ -79,6 +79,13 @@ migrate-create: ## Cria nova migração (usage: make migrate-create MSG="descri�
 
 seed: ## Executa seed do banco (dados mockados)
 	$(COMPOSE_DEV) exec db mysql -u cobeco -pcobeco cobeco < backend/seed.sql
+
+seed-generate: ## Regenera o seed baseline a partir da fonte canônica
+	python3 backend/scripts/generate_seed.py --profile baseline --output backend/seed.sql
+
+seed-expanded: ## Carrega o seed expandido (requer SEED_EXPANDED_CONFIRM=SIM)
+	@test "$(SEED_EXPANDED_CONFIRM)" = "SIM" || (echo "Use: make seed-expanded SEED_EXPANDED_CONFIRM=SIM"; exit 1)
+	@tmp=$$(mktemp); trap 'rm -f "$$tmp"' EXIT; python3 backend/scripts/generate_seed.py --profile expanded --output "$$tmp"; $(COMPOSE_DEV) exec -T db mysql -u cobeco -pcobeco cobeco < "$$tmp"
 
 db-reset: ## Reset completo do banco (CUIDADO: apaga dados)
 	$(COMPOSE_DEV) down -v
