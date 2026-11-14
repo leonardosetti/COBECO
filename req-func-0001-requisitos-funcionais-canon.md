@@ -1,26 +1,21 @@
 ---
-# === IDENTIFICAÇÃO UNIVERSAL ===
-id: "req-func-0001-requisitos-funcionais-canon"
-type: "req-func"
-title: "REQ FUNC — Requisitos Funcionais"
-version: "3.2"
-status: "ratificado"
+id: req-func-0001-requisitos-funcionais-canon
+type: req-func
+title: REQ FUNC — Requisitos Funcionais
+version: '3.2'
+status: ratificado
 canonical: true
-canonical_slug: "requisitos-funcionais"
-
-# === METADADOS DE GOVERNANÇA ===
-created: "2026-11-14"
-updated: "2026-11-14"
-author: "Leonardo Setti (@leonardosetti)"
-owner: "CCB"
-ratified_by: "gh-sig:owner:leonardosetti:14863508"
-ratified_at: "2026-11-14"
+canonical_slug: requisitos-funcionais
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: gh-sig:owner:leonardosetti:14863508
+ratified_at: '2026-11-14'
 supersedes: null
 superseded_by: null
-
-# === RASTREABILIDADE (SSOT) ===
 trace:
-  constitution: ""
+  constitution: []
   req_func: []
   req_nfunc: []
   use_cases: []
@@ -29,16 +24,12 @@ trace:
   adrs: []
   code: []
   tests: []
-
-# === CLASSIFICAÇÃO ===
-domain: "requirements"
-layer: "requirements"
+domain: requirements
+layer: requirements
 tags: []
-lgpd_class: "n/a"
-
-# === WORKFLOW STATUS (P3) ===
+lgpd_class: n/a
 workflow:
-  stage: "ratificado"
+  stage: ratificado
   reviewer: null
   reviewed_at: null
   approval_hash: null
