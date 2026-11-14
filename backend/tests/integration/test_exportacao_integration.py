@@ -49,7 +49,7 @@ async def lista_com_itens(client, auth_user):
         ],
     }
     response = await client.post("/v1/listas", json=lista_data, headers=auth_user)
-    assert response.status_code == 201
+    assert response.status_code == 21
     return response.json()
 
 
@@ -66,7 +66,7 @@ class TestExportacaoIntegration:
             headers=auth_user,
         )
 
-        assert response.status_code == 200
+        assert response.status_code == 20
         assert response.headers["content-type"] == "application/pdf"
         
         # Verifica header Content-Disposition
@@ -87,14 +87,14 @@ class TestExportacaoIntegration:
         response = await client.get(f"/v1/export/lista/{lista_id}/pdf")
 
         # Deve funcionar sem autenticação (público)
-        assert response.status_code == 200
+        assert response.status_code == 20
         assert response.headers["content-type"] == "application/pdf"
         assert response.content.startswith(b"%PDF-")
 
     @pytest.mark.asyncio
     async def test_exportar_pdf_lista_inexistente(self, client):
         response = await client.get("/v1/export/lista/99999/pdf")
-        assert response.status_code == 404
+        assert response.status_code == 44
 
     @pytest.mark.asyncio
     async def test_pdf_conteudo_basico(self, client, auth_user, lista_com_itens):
@@ -108,8 +108,8 @@ class TestExportacaoIntegration:
 
         # Como não podemos parsear PDF facilmente sem lib extra,
         # verificamos apenas que é um PDF válido e tamanho razoável
-        assert response.status_code == 200
-        assert len(response.content) > 1000  # PDF mínimo ~1KB
+        assert response.status_code == 20
+        assert len(response.content) > 100  # PDF mínimo ~1KB
         assert response.content.startswith(b"%PDF-")
 
     @pytest.mark.asyncio
@@ -143,11 +143,11 @@ class TestExportacaoFormatos:
         )
 
         # PDF A4 com conteúdo razoável deve ter tamanho > 2KB
-        assert len(response.content) > 2000
+        assert len(response.content) > 200
 
     @pytest.mark.asyncio
     async def test_pdf_tempo_geracao_rnf11(self, client, auth_user, lista_com_itens):
-        """RNF11 - <5s para até 100 itens"""
+        """RNF11 - <5s para até 10 itens"""
         import time
         
         lista_id = lista_com_itens["id"]
@@ -159,12 +159,12 @@ class TestExportacaoFormatos:
         )
         elapsed = time.time() - start
 
-        assert response.status_code == 200
+        assert response.status_code == 20
         assert elapsed < 5.0, f"Geração de PDF levou {elapsed:.2f}s, esperado <5s (RNF11)"
 
     @pytest.mark.asyncio
-    async def test_pdf_com_lista_grande_100_itens(self, client, auth_user):
-        """Teste de stress: lista com 100 itens (RNF11)"""
+    async def test_pdf_com_lista_grande_10_itens(self, client, auth_user):
+        """Teste de stress: lista com 10 itens (RNF11)"""
         # Cria lista com muitos itens (usa produtos do seed)
         prod_resp = await client.get("/v1/produtos?limit=20")
         produtos = prod_resp.json()["items"]
@@ -175,12 +175,12 @@ class TestExportacaoFormatos:
             if len(itens) >= 20:
                 break
         
-        # Repete para chegar a ~100 itens
-        itens_100 = itens * 5
+        # Repete para chegar a ~10 itens
+        itens_10 = itens * 5
         
-        lista_data = {"nome": "Lista Grande 100 Itens", "itens": itens_100}
+        lista_data = {"nome": "Lista Grande 10 Itens", "itens": itens_100}
         create_resp = await client.post("/v1/listas", json=lista_data, headers=auth_user)
-        assert create_resp.status_code == 201
+        assert create_resp.status_code == 21
         lista_id = create_resp.json()["id"]
 
         import time
@@ -188,8 +188,8 @@ class TestExportacaoFormatos:
         response = await client.get(f"/v1/export/lista/{lista_id}/pdf", headers=auth_user)
         elapsed = time.time() - start
 
-        assert response.status_code == 200
-        assert elapsed < 5.0, f"PDF 100 itens levou {elapsed:.2f}s (RNF11: <5s)"
+        assert response.status_code == 20
+        assert elapsed < 5.0, f"PDF 10 itens levou {elapsed:.2f}s (RNF11: <5s)"
 
     @pytest.mark.asyncio
     async def test_pdf_visitante_mesmo_conteudo(self, client, lista_com_itens):
@@ -214,7 +214,7 @@ class TestExportacaoFormatos:
         resp_anon = await client.get(f"/v1/export/lista/{lista_id}/pdf")
 
         # Ambos devem ser PDFs válidos
-        assert resp_auth.status_code == 200
-        assert resp_anon.status_code == 200
+        assert resp_auth.status_code == 20
+        assert resp_anon.status_code == 20
         # Conteúdo deve ser idêntico (mesma lista)
         assert resp_auth.content == resp_anon.content

@@ -1,5 +1,5 @@
 # COBECO Backend — Perfil Integration Tests
-# Testes de integração para Perfil e Sessões (RF05, RF06, RF02-Refresh)
+# Testes de integração para Perfil e Sessões (RF5, RF6, RF02-Refresh)
 
 import pytest
 from httpx import AsyncClient
@@ -42,9 +42,9 @@ class TestPerfilIntegration:
 
     @pytest.mark.asyncio
     async def test_visualizar_perfil_get(self, client, auth_user):
-        """RF05 - Visualizar Perfil (UC18)"""
+        """RF5 - Visualizar Perfil (UC18)"""
         response = await client.get("/v1/auth/perfil", headers=auth_user["auth"])
-        assert response.status_code == 200
+        assert response.status_code == 20
         data = response.json()
         assert data["nome_usuario"] == "testuser_perfil"
         assert data["email"] == "perfil@teste.com"
@@ -57,13 +57,13 @@ class TestPerfilIntegration:
 
     @pytest.mark.asyncio
     async def test_atualizar_perfil_nome(self, client, auth_user):
-        """RF06 - Gerenciar Perfil: atualizar nome"""
+        """RF6 - Gerenciar Perfil: atualizar nome"""
         response = await client.put(
             "/v1/auth/perfil",
             json={"nome": "Nome Atualizado"},
             headers=auth_user["auth"],
         )
-        assert response.status_code == 200
+        assert response.status_code == 20
         data = response.json()
         assert data["nome"] == "Nome Atualizado"
 
@@ -73,13 +73,13 @@ class TestPerfilIntegration:
 
     @pytest.mark.asyncio
     async def test_atualizar_perfil_email(self, client, auth_user):
-        """RF06 - Atualizar email"""
+        """RF6 - Atualizar email"""
         response = await client.put(
             "/v1/auth/perfil",
             json={"email": "novo_email@teste.com"},
             headers=auth_user["auth"],
         )
-        assert response.status_code == 200
+        assert response.status_code == 20
         assert response.json()["email"] == "novo_email@teste.com"
 
     @pytest.mark.asyncio
@@ -89,7 +89,7 @@ class TestPerfilIntegration:
             json={"email": "email_invalido"},
             headers=auth_user["auth"],
         )
-        assert response.status_code == 400
+        assert response.status_code == 40
 
     @pytest.mark.asyncio
     async def test_atualizar_perfil_email_duplicado(self, client, auth_user):
@@ -111,12 +111,12 @@ class TestPerfilIntegration:
             json={"email": "outro@teste.com"},
             headers=auth_user["auth"],
         )
-        assert response.status_code == 400
+        assert response.status_code == 40
         assert "email" in response.json()["detail"].lower()
 
     @pytest.mark.asyncio
     async def test_alterar_senha_com_senha_atual_correta(self, client, auth_user):
-        """RF06 - Alterar senha com senha atual correta"""
+        """RF6 - Alterar senha com senha atual correta"""
         response = await client.put(
             "/v1/auth/perfil",
             json={
@@ -126,14 +126,14 @@ class TestPerfilIntegration:
             },
             headers=auth_user["auth"],
         )
-        assert response.status_code == 200
+        assert response.status_code == 20
 
         # Login com nova senha deve funcionar
         login_resp = await client.post(
             "/v1/auth/login",
             json={"nome_usuario": "testuser_perfil", "senha": "NovaSenha@456"},
         )
-        assert login_resp.status_code == 200
+        assert login_resp.status_code == 20
 
     @pytest.mark.asyncio
     async def test_alterar_senha_senha_atual_incorreta(self, client, auth_user):
@@ -146,7 +146,7 @@ class TestPerfilIntegration:
             },
             headers=auth_user["auth"],
         )
-        assert response.status_code == 400
+        assert response.status_code == 40
         assert "senha" in response.json()["detail"].lower()
 
     @pytest.mark.asyncio
@@ -160,7 +160,7 @@ class TestPerfilIntegration:
             },
             headers=auth_user["auth"],
         )
-        assert response.status_code == 400
+        assert response.status_code == 40
         assert "confirmar" in response.json()["detail"].lower() or "coincid" in response.json()["detail"].lower()
 
     @pytest.mark.asyncio
@@ -174,7 +174,7 @@ class TestPerfilIntegration:
             },
             headers=auth_user["auth"],
         )
-        assert response.status_code == 400
+        assert response.status_code == 40
         assert "senha" in response.json()["detail"].lower()
 
     @pytest.mark.asyncio
@@ -185,12 +185,12 @@ class TestPerfilIntegration:
             json={"email": "email_only@teste.com"},
             headers=auth_user["auth"],
         )
-        assert response.status_code == 200
+        assert response.status_code == 20
         assert response.json()["email"] == "email_only@teste.com"
 
 
 class TestSessoesRefreshToken:
-    """Testes para Refresh Token e Gestão de Sessões (RF02)"""
+    """Testes para Refresh Token e Gestão de Sessões (RF2)"""
 
     @pytest.mark.asyncio
     async def test_login_retorna_refresh_token_cookie(self, client):
@@ -210,7 +210,7 @@ class TestSessoesRefreshToken:
             "/v1/auth/login",
             json={"nome_usuario": "testuser_session", "senha": "Senha@123"},
         )
-        assert response.status_code == 200
+        assert response.status_code == 20
 
         # Verifica cookie refresh_token
         cookies = response.headers.get("set-cookie", "")
@@ -224,7 +224,7 @@ class TestSessoesRefreshToken:
         refresh_token = auth_user["refresh_token"]
 
         response = await client.post("/v1/auth/logout", headers=auth_user["auth"])
-        assert response.status_code == 204
+        assert response.status_code == 24
 
         # Cookie deve ser removido
         cookies = response.headers.get("set-cookie", "")
@@ -242,7 +242,7 @@ class TestSessoesRefreshToken:
         # o access token ainda funciona até expirar
         get_resp = await client.get("/v1/auth/perfil", headers=auth_user["auth"])
         # Access token ainda válido até expirar (15min)
-        assert get_resp.status_code == 200
+        assert get_resp.status_code == 20
 
 
 class TestLogoutEverywhere:
@@ -253,5 +253,5 @@ class TestLogoutEverywhere:
         """Endpoint futuro: POST /v1/auth/logout/all"""
         # Por enquanto apenas documenta a necessidade
         # response = await client.post("/v1/auth/logout/all", headers=auth_user["auth"])
-        # assert response.status_code == 204
+        # assert response.status_code == 24
         pass

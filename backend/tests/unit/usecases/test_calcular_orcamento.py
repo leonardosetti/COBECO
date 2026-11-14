@@ -3,6 +3,7 @@
 import pytest
 from unittest.mock import AsyncMock
 from decimal import Decimal
+from datetime import datetime
 from src.domain.usecases import (
     CalcularOrcamentoUseCase, ComparacaoInput,
     DomainError
@@ -91,7 +92,7 @@ class TestCalcularOrcamentoUseCase:
     """Testes para CalcularOrcamentoUseCase (RF15, RF16)"""
 
     @pytest.mark.asyncio
-    async def test_executar_sdoc-arch-0006-uc-v1esso_comparacao_completa(
+    async def test_executar_sucesso_comparacao_completa(
         self, usecase, mock_comparacao_repo, mock_orcamento_result
     ):
         mock_comparacao_repo.calcular_orcamento = AsyncMock(return_value=mock_orcamento_result)
@@ -176,8 +177,10 @@ class TestCalcularOrcamentoUseCase:
             )
             
             all_fornecedores = [forn1, forn2, forn3]
-            # Filter by availability
-            filtered = [f for f in all_fornecedores if f.percentual_disponibilidade >= disponibilidade_minima]
+            # Filter by both fornecedor_ids AND availability
+            filtered = [f for f in all_fornecedores 
+                       if f.fornecedor_id in fornecedor_ids
+                       and f.percentual_disponibilidade >= disponibilidade_minima]
             
             return OrcamentoComparacao(
                 lista_id=1,

@@ -23,11 +23,11 @@ REPO_ROOT = Path(__file__).parent.parent
 
 # Tipos-classe válidos (P1)
 VALID_TYPE_CLASSES = {
-    "constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon", "req-func", "req-use-case", "doc-arch", "board-roadmap",
+    "constitution", "req-func", "req-use-case", "doc-arch", "board-roadmap",
     "doc-readme", "doc-agents", "config-make", "config-docker", "config-env",
     "doc-github-projects", "doc-plan", "doc-state-of-art", "doc-analysis",
     "doc-report", "doc-figma", "doc-prototype", "doc-pre", "config-skills",
-    "config-config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0", "config-npm", "doc-adr", "template-adr", "doc-arch-c4",
+    "config-opencode", "config-npm", "doc-adr", "template-adr", "doc-arch-c4",
     "template-c4", "audit-postmortem", "audit-dpia", "audit-sla", "audit-lessons",
     "doc-cr", "template-cr", "runbook-deploy", "runbook-db", "runbook-backup",
     "runbook-incident", "runbook-release", "runbook-sprint", "doc-status-report",
@@ -48,6 +48,10 @@ VALID_TYPE_CLASSES = {
     "script-security", "script-validate", "script-ci", "script-tools",
     "config-ci", "config-python", "config-alembic", "config-seed",
     "config-tailwind", "config-postcss", "config-nginx", "config-npm",
+    "config-audit", "config-ledger", "config-registry", "config-session",
+    "config-hardware", "config-models", "config-rag-dag",
+    "doc-mcp", "doc-mcp-deprecated", "script-mcp-deprecated",
+    "config-gsd", "config-planning",
 }
 
 # Campos obrigatórios do frontmatter universal (P2)
@@ -59,7 +63,7 @@ REQUIRED_FRONTMATTER_FIELDS = {
 }
 
 REQUIRED_TRACE_FIELDS = {
-    "constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon", "req_func", "req_nfunc", "use_cases", "specs",
+    "constitution", "req_func", "req_nfunc", "use_cases", "specs",
     "handoffs", "adrs", "code", "tests"
 }
 
@@ -87,8 +91,8 @@ def validate_filename_p1(filepath: Path) -> Tuple[bool, List[str], Dict]:
     name = filepath.name
     
     # Padrão: tipo-classe-ID-nome-versao.ext
-    # tipo-classe pode ter hífen (ex: doc-adr, req-func)
-    pattern = r'^([a-z]+-[a-z]+)-(\d{4})-([a-z0-9-]+)-(v\d+\.\d+|canon)\.([a-z0-9]+)$'
+    # tipo-classe pode ser palavra única (constitution) ou composto (doc-adr, req-func)
+    pattern = r'^([a-z]+(?:-[a-z]+)*)-(\d{4})-([a-z0-9-]+)-(v\d+\.\d+|canon)\.([a-z0-9]+)$'
     match = re.match(pattern, name)
     
     if not match:

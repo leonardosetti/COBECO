@@ -1,3 +1,40 @@
+---
+id: doc-arch-0008-guia-arquitetural-v2.0
+type: doc-arch
+title: DOC ARCH — Guia Arquitetural
+version: v2.0
+status: ratificado
+canonical: false
+canonical_slug: guia-arquitetural
+created: '2026-11-14'
+updated: '2026-11-14'
+author: Leonardo Setti (@leonardosetti)
+owner: CCB
+ratified_by: null
+ratified_at: null
+supersedes: null
+superseded_by: null
+trace:
+  constitution: []
+  req_func: []
+  req_nfunc: []
+  use_cases: []
+  specs: []
+  handoffs: []
+  adrs: []
+  code: []
+  tests: []
+domain: architecture
+layer: architecture
+tags: []
+lgpd_class: n/a
+workflow:
+  stage: rascunho
+  reviewer: null
+  reviewed_at: null
+  approval_hash: null
+  board_url: null
+---
 # 📐 GUIA ARQUITETURAL COMPLETO — COBECO MVP v2.0
 **Documento de Conhecimento Oficial do Projeto**  
 **Versão:** 2.0 | **Data:** 14/11/2026 | **Status:** ✅ RATIFICADO  

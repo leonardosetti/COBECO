@@ -44,10 +44,10 @@ def usecase(mock_repo, verificar_senha_fn, criar_token_fn, rate_limiter_fn):
 
 
 class TestLoginUseCase:
-    """Testes para LoginUseCase (UC10/RF02)"""
+    """Testes para LoginUseCase (UC10/RF2)"""
 
     @pytest.mark.asyncio
-    async def test_executar_sdoc-arch-0006-uc-v1esso(self, usecase, mock_repo, criar_token_fn):
+    async def test_executar_sucesso(self, usecase, mock_repo, criar_token_fn):
         usuario = Usuario(
             id=1,
             nome_usuario="usuario_teste",
@@ -70,7 +70,7 @@ class TestLoginUseCase:
         assert result.access_token == "access_token_for_1"
         assert result.refresh_token == "refresh_token_for_1"
         assert result.token_type == "bearer"
-        assert result.expires_in == 900  # 15 min * 60
+        assert result.expires_in == 90  # 15 min * 60
         assert result.usuario_id == 1
 
     @pytest.mark.asyncio

@@ -17,9 +17,9 @@ class TestCatalogoIntegration:
 
     @pytest.mark.asyncio
     async def test_listar_categorias(self, client):
-        """RF12 - Listar categorias para pré-filtro (UC03)"""
+        """RF12 - Listar categorias para pré-filtro (UC3)"""
         response = await client.get("/v1/categorias")
-        assert response.status_code == 200
+        assert response.status_code == 20
         data = response.json()
         assert isinstance(data, list)
         assert len(data) >= 11  # Seed tem 11 categorias
@@ -33,16 +33,16 @@ class TestCatalogoIntegration:
     @pytest.mark.asyncio
     async def test_buscar_categoria_por_id(self, client):
         response = await client.get("/v1/categorias/1")
-        assert response.status_code == 200
+        assert response.status_code == 20
         data = response.json()
         assert data["id"] == 1
         assert "nome" in data
 
     @pytest.mark.asyncio
     async def test_listar_fornecedores_ativos(self, client):
-        """RF13 - Listar fornecedores ativos para seleção (UC04)"""
+        """RF13 - Listar fornecedores ativos para seleção (UC4)"""
         response = await client.get("/v1/fornecedores")
-        assert response.status_code == 200
+        assert response.status_code == 20
         data = response.json()
         assert isinstance(data, list)
         assert len(data) >= 10  # Seed tem 10 fornecedores
@@ -65,7 +65,7 @@ class TestCatalogoIntegration:
         response = await client.get(
             f"/v1/fornecedores?categoria_ids={cat_ids[0]},{cat_ids[1]}"
         )
-        assert response.status_code == 200
+        assert response.status_code == 20
         data = response.json()
         assert isinstance(data, list)
         
@@ -76,10 +76,10 @@ class TestCatalogoIntegration:
 
     @pytest.mark.asyncio
     async def test_autocomplete_produtos(self, client):
-        """RF07, UC02 - Autocomplete para criação de lista"""
+        """RF7, UC2 - Autocomplete para criação de lista"""
         # Busca por termo parcial
         response = await client.get("/v1/produtos/autocomplete?q=Arroz&limit=5")
-        assert response.status_code == 200
+        assert response.status_code == 20
         data = response.json()
         assert isinstance(data, list)
         assert len(data) <= 5
@@ -95,7 +95,7 @@ class TestCatalogoIntegration:
     @pytest.mark.asyncio
     async def test_autocomplete_limite_resultados(self, client):
         response = await client.get("/v1/produtos/autocomplete?q=a&limit=3")
-        assert response.status_code == 200
+        assert response.status_code == 20
         data = response.json()
         assert len(data) <= 3
 
@@ -103,12 +103,12 @@ class TestCatalogoIntegration:
     async def test_autocomplete_query_vazia(self, client):
         response = await client.get("/v1/produtos/autocomplete?q=")
         # Query vazia pode retornar lista vazia ou todos (comportamento definido)
-        assert response.status_code in (200, 400)
+        assert response.status_code in (20, 40)
 
     @pytest.mark.asyncio
     async def test_listar_produtos_ativos(self, client):
         response = await client.get("/v1/produtos")
-        assert response.status_code == 200
+        assert response.status_code == 20
         data = response.json()
         assert "items" in data
         assert isinstance(data["items"], list)
@@ -121,7 +121,7 @@ class TestCatalogoIntegration:
         first_prod = list_resp.json()["items"][0]
         
         response = await client.get(f"/v1/produtos/{first_prod['id']}")
-        assert response.status_code == 200
+        assert response.status_code == 20
         data = response.json()
         assert data["id"] == first_prod["id"]
         assert data["nome"] == first_prod["nome"]
@@ -129,13 +129,13 @@ class TestCatalogoIntegration:
 
 
 class TestCatalogoPrefiltroComparacao:
-    """Testes para pré-filtro por categorias na comparação (RF12, UC03)"""
+    """Testes para pré-filtro por categorias na comparação (RF12, UC3)"""
 
     @pytest.mark.asyncio
     async def test_fornecedores_com_categorias_para_comparacao(self, client):
         """Fornecedores retornados devem incluir categorias para UI de pré-filtro"""
         response = await client.get("/v1/fornecedores")
-        assert response.status_code == 200
+        assert response.status_code == 20
         data = response.json()
         
         for forn in data:

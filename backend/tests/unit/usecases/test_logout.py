@@ -17,7 +17,7 @@ def usecase(mock_invalidar_refresh):
 
 
 class TestLogoutUseCase:
-    """Testes para LogoutUseCase (UC11/RF03)"""
+    """Testes para LogoutUseCase (UC11/RF3)"""
 
     @pytest.mark.asyncio
     async def test_executar_chama_invalidar_refresh(self, usecase, mock_invalidar_refresh):
