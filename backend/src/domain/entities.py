@@ -4,7 +4,6 @@
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, List
 from decimal import Decimal
 from enum import Enum
 
@@ -59,7 +58,7 @@ class UnidadeMedida(str, Enum):
 @dataclass
 class Usuario:
     """Entidade Usuário — Tabela: usuarios"""
-    id: Optional[int] = None
+    id: int | None = None
     nome_usuario: str = ""
     email: Email = field(default_factory=lambda: Email(""))
     nome: str = ""
@@ -68,7 +67,7 @@ class Usuario:
     resposta_seguranca_hash: SenhaHash = field(default_factory=lambda: SenhaHash(""))
     criado_em: datetime = field(default_factory=datetime.now)
     atualizado_em: datetime = field(default_factory=datetime.now)
-    deletado_em: Optional[datetime] = None
+    deletado_em: datetime | None = None
 
     # Regras de negócio
     def __post_init__(self):
@@ -90,9 +89,9 @@ class Usuario:
 @dataclass
 class Categoria:
     """Entidade Categoria — Tabela: categorias (categorias MACRO de fornecedores)"""
-    id: Optional[int] = None
+    id: int | None = None
     nome: str = ""
-    descricao: Optional[str] = None
+    descricao: str | None = None
 
     def __post_init__(self):
         if not self.nome.strip():
@@ -102,12 +101,12 @@ class Categoria:
 @dataclass
 class Fornecedor:
     """Entidade Fornecedor — Tabela: fornecedores"""
-    id: Optional[int] = None
+    id: int | None = None
     nome: str = ""
     cnpj: CNPJ = field(default_factory=lambda: CNPJ(""))
     ativo: bool = True
     criado_em: datetime = field(default_factory=datetime.now)
-    categorias: List["Categoria"] = field(default_factory=list)  # N:N via fornecedores_categorias
+    categorias: list["Categoria"] = field(default_factory=list)  # N:N via fornecedores_categorias
 
     def __post_init__(self):
         if not self.nome.strip():
@@ -117,7 +116,7 @@ class Fornecedor:
 @dataclass
 class Produto:
     """Entidade Produto — Tabela: produtos (agnóstico à categoria)"""
-    id: Optional[int] = None
+    id: int | None = None
     nome: str = ""
     unidade: UnidadeMedida = UnidadeMedida.UN
     ativo: bool = True
@@ -147,13 +146,13 @@ class FornecedorProduto:
 @dataclass
 class Lista:
     """Entidade Lista — Tabela: listas"""
-    id: Optional[int] = None
+    id: int | None = None
     usuario_id: int = 0
     nome: str = ""
     criado_em: datetime = field(default_factory=datetime.now)
     atualizado_em: datetime = field(default_factory=datetime.now)
-    deletado_em: Optional[datetime] = None
-    itens: List["ItemLista"] = field(default_factory=list)
+    deletado_em: datetime | None = None
+    itens: list["ItemLista"] = field(default_factory=list)
 
     def __post_init__(self):
         if not 1 <= len(self.nome) <= 100:
@@ -172,7 +171,7 @@ class Lista:
 @dataclass
 class ItemLista:
     """Entidade ItemLista — Tabela: itens_lista"""
-    id: Optional[int] = None
+    id: int | None = None
     lista_id: int = 0
     produto_id: int = 0
     quantidade: int = 1
@@ -194,8 +193,8 @@ class ItemComparacao:
     produto_nome: str
     unidade: str
     quantidade: int
-    preco_unitario: Optional[Decimal] = None
-    preco_total: Optional[Decimal] = None
+    preco_unitario: Decimal | None = None
+    preco_total: Decimal | None = None
     disponivel: bool = False
 
 
@@ -208,7 +207,7 @@ class FornecedorComparacao:
     itens_ausentes: int = 0
     preco_total: Decimal = Decimal("0")
     percentual_disponibilidade: float = 0.0
-    itens: List[ItemComparacao] = field(default_factory=list)
+    itens: list[ItemComparacao] = field(default_factory=list)
 
 
 @dataclass
@@ -216,8 +215,8 @@ class OrcamentoComparacao:
     """Resultado completo da comparação (RF15, RF16)"""
     lista_id: int
     lista_nome: str
-    fornecedores: List[FornecedorComparacao] = field(default_factory=list)
-    melhor_fornecedor_id: Optional[int] = None
+    fornecedores: list[FornecedorComparacao] = field(default_factory=list)
+    melhor_fornecedor_id: int | None = None
     calculado_em: datetime = field(default_factory=datetime.now)
 
     def ordenar_por_preco(self) -> None:
@@ -234,14 +233,14 @@ class OrcamentoComparacao:
 @dataclass
 class Sessao:
     """Entidade Sessao — Tabela: sessoes (refresh tokens)"""
-    id: Optional[int] = None
+    id: int | None = None
     usuario_id: int = 0
     refresh_token_hash: str = ""
-    user_agent: Optional[str] = None
-    ip: Optional[str] = None
+    user_agent: str | None = None
+    ip: str | None = None
     criado_em: datetime = field(default_factory=datetime.now)
     expira_em: datetime = field(default_factory=datetime.now)
-    revogada_em: Optional[datetime] = None
+    revogada_em: datetime | None = None
 
     def esta_ativa(self) -> bool:
         return self.revogada_em is None and datetime.now() < self.expira_em

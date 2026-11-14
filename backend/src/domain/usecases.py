@@ -2,22 +2,31 @@
 # Casos de uso puros de domínio — orquestram entidades e repositórios
 # Mapeados para RFs e UCs do SSOT v3.2
 
-from abc import ABC, abstractmethod
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Optional, List, Sequence
-from decimal import Decimal
 from datetime import timedelta
 
+from src.config import settings
 from src.domain.entities import (
-    Usuario, Categoria, Fornecedor, Produto,
-    Lista, ItemLista, OrcamentoComparacao,
-    Email, SenhaHash
+    Categoria,
+    Email,
+    Fornecedor,
+    ItemLista,
+    Lista,
+    OrcamentoComparacao,
+    Produto,
+    SenhaHash,
+    Usuario,
 )
 from src.domain.repositories import (
-    UsuarioRepository, CategoriaRepository, FornecedorRepository,
-    ProdutoRepository, ListaRepository, ComparacaoRepository, ExportacaoRepository
+    CategoriaRepository,
+    ComparacaoRepository,
+    ExportacaoRepository,
+    FornecedorRepository,
+    ListaRepository,
+    ProdutoRepository,
+    UsuarioRepository,
 )
-from src.config import settings
 
 
 # ============================================================
@@ -88,20 +97,20 @@ class LoginOutput:
 @dataclass
 class RecuperarSenhaInput:
     nome_usuario: str
-    resposta_seguranca: Optional[str] = None
-    nova_senha: Optional[str] = None
+    resposta_seguranca: str | None = None
+    nova_senha: str | None = None
 
 
 @dataclass
 class CriarListaInput:
     nome: str
-    itens: List[dict]  # [{"produto_id": int, "quantidade": int}, ...]
+    itens: list[dict]  # [{"produto_id": int, "quantidade": int}, ...]
 
 
 @dataclass
 class ComparacaoInput:
     lista_id: int
-    fornecedor_ids: List[int]
+    fornecedor_ids: list[int]
     disponibilidade_minima: float = 0.0
 
 
@@ -159,10 +168,10 @@ class LoginUseCase:
 
         usuario = await self.repo.buscar_por_nome_usuario(input.nome_usuario)
         if not usuario or not usuario.esta_ativo():
-            raise CredenciaisInvalidas()
+            raise CredenciaisInvalidas
 
         if not self.verificar_senha(input.senha, usuario.senha_hash.valor):
-            raise CredenciaisInvalidas()
+            raise CredenciaisInvalidas
 
         # Gera tokens: access (15min memória) + refresh (7d httpOnly)
         access_token = self.criar_token(
@@ -200,7 +209,7 @@ class RecuperarSenhaUseCase:
         self.hash_senha = hash_senha_fn
         self.rate_limiter = rate_limiter_fn
 
-    async def solicitar_reset(self, nome_usuario: str) -> Optional[str]:
+    async def solicitar_reset(self, nome_usuario: str) -> str | None:
         """Retorna token se modo email, None se pergunta de segurança"""
         await self.rate_limiter(nome_usuario)
 
@@ -229,16 +238,15 @@ class RecuperarSenhaUseCase:
     ) -> Usuario:
         usuario = await self.repo.buscar_por_nome_usuario(nome_usuario)
         if not usuario:
-            raise CredenciaisInvalidas()
+            raise CredenciaisInvalidas
 
         if settings.RECOVERY_MODE == "log":
             # Validar token (implementar store temporário)
             # Em dev: aceita qualquer token por simplicidade
             pass
-        else:
-            # Validar resposta da pergunta de segurança (bcrypt)
-            if not self.verificar_senha(resposta_ou_token, usuario.resposta_seguranca_hash.valor):
-                raise CredenciaisInvalidas()
+        # Validar resposta da pergunta de segurança (bcrypt)
+        elif not self.verificar_senha(resposta_ou_token, usuario.resposta_seguranca_hash.valor):
+            raise CredenciaisInvalidas
 
         usuario.senha_hash = self.hash_senha(nova_senha)
         return await self.repo.atualizar(usuario)
@@ -268,10 +276,10 @@ class GerenciarPerfilUseCase:
     async def atualizar(
         self,
         usuario_id: int,
-        email: Optional[str] = None,
-        nome: Optional[str] = None,
-        senha_atual: Optional[str] = None,
-        nova_senha: Optional[str] = None,
+        email: str | None = None,
+        nome: str | None = None,
+        senha_atual: str | None = None,
+        nova_senha: str | None = None,
     ) -> Usuario:
         usuario = await self.repo.buscar_por_id(usuario_id)
         if not usuario:
@@ -347,7 +355,7 @@ class ListarMinhasListasUseCase:
         usuario_id: int,
         pagina: int = 1,
         por_pagina: int = 20,
-        busca: Optional[str] = None,
+        busca: str | None = None,
     ) -> Sequence[Lista]:
         return await self.repo.listar_por_usuario(usuario_id, pagina, por_pagina, busca)
 
@@ -378,7 +386,7 @@ class EditarListaUseCase:
     async def executar(self, lista_id: int, usuario_id: int, input: CriarListaInput) -> Lista:
         model = await self.repo.buscar_por_id(lista_id, usuario_id)
         if not model:
-            raise ListaNaoEncontrada()
+            raise ListaNaoEncontrada
 
         # Validar produtos
         produto_ids = [item["produto_id"] for item in input.itens]
@@ -419,7 +427,7 @@ class AutocompleteProdutosUseCase:
     def __init__(self, repo: ProdutoRepository):
         self.repo = repo
 
-    async def executar(self, query: str, limit: int = 10) -> List[Produto]:
+    async def executar(self, query: str, limit: int = 10) -> list[Produto]:
         if len(query) < 2:
             return []
         return await self.repo.autocomplete(query, limit)
@@ -431,10 +439,10 @@ class SelecionarCategoriasUseCase:
     def __init__(self, repo: CategoriaRepository):
         self.repo = repo
 
-    async def listar_todas(self) -> List[Categoria]:
+    async def listar_todas(self) -> list[Categoria]:
         return await self.repo.listar_todas()
 
-    async def filtrar_fornecedores(self, categoria_ids: List[int]) -> List[Fornecedor]:
+    async def filtrar_fornecedores(self, categoria_ids: list[int]) -> list[Fornecedor]:
         # Implementado no FornecedorRepository
         pass
 
@@ -445,10 +453,10 @@ class SelecionarFornecedoresUseCase:
     def __init__(self, repo: FornecedorRepository):
         self.repo = repo
 
-    async def listar_por_categorias(self, categoria_ids: List[int]) -> List[Fornecedor]:
+    async def listar_por_categorias(self, categoria_ids: list[int]) -> list[Fornecedor]:
         return await self.repo.listar_por_categorias(categoria_ids)
 
-    async def buscar_disponibilidade(self, fornecedor_ids: List[int], produto_ids: List[int]):
+    async def buscar_disponibilidade(self, fornecedor_ids: list[int], produto_ids: list[int]):
         # Retorna % de disponibilidade por fornecedor
         pass
 
@@ -461,10 +469,10 @@ class FiltrarDisponibilidadeUseCase:
 
     async def executar(
         self,
-        fornecedor_ids: List[int],
-        produto_ids: List[int],
+        fornecedor_ids: list[int],
+        produto_ids: list[int],
         min_disponibilidade: float,
-    ) -> List[Fornecedor]:
+    ) -> list[Fornecedor]:
         fornecedores = await self.repo.buscar_por_ids(fornecedor_ids)
         # Filtrar por % disponibilidade calculada
         return [
@@ -484,7 +492,7 @@ class CalcularOrcamentoUseCase:
 
     async def executar(self, input: ComparacaoInput) -> OrcamentoComparacao:
         if len(input.fornecedor_ids) < 2:
-            raise FornecedoresInsuficientes()
+            raise FornecedoresInsuficientes
 
         return await self.repo.calcular_orcamento(
             lista_id=input.lista_id,

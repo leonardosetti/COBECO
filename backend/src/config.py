@@ -2,7 +2,7 @@
 # Single source of truth para todas as variáveis de ambiente
 
 from functools import lru_cache
-from typing import List, Optional
+
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -71,7 +71,7 @@ class Settings(BaseSettings):
     # ============================================================
     # CORS (se necessário para desenvolvimento)
     # ============================================================
-    BACKEND_CORS_ORIGINS: List[str] = Field(
+    BACKEND_CORS_ORIGINS: list[str] = Field(
         default=["http://localhost:8080", "http://127.0.0.1:8080"],
         description="Origens permitidas para CORS",
     )

@@ -2,8 +2,9 @@
 # Camada de infraestrutura: configuração de engine, session, base
 # Engine criada lazy para evitar problemas no alembic
 
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator, Optional
+
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -11,7 +12,9 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.orm import DeclarativeBase
+
 from src.config import settings
+
 
 # ============================================================
 # Base Declarativa — Modelos ORM
@@ -24,8 +27,8 @@ class Base(DeclarativeBase):
 # ============================================================
 # Engine & Session Factory (Lazy Initialization)
 # ============================================================
-_engine: Optional[AsyncEngine] = None
-_async_session_local: Optional[async_sessionmaker] = None
+_engine: AsyncEngine | None = None
+_async_session_local: async_sessionmaker | None = None
 
 
 def get_engine() -> AsyncEngine:
@@ -98,13 +101,12 @@ async def close_db() -> None:
 @asynccontextmanager
 async def transaction() -> AsyncGenerator[AsyncSession, None]:
     """Context manager para transações explícitas (Clean Architecture)"""
-    async with get_async_session_local()() as session:
-        async with session.begin():
-            try:
-                yield session
-            except Exception:
-                await session.rollback()
-                raise
+    async with get_async_session_local()() as session, session.begin():
+        try:
+            yield session
+        except Exception:
+            await session.rollback()
+            raise
 
 
 # ============================================================

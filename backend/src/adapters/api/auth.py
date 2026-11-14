@@ -1,29 +1,34 @@
 # COBECO Backend — Auth Router (FastAPI)
 # Endpoints: POST /v1/auth/cadastrar, POST /v1/auth/login, POST /v1/auth/logout, POST /v1/auth/recuperar-senha
 
-from fastapi import APIRouter, Depends, HTTPException, status, Response, Cookie
-from fastapi.security import OAuth2PasswordBearer
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional, List
-from datetime import datetime, timedelta
-import bcrypt
 import hashlib
+from datetime import UTC, datetime, timedelta
+
+import bcrypt
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
+from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from jose.exceptions import ExpiredSignatureError, JWTError
-
-from src.config import settings
-from src.domain.usecases import (
-    CadastrarUsuarioUseCase, LoginUseCase, LogoutUseCase,
-    RecuperarSenhaUseCase, VisualizarPerfilUseCase, GerenciarPerfilUseCase,
-    CriarUsuarioInput, LoginInput, RecuperarSenhaInput,
-    UsuarioJaExiste, CredenciaisInvalidas, RateLimitExcedido, DomainError,
-)
-from src.domain.repositories import UsuarioRepository
-from src.adapters.db.models import UsuarioModel
-from src.domain.entities import SenhaHash
-from src.adapters.db.database import get_db
-from sqlalchemy.ext.asyncio import AsyncSession
+from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.adapters.db.database import get_db
+from src.adapters.db.models import UsuarioModel
+from src.config import settings
+from src.domain.repositories import UsuarioRepository
+from src.domain.usecases import (
+    CadastrarUsuarioUseCase,
+    CredenciaisInvalidas,
+    CriarUsuarioInput,
+    DomainError,
+    GerenciarPerfilUseCase,
+    LoginInput,
+    LoginUseCase,
+    RateLimitExcedido,
+    RecuperarSenhaUseCase,
+    UsuarioJaExiste,
+)
 
 router = APIRouter(tags=["Autenticação"])
 
@@ -119,7 +124,7 @@ class UsuarioRepositoryImpl(UsuarioRepository):
 
     def _to_domain(self, model: UsuarioModel) -> "Usuario":
         """Converte UsuarioModel para Usuario domain entity"""
-        from src.domain.entities import Usuario, Email, SenhaHash
+        from src.domain.entities import Email, SenhaHash, Usuario
         return Usuario(
             id=model.id,
             nome_usuario=model.nome_usuario,
@@ -149,7 +154,6 @@ class UsuarioRepositoryImpl(UsuarioRepository):
         )
 
     async def criar(self, usuario) -> "Usuario":
-        from src.domain.entities import Usuario
         model = self._to_model(usuario)
         self.session.add(model)
         await self.session.flush()
@@ -208,8 +212,9 @@ def get_usuario_repo(session: AsyncSession = Depends(get_db)) -> UsuarioReposito
 # ============================================================
 # Sessao Repository Implementation (Refresh Tokens)
 # ============================================================
-from src.domain.repositories import SessaoRepository
 from src.domain.entities import Sessao
+from src.domain.repositories import SessaoRepository
+
 
 class SessaoRepositoryImpl(SessaoRepository):
     def __init__(self, session: AsyncSession):
@@ -249,18 +254,21 @@ class SessaoRepositoryImpl(SessaoRepository):
         return self._to_domain(model)
 
     async def buscar_por_token_hash(self, token_hash: str) -> Optional[Sessao]:
-        from src.adapters.db.models import SessaoModel
         from sqlalchemy import select
+
+        from src.adapters.db.models import SessaoModel
         result = await self.session.execute(
             select(SessaoModel).where(SessaoModel.refresh_token_hash == token_hash)
         )
         model = result.scalar_one_or_none()
         return self._to_domain(model) if model else None
 
-    async def buscar_ativas_por_usuario(self, usuario_id: int) -> List[Sessao]:
-        from src.adapters.db.models import SessaoModel
-        from sqlalchemy import select
+    async def buscar_ativas_por_usuario(self, usuario_id: int) -> list[Sessao]:
         from datetime import datetime
+
+        from sqlalchemy import select
+
+        from src.adapters.db.models import SessaoModel
         result = await self.session.execute(
             select(SessaoModel).where(
                 SessaoModel.usuario_id == usuario_id,
@@ -271,8 +279,9 @@ class SessaoRepositoryImpl(SessaoRepository):
         return [self._to_domain(m) for m in result.scalars().all()]
 
     async def revogar(self, sessao_id: int) -> bool:
-        from src.adapters.db.models import SessaoModel
         from sqlalchemy import select
+
+        from src.adapters.db.models import SessaoModel
         result = await self.session.execute(
             select(SessaoModel).where(SessaoModel.id == sessao_id)
         )
@@ -283,9 +292,11 @@ class SessaoRepositoryImpl(SessaoRepository):
         return False
 
     async def revogar_todas_do_usuario(self, usuario_id: int) -> int:
-        from src.adapters.db.models import SessaoModel
-        from sqlalchemy import select, update
         from datetime import datetime
+
+        from sqlalchemy import select
+
+        from src.adapters.db.models import SessaoModel
         result = await self.session.execute(
             select(SessaoModel).where(
                 SessaoModel.usuario_id == usuario_id,
@@ -299,9 +310,11 @@ class SessaoRepositoryImpl(SessaoRepository):
         return count
 
     async def limpar_expiradas(self) -> int:
-        from src.adapters.db.models import SessaoModel
-        from sqlalchemy import select, update
         from datetime import datetime
+
+        from sqlalchemy import select
+
+        from src.adapters.db.models import SessaoModel
         result = await self.session.execute(
             select(SessaoModel).where(
                 SessaoModel.revogada_em.is_(None),
@@ -335,13 +348,13 @@ def verificar_senha(senha: str, hash: str) -> bool:
 
 def criar_token(sub: str, expires_delta: timedelta, token_type: str = "access") -> str:
     """Cria JWT token"""
-    from datetime import datetime, timezone
-    expire = datetime.now(timezone.utc) + expires_delta
+    from datetime import datetime
+    expire = datetime.now(UTC) + expires_delta
     payload = {
         "sub": sub,
         "exp": expire,
         "type": token_type,
-        "iat": datetime.now(timezone.utc),
+        "iat": datetime.now(UTC),
     }
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
@@ -441,7 +454,7 @@ async def cadastrar_usuario(
             resposta_seguranca=request.resposta_seguranca,
         ))
         return {"message": "Conta criada com sucesso", "usuario_id": usuario.id}
-    except UsuarioJaExiste as e:
+    except UsuarioJaExiste:
         # Mensagem genérica (não revela qual campo)
         raise HTTPException(status_code=400, detail="Credenciais inválidas")
 
