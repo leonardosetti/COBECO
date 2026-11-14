@@ -24,7 +24,7 @@ SECRET_PATTERNS = [
     
     # Padrões de conteúdo (AWS, GitHub, JWT, API Keys, etc.)
     (r'AKIA[0-9A-Z]{16}', 'AWS Access Key ID'),
-    (r'[a-zA-Z0-9/+=]{40}', 'AWS Secret Access Key (possível)'),
+    (r'(?i)(aws[_\-]?secret[_\-]?access[_\-]?key|aws_secret_access_key)\s*[=:]\s*["\']?[a-zA-Z0-9/+=]{40}', 'AWS Secret Access Key'),
     (r'ghp_[a-zA-Z0-9]{36}', 'GitHub Personal Access Token'),
     (r'gho_[a-zA-Z0-9]{36}', 'GitHub OAuth Token'),
     (r'ghu_[a-zA-Z0-9]{36}', 'GitHub User Token'),
