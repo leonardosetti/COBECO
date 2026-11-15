@@ -7,11 +7,11 @@ status: rascunho
 canonical: false
 canonical_slug: incident-env-secret-leak
 created: '2026-11-15'
-updated: '2026-11-15T04:39:33Z'
+updated: '2026-11-15T05:46:02Z'
 author: Leonardo Setti (@leonardosetti)
 owner: CCB
-ratified_by: gh-sig:owner:leonardosetti:7e3764ef0785f581ca5114f31ec2719bb76b07424c5f708d22afd1fa4973e12f
-ratified_at: '2026-11-15T04:39:33Z'
+ratified_by: gh-sig:owner:leonardosetti:52bc1b21927cce55cd520ef0466f990b36cd2781011d48cd69c0edb0ad1f1d99
+ratified_at: '2026-11-15T05:46:02Z'
 supersedes: null
 superseded_by: null
 trace:
@@ -32,7 +32,7 @@ workflow:
   stage: rascunho
   reviewer: null
   reviewed_at: null
-  approval_hash: 7e3764ef0785f581ca5114f31ec2719bb76b07424c5f708d22afd1fa4973e12f
+  approval_hash: 52bc1b21927cce55cd520ef0466f990b36cd2781011d48cd69c0edb0ad1f1d99
   board_url: null
 ---
 
@@ -98,16 +98,15 @@ Justificativa: o `.env` foi commitado e enviado ao remote `origin` (branch `stag
 | Consertar hook `pre-push` (apontar para `scripts/script-ci-0001-ci-green-check-v1.0.py`) | DevOps | 1 dia útil | CONCLUIDO |
 | Manter `.env` e `.*` no `.gitignore` (feito no PR #67) | — | Concluido | CONCLUIDO |
 | Verificar que nenhum outro arquivo sensível (.pem, .key, secrets/) esta rastreado | QA | 1 dia útil | CONCLUIDO |
-| Avaliacao para remocao do historico publico (git filter-repo / BFG + force push) | CCB + time extraordinario | APOS aprovacao CCB | BLOQUEADO (ver §7) |
+| Avaliacao para remocao do historico publico (git filter-repo / BFG + force push) | CCB + time extraordinario | ANULADA apos rotacao manual dos segredos | CONCLUIDA (nao executada — desnecessaria) |
 
 ## 7. Remocao do historico publico — ordem expressa (CCB)
 
-Conforme ordem expressa, apagar o `.env` do historico do GitHub exigiria:
-- `git filter-repo` ou BFG + force push no remoto `origin`;
-- Aprovacao formal do **CCB** (Change Control Board);
-- Execucao por **time em ata extraordinaria**, com acta produzida e **assinada por hash** (`approval_hash` / `ratified_by` preenchidos apos aprovacao).
+Conforme ordem expressa, apagar o `.env` do historico do GitHub exigiria `git filter-repo` ou BFG + force push no remoto `origin`, aprovacao formal do CCB e execucao por time em ata extraordinaria com acta assinada por hash.
 
-Este merge do PR #67 apenas remove o `.env` do rastreamento futuro (arquivo local mantido). Como o `.env` ja esta no remote `stage`, os segredos estao considerados **comprometidos**: devem ser rotacionados. A remocao do historico publico **nao foi executada** neste incidente por falta de aprovacao CCB + ata extraordinaria — fica como acao preventiva aberta (§6).
+Porem, apos a rotacao manual de todos os segredos do `.env` (GITHUB_TOKEN, CR_PAT, MYSQL_ROOT_PASSWORD, MYSQL_PASSWORD, SECRET_KEY, DATABASE_URL), os valores antigos estao invalidos. A reescrita do historico publico foi portanto **anulada**: nao e mais necessaria porque nao ha segredos validos a serem removidos do historico. O `.env` ja esta fora do rastreamento futuro (`.gitignore`) e os valores comprometidos ja nao funcionam.
+
+Este registro substitui a acao preventiva aberta anterior: a remocao do historico publico e descartada, nao apenas bloqueada.
 
 ## 8. Lições aprendidas
 
@@ -124,4 +123,4 @@ Este merge do PR #67 apenas remove o `.env` do rastreamento futuro (arquivo loca
 - **Constitution:** Art. 6.3 (branch protegido), Art. 7.7 / 17.7 (secret scanner), Art. 9.9 / 17.5 (CI green check)
 
 ---
-**Fim do incidente — todos os segredos do .env rotacionados. Aguardando aprovacao CCB para remocao do historico publico (ordem expressa).**
+**Fim do incidente — todos os segredos do .env rotacionados. Reescrita do historico publico anulada apos rotacao manual (nao mais necessaria).**
