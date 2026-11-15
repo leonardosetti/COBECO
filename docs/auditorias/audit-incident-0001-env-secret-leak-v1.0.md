@@ -7,11 +7,11 @@ status: rascunho
 canonical: false
 canonical_slug: incident-env-secret-leak
 created: '2026-11-15'
-updated: '2026-11-15'
+updated: '2026-11-15T04:39:33Z'
 author: Leonardo Setti (@leonardosetti)
 owner: CCB
-ratified_by: gh-sig:owner:leonardosetti:3655d75bef8a3f721b40cfe4a06c0292cf6d44f3051b29bb5f8fe440b850f491
-ratified_at: '2026-11-15T04:23:01Z'
+ratified_by: gh-sig:owner:leonardosetti:7e3764ef0785f581ca5114f31ec2719bb76b07424c5f708d22afd1fa4973e12f
+ratified_at: '2026-11-15T04:39:33Z'
 supersedes: null
 superseded_by: null
 trace:
@@ -32,7 +32,7 @@ workflow:
   stage: rascunho
   reviewer: null
   reviewed_at: null
-  approval_hash: 3655d75bef8a3f721b40cfe4a06c0292cf6d44f3051b29bb5f8fe440b850f491
+  approval_hash: 7e3764ef0785f581ca5114f31ec2719bb76b07424c5f708d22afd1fa4973e12f
   board_url: null
 ---
 
@@ -77,8 +77,8 @@ Justificativa: o `.env` foi commitado e enviado ao remote `origin` (branch `stag
 
 - Causa direta: durante a migracao P1/P2/P3 (133 arquivos renomeados, frontmatter universal, 874 refs atualizadas) o arquivo `.env` foi incluido acidentalmente no escopo de arquivos renomeados/movidos e commitado sem passar pelo filtro de secrets.
 - Causa contribuinte: `.env` nao constava no `.gitignore` na epoca (so constavam exemplos `config-env-0001-env-example-*` e `secrets/`).
-- Causa contribuinte: o gancho `pre-commit` "Secret Scanner" referencia `scripts/secret_scan.py`, que **nao existe** no repositorio (arquivo real: `scripts/script-security-0001-secret-scan-v1.0.py`), entao o gancho falha silenciosamente e nao bloqueia o commit.
-- Causa contribuinte: o gancho `pre-push` "CI Green Check" referencia `scripts/ci_green_check.py`, tambem inexistente, permitindo push sem validacao CI.
+- Causa contribuinte: o hook `pre-commit` "Secret Scanner" referencia `scripts/secret_scan.py`, que **nao existe** no repositorio (arquivo real: `scripts/script-security-0001-secret-scan-v1.0.py`), entao o hook falha silenciosamente e nao bloqueia o commit.
+- Causa contribuinte: o hook `pre-push` "CI Green Check" referencia `scripts/ci_green_check.py`, tambem inexistente, permitindo push sem validacao CI.
 
 ## 5. Contribuicao de fatores
 
@@ -94,10 +94,10 @@ Justificativa: o `.env` foi commitado e enviado ao remote `origin` (branch `stag
 | Acao | Responsavel | Prazo | Status |
 |------|-------------|-------|--------|
 | Rotacionar todas as credenciais constantes do `.env` (expostas no remote) | Tech Lead / Dev / Usuario | Imediato | CONCLUIDO |
-| Consertar gancho `pre-commit` (apontar para `scripts/script-security-0001-secret-scan-v1.0.py` ou remover) | DevOps | 1 dia útil | ABERTO |
-| Consertar ou remover gancho `pre-push` `scripts/ci_green_check.py` (inexistente) | DevOps | 1 dia útil | ABERTO |
+| Consertar hook `pre-commit` (apontar para `scripts/script-security-0001-secret-scan-v1.0.py`) | DevOps | 1 dia útil | CONCLUIDO |
+| Consertar hook `pre-push` (apontar para `scripts/script-ci-0001-ci-green-check-v1.0.py`) | DevOps | 1 dia útil | CONCLUIDO |
 | Manter `.env` e `.*` no `.gitignore` (feito no PR #67) | — | Concluido | CONCLUIDO |
-| Verificar que nenhum outro arquivo sensível (.pem, .key, secrets/) esta rastreado | QA | 1 dia útil | ABERTO |
+| Verificar que nenhum outro arquivo sensível (.pem, .key, secrets/) esta rastreado | QA | 1 dia útil | CONCLUIDO |
 | Avaliacao para remocao do historico publico (git filter-repo / BFG + force push) | CCB + time extraordinario | APOS aprovacao CCB | BLOQUEADO (ver §7) |
 
 ## 7. Remocao do historico publico — ordem expressa (CCB)
@@ -112,7 +112,7 @@ Este merge do PR #67 apenas remove o `.env` do rastreamento futuro (arquivo loca
 ## 8. Lições aprendidas
 
 - Todo arquivo de ambiente/secreto deve constar do `.gitignore` ANTES de qualquer migracao em massa.
-- Ganchos de seguranca (secret scanner) devem apontar para scripts existentes; ganchos quebrados criam falso sentimento de seguranca.
+- Ganchos de seguranca (secret scanner) devem apontar para scripts existentes; hooks quebrados criam falso sentimento de seguranca.
 - Branch protegido + PR forçou revisao e impediu push direto — mecanismo de governança funcionou para o fix.
 
 ## 9. Rastreabilidade
