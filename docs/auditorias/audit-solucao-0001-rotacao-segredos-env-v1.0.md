@@ -7,11 +7,11 @@ status: rascunho
 canonical: false
 canonical_slug: solucao-rotacao-segredos-env
 created: '2026-11-15'
-updated: '2026-11-15'
+updated: '2026-11-15T04:39:33Z'
 author: Leonardo Setti (@leonardosetti)
 owner: CCB
-ratified_by: gh-sig:owner:leonardosetti:975fed423c9e2e648e6c8a9d0dba8cf1d44ce7bd223fb60d250a1e63471f90d2
-ratified_at: '2026-11-15T04:23:30Z'
+ratified_by: gh-sig:owner:leonardosetti:ffd5261c03ee84415ef8644b66e1dd09a46850f6de35bc910aa7eccd63c2c634
+ratified_at: '2026-11-15T04:39:33Z'
 supersedes: null
 superseded_by: null
 trace:
@@ -32,7 +32,7 @@ workflow:
   stage: rascunho
   reviewer: null
   reviewed_at: null
-  approval_hash: 1139b5a39020f589bf49815d7c11896f126cf1f148b5967c42661e68fcd7b83c
+  approval_hash: ffd5261c03ee84415ef8644b66e1dd09a46850f6de35bc910aa7eccd63c2c634
   board_url: null
 ---
 
@@ -89,8 +89,8 @@ Considerar revisao de acesso: verificar se `GITHUB_TOKEN` e `CR_PAT` sao dedicad
 | Incidente registrado + RCA | `docs/auditorias/audit-incident-0001-env-secret-leak-v1.0.md` | CONCLUIDO (PR #68) |
 | Rotacao de segredos locais COBECO (`MYSQL_ROOT_PASSWORD`, `MYSQL_PASSWORD`, `SECRET_KEY`, `DATABASE_URL`) | `.env` (local) | CONCLUIDO (este agente) |
 | Rotacao de `GITHUB_TOKEN` / `CR_PAT` | conta GitHub | CONCLUIDO (usuario, prioridade 0) |
-| Consertar gancho `pre-commit` (script ausente) | `scripts/secret_scan.py` inexistente | PENDENTE (apontar para `scripts/script-security-0001-secret-scan-v1.0.py` ou remover) |
-| Consertar/remover gancho `pre-push` (`ci_green_check.py` inexistente) | `scripts/ci_green_check.py` inexistente | PENDENTE |
+| Consertar hook `pre-commit` (script ausente) | `scripts/script-security-0001-secret-scan-v1.0.py` | CONCLUIDO |
+| Consertar/remover hook `pre-push` (`ci_green_check.py` inexistente) | `scripts/script-ci-0001-ci-green-check-v1.0.py` | CONCLUIDO |
 | Auditar outros arquivos sensiveis rastreados (`.pem`, `.key`, `secrets/`) | `git ls-files` | PENDENTE |
 
 ## 6. Avaliacao de impacto em outros projetos
