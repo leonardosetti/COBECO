@@ -7,11 +7,11 @@ status: rascunho
 canonical: false
 canonical_slug: solucao-rotacao-segredos-env
 created: '2026-11-15'
-updated: '2026-11-15T04:40:19Z'
+updated: '2026-11-15T05:46:02Z'
 author: Leonardo Setti (@leonardosetti)
 owner: CCB
-ratified_by: gh-sig:owner:leonardosetti:764962041338277b53e2e21af6539f9549c430d40efced9b22e6be453a76b21e
-ratified_at: '2026-11-15T04:40:19Z'
+ratified_by: gh-sig:owner:leonardosetti:9afb46517600e9ba41a1a4246d666d2365bd7dc43d67b4f126205f1f0efe56f5
+ratified_at: '2026-11-15T05:46:02Z'
 supersedes: null
 superseded_by: null
 trace:
@@ -32,7 +32,7 @@ workflow:
   stage: rascunho
   reviewer: null
   reviewed_at: null
-  approval_hash: 764962041338277b53e2e21af6539f9549c430d40efced9b22e6be453a76b21e
+  approval_hash: 9afb46517600e9ba41a1a4246d666d2365bd7dc43d67b4f126205f1f0efe56f5
   board_url: null
 ---
 
