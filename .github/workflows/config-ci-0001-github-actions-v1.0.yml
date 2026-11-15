@@ -154,8 +154,8 @@ jobs:
 
       - name: Verify docker compose config
         run: |
-          docker compose config --quiet
-          echo "config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0002-docker-compose-override-v1-v1-v1.0-v1.0-v1.0.yml válido"
+          docker compose -f config-docker-0001-docker-compose-v1.0.yml config --quiet
+          echo "config-docker-0001-docker-compose-v1.0.yml válido"
 
   # --- CD: Build and Push on Tag ---
   cd:
