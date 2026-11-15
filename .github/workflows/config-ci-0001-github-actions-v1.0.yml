@@ -129,7 +129,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./backend
-          dockerfile: config-docker-0003-backend-dockerfile-v1.0
+          file: config-docker-0003-backend-dockerfile-v1.0
           push: false
           tags: cobeco-backend:test
           load: true
@@ -138,7 +138,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
-          dockerfile: config-docker-0004-frontend-dockerfile-v1.0
+          file: config-docker-0004-frontend-dockerfile-v1.0
           push: false
           tags: cobeco-frontend:test
           load: true
@@ -147,7 +147,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./proxy
-          dockerfile: Dockerfile
+          file: Dockerfile
           push: false
           tags: cobeco-proxy:test
           load: true
@@ -190,7 +190,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./backend
-          dockerfile: config-docker-0003-backend-dockerfile-v1.0
+          file: config-docker-0003-backend-dockerfile-v1.0
           push: true
           tags: |
             ghcr.io/${{ github.repository }}/backend:${{ steps.version.outputs.VERSION }}
@@ -202,7 +202,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
-          dockerfile: config-docker-0004-frontend-dockerfile-v1.0
+          file: config-docker-0004-frontend-dockerfile-v1.0
           push: true
           tags: |
             ghcr.io/${{ github.repository }}/frontend:${{ steps.version.outputs.VERSION }}
@@ -214,7 +214,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./proxy
-          dockerfile: Dockerfile
+          file: Dockerfile
           push: true
           tags: |
             ghcr.io/${{ github.repository }}/proxy:${{ steps.version.outputs.VERSION }}
