@@ -128,8 +128,8 @@ jobs:
       - name: Build backend image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: backend/config-docker-0003-backend-dockerfile-v1.0
+          context: ./backend
+          file: config-docker-0003-backend-dockerfile-v1.0
           push: false
           tags: cobeco-backend:test
           load: true
@@ -137,8 +137,8 @@ jobs:
       - name: Build frontend image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: frontend/config-docker-0004-frontend-dockerfile-v1.0
+          context: ./frontend
+          file: config-docker-0004-frontend-dockerfile-v1.0
           push: false
           tags: cobeco-frontend:test
           load: true
@@ -146,8 +146,8 @@ jobs:
       - name: Build proxy image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: proxy/Dockerfile
+          context: ./proxy
+          file: Dockerfile
           push: false
           tags: cobeco-proxy:test
           load: true
@@ -189,8 +189,8 @@ jobs:
       - name: Build and push backend
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: backend/config-docker-0003-backend-dockerfile-v1.0
+          context: ./backend
+          file: config-docker-0003-backend-dockerfile-v1.0
           push: true
           tags: |
             ghcr.io/${{ github.repository }}/backend:${{ steps.version.outputs.VERSION }}
@@ -201,8 +201,8 @@ jobs:
       - name: Build and push frontend
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: frontend/config-docker-0004-frontend-dockerfile-v1.0
+          context: ./frontend
+          file: config-docker-0004-frontend-dockerfile-v1.0
           push: true
           tags: |
             ghcr.io/${{ github.repository }}/frontend:${{ steps.version.outputs.VERSION }}
@@ -213,8 +213,8 @@ jobs:
       - name: Build and push proxy
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: proxy/Dockerfile
+          context: ./proxy
+          file: Dockerfile
           push: true
           tags: |
             ghcr.io/${{ github.repository }}/proxy:${{ steps.version.outputs.VERSION }}
