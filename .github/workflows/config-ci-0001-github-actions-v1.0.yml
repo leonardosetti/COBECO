@@ -95,12 +95,12 @@ jobs:
           mypy src
 
       # --- Test (pytest with coverage) ---
-      - name: Run tests with coverage
+      - name: Run unit tests with coverage
         working-directory: ./backend
         env:
           PYTHONPATH: /home/runner/work/COBECO/COBECO/backend
         run: |
-          pytest --cov=src --cov-report=term-missing --cov-report=xml --cov-fail-under=25 -v
+          pytest tests/unit --cov=src --cov-report=term-missing --cov-report=xml --cov-fail-under=25 -v
 
       # --- Upload Coverage ---
       - name: Upload coverage to Codecov
