@@ -189,7 +189,9 @@ jobs:
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
           else
-            echo "VERSION=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+            # Sanitize branch name for Docker tag (replace / with -)
+            BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+            echo "VERSION=${BRANCH_NAME//\//-}" >> $GITHUB_OUTPUT
           fi
 
       - name: Build and push backend
