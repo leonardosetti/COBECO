@@ -7,11 +7,11 @@ status: rascunho
 canonical: false
 canonical_slug: solucao-rotacao-segredos-env
 created: '2026-11-15'
-updated: '2026-11-15T04:39:33Z'
+updated: '2026-11-15T04:40:19Z'
 author: Leonardo Setti (@leonardosetti)
 owner: CCB
-ratified_by: gh-sig:owner:leonardosetti:ffd5261c03ee84415ef8644b66e1dd09a46850f6de35bc910aa7eccd63c2c634
-ratified_at: '2026-11-15T04:39:33Z'
+ratified_by: gh-sig:owner:leonardosetti:764962041338277b53e2e21af6539f9549c430d40efced9b22e6be453a76b21e
+ratified_at: '2026-11-15T04:40:19Z'
 supersedes: null
 superseded_by: null
 trace:
@@ -32,7 +32,7 @@ workflow:
   stage: rascunho
   reviewer: null
   reviewed_at: null
-  approval_hash: ffd5261c03ee84415ef8644b66e1dd09a46850f6de35bc910aa7eccd63c2c634
+  approval_hash: 764962041338277b53e2e21af6539f9549c430d40efced9b22e6be453a76b21e
   board_url: null
 ---
 
@@ -91,7 +91,7 @@ Considerar revisao de acesso: verificar se `GITHUB_TOKEN` e `CR_PAT` sao dedicad
 | Rotacao de `GITHUB_TOKEN` / `CR_PAT` | conta GitHub | CONCLUIDO (usuario, prioridade 0) |
 | Consertar hook `pre-commit` (script ausente) | `scripts/script-security-0001-secret-scan-v1.0.py` | CONCLUIDO |
 | Consertar/remover hook `pre-push` (`ci_green_check.py` inexistente) | `scripts/script-ci-0001-ci-green-check-v1.0.py` | CONCLUIDO |
-| Auditar outros arquivos sensiveis rastreados (`.pem`, `.key`, `secrets/`) | `git ls-files` | PENDENTE |
+| Auditar outros arquivos sensiveis rastreados (`.pem`, `.key`, `secrets/`) | `git ls-files` | CONCLUIDO |
 
 ## 6. Avaliacao de impacto em outros projetos
 
