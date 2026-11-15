@@ -7,15 +7,28 @@ from collections import Counter
 
 import pytest
 
+import importlib.util
 import sys
 from pathlib import Path
 
-# Add scripts directory to path
-scripts_dir = Path(__file__).parent.parent.parent / "scripts"
-sys.path.insert(0, str(scripts_dir))
 
-from script_seed_0001_generate_seed_v1_0 import render_sql
-from script_seed_0002_seed_data_v1_0 import build_dataset, is_valid_cnpj, make_cnpj, normalize_text
+def _load(nome_modulo: str, nome_arquivo: str):
+    """Carrega módulo de scripts com nome P1 hifenizado (não importável direto)."""
+    caminho = Path(__file__).parent.parent.parent / "scripts" / nome_arquivo
+    spec = importlib.util.spec_from_file_location(nome_modulo, caminho)
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[nome_modulo] = mod  # dataclasses.resolve precisa do módulo em sys.modules
+    spec.loader.exec_module(mod)
+    return mod
+
+
+render_sql = _load("generate_seed", "script-seed-0001-generate-seed-v1.0.py").render_sql
+_seed_data = _load("seed_data", "script-seed-0002-seed-data-v1.0.py")
+build_dataset = _seed_data.build_dataset
+is_valid_cnpj = _seed_data.is_valid_cnpj
+make_cnpj = _seed_data.make_cnpj
+normalize_text = _seed_data.normalize_text
 
 
 @pytest.mark.parametrize(
@@ -27,7 +40,7 @@ from script_seed_0002_seed_data_v1_0 import build_dataset, is_valid_cnpj, make_c
                 "categorias": 11,
                 "fornecedores": 10,
                 "produtos": 50,
-                "precos": 30,
+                "precos": 300,
                 "relacoes": 25,
             },
         ),
@@ -36,8 +49,8 @@ from script_seed_0002_seed_data_v1_0 import build_dataset, is_valid_cnpj, make_c
             {
                 "categorias": 26,
                 "fornecedores": 60,
-                "produtos": 2_60,
-                "precos": 31_20,
+                "produtos": 2_600,
+                "precos": 31_200,
                 "relacoes": 312,
             },
         ),
@@ -67,22 +80,22 @@ def test_cnpj_ficticio_tem_formato_e_digitos_validos():
 
 def test_invariantes_e_associacoes_do_perfil_expandido():
     dataset = build_dataset("expanded")
-    offers_per_proddoc_arch_6_uc_v1t = Counter(offer.proddoc_arch_6_uc_v1t_id for offer in dataset.offers)
+    offers_per_product = Counter(offer.product_id for offer in dataset.offers)
     suppliers_per_category = Counter(category_id for _, category_id in dataset.supplier_categories)
 
-    assert set(offers_per_proddoc_arch_6_uc_v1t.values()) == {12}
+    assert set(offers_per_product.values()) == {12}
     assert set(suppliers_per_category.values()) == {12}
     assert all(supplier.categories for supplier in dataset.suppliers)
     assert len({supplier.cnpj for supplier in dataset.suppliers}) == dataset.counts["fornecedores"]
-    assert len({proddoc_arch_6_uc_v1t.name for proddoc_arch_6_uc_v1t in dataset.proddoc_arch_6_uc_v1ts}) == dataset.counts["produtos"]
+    assert len({product.name for product in dataset.products}) == dataset.counts["produtos"]
 
 
 def test_baseline_oferece_seis_precos_por_produto():
     dataset = build_dataset("baseline")
-    offers_per_proddoc_arch_6_uc_v1t = Counter(offer.proddoc_arch_6_uc_v1t_id for offer in dataset.offers)
+    offers_per_product = Counter(offer.product_id for offer in dataset.offers)
 
-    assert set(offers_per_proddoc_arch_6_uc_v1t.values()) == {6}
-    assert len(offers_per_proddoc_arch_6_uc_v1t) == dataset.counts["produtos"]
+    assert set(offers_per_product.values()) == {6}
+    assert len(offers_per_product) == dataset.counts["produtos"]
 
 
 def test_geracao_sql_e_deterministica():
@@ -92,5 +105,5 @@ def test_geracao_sql_e_deterministica():
     assert first == second
     assert "INSERT INTO `categorias`" in first
     assert "INSERT INTO `fornecedores_produtos`" in first
-    assert "31.20 preços" in first
+    assert "31.200 preços" in first
     assert "DELETE FROM `produtos`;" in first
