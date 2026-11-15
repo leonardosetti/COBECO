@@ -10,8 +10,8 @@ created: '2026-11-15'
 updated: '2026-11-15'
 author: Leonardo Setti (@leonardosetti)
 owner: CCB
-ratified_by: gh-sig:owner:leonardosetti:67f30b8d3185fa98a4122202438ee3009a9a7c76de8a3665094ee4be6cf6e241
-ratified_at: '2026-11-15T03:10:28Z'
+ratified_by: gh-sig:owner:leonardosetti:3655d75bef8a3f721b40cfe4a06c0292cf6d44f3051b29bb5f8fe440b850f491
+ratified_at: '2026-11-15T04:23:01Z'
 supersedes: null
 superseded_by: null
 trace:
@@ -32,7 +32,7 @@ workflow:
   stage: rascunho
   reviewer: null
   reviewed_at: null
-  approval_hash: 67f30b8d3185fa98a4122202438ee3009a9a7c76de8a3665094ee4be6cf6e241
+  approval_hash: 3655d75bef8a3f721b40cfe4a06c0292cf6d44f3051b29bb5f8fe440b850f491
   board_url: null
 ---
 
@@ -70,6 +70,8 @@ Justificativa: o `.env` foi commitado e enviado ao remote `origin` (branch `stag
 | 15/11/2026 | PR #67 `fix/env-leak` → `stage` | Criado e mergado (commit `d5cffa5`) |
 | 15/11/2026 | `.env` sai do rastreamento no `stage` | Fix aplicado ao branch protegido via PR |
 | 15/11/2026 | Registro de incidente (este documento) | Post-incidente / RCA em aberto |
+| 15/11/2026 | Rotacao de `GITHUB_TOKEN` e `CR_PAT` (usuario, prioridade 0) | Concluido pelo usuario |
+| 15/11/2026 | Rotacao de segredos locais COBECO (`MYSQL_ROOT_PASSWORD`, `MYSQL_PASSWORD`, `SECRET_KEY`, `DATABASE_URL`) | Concluido (este agente) |
 
 ## 4. Causa raiz (RCA) — analise sem busca de culpados
 
@@ -91,7 +93,7 @@ Justificativa: o `.env` foi commitado e enviado ao remote `origin` (branch `stag
 
 | Acao | Responsavel | Prazo | Status |
 |------|-------------|-------|--------|
-| Rotacionar todas as credenciais constantes do `.env` (expostas no remote) | Tech Lead / Dev | Imediato | ABERTO |
+| Rotacionar todas as credenciais constantes do `.env` (expostas no remote) | Tech Lead / Dev / Usuario | Imediato | CONCLUIDO |
 | Consertar gancho `pre-commit` (apontar para `scripts/script-security-0001-secret-scan-v1.0.py` ou remover) | DevOps | 1 dia útil | ABERTO |
 | Consertar ou remover gancho `pre-push` `scripts/ci_green_check.py` (inexistente) | DevOps | 1 dia útil | ABERTO |
 | Manter `.env` e `.*` no `.gitignore` (feito no PR #67) | — | Concluido | CONCLUIDO |
@@ -122,4 +124,4 @@ Este merge do PR #67 apenas remove o `.env` do rastreamento futuro (arquivo loca
 - **Constitution:** Art. 6.3 (branch protegido), Art. 7.7 / 17.7 (secret scanner), Art. 9.9 / 17.5 (CI green check)
 
 ---
-**Fim do incidente — aguardando aprovacao CCB e rotacao de segredos.**
+**Fim do incidente — todos os segredos do .env rotacionados. Aguardando aprovacao CCB para remocao do historico publico (ordem expressa).**
