@@ -2,7 +2,7 @@
 id: audit-solucao-0001-rotacao-segredos-env-v1.0
 type: audit-solucao
 title: AUDIT SOLUCAO — Rotacao de segredos do .env (incidente leak d9cc5db)
-version: v1.0
+version: v1.1
 status: rascunho
 canonical: false
 canonical_slug: solucao-rotacao-segredos-env
@@ -10,8 +10,8 @@ created: '2026-11-15'
 updated: '2026-11-15'
 author: Leonardo Setti (@leonardosetti)
 owner: CCB
-ratified_by: gh-sig:owner:leonardosetti:e3551eeeb0105c7f0301339032215e1a08d46ebd119169491c55864a80a38bcb
-ratified_at: '2026-11-15T03:16:26Z'
+ratified_by: gh-sig:owner:leonardosetti:975fed423c9e2e648e6c8a9d0dba8cf1d44ce7bd223fb60d250a1e63471f90d2
+ratified_at: '2026-11-15T04:23:30Z'
 supersedes: null
 superseded_by: null
 trace:
@@ -32,7 +32,7 @@ workflow:
   stage: rascunho
   reviewer: null
   reviewed_at: null
-  approval_hash: e3551eeeb0105c7f0301339032215e1a08d46ebd119169491c55864a80a38bcb
+  approval_hash: 1139b5a39020f589bf49815d7c11896f126cf1f148b5967c42661e68fcd7b83c
   board_url: null
 ---
 
@@ -52,8 +52,8 @@ Como o `.env` ja estava no remote, todos os segredos nele constantes estao consi
 
 | Variavel | Tratamento | Quem rotaciona | Status |
 |----------|------------|----------------|--------|
-| `GITHUB_TOKEN` | Segredo da conta GitHub (possivelmente compartilhado com outros projetos) | Usuario (prioridade 0) | PENDENTE |
-| `CR_PAT` | Segredo da conta GitHub (possivelmente compartilhado com outros projetos) | Usuario (prioridade 0) | PENDENTE |
+| `GITHUB_TOKEN` | Segredo da conta GitHub (possivelmente compartilhado com outros projetos) | Usuario (prioridade 0) | ROTACIONADO |
+| `CR_PAT` | Segredo da conta GitHub (possivelmente compartilhado com outros projetos) | Usuario (prioridade 0) | ROTACIONADO |
 | `MYSQL_ROOT_PASSWORD` | Segredo local COBECO | Esta acao | ROTACIONADO |
 | `MYSQL_PASSWORD` | Segredo local COBECO | Esta acao | ROTACIONADO |
 | `SECRET_KEY` | Segredo local COBECO (FastAPI) | Esta acao | ROTACIONADO |
@@ -65,21 +65,20 @@ Como o `.env` ja estava no remote, todos os segredos nele constantes estao consi
 | `VITE_API_BASE_URL` | Config (nao segredo) | — | mantido (`http://localhost:8380/api`) |
 | `TZ` | Config (nao segredo) | — | mantido (`America/Sao_Paulo`) |
 
-## 3. Acao executada (por este agente)
+## 3. Acao executada
 
-- Gerados novos valores fortes para `MYSQL_ROOT_PASSWORD`, `MYSQL_PASSWORD`, `SECRET_KEY` (via `openssl rand`).
+- Gerados novos valores fortes para `MYSQL_ROOT_PASSWORD`, `MYSQL_PASSWORD`, `SECRET_KEY` (via `openssl rand`) por este agente.
 - `DATABASE_URL` reconstruido com a nova senha (`mysql+pymysql://cobeco:<nova>@db:3306/cobeco`).
-- Arquivo `.env` local reescrito com os novos valores; `GITHUB_TOKEN` e `CR_PAT` mantidos para rotacao pelo usuario (prioridade 0).
+- `GITHUB_TOKEN` e `CR_PAT` rotacionados pelo **usuario** (prioridade 0), conforme comunicado em 15/11/2026.
+- Arquivo `.env` local reescrito com os novos valores (segredos locais) e os tokens rotacionados pelo usuario injetados.
 - Valores de segredos **nao sao registrados neste documento** (zero segredos em texto claro).
 - `.env` permanece **nao rastreado** pelo git (ignorado via `.gitignore`).
 
 ## 4. Acao pendente (usuario — prioridade 0)
 
-Rotacionar `GITHUB_TOKEN` e `CR_PAT` imediatamente. Como sao tokens da conta GitHub, verificar se sao dedicados a este repositorio ou compartilhados com outros projetos:
-- Se dedicados a COBECO: rotacionar e injetar nos locais de uso deste projeto.
-- Se compartilhados com outros projetos: rotacionar implica atualizar **todos os projetos** que consomem esses tokens (impacto transversal). Planejar janela de manutenção coordenada.
+Nenhuma. `GITHUB_TOKEN` e `CR_PAT` foram rotacionados pelo usuario em 15/11/2026. Todos os segredos do `.env` estao rotacionados.
 
-Ate a rotacao, considere `GITHUB_TOKEN` e `CR_PAT` comprometidos.
+Considerar revisao de acesso: verificar se `GITHUB_TOKEN` e `CR_PAT` sao dedicados a COBECO ou compartilhados com outros projetos da conta GitHub; se compartilhados, garantir que todos os projetos consumam os novos valores.
 
 ## 5. Medidas solutivas complementares (ja aplicadas)
 
@@ -88,15 +87,15 @@ Ate a rotacao, considere `GITHUB_TOKEN` e `CR_PAT` comprometidos.
 | `.env` fora do rastreamento git | `.gitignore` + `git rm --cached .env` | CONCLUIDO (PR #67) |
 | `.env` e `.*` no `.gitignore` | `.gitignore` linha 10-11 | CONCLUIDO |
 | Incidente registrado + RCA | `docs/auditorias/audit-incident-0001-env-secret-leak-v1.0.md` | CONCLUIDO (PR #68) |
-| Rotacao de segredos locais COBECO | `.env` (local) | CONCLUIDO (este documento) |
-| Rotacao de `GITHUB_TOKEN` / `CR_PAT` | conta GitHub | PENDENTE (usuario, prioridade 0) |
+| Rotacao de segredos locais COBECO (`MYSQL_ROOT_PASSWORD`, `MYSQL_PASSWORD`, `SECRET_KEY`, `DATABASE_URL`) | `.env` (local) | CONCLUIDO (este agente) |
+| Rotacao de `GITHUB_TOKEN` / `CR_PAT` | conta GitHub | CONCLUIDO (usuario, prioridade 0) |
 | Consertar gancho `pre-commit` (script ausente) | `scripts/secret_scan.py` inexistente | PENDENTE (apontar para `scripts/script-security-0001-secret-scan-v1.0.py` ou remover) |
 | Consertar/remover gancho `pre-push` (`ci_green_check.py` inexistente) | `scripts/ci_green_check.py` inexistente | PENDENTE |
 | Auditar outros arquivos sensiveis rastreados (`.pem`, `.key`, `secrets/`) | `git ls-files` | PENDENTE |
 
 ## 6. Avaliacao de impacto em outros projetos
 
-Nenhuma evidencia de shared secrets com outros projetos encontrada no repositorio COBECO (sem referencias a `shared.*`, `common.*env`, infraestrutura compartilhada ou multiplos projetos). O impacto transversal se limita a `GITHUB_TOKEN` e `CR_PAT` se forem tokens da conta GitHub reutilizados em outros repositorios.
+Nenhuma evidencia de shared secrets com outros projetos encontrada no repositorio COBECO (sem referencias a `shared.*`, `common.*env`, infraestrutura compartilhada ou multiplos projetos). `GITHUB_TOKEN` e `CR_PAT` foram rotacionados pelo usuario; se forem tokens da conta GitHub reutilizados em outros repositorios, garantir que todos esses projetos consumam os novos valores (janela de manutenção coordenada). Impacto transversal mitigapos apos confirmacao de injecao dos novos valores.
 
 ## 7. Rastreabilidade
 
@@ -107,4 +106,4 @@ Nenhuma evidencia de shared secrets com outros projetos encontrada no repositori
 - **Constitution:** Art. 6.3 (branch protegido), Art. 7.7 / 17.7 (secret scanner), Art. 9.9 / 17.5 (CI green check)
 
 ---
-**Fim da medida solutiva — aguardando rotacao de `GITHUB_TOKEN` e `CR_PAT` (prioridade 0).**
+**Fim da medida solutiva — rotacao de todos os segredos do .env concluida.**
