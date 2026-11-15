@@ -9,6 +9,7 @@ on:
     branches: [main, stage]
   pull_request:
     branches: [main, stage]
+  workflow_dispatch:
 
 env:
   DATABASE_URL: mysql+pymysql://test:test@localhost:3306/cobeco_test
@@ -157,13 +158,13 @@ jobs:
           docker compose -f config-docker-0001-docker-compose-v1.0.yml config --quiet
           echo "config-docker-0001-docker-compose-v1.0.yml válido"
 
-  # --- CD: Build and Push on Tag ---
+  # --- CD: Build and Push on Tag or Manual ---
   cd:
     name: Build & Push Release
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
     permissions:
       contents: read
       packages: write
