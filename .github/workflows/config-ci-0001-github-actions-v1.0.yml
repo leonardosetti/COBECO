@@ -201,8 +201,8 @@ jobs:
           file: backend/config-docker-0003-backend-dockerfile-v1.0
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/backend:${{ steps.version.outputs.VERSION }}
-            ghcr.io/${{ github.repository }}/backend:latest
+            ghcr.io/${{ github.repository_owner }}/cobeco/backend:${{ steps.version.outputs.VERSION }}
+            ghcr.io/${{ github.repository_owner }}/cobeco/backend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -213,8 +213,8 @@ jobs:
           file: frontend/config-docker-0004-frontend-dockerfile-v1.0
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/frontend:${{ steps.version.outputs.VERSION }}
-            ghcr.io/${{ github.repository }}/frontend:latest
+            ghcr.io/${{ github.repository_owner }}/cobeco/frontend:${{ steps.version.outputs.VERSION }}
+            ghcr.io/${{ github.repository_owner }}/cobeco/frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -225,7 +225,7 @@ jobs:
           file: proxy/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/proxy:${{ steps.version.outputs.VERSION }}
-            ghcr.io/${{ github.repository }}/proxy:latest
+            ghcr.io/${{ github.repository_owner }}/cobeco/proxy:${{ steps.version.outputs.VERSION }}
+            ghcr.io/${{ github.repository_owner }}/cobeco/proxy:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
