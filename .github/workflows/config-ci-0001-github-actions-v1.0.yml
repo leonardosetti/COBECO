@@ -89,8 +89,6 @@ jobs:
       # --- Type Check (mypy) ---
       - name: Type check with mypy
         working-directory: ./backend
-        env:
-          PYTHONPATH: /home/runner/work/COBECO/COBECO/backend
         continue-on-error: true
         run: |
           mypy src
