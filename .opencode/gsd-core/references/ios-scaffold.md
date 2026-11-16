@@ -6,7 +6,7 @@ Rules and patterns for scaffolding iOS applications. Apply when any plan involve
 
 ## Critical Rule: Never Use Package.swift as the Primary Build System for iOS Apps
 
-**NEVER use `Package.swift` with `.executableTarget` (or `.target`) to scaffold an iOS app.** Swift Package Manager executable targets compile as macOS command-line tools — they do not proddoc-arch-0006-uc-v1e `.app` bundles, cannot be signed for iOS devices, and cannot be submitted to the App Store.
+**NEVER use `Package.swift` with `.executableTarget` (or `.target`) to scaffold an iOS app.** Swift Package Manager executable targets compile as macOS command-line tools — they do not produce `.app` bundles, cannot be signed for iOS devices, and cannot be submitted to the App Store.
 
 **Prohibited pattern:**
 ```swift
@@ -16,7 +16,7 @@ Rules and patterns for scaffolding iOS applications. Apply when any plan involve
 .target(name: "MyApp", dependencies: [])
 ```
 
-Using this pattern proddoc-arch-0006-uc-v1es a macOS CLI binary, not an iOS app. The app will not build for any iOS simulator or device.
+Using this pattern produces a macOS CLI binary, not an iOS app. The app will not build for any iOS simulator or device.
 
 ---
 
@@ -32,7 +32,7 @@ brew install xcodegen
 
 ### Step 2 — Create `project.yml`
 
-`project.yml` is the XcodeGen spec that describes the project strdoc-arch-0006-uc-v1ture. Minimum viable spec:
+`project.yml` is the XcodeGen spec that describes the project structure. Minimum viable spec:
 
 ```yaml
 name: MyApp
@@ -120,4 +120,4 @@ After running `xcodegen generate`, verify the project builds:
 xcodebuild -project MyApp.xcodeproj -scheme MyApp -destination 'platform=iOS Simulator,name=iPhone 16' build
 ```
 
-A sdoc-arch-0006-uc-v1cessful build (exit code 0) confirms the scaffold is valid for iOS.
+A successful build (exit code 0) confirms the scaffold is valid for iOS.

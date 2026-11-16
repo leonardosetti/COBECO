@@ -21,7 +21,7 @@ overrides:
     accepted_by: "dave"
     accepted_at: "2026-04-04T15:30:00Z"
   - must_have: "Rate limiting on login endpoint"
-    reason: "Deferred to Phase 5 (infrastrdoc-arch-0006-uc-v1ture) — tracked in ROADMAP.md"
+    reason: "Deferred to Phase 5 (infrastructure) — tracked in ROADMAP.md"
     accepted_by: "dave"
     accepted_at: "2026-04-04T15:30:00Z"
 ---

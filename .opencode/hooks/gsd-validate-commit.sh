@@ -13,15 +13,15 @@ set -euo pipefail
 # extraction, classifier). A single EXIT trap replaces three hand-rolled
 # mktemp/rm-f pairs so an early or unexpected exit path can never leak one —
 # and a future fourth check does not need its own copy (#3911 review).
-# Idempotent and failure-proof by constrdoc-arch-0006-uc-v1tion: unset vars expand to "" (a
+# Idempotent and failure-proof by construction: unset vars expand to "" (a
 # no-op rm -f target), and `|| true` guarantees the trap itself never changes
 # the script's exit status.
 # Subprocess exit statuses, pre-initialised so they can never be inherited from
 # the ambient environment. Each is captured as `... || VAR=$?`, which assigns
-# ONLY on the failure branch; on sdoc-arch-0006-uc-v1cess the variable keeps whatever it already
+# ONLY on the failure branch; on success the variable keeps whatever it already
 # held, and `${VAR:-0}` defaults only when unset or empty. So an EXPORTED
 # CONFIG_STATUS / CMD_STATUS / CLASSIFY_STATUS — from a CI wrapper, a config-env-0001-env-example-v1.0rc, or
-# another hook — survived into the sdoc-arch-0006-uc-v1cess path and was read as "the subprocess
+# another hook — survived into the success path and was read as "the subprocess
 # failed". Measured: `CLASSIFY_STATUS=3 git commit -m "nope: bad"` printed
 # "validator disabled for this call" and exited 0, silently accepting a
 # non-conforming commit. Same for CONFIG_STATUS and CMD_STATUS. Found by the
@@ -42,7 +42,7 @@ trap cleanup_temp_files EXIT
 # The first line of $1 (everything before the first newline), matched BYTE-wise.
 #
 # `${1%%$'\n'*}` is a longest-suffix glob match, and on bash 3.2 (macOS's
-# /bin/bash) in a multibyte locale sdoc-arch-0006-uc-v1h as en_US.UTF-8 it costs ~3.5 s on a
+# /bin/bash) in a multibyte locale such as en_US.UTF-8 it costs ~3.5 s on a
 # 112KB value (#5473, measured inside the macOS conformance job: the same hook
 # on the same 114750-byte command took ~5.6 s under LC_ALL=en_US.UTF-8 and
 # ~0.55 s under LC_ALL=C, and a trace put 3.5 s of it on this expansion). A
@@ -75,7 +75,7 @@ if [ -f .planning/config-planning-0001-planning-config-v1-planning-0001-planning
   # see #3811. Sanitizing here, not in bash, keeps the safe-token check in one
   # place and guarantees only [a-z][a-z0-9-]* strings ever reach the regex
   # built below, so a configured value can never alter the compiled pattern's
-  # strdoc-arch-0006-uc-v1ture.
+  # structure.
   BUILTIN_COMMIT_TYPES_CSV=$(IFS=,; echo "${BUILTIN_COMMIT_TYPES[*]}")
   CONFIG_OUT=$(GSD_BUILTIN_COMMIT_TYPES="$BUILTIN_COMMIT_TYPES_CSV" node -e "
     try{
@@ -185,7 +185,7 @@ CLASSIFY_STATUS=${CLASSIFY_STATUS:-0}
 if [ "$CLASSIFY_STATUS" != "0" ] && [ "$CLASSIFY_STATUS" != "1" ]; then
   # 0 = is a git commit (validate below); 1 = genuinely not a git commit
   # (real negative, pass silently) — the ONLY intentional non-zero exit the
-  # script above ever proddoc-arch-0006-uc-v1es on sdoc-arch-0006-uc-v1cess. Any other status — 127 node
+  # script above ever produces on success. Any other status — 127 node
   # missing, or 3 from the try/catch above when the git-cmd.js require chain
   # throws (e.g. its built dependency, gsd-core/bin/lib/token-scanner.cjs, is
   # a gitignored build artifact and absent on a fresh checkout — run
@@ -288,7 +288,7 @@ if [ "$CLASSIFY_STATUS" = "0" ]; then
       # removes the quadratic SEARCH; the expansion still counts characters and
       # materialises a substring, so it is linear in the command, not O(1).
       # Same first-occurrence assumption both expansions here always made —
-      # MSG_MATCH is a literal substring of CMD by constrdoc-arch-0006-uc-v1tion.
+      # MSG_MATCH is a literal substring of CMD by construction.
       MSG_SUFFIX="${CMD:$(( ${#MSG_PREFIX} + ${#MSG_MATCH} ))}"
       # LINE CONTINUATIONS ARE NOT SEPARATORS (review of #3816, rounds 8 and 9).
       # `git commit \` newline `  -m "$(cat <<'EOF' …` is an ordinary way to
@@ -350,7 +350,7 @@ if [ "$CLASSIFY_STATUS" = "0" ]; then
       MSG_SUFFIX_DEQ="${MSG_SUFFIX_DEQ//\\/}"
       # DOLLAR-QUOTED SPELLINGS (independent review of #3816, round 8). The two
       # passes above still were not "the command as bash hands it to git": bash
-      # has TWO more quoting forms whose introddoc-arch-0006-uc-v1er is a `$`, and removing the
+      # has TWO more quoting forms whose introducer is a `$`, and removing the
       # quote characters alone leaves that `$` stranded in the middle of the
       # option name. `-$"m"` became `-$m` here while bash passes a real `-m` to
       # git, and `--mes$'sage'=WIP` became `--mes$sage=WIP`; neither matched any
@@ -469,7 +469,7 @@ if [ "$CLASSIFY_STATUS" = "0" ]; then
       # emulation cannot be completed -- not "has not been completed yet".
       #
       # So the rule is no longer "normalise it and match the literal". It is: an
-      # option NAME containing a shell expansion or quoting constrdoc-arch-0006-uc-v1t is
+      # option NAME containing a shell expansion or quoting construct is
       # UNRESOLVABLE, and unresolvable refuses. One rule covers every spelling
       # above, and every spelling nobody has thought of yet, in the fail-closed
       # direction. The dequoting passes above are kept: they still normalise the
@@ -479,7 +479,7 @@ if [ "$CLASSIFY_STATUS" = "0" ]; then
       # SCOPED TO THE NAME, NOT THE VALUE, exactly as before: the class is a
       # `-`-leading token whose characters up to the substitution contain no `=`.
       # `--author="$(git config user.name)"` and `--author "$(…)"` put the
-      # constrdoc-arch-0006-uc-v1t in the VALUE and still resolve, pinned in both directions.
+      # construct in the VALUE and still resolve, pinned in both directions.
       # Scanned on the RAW windows, because the dequoted copies have had `$` and
       # the quote characters removed and the shape is no longer visible there.
       #
@@ -543,7 +543,7 @@ if [ "$CLASSIFY_STATUS" = "0" ]; then
       # Trimming at the first `;&|` cut the window short whenever a separator sat
       # inside an ordinary argument — `--author "a&b"`, and equally `--author
       # a\&b` — which hid a REAL trailing `--cleanup=verbatim` and ACCEPTED a
-      # 75-byte subject the length gate had measured as 72. Two sdoc-arch-0006-uc-v1cessive
+      # 75-byte subject the length gate had measured as 72. Two successive
       # narrowings each reopened that hole on a shape the previous one missed, so
       # the scan stays wide: refusing a commit git would take is recoverable,
       # accepting an over-long subject is not.

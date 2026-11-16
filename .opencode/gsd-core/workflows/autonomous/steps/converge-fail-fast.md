@@ -9,4 +9,4 @@ For autonomous, the config is not consulted on the non-flag path at all: without
 Nothing to enforce here — proceed directly to planning with convergence. Do not prompt, do not
 attempt to `config-set` the gate on the operator's behalf, and do not downgrade to
 non-converge planning: silently changing the plan-review contract is the outcome this step
-must never proddoc-arch-0006-uc-v1e.
+must never produce.

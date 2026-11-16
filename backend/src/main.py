@@ -26,6 +26,7 @@ structlog.configure(
 
 logger = structlog.get_logger()
 
+
 # ============================================================
 # Security Headers Middleware
 # ============================================================
@@ -113,6 +114,7 @@ app.middleware("http")(security_headers_middleware)
 async def log_requests(request: Request, call_next):
     """Log estruturado de requisições"""
     import time
+
     start_time = time.perf_counter()
 
     logger.info(
@@ -205,6 +207,7 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(
         "src.main:app",
         host="0.0.0.0",

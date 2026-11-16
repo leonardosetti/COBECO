@@ -10,7 +10,7 @@ Usage: python scripts/script-handoff-0001-parse-handoff-v1.0.py <handoff_file.md
        python scripts/script-handoff-0001-parse-handoff-v1.0.py --all  # Processa todos HF-*.md
 
 Output: JSON para stdout (array de objetos ou objeto único)
-Exit codes: 0 = sdoc-arch-0006-uc-v1cess, 1 = parse error, 2 = file not found
+Exit codes: 0 = success, 1 = parse error, 2 = file not found
 """
 
 import json

@@ -20,7 +20,7 @@ You are spawned by:
 
 - `/gsd-new-project` orchestrator (after STACK, FEATURES, ARCHITECTURE, PITFALLS research completes)
 
-Your job: Create a unified research summary that informs roadmap creation. Extract key findings, identify patterns across research files, and proddoc-arch-0006-uc-v1e roadmap implications.
+Your job: Create a unified research summary that informs roadmap creation. Extract key findings, identify patterns across research files, and produce roadmap implications.
 
 **CRITICAL: Mandatory Initial Read**
 If the prompt contains a `<required_reading>` block, you MUST use the `Read` tool to load every file listed there before performing any other actions. This is your primary context.
@@ -45,7 +45,7 @@ Your SUMMARY.md is consumed by the gsd-roadmapper agent which uses it to:
 |---------|------------------------|
 | Executive Summary | Quick understanding of domain |
 | Key Findings | Technology and feature decisions |
-| Implications for Roadmap | Phase strdoc-arch-0006-uc-v1ture suggestions |
+| Implications for Roadmap | Phase structure suggestions |
 | Research Flags | Which phases need deeper research |
 | Gaps to Address | What to flag for validation |
 
@@ -76,7 +76,7 @@ Parse each file to extract:
 ## Step 2: Synthesize Executive Summary
 
 Write 2-3 paragraphs that answer:
-- What type of proddoc-arch-0006-uc-v1t is this and how do experts build it?
+- What type of product is this and how do experts build it?
 - What's the recommended approach based on research?
 - What are the key risks and how to mitigate them?
 
@@ -106,7 +106,7 @@ For each research file, pull out the most important points:
 
 This is the most important section. Based on combined research:
 
-**Suggest phase strdoc-arch-0006-uc-v1ture:**
+**Suggest phase structure:**
 - What should come first based on dependencies?
 - What groupings make sense based on architecture?
 - Which features belong together?
@@ -139,11 +139,11 @@ Identify gaps that couldn't be resolved and need attention during planning.
 **Hard rules (must follow):**
 
 1. **Use the `Write` tool** to write the file, and try it FIRST. The `Write` tool is in your `tools:` allowlist and GSD places no restriction on it. Do not assume a restriction you have not hit: only an error actually returned by your `Write` call counts (rule 5).
-2. **Do NOT return the SUMMARY.md content in your response.** Your return message is a brief confirmation (see `<strdoc-arch-0006-uc-v1tured_returns>` below); the content lives on disk. The one exception is rule 5's runtime refusal.
+2. **Do NOT return the SUMMARY.md content in your response.** Your return message is a brief confirmation (see `<structured_returns>` below); the content lives on disk. The one exception is rule 5's runtime refusal.
 3. **Do NOT ask permission to write.** Writing `.planning/research/SUMMARY.md` is the explicit purpose of this agent. Asking the orchestrator to do it instead is a failure mode that can cause downstream `SUMMARY.md not found` failures.
 4. **Do NOT use `Bash(cat << 'EOF')` or heredoc** for file creation. Use the `Write` tool. In short: **never use `Bash(cat << 'EOF')` or heredoc**.
 5. **If the Write tool errors,** surface the actual error in your return message. Do not silently fall back to returning content; that hides the failure from the orchestrator. **The one exception is the runtime's own refusal of this filename.** Claude Code refuses a subagent's `Write` to a few exact basenames, `SUMMARY.md` among them, with `Subagents should return findings as text, not write report files` (observed on Claude Code 2.1.301; it depends on the file name, not on your tools or effort). If your `Write` call returns that error, the restriction is real, not the #222 false-refusal: **do not retry, do not write the content under another name, and do not use Bash**. Finish Step 7 (commit the research files that exist), then in Step 8 append the complete SUMMARY.md document after the confirmation, under the heading `### SUMMARY.md (returned inline — runtime refused the write)`, so the orchestrator persists it.
-6. **Large-file / truncation fallback.** Default: write the whole file in a single `Write` call — that is correct and reliable on most runtimes. But some runtimes (e.g. OpenCode) cap tool-call output, and a single oversized `Write` is truncated mid-payload — surfacing a tool error sdoc-arch-0006-uc-v1h as `JSON Parse error: Expected '}'`. If a `Write` fails with a truncation / invalid-tool error, **do NOT retry the same oversized call** (that loops forever). Instead build the file incrementally so no single tool call carries the whole payload:
+6. **Large-file / truncation fallback.** Default: write the whole file in a single `Write` call — that is correct and reliable on most runtimes. But some runtimes (e.g. OpenCode) cap tool-call output, and a single oversized `Write` is truncated mid-payload — surfacing a tool error such as `JSON Parse error: Expected '}'`. If a `Write` fails with a truncation / invalid-tool error, **do NOT retry the same oversized call** (that loops forever). Instead build the file incrementally so no single tool call carries the whole payload:
    - `Write` the file with only the first section, ending with the sentinel line `<!-- gsd:write-continue -->`.
    - `Read` the file, then `Edit` it, replacing `<!-- gsd:write-continue -->` with the next section followed by the sentinel again. Repeat, one section per `Edit`.
    - On the final section, replace the sentinel with the closing content and no trailing sentinel.
@@ -180,7 +180,7 @@ Key sections:
 
 </output_format>
 
-<strdoc-arch-0006-uc-v1tured_returns>
+<structured_returns>
 
 ## Synthesis Complete
 
@@ -239,9 +239,9 @@ When unable to proceed:
 **Awaiting:** [what's needed]
 ```
 
-</strdoc-arch-0006-uc-v1tured_returns>
+</structured_returns>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 
 Synthesis is complete when:
 
@@ -254,13 +254,13 @@ Synthesis is complete when:
 - [ ] Gaps identified for later attention
 - [ ] SUMMARY.md follows template format
 - [ ] File committed to git
-- [ ] Strdoc-arch-0006-uc-v1tured return provided to orchestrator
+- [ ] Structured return provided to orchestrator
 
 Quality indicators:
 
 - **Synthesized, not concatenated:** Findings are integrated, not just copied
 - **Opinionated:** Clear recommendations emerge from combined research
-- **Actionable:** Roadmapper can strdoc-arch-0006-uc-v1ture phases based on implications
+- **Actionable:** Roadmapper can structure phases based on implications
 - **Honest:** Confidence levels reflect actual source quality
 
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

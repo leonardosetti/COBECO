@@ -112,7 +112,7 @@ Hipóteses do envelope TA-0002 foram verificadas uma a uma; veredito por item.
   doc-readme-0001-readme-canon/docs/glossário, idêntica à do docer). Defeito de forja (duplicata mal
   rotulada), não coberto por esta proposta — rota: AFA via nexus.
 - **Veredito:** o canon existe na vontade do Humano e no roster (slug), mas não há
-  âncora constitdoc-arch-0006-uc-v1ional nem registro em ADR/PDF. Emenda nasce do canon declarado
+  âncora constitucional nem registro em ADR/PDF. Emenda nasce do canon declarado
   (Art. 5.1) com KNOWLEDGE GAP declarado sobre fonte escrita (KG-04).
 
 ### G-04 — YAGNI e first-principles não codificados no Art. 3 (CONFIRMADO)
@@ -134,7 +134,7 @@ Hipóteses do envelope TA-0002 foram verificadas uma a uma; veredito por item.
   ou motores da stack "exigirá ADR específica" conforme gatilhos da política de ADRs.
 - `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:76-79` (Art. 9.1): fluxo próprio de emenda (proposta escrita →
   parecer auditoria → ratificação CCB).
-- **Veredito:** dois fluxos paralelos sem ponte constitdoc-arch-0006-uc-v1ional (quando uma muda
+- **Veredito:** dois fluxos paralelos sem ponte constitucional (quando uma muda
   escala para a outra?). Nada no Art. 9 diz que ADR não pode contrariar a
   Constituição — embora Art. 2 resolva conflito de cima para baixo, o operador do
   fluxo de mudança não tem regra explícita de escala.
@@ -263,7 +263,7 @@ artigo alvo → texto atual → texto proposto → justificativa → fonte.
   pendente — fechamento conforme Art. 5.4)".
 - **Justificativa:** a pendência está declarada (`constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:3` e `:83`), mas
   sem forma material, prazo ou estado, a ratificação do Art. 5.2 é inexecutável e
-  inauditorável. O bloco com hash dá falsificabilidade e sdoc-arch-0006-uc-v1essão (Art. 8.2).
+  inauditorável. O bloco com hash dá falsificabilidade e sucessão (Art. 8.2).
 - **Fonte:** constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md linhas 3, 52-54, 83; PDF:1984-1993 (governança CCB de
   membro único é prática já documentada).
 
@@ -305,7 +305,7 @@ artigo alvo → texto atual → texto proposto → justificativa → fonte.
   (`docs/planos/COBECO.pdf:2191`: exclusões "fundamentadas no princípio YAGNI"; Tabela
   40) mas não existe na lei suprema — princípio usado sem codificação é vetor de
   drift. P-12 formaliza o método que o próprio Art. 9.2 e o protocolo
-  anti-aldoc-arch-0006-uc-v1inação já exigem na prática.
+  anti-alucinação já exigem na prática.
 - **Fonte:** COBECO.pdf:2191 e Tabela 40 (YAGNI); hf-exec-0001 (canon do Humano para
   first-principles — KG-01 declarado); constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md Art. 3, P-08.
 
@@ -320,7 +320,7 @@ artigo alvo → texto atual → texto proposto → justificativa → fonte.
   (gatilhos de impacto transversal e irreversibilidade prática); (iii) nenhuma ADR
   pode contrariar esta Constituição: divergência com camada superior resolve-se por
   emenda (Art. 9.1), nunca por ADR; (iv) mudança que toque Kill Switch, Bypass
-  Protocol ou os princípios do Art. 3 escala diretamente a emenda constitdoc-arch-0006-uc-v1ional com
+  Protocol ou os princípios do Art. 3 escala diretamente a emenda constitucional com
   ratificação humana (Art. 5.2)."
 - **Justificativa:** o projeto já opera um fluxo formal de mudança
   (`docs/planos/COBECO.pdf:2330-2340`; Tabela 34 do Plano de Integração;
@@ -349,8 +349,8 @@ artigo alvo → texto atual → texto proposto → justificativa → fonte.
 ### E-07 [REQUER RATIFICAÇÃO CCB] — Re-ancoragem transitória do freeze (Art. 1.3)
 - **Artigo alvo:** Art. 1.3 (`constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:14`).
 - **Texto atual:** "Nada fora do escopo congelado (ADR-005) entra sem emenda
-  constitdoc-arch-0006-uc-v1ional prévia."
-- **Texto proposto:** "Nada fora do escopo congelado entra sem emenda constitdoc-arch-0006-uc-v1ional
+  constitucional prévia."
+- **Texto proposto:** "Nada fora do escopo congelado entra sem emenda constitucional
   prévia. Fonte transitória do congelamento: TAP v3 (18/09/2026) sob regime de
   freeze com precedência intra-TAP §6 (NC-00 e NC-C4, Notas de Contexto; Tabela 55),
   decisão do GP de 21/09/2026. Esta referência é substituída pela ADR-005 assim que

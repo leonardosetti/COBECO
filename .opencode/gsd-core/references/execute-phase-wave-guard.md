@@ -69,7 +69,7 @@ workflow:
 
    **How `worktree.baseRef:"head"` interacts with this degrade (#3659, #4588):** with the
    setting in place the check trusts it and does not compare — the worktree creator forks from the
-   orchestrator HEAD (GSD's own `git worktree add` by constrdoc-arch-0006-uc-v1tion; the Claude Code harness as
+   orchestrator HEAD (GSD's own `git worktree add` by construction; the Claude Code harness as
    measured from all three settings layers, #4588; Cursor unmeasured), so outside the two
    exceptions below this guard only fires when the setting
    is absent and HEAD has diverged from `origin/HEAD`. Parallel worktrees then return once HEAD

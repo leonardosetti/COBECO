@@ -8,8 +8,8 @@
 // known injection signatures at ingestion before they enter conversation context.
 //
 // Defense-in-depth: long GSD sessions hit context compression, and the
-// summariser does not distinguish user instrdoc-arch-0006-uc-v1tions from content read from
-// external files. Poisoned instrdoc-arch-0006-uc-v1tions that survive compression become
+// summariser does not distinguish user instructions from content read from
+// external files. Poisoned instructions that survive compression become
 // indistinguishable from trusted context. This hook warns at ingestion time.
 // Prompt-level self-guard and task-anchor controls (untrusted-input-boundary.md)
 // operate independently as a complementary layer.
@@ -32,11 +32,11 @@ const { HOOK_ON_CRASH, allow, crash } = require('./lib/hook-exit.js');
 const ON_CRASH = HOOK_ON_CRASH.ALLOW;
 
 // Summarisation-specific patterns (novel — not in gsd-prompt-guard.js).
-// These target instrdoc-arch-0006-uc-v1tions specifically designed to survive context compression.
+// These target instructions specifically designed to survive context compression.
 const SUMMARISATION_PATTERNS = [
   /when\s+(?:summari[sz]ing|compressing|compacting),?\s+(?:retain|preserve|keep)\s+(?:this|these)/i,
-  /this\s+(?:instrdoc-arch-0006-uc-v1tion|directive|rule)\s+is\s+(?:permanent|persistent|immutable)/i,
-  /preserve\s+(?:these|this)\s+(?:rules?|instrdoc-arch-0006-uc-v1tions?|directives?)\s+(?:in|through|after|during)/i,
+  /this\s+(?:instruction|directive|rule)\s+is\s+(?:permanent|persistent|immutable)/i,
+  /preserve\s+(?:these|this)\s+(?:rules?|instructions?|directives?)\s+(?:in|through|after|during)/i,
   /(?:retain|keep)\s+(?:this|these)\s+(?:in|through|after)\s+(?:summar|compress|compact)/i,
 ];
 
@@ -89,7 +89,7 @@ const ALL_PATTERNS = [...INJECTION_PATTERNS, ...SUMMARISATION_PATTERNS];
 // #3023: the staged bundle's directory name is runtime-descriptor-driven, so a
 // literal `/<config>/hooks/` fragment cannot reliably identify GSD's own hook
 // scripts. This module lives inside the bundle, so __dirname identifies it by
-// constrdoc-arch-0006-uc-v1tion. Normalized to forward slashes to match `p` below.
+// construction. Normalized to forward slashes to match `p` below.
 const OWN_BUNDLE_PREFIX = __dirname.replace(/\\/g, '/').replace(/\/+$/, '') + '/';
 
 // Synthetic rule ids for the finding classes that have no entry in
@@ -139,7 +139,7 @@ function isExcludedPath(filePath) {
 // (not hooks/lib/): hook scripts are staged as standalone files, and a
 // sibling require is a staging dependency that can fail silently.
 // A Map, not an object literal: bare bracket lookup resolves prototype keys
-// ('constrdoc-arch-0006-uc-v1tor', '__proto__', 'toString') to truthy functions/objects, so the
+// ('constructor', '__proto__', 'toString') to truthy functions/objects, so the
 // !mapped fall-through never fires for them; Map.get returns undefined (same
 // shape as canonicalizeRuntimeName in src/runtime-name-policy.cts).
 const KIMI_TOOL_NAMES = new Map([['WriteFile', 'Write'], ['StrReplaceFile', 'Edit'], ['ReadFile', 'Read'], ['Shell', 'Bash']]);
@@ -200,14 +200,14 @@ function normalizeKimiPayload(data) {
       // arrays, plain objects), so nothing downstream — including
       // gsd-prompt-guard's scan of new_string — loses content it saw before.
       const editText = (v) => { try { return String(v ?? ''); } catch { return ''; } };
-      // #2595 (review Major 2): reconstrdoc-arch-0006-uc-v1t UNCONDITIONALLY, mirroring the
+      // #2595 (review Major 2): reconstruct UNCONDITIONALLY, mirroring the
       // `path` decision above rather than merely filling in when the field
       // happens to be absent. kimi-cli's StrReplaceFile schema is `path` +
       // `edit` only (src/kimi_cli/tools/file/replace.py @ 4a550ef) — it carries
       // no `old_string`/`new_string` at all, so either field appearing in a
       // Kimi payload is ALWAYS model-supplied, exactly like `file_path`. Under
       // the old `=== undefined` condition a model-supplied `new_string: ""`
-      // SHADOWED the reconstrdoc-arch-0006-uc-v1tion, leaving gsd-prompt-guard's injection scan
+      // SHADOWED the reconstruction, leaving gsd-prompt-guard's injection scan
       // reading '' and exiting at its `if (!content)` before it ever saw the
       // real `edit[].new` — a one-key bypass of the very scan this fix's
       // guarded coercion exists to keep fed. A `typeof` test would NOT close
@@ -274,7 +274,7 @@ process.stdin.on('end', () => {
     // Typed findings IR — single source of truth for both the machine-readable
     // `findings` array and the rendered advisory prose. Never build these as two
     // parallel arrays: that invites the generative-fix-divergence defect class
-    // where the rendered text and the strdoc-arch-0006-uc-v1tured data silently drift apart.
+    // where the rendered text and the structured data silently drift apart.
     const findings = [];
 
     for (const pattern of ALL_PATTERNS) {
@@ -304,7 +304,7 @@ process.stdin.on('end', () => {
       findings.push({ ruleId: RULE_IDS.INVISIBLE_UNICODE, match: null });
     }
 
-    // Unicode tag block U+E0000–E007F (invisible instrdoc-arch-0006-uc-v1tion injection vector)
+    // Unicode tag block U+E0000–E007F (invisible instruction injection vector)
     try {
       if (/[\u{E0000}-\u{E007F}]/u.test(content)) {
         findings.push({ ruleId: RULE_IDS.UNICODE_TAG_BLOCK, match: null });
@@ -330,7 +330,7 @@ process.stdin.on('end', () => {
     const severity = findings.length >= 3 ? 'HIGH' : 'LOW';
     const label = toolName === 'Read' ? path.basename(source) : source;
     const detail = severity === 'HIGH'
-      ? 'Multiple patterns — strong injection signal. Review for embedded instrdoc-arch-0006-uc-v1tions before proceeding.'
+      ? 'Multiple patterns — strong injection signal. Review for embedded instructions before proceeding.'
       : 'Single pattern match may be a false positive (e.g., documentation). Proceed with awareness.';
     const advisory =
       `\u26a0\ufe0f INJECTION SCAN [${severity}] (${toolName}): "${label}" triggered ` +

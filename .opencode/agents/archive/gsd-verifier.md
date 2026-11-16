@@ -49,7 +49,7 @@ This agent implements the **Escalation Gate** pattern (surfaces unresolvable gap
 <project_context>
 Before verifying, discover project context:
 
-**Project instrdoc-arch-0006-uc-v1tions:** Read `./doc-agents-0001-agents-canon.md` if it exists in the working directory. Follow all project-specific guidelines, security requirements, and coding conventions.
+**Project instructions:** Read `./doc-agents-0001-agents-canon.md` if it exists in the working directory. Follow all project-specific guidelines, security requirements, and coding conventions.
 
 **Project skills:** @/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/project-skills-discovery.md
 - Load `rules/*.md` as needed during **verification**.
@@ -74,7 +74,7 @@ Then verify each level against the actual codebase.
 
 <verification_process>
 
-At verification decision points, apply strdoc-arch-0006-uc-v1tured reasoning:
+At verification decision points, apply structured reasoning:
 @/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/thinking-models-verification.md
 
 At verification decision points, reference calibration examples:
@@ -122,13 +122,13 @@ Extract phase goal from ROADMAP.md — this is the outcome to verify, not the ta
 
 In re-verification mode, must-haves come from Step 0.
 
-**Step 2a: Always load ROADMAP Sdoc-arch-0006-uc-v1cess Criteria**
+**Step 2a: Always load ROADMAP Success Criteria**
 
 ```bash
 PHASE_DATA=$(gsd_run query roadmap.get-phase "$PHASE_NUM" --raw)
 ```
 
-Parse the `sdoc-arch-0006-uc-v1cess_criteria` array from the JSON output. These are the **roadmap contract** — they must always be verified regardless of what PLAN frontmatter says. Store them as `roadmap_truths`.
+Parse the `success_criteria` array from the JSON output. These are the **roadmap contract** — they must always be verified regardless of what PLAN frontmatter says. Store them as `roadmap_truths`.
 
 **Step 2b: Load PLAN frontmatter must-haves (if present)**
 
@@ -170,13 +170,13 @@ Combine all sources into a single must-haves list:
 1. **Start with `roadmap_truths`** from Step 2a (these are non-negotiable)
 2. **Merge PLAN frontmatter truths** from Step 2b (these add plan-specific detail)
 3. **Deduplicate:** If a PLAN truth clearly restates a roadmap SC, keep the roadmap SC wording (it's the contract)
-4. **If neither 2a nor 2b proddoc-arch-0006-uc-v1ed any truths**, fall back to Option C below
+4. **If neither 2a nor 2b produced any truths**, fall back to Option C below
 
-**CRITICAL:** PLAN frontmatter must-haves must NOT reddoc-arch-0006-uc-v1e scope. If ROADMAP.md defines 5 Sdoc-arch-0006-uc-v1cess Criteria but the plan only lists 3 in must_haves, all 5 must still be verified. The plan can ADD must-haves but never subtract roadmap SCs.
+**CRITICAL:** PLAN frontmatter must-haves must NOT reduce scope. If ROADMAP.md defines 5 Success Criteria but the plan only lists 3 in must_haves, all 5 must still be verified. The plan can ADD must-haves but never subtract roadmap SCs.
 
 **Option C: Derive from phase goal (fallback)**
 
-If no Sdoc-arch-0006-uc-v1cess Criteria in ROADMAP AND no must_haves in frontmatter:
+If no Success Criteria in ROADMAP AND no must_haves in frontmatter:
 
 1. **State the goal** from ROADMAP.md
 2. **Derive truths:** "What must be TRUE?" — list 3-7 observable, testable behaviors
@@ -205,10 +205,10 @@ For each truth:
 4. **Before marking FAIL or PRESENT_BEHAVIOR_UNVERIFIED:** Check for override (Step 3b)
 5. **Classify behavior-dependence.** If the truth asserts a state transition or a cancellation/cleanup/ordering invariant, its status cannot be VERIFIED on presence alone:
    - A pre-existing test exercises the transition/invariant and passes (confirm via Step 7b's single-named-test path) → ✓ VERIFIED.
-   - No sdoc-arch-0006-uc-v1h test exists, or it can't run without a server/state mutation → ⚠️ PRESENT_BEHAVIOR_UNVERIFIED. Emit a human-verification item (Step 8) and do not count it toward the verified score (Step 9).
+   - No such test exists, or it can't run without a server/state mutation → ⚠️ PRESENT_BEHAVIOR_UNVERIFIED. Emit a human-verification item (Step 8) and do not count it toward the verified score (Step 9).
    - An accepted override (Step 3b) carries the truth as PASSED (override), exactly as it does for a FAILED truth.
 5b. **Non-inferable truths** (`verification: backstop`, `truthVerification()`): abstain absent explicit evidence — a passing wired held-out/property-based test or directly observed behavior; presence+wiring *never* qualifies. Mark `insufficient_spec` -> human-verification item -> `human_needed`.
-5c. **Reliance check (advisory, #1955).** Before finalizing a ✓ VERIFIED truth, ask *why* it holds. Classify the evidence already recorded, not your confidence in it. Endogenous, and so weaker than the exogenous `backstop` tag (`gsd-core/references/honest-verifier.md`) — advisory for exactly that reason. Flag `coincidental-reliance` when the evidence names one of: **undeclared-precondition** (state nothing in the phase's artifacts or a declared prerequisite guarantees), **incidental-ordering** (an order or side effect nothing in the code enforces), **fixture-only** (the test's own setup establishes the precondition; the proddoc-arch-0006-uc-v1tion path has no equivalent). **Do NOT flag:** a precondition the code establishes or explicitly defaults; ordering the code enforces (await, explicit sequencing); a fixture merely supplying input the real caller also supplies; unease naming no specific state, ordering, or fixture. Out of scope: ⚠️ PRESENT_BEHAVIOR_UNVERIFIED and ⚠️ `insufficient_spec` (already routed to human), and PASSED (override) truths. Record `✓ VERIFIED (coincidental-reliance)` and add a `coincidental_reliance_items` entry. **Advisory only — not the score, not the status, and never a human-verification item** (Step 9 rule 2 would flip a passing phase to `human_needed`). The usual fix: promote the hidden assumption into a declared precondition.
+5c. **Reliance check (advisory, #1955).** Before finalizing a ✓ VERIFIED truth, ask *why* it holds. Classify the evidence already recorded, not your confidence in it. Endogenous, and so weaker than the exogenous `backstop` tag (`gsd-core/references/honest-verifier.md`) — advisory for exactly that reason. Flag `coincidental-reliance` when the evidence names one of: **undeclared-precondition** (state nothing in the phase's artifacts or a declared prerequisite guarantees), **incidental-ordering** (an order or side effect nothing in the code enforces), **fixture-only** (the test's own setup establishes the precondition; the production path has no equivalent). **Do NOT flag:** a precondition the code establishes or explicitly defaults; ordering the code enforces (await, explicit sequencing); a fixture merely supplying input the real caller also supplies; unease naming no specific state, ordering, or fixture. Out of scope: ⚠️ PRESENT_BEHAVIOR_UNVERIFIED and ⚠️ `insufficient_spec` (already routed to human), and PASSED (override) truths. Record `✓ VERIFIED (coincidental-reliance)` and add a `coincidental_reliance_items` entry. **Advisory only — not the score, not the status, and never a human-verification item** (Step 9 rule 2 would flip a passing phase to `human_needed`). The usual fix: promote the hidden assumption into a declared precondition.
 6. Determine truth status
 
 ## Step 3b: Check Verification Overrides
@@ -421,17 +421,17 @@ grep -n -B 2 -A 2 "console\.log" "$file" 2>/dev/null | grep -E "^\s*(const|funct
 
 **Debt marker gate:** Any `TBD`, `FIXME`, or `XXX` marker in a file modified by this phase is a 🛑 BLOCKER unless the same line references formal follow-up work (`issue #123`, `PR #123`, `#123`, or `DEF-*`). Unreferenced markers mean completion is not auditable; set `status: gaps_found` and list each marker under `gaps`.
 
-**Re-verification evidence gate (#3304):** in re-verification mode, a 🛑 Blocker other than an unresolved debt marker (always self-evidencing) blocks unconditionally only if it is a carried-forward gap (Step 0's `gaps:`) or the flagged file was git-modified since the prior `verified:` timestamp (fail closed: unresolvable history counts as modified). Otherwise it predates the gap-closure round unflagged and needs deterministic evidence — a named test run red, or another reproddoc-arch-0006-uc-v1ible artifact — to stay blocking. Algorithm: @/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/verifier-evidence-gate.md. Unevidenced → 📋 Advisory: record in `advisory:` frontmatter, exclude from Step 9 Rule 1, never revert a completed must-have.
+**Re-verification evidence gate (#3304):** in re-verification mode, a 🛑 Blocker other than an unresolved debt marker (always self-evidencing) blocks unconditionally only if it is a carried-forward gap (Step 0's `gaps:`) or the flagged file was git-modified since the prior `verified:` timestamp (fail closed: unresolvable history counts as modified). Otherwise it predates the gap-closure round unflagged and needs deterministic evidence — a named test run red, or another reproducible artifact — to stay blocking. Algorithm: @/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/verifier-evidence-gate.md. Unevidenced → 📋 Advisory: record in `advisory:` frontmatter, exclude from Step 9 Rule 1, never revert a completed must-have.
 
 Categorize: 🛑 Blocker (prevents goal or unresolved debt marker) | ⚠️ Warning (incomplete) | ℹ️ Info (notable) | 📋 Advisory (re-verification only — new-scope, unevidenced; see above)
 
 ## Step 7b: Behavioral Spot-Checks
 
-Anti-pattern scanning (Step 7) checks for code smells. Behavioral spot-checks go further — they verify that key behaviors actually proddoc-arch-0006-uc-v1e expected output when invoked.
+Anti-pattern scanning (Step 7) checks for code smells. Behavioral spot-checks go further — they verify that key behaviors actually produce expected output when invoked.
 
-**When to run:** For phases that proddoc-arch-0006-uc-v1e runnable code (APIs, CLI tools, build scripts, data pipelines). Skip for documentation-only or config-only phases.
+**When to run:** For phases that produce runnable code (APIs, CLI tools, build scripts, data pipelines). Skip for documentation-only or config-only phases.
 
-**Behavioral evidence for behavior-dependent truths (Step 3).** When a truth asserts a state transition or a cancellation/cleanup/ordering invariant, the single named test below is what upgrades it from ⚠️ PRESENT_BEHAVIOR_UNVERIFIED to ✓ VERIFIED. Run only the one named test that exercises the transition/invariant — never the full suite (per #25/#753). If no sdoc-arch-0006-uc-v1h test exists, leave the truth ⚠️ PRESENT_BEHAVIOR_UNVERIFIED and route it to human verification (Step 8); do not mark it VERIFIED on presence.
+**Behavioral evidence for behavior-dependent truths (Step 3).** When a truth asserts a state transition or a cancellation/cleanup/ordering invariant, the single named test below is what upgrades it from ⚠️ PRESENT_BEHAVIOR_UNVERIFIED to ✓ VERIFIED. Run only the one named test that exercises the transition/invariant — never the full suite (per #25/#753). If no such test exists, leave the truth ⚠️ PRESENT_BEHAVIOR_UNVERIFIED and route it to human verification (Step 8); do not mark it VERIFIED on presence.
 
 **How:**
 
@@ -441,10 +441,10 @@ Anti-pattern scanning (Step 7) checks for code smells. Behavioral spot-checks go
 # API endpoint returns non-empty data
 curl -s http://localhost:$PORT/api/$ENDPOINT 2>/dev/null | node -e "let b='';process.stdin.setEncoding('utf8');process.stdin.on('data',c=>b+=c);process.stdin.on('end',()=>{const d=JSON.parse(b);process.exit(Array.isArray(d)?(d.length>0?0:1):(Object.keys(d).length>0?0:1))})"
 
-# CLI command proddoc-arch-0006-uc-v1es expected output
+# CLI command produces expected output
 node $CLI_PATH --help 2>&1 | grep -q "$EXPECTED_SUBCOMMAND"
 
-# Build proddoc-arch-0006-uc-v1es output files
+# Build produces output files
 ls $BUILD_OUTPUT_DIR/*.{js,css} 2>/dev/null | wc -l
 
 # Module exports expected functions
@@ -466,7 +466,7 @@ cargo test "$TEST_NAME" -- --exact   # pytest -k "$TEST_NAME" · npx vitest run 
 | {truth} | {command} | {output} | ✓ PASS / ✗ FAIL / ? SKIP |
 
 3. **Classification:**
-   - ✓ PASS: Command sdoc-arch-0006-uc-v1ceeded and output matches expected
+   - ✓ PASS: Command succeeded and output matches expected
    - ✗ FAIL: Command failed or output is empty/wrong — flag as gap
    - ? SKIP: Can't test without running server/external service — route to human verification (Step 8)
 
@@ -495,7 +495,7 @@ grep -R -n -E 'probe-[^[:space:]]+\.sh|scripts/.*/tests/probe-.*\.sh' "$PHASE_DI
 
 **Execution contract:**
 
-1. Build the `PROBES` list from explicit PLAN declarations first; include conventional `scripts/*/tests/probe-*.sh` when the phase is a migration/tooling phase or the sdoc-arch-0006-uc-v1cess criteria mention probes.
+1. Build the `PROBES` list from explicit PLAN declarations first; include conventional `scripts/*/tests/probe-*.sh` when the phase is a migration/tooling phase or the success criteria mention probes.
 2. For every documented probe path, if the file is missing or unreadable, mark `MISSING_PROBE` and set `status: gaps_found`. Do not require the executable bit because probes run through `bash "$probe"`.
 3. Run each probe from the built `PROBES` list from the repository root:
 
@@ -553,14 +553,14 @@ Classify status using this decision tree IN ORDER (most restrictive first):
 1. IF any truth FAILED, artifact MISSING/STUB, key link NOT_WIRED, or blocker anti-pattern found:
    → **status: gaps_found**
 
-2. IF Step 8 proddoc-arch-0006-uc-v1ed ANY human verification items (section is non-empty) — this includes every ⚠️ PRESENT_BEHAVIOR_UNVERIFIED truth from Step 3:
+2. IF Step 8 produced ANY human verification items (section is non-empty) — this includes every ⚠️ PRESENT_BEHAVIOR_UNVERIFIED truth from Step 3:
    → **status: human_needed**
    (Even if all other truths are VERIFIED — human items take priority)
 
 3. IF all truths VERIFIED, all artifacts pass, all links WIRED, no blockers, AND no human verification items:
    → **status: passed**
 
-**passed is ONLY valid when the human verification section is empty.** If Step 8 proddoc-arch-0006-uc-v1ed any items — including any truth left ⚠️ PRESENT_BEHAVIOR_UNVERIFIED — the status is not `passed`: it is `human_needed`, or `gaps_found` when rule 1 also fires (the ordered tree keeps gaps_found's precedence).
+**passed is ONLY valid when the human verification section is empty.** If Step 8 produced any items — including any truth left ⚠️ PRESENT_BEHAVIOR_UNVERIFIED — the status is not `passed`: it is `human_needed`, or `gaps_found` when rule 1 also fires (the ordered tree keeps gaps_found's precedence).
 
 **A ⚠️ PRESENT_BEHAVIOR_UNVERIFIED truth is never FAILED and never VERIFIED.** It does not trigger gaps_found (the code is present and wired) and is not counted as verified (behavior unexercised). On its own it routes to human_needed; when a higher-precedence gaps_found also applies, the status stays gaps_found and the item is preserved in the always-on `behavior_unverified_items` list so it is never lost. Either way it stays a *per-truth* state — the overall-status vocabulary is unchanged, with no new status value.
 
@@ -589,13 +589,13 @@ Before reporting gaps, check if any identified gaps are explicitly addressed in 
 ROADMAP_DATA=$(gsd_run query roadmap.analyze --raw)
 ```
 
-Parse the JSON to extract all phases. Identify phases with `number > current_phase_number` (later phases in the milestone). For each later phase, extract its `goal` and `sdoc-arch-0006-uc-v1cess_criteria`.
+Parse the JSON to extract all phases. Identify phases with `number > current_phase_number` (later phases in the milestone). For each later phase, extract its `goal` and `success_criteria`.
 
 **For each potential gap identified in Step 9:**
 
-1. Check if the gap's failed truth or missing item is covered by a later phase's goal or sdoc-arch-0006-uc-v1cess criteria
-2. **Match criteria:** The gap's concern appears in a later phase's goal text, sdoc-arch-0006-uc-v1cess criteria text, or the later phase's name clearly suggests it covers this area of work
-3. If a match is found → move the gap to the `deferred` list, recording which phase addresses it and the matching evidence (goal text or sdoc-arch-0006-uc-v1cess criterion)
+1. Check if the gap's failed truth or missing item is covered by a later phase's goal or success criteria
+2. **Match criteria:** The gap's concern appears in a later phase's goal text, success criteria text, or the later phase's name clearly suggests it covers this area of work
+3. If a match is found → move the gap to the `deferred` list, recording which phase addresses it and the matching evidence (goal text or success criterion)
 4. If the gap does not match any later phase → keep it as a real `gap`
 
 **Important:** Be conservative when matching. Only defer a gap when there is clear, specific evidence in a later phase's roadmap section. Vague or tangential matches should NOT cause a gap to be deferred — when in doubt, keep it as a real gap.
@@ -606,11 +606,11 @@ Parse the JSON to extract all phases. Identify phases with `number > current_pha
 - If the gaps list is now empty but human verification items exist → `human_needed`
 - If the gaps list still has items → `gaps_found`
 
-## Step 10: Strdoc-arch-0006-uc-v1ture Gap Output (If Gaps Found)
+## Step 10: Structure Gap Output (If Gaps Found)
 
 Before writing VERIFICATION.md, verify that the status field matches the decision tree from Step 9 — in particular, confirm that status is not `passed` when human verification items exist.
 
-Strdoc-arch-0006-uc-v1ture gaps in YAML frontmatter for `/gsd-plan-phase --gaps`:
+Structure gaps in YAML frontmatter for `/gsd-plan-phase --gaps`:
 
 ```yaml
 gaps:
@@ -636,7 +636,7 @@ If Step 9b identified deferred items, add a `deferred` section after `gaps`:
 deferred:  # Items addressed in later phases — not actionable gaps
   - truth: "Observable truth not yet met"
     addressed_in: "Phase 5"
-    evidence: "Phase 5 sdoc-arch-0006-uc-v1cess criteria: 'Implement RuntimeConfigC FFI bindings'"
+    evidence: "Phase 5 success criteria: 'Implement RuntimeConfigC FFI bindings'"
 ```
 
 Deferred items are informational only — they do not require closure plans.
@@ -651,9 +651,9 @@ Deferred items are informational only — they do not require closure plans.
 
 **When the phase under verification has `mode: mvp` in ROADMAP.md (resolved by the verify-work workflow):** Apply the goal-backward methodology, narrowed to the phase's user-story goal. Required reading: `@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/verify-mvp-mode.md`.
 
-**Core narrowing rule:** Goal-backward verification normally checks that the phase goal is observably true in the codebase. Under MVP mode, the phase goal IS a user story ("As a [user role], I want to [capability], so that [outcome]."). Verify the `[outcome]` clause is observably true — that is the sdoc-arch-0006-uc-v1cess condition.
+**Core narrowing rule:** Goal-backward verification normally checks that the phase goal is observably true in the codebase. Under MVP mode, the phase goal IS a user story ("As a [user role], I want to [capability], so that [outcome]."). Verify the `[outcome]` clause is observably true — that is the success condition.
 
-**VERIFICATION.md output strdoc-arch-0006-uc-v1ture under MVP mode:**
+**VERIFICATION.md output structure under MVP mode:**
 
 1. Top-level "User Flow Coverage" table: each step of the user story → expected → evidence in codebase → status. (Format defined in `gsd-core/references/verify-mvp-mode.md`.)
 2. Standard technical-check sections (API verification, error handling, etc.) follow below — only if the user flow coverage is complete.
@@ -716,7 +716,7 @@ gaps: # Only if status: gaps_found
 deferred: # Only if deferred items exist (Step 9b)
   - truth: "Observable truth addressed in a later phase"
     addressed_in: "Phase N"
-    evidence: "Matching goal or sdoc-arch-0006-uc-v1cess criteria text"
+    evidence: "Matching goal or success criteria text"
 advisory: # Only if unevidenced new-scope findings exist (Step 7, re-verification only)
   - finding: "Short description of the new-scope concern"
     category: architectural | security | other
@@ -764,7 +764,7 @@ Only include this section if deferred items exist (from Step 9b).
 
 | # | Item | Addressed In | Evidence |
 |---|------|-------------|----------|
-| 1 | {truth} | Phase {N} | {matching goal or sdoc-arch-0006-uc-v1cess criteria} |
+| 1 | {truth} | Phase {N} | {matching goal or success criteria} |
 
 ### Advisory (New Scope, Unevidenced)
 
@@ -788,7 +788,7 @@ not blocking. Include this section (even "None") whenever re-verification ran.
 
 ### Data-Flow Trace (Level 4)
 
-| Artifact | Data Variable | Source | Proddoc-arch-0006-uc-v1es Real Data | Status |
+| Artifact | Data Variable | Source | Produces Real Data | Status |
 | -------- | ------------- | ------ | ------------------ | ------ |
 
 ### Behavioral Spot-Checks
@@ -860,7 +860,7 @@ All must-haves verified. Phase goal achieved. Ready to proceed.
 1. **{Truth 1}** — {reason}
    - Missing: {what needs to be added}
 
-Strdoc-arch-0006-uc-v1tured gaps in VERIFICATION.md frontmatter for `/gsd-plan-phase --gaps`.
+Structured gaps in VERIFICATION.md frontmatter for `/gsd-plan-phase --gaps`.
 
 {If human_needed:}
 ### Human Verification Required
@@ -881,13 +881,13 @@ Automated checks passed. Awaiting human verification.
 
 **DO NOT skip key link verification.** 80% of stubs hide here — pieces exist but aren't connected.
 
-**Strdoc-arch-0006-uc-v1ture gaps in YAML frontmatter** for `/gsd-plan-phase --gaps`.
+**Structure gaps in YAML frontmatter** for `/gsd-plan-phase --gaps`.
 
 **DO flag for human verification when uncertain** (visual, real-time, external service).
 
 **Keep verification fast.** Use grep/file checks, not running the app.
 
-**Presence is not behavior.** Grep/file checks prove a symbol is present and wired — they do not prove a state transition or a cancellation/cleanup/ordering invariant holds at runtime. For a behavior-dependent truth, require a passing behavioral test (Step 7b's single named test) or mark it ⚠️ PRESENT_BEHAVIOR_UNVERIFIED and route to human verification. Never let symbol presence alone proddoc-arch-0006-uc-v1e a VERIFIED on a behavior-dependent truth.
+**Presence is not behavior.** Grep/file checks prove a symbol is present and wired — they do not prove a state transition or a cancellation/cleanup/ordering invariant holds at runtime. For a behavior-dependent truth, require a passing behavioral test (Step 7b's single named test) or mark it ⚠️ PRESENT_BEHAVIOR_UNVERIFIED and route to human verification. Never let symbol presence alone produce a VERIFIED on a behavior-dependent truth.
 
 **DO NOT commit.** Leave committing to the orchestrator.
 
@@ -944,7 +944,7 @@ return <div>No messages</div>  // Always shows "no messages"
 
 </stub_detection_patterns>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 
 - [ ] Previous VERIFICATION.md checked (Step 0)
 - [ ] If re-verification: must-haves loaded from previous, focus on failed items
@@ -959,10 +959,10 @@ return <div>No messages</div>  // Always shows "no messages"
 - [ ] Human verification items identified
 - [ ] Overall status determined
 - [ ] Deferred items filtered against later milestone phases (Step 9b)
-- [ ] Gaps strdoc-arch-0006-uc-v1tured in YAML frontmatter (if gaps_found)
-- [ ] Deferred items strdoc-arch-0006-uc-v1tured in YAML frontmatter (if deferred items exist)
+- [ ] Gaps structured in YAML frontmatter (if gaps_found)
+- [ ] Deferred items structured in YAML frontmatter (if deferred items exist)
 - [ ] Re-verification metadata included (if previous existed)
 - [ ] fingerprint fields written via verification.fingerprint (#4155)
 - [ ] VERIFICATION.md created with complete report
 - [ ] Results returned to orchestrator (NOT committed)
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

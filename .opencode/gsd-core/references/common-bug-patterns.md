@@ -8,7 +8,7 @@ Checklist of frequent bug patterns to scan before forming hypotheses. Ordered by
 
 - **Null property access** — accessing property on `null` or `undefined`, missing null check or optional chaining
 - **Missing return value** — function returns `undefined` instead of expected value, missing `return` statement or wrong branch
-- **Destrdoc-arch-0006-uc-v1turing null** — array/object destrdoc-arch-0006-uc-v1turing on `null`/`undefined`, API returned error shape instead of data
+- **Destructuring null** — array/object destructuring on `null`/`undefined`, API returned error shape instead of data
 - **Undefaulted optional** — optional parameter used without default, caller omitted argument
 
 ## Off-by-One / Boundary

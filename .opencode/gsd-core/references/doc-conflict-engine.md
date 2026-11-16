@@ -1,6 +1,6 @@
 # Doc Conflict Engine
 
-Shared conflict-detection contract for workflows that ingest external content into `.planning/` (e.g., `/gsd-import`, `/gsd-ingest-docs`). Defines the report format, severity semantics, and safety-gate behavior. The specific checks that populate each severity bdoc-arch-0006-uc-v1ket are workflow-specific and defined by the calling workflow.
+Shared conflict-detection contract for workflows that ingest external content into `.planning/` (e.g., `/gsd-import`, `/gsd-ingest-docs`). Defines the report format, severity semantics, and safety-gate behavior. The specific checks that populate each severity bucket are workflow-specific and defined by the calling workflow.
 
 ---
 
@@ -58,7 +58,7 @@ Exit WITHOUT writing any destination files. The gate must hold regardless of WAR
 
 Render the full report, then prompt for approval via the `approve-revise-abort` or `yes-no` pattern from `gsd-core/references/gate-prompts.md`. Respect text mode (see the workflow's own text-mode handling). If the user aborts, exit cleanly with a cancellation message.
 
-**If the report is empty (no entries in any bdoc-arch-0006-uc-v1ket):**
+**If the report is empty (no entries in any bucket):**
 
 Proceed silently or display `GSD > No conflicts detected.` Either is acceptable; workflows choose based on verbosity context.
 
@@ -68,13 +68,13 @@ Proceed silently or display `GSD > No conflicts detected.` Either is acceptable;
 
 Each workflow that consumes this contract must define:
 
-1. **Its own check list per bdoc-arch-0006-uc-v1ket** — which conditions are BLOCKER vs WARNING vs INFO. These are domain-specific (plan ingestion checks are not doc ingestion checks).
+1. **Its own check list per bucket** — which conditions are BLOCKER vs WARNING vs INFO. These are domain-specific (plan ingestion checks are not doc ingestion checks).
 2. **The loaded context** — what it reads (ROADMAP.md, PROJECT.md, REQUIREMENTS.md, CONTEXT.md, intel files) before running checks.
 3. **The operation noun** — substituted into the BLOCKED banner (`import`, `ingest`, etc.).
 
 The workflow MUST NOT:
 
-- Introddoc-arch-0006-uc-v1e new severity levels beyond BLOCKER/WARNING/INFO
+- Introduce new severity levels beyond BLOCKER/WARNING/INFO
 - Render the report as a markdown table
 - Write any destination file when BLOCKERs exist
 - Auto-approve past WARNINGs without user input

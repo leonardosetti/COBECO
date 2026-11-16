@@ -46,7 +46,7 @@ updated: 2026-11-05
 origin: .ai/handoffs/hf-exec-0608-spec-007-invoice-data-model-v1-v1.0.md (envelope; item B.4 de docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:36)
 task: TA-0052 | sender: agent-nexus-prime-ultimate
 kill_switch: inherited
-lgpd-class: proddoc-arch-0006-uc-v1t-personal-financial (invoice transporta nome, CPF/CNPJ, endereço e valores — minimização P-04, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:90)
+lgpd-class: product-personal-financial (invoice transporta nome, CPF/CNPJ, endereço e valores — minimização P-04, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:90)
 trace:
   - .ai/handoffs/hf-exec-0608-spec-007-invoice-data-model-v1-v1.0.md (envelope da tarefa)
   - .ai/handoffs/hf-exec-0601-consulta-de-dominio-v1.0.md:33-45 (PARCELA DE CONSULTA TA-0045, agent-dba — insumo normativo incorporado nos §§3.1-3.6)

@@ -149,7 +149,7 @@ Aceite de cotação (anti-envenenamento, kill switch DBA 5): `Decimal` finito, `
 Fluxo de `RateService.get_quote(currency)`:
 
 1. Cache com idade ≤ `COBECO_RATE_TTL_SECONDS` (padrão 3600) → devolve sem chamar a rede. A idade conta de `fetched_at`.
-2. Entra na fila da moeda (single-flight). Quem esperou e viu uma cadeia terminar herda o desfecho dela. Quem assume relê o cache, salvo se a primeira leitura falhou, e percorre a cadeia Frankfurter → PTAX, pulando provedor com circuito aberto. Sdoc-arch-0006-uc-v1esso grava e devolve.
+2. Entra na fila da moeda (single-flight). Quem esperou e viu uma cadeia terminar herda o desfecho dela. Quem assume relê o cache, salvo se a primeira leitura falhou, e percorre a cadeia Frankfurter → PTAX, pulando provedor com circuito aberto. Sucesso grava e devolve.
 3. Falha geral: última linha do cache com `stale=true`.
 4. Sem cache: `RatesUnavailableError` (503).
 
@@ -157,7 +157,7 @@ Circuit breaker por provedor, em memória: abre após 3 falhas consecutivas e fi
 
 Orçamento de REQ-01: prazo total de 1,9 s por requisição (`total_timeout`), contado da chegada e válido inclusive na fila. Cada chamada ao repositório tem até 0,3 s (`repository_timeout`); estouro equivale a cache ausente na leitura e a gravação ignorada na escrita. Timeout por provedor de 0,9 s, com a cadeia inteira encerrada em t = 1,6 s, o que reserva 0,3 s à gravação. Pior caso: leitura 0,3 + releitura 0,3 + cadeia até 1,6 + gravação 0,3 = 1,9 s; a PTAX recebe o que restar depois da Frankfurter (0,1 a 0,7 s) enquanto o circuito desta não abre, e 0,9 s depois disso. Sem esse corte, 0,3 + 1,8 + 0,3 somariam 2,4 s.
 
-Circuit breaker do repositório (`repository_breaker`), distinto dos provedores: abre após 3 estouros ou `RepositoryError` consecutivos e admite uma sonda a cada 5 s; sdoc-arch-0006-uc-v1esso fecha e cancelamento usa `record_release`. Aberto, leitura e gravação são puladas sem tocar no repositório: a leitura conta como cache ausente e a gravação é ignorada, com um registro por queda (`quote_cache_skipped`), não por requisição. Nesse período não há cache vencido para devolver, e sem fontes a resposta é 503. O circuito existe porque a consulta de DNS de um banco parado leva cerca de 3,8 s e não para quando a chamada é cortada: no uvloop ela ocupa o pool do libuv, compartilhado com o DNS das fontes. A primeira onda, anterior à abertura, ainda chega a 16 consultas, e o libuv padrão só admite 2 simultâneas; por isso a imagem define `UV_THREADPOOL_SIZE=64` no `Dockerfile`.
+Circuit breaker do repositório (`repository_breaker`), distinto dos provedores: abre após 3 estouros ou `RepositoryError` consecutivos e admite uma sonda a cada 5 s; sucesso fecha e cancelamento usa `record_release`. Aberto, leitura e gravação são puladas sem tocar no repositório: a leitura conta como cache ausente e a gravação é ignorada, com um registro por queda (`quote_cache_skipped`), não por requisição. Nesse período não há cache vencido para devolver, e sem fontes a resposta é 503. O circuito existe porque a consulta de DNS de um banco parado leva cerca de 3,8 s e não para quando a chamada é cortada: no uvloop ela ocupa o pool do libuv, compartilhado com o DNS das fontes. A primeira onda, anterior à abertura, ainda chega a 16 consultas, e o libuv padrão só admite 2 simultâneas; por isso a imagem define `UV_THREADPOOL_SIZE=64` no `Dockerfile`.
 
 Seguidores herdam o desfecho do líder, inclusive falha: cotação, ou cache vencido próprio, ou 503, sem repetir a cadeia. O single-flight vale por processo, e o desfecho herdado vale só para quem chegou antes de a cadeia terminar.
 
@@ -210,7 +210,7 @@ def calculate(regime, amount, quantity, rate, spread_pct, iof_pct) -> Breakdown
 class CircuitBreaker:
     def __init__(self, failure_threshold=3, reset_seconds=60.0, clock=time.monotonic)
     def allow(self) -> bool
-    def record_sdoc-arch-0006-uc-v1cess(self) -> None
+    def record_success(self) -> None
     def record_failure(self) -> None
     def record_release(self) -> None  # chamada sem veredito: libera a tentativa, sem penalizar
 

@@ -2,7 +2,7 @@
 
 ## Corpus Check
 - 1301 files · ~2,303,350 words
-- Verdict: corpus is large enough that graph strdoc-arch-0006-uc-v1ture adds value.
+- Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 60 file(s) not represented in the graph (top: .lock 31, .excalidraw 7, .xml 6)
 
 ## Summary
@@ -425,7 +425,7 @@
 - build
 - gsd-pattern-mapper.md
 - gsd-pattern-mapper.compact.md
-- reconstrdoc-arch-0006-uc-v1tFrontmatter
+- reconstructFrontmatter
 - gate-codebase-drift.cjs
 - reviewer-step-dispatch.cjs
 - applySettingsJsonHookTables
@@ -505,7 +505,7 @@
 - context-composer.cjs
 - fallow-runner.cjs
 - gate-decision-coverage-plan.cjs
-- phase-strdoc-arch-0006-uc-v1ture.cjs
+- phase-structure.cjs
 - worktree-health.cjs
 - cline-sdk-binding.cjs
 - runtime-identity.cjs
@@ -676,7 +676,7 @@
 - Per-plan executor routing (#1689)
 - _runtime-launcher.snippet.sh
 - gsd-graphify/SKILL.md
-- Instrdoc-arch-0006-uc-v1tions
+- Instructions
 - skills/caveman-learn — the Caveman Learn editing skill (Apache-2.0, public)
 - caveman-learn skill
 - interface
@@ -857,7 +857,7 @@
 - verify-command-path-resolvability.md
 - worktree-branch-check.md
 - continue-here.md
-- copilot-instrdoc-arch-0006-uc-v1tions.md
+- copilot-instructions.md
 - milestone.md
 - project.md
 - requirements.md
@@ -1131,7 +1131,7 @@ Nodes (43): readModifiedFilesContent(), AnchorDetectedSignal, ADR-0457, ADR-1411
 
 ### Community 49 - "📊 ANÁLISE FUNDAMENTAL DO MVP COBECO v2.1"
 Cohesion: 0.05
-Nodes (42): 10.1. Critérios de Sdoc-arch-0006-uc-v1esso (Go/No-Go), 10.2. Definição de "Pronto" (DoD), ✅ 10. CHECKLIST DE VALIDAÇÃO DO MVP, 📎 11. ARTEFATOS RELACIONADOS, 🚀 12. PRÓXIMOS PASSOS IMEDIATOS, 📝 13. CONTATO E GOVERNANÇA, 🎯 1. PROPÓSITO DO DOCUMENTO, 2.1. Pirâmide de Autoridade (+34 more)
+Nodes (42): 10.1. Critérios de Sucesso (Go/No-Go), 10.2. Definição de "Pronto" (DoD), ✅ 10. CHECKLIST DE VALIDAÇÃO DO MVP, 📎 11. ARTEFATOS RELACIONADOS, 🚀 12. PRÓXIMOS PASSOS IMEDIATOS, 📝 13. CONTATO E GOVERNANÇA, 🎯 1. PROPÓSITO DO DOCUMENTO, 2.1. Pirâmide de Autoridade (+34 more)
 
 ### Community 50 - "capability-trust.cjs"
 Cohesion: 0.09
@@ -1199,7 +1199,7 @@ Nodes (21): benchmark_pair(), count_tokens(), main(), print_table(), count_bulle
 
 ### Community 67 - "runtime-name-policy.cjs"
 Cohesion: 0.08
-Nodes (33): routeProjectInstrdoc-arch-0006-uc-v1tionFile(), aliasManifest, aliasToCanonical, assertKnownRuntime(), assertNotRetiredRuntime(), canonicalizeRuntimeName(), ADR-0457, ADR-1239 (+25 more)
+Nodes (33): routeProjectInstructionFile(), aliasManifest, aliasToCanonical, assertKnownRuntime(), assertNotRetiredRuntime(), canonicalizeRuntimeName(), ADR-0457, ADR-1239 (+25 more)
 
 ### Community 68 - "audit.cjs"
 Cohesion: 0.13
@@ -1223,15 +1223,15 @@ Nodes (35): 1. Contexto e problema, 2. Público-alvo, 3.1. Dentro do escopo, 3.2
 
 ### Community 73 - "agent-factory-architect-liberal.md"
 Cohesion: 0.06
-Nodes (35): 1. **Diagrama C4 (Model-IO)**, 2. **Runbook Operacional**, 3. **Contratos de Interface**, 4. **Matriz de Dependências e Riscos**, 5. **Plano de Sdoc-arch-0006-uc-v1essão**, 🩸 AGENTE ADVERSARIAL: RED TEAM AGENT (RTA), ⚖️ AUTO-CORREÇÃO & VALIDAÇÃO (Preenchido pelo AFA-LIBERAL), `[COMPLETENESS_CHECKLIST]` (+27 more)
+Nodes (35): 1. **Diagrama C4 (Model-IO)**, 2. **Runbook Operacional**, 3. **Contratos de Interface**, 4. **Matriz de Dependências e Riscos**, 5. **Plano de Sucessão**, 🩸 AGENTE ADVERSARIAL: RED TEAM AGENT (RTA), ⚖️ AUTO-CORREÇÃO & VALIDAÇÃO (Preenchido pelo AFA-LIBERAL), `[COMPLETENESS_CHECKLIST]` (+27 more)
 
 ### Community 74 - "gsd-roadmapper.md"
 Cohesion: 0.06
-Nodes (35): 0. Top-Level Title (H1), 100% Requirement Coverage, 1. Summary Checklist (under `## Phases`), 2. Detail Sections (under `## Phase Details`), 3. Progress Table, Anti-Enterprise, Coverage is Non-Negotiable, Deriving Phase Sdoc-arch-0006-uc-v1cess Criteria (+27 more)
+Nodes (35): 0. Top-Level Title (H1), 100% Requirement Coverage, 1. Summary Checklist (under `## Phases`), 2. Detail Sections (under `## Phase Details`), 3. Progress Table, Anti-Enterprise, Coverage is Non-Negotiable, Deriving Phase Success Criteria (+27 more)
 
 ### Community 75 - "refactor-trigger-command-router.cjs"
 Cohesion: 0.13
-Nodes (35): makeInvalidArgs(), analyzeTodoc-arch-0006-uc-v1hedFiles(), artifactAbsPath(), artifactFileName(), candidateKey(), ADR-1703, ADR-4650, _defaultCore (+27 more)
+Nodes (35): makeInvalidArgs(), analyzeTouchedFiles(), artifactAbsPath(), artifactFileName(), candidateKey(), ADR-1703, ADR-4650, _defaultCore (+27 more)
 
 ### Community 76 - "jsonc-edit.cjs"
 Cohesion: 0.12
@@ -1275,11 +1275,11 @@ Nodes (30): ADR-0457, compareSemverCore(), compareTuples(), expandComparator(), 
 
 ### Community 86 - "agent-factory-architect-neutro.md"
 Cohesion: 0.06
-Nodes (33): 1. **Diagrama C4 (Model-IO)**, 2. **Runbook Operacional**, 3. **Contratos de Interface**, 4. **Matriz de Dependências**, 5. **Plano de Sdoc-arch-0006-uc-v1essão**, 🩸 AGENTE ADVERSARIAL: RED TEAM AGENT (RTA), ⚖️ AUTO-CORREÇÃO & VALIDAÇÃO (Preenchido pelo AFA-NEUTRO), `[CONTEXT]` (+25 more)
+Nodes (33): 1. **Diagrama C4 (Model-IO)**, 2. **Runbook Operacional**, 3. **Contratos de Interface**, 4. **Matriz de Dependências**, 5. **Plano de Sucessão**, 🩸 AGENTE ADVERSARIAL: RED TEAM AGENT (RTA), ⚖️ AUTO-CORREÇÃO & VALIDAÇÃO (Preenchido pelo AFA-NEUTRO), `[CONTEXT]` (+25 more)
 
 ### Community 87 - "gsd-roadmapper.compact.md"
 Cohesion: 0.06
-Nodes (33): 0. Top-Level Title (H1), 100% Requirement Coverage, 1. Summary Checklist (under `## Phases`), 2. Detail Sections (under `## Phase Details`), 3. Progress Table, Anti-Enterprise, Coverage is Non-Negotiable, Deriving Phase Sdoc-arch-0006-uc-v1cess Criteria (+25 more)
+Nodes (33): 0. Top-Level Title (H1), 100% Requirement Coverage, 1. Summary Checklist (under `## Phases`), 2. Detail Sections (under `## Phase Details`), 3. Progress Table, Anti-Enterprise, Coverage is Non-Negotiable, Deriving Phase Success Criteria (+25 more)
 
 ### Community 88 - "runtime-slash.cjs"
 Cohesion: 0.09
@@ -1379,7 +1379,7 @@ Nodes (28): ADR-1606, baseOf(), buildLintArgs(), buildNodeTestArgs(), childEnv()
 
 ### Community 112 - "gsd-phase-researcher.md"
 Cohesion: 0.07
-Nodes (28): Detect Test Infrastrdoc-arch-0006-uc-v1ture, Identify Wave 0 Gaps, Map Requirements to Tests, Package Legitimacy Gate, Quick Claim-Disposition Pass (`/gsd-explore`), Research Blocked, Research Complete, RESEARCH.md Strdoc-arch-0006-uc-v1ture (+20 more)
+Nodes (28): Detect Test Infrastructure, Identify Wave 0 Gaps, Map Requirements to Tests, Package Legitimacy Gate, Quick Claim-Disposition Pass (`/gsd-explore`), Research Blocked, Research Complete, RESEARCH.md Structure (+20 more)
 
 ### Community 113 - "intel.cjs"
 Cohesion: 0.14
@@ -1459,7 +1459,7 @@ Nodes (24): appendQuickTaskRow(), ADR-0457, ADR-2143, deleteTableRow(), escapeCe
 
 ### Community 132 - "confirmed"
 Cohesion: 0.13
-Nodes (25): File Template, UAT Template, 3.6. Handle ADR Ingest Express Path, Strdoc-arch-0006-uc-v1tured hunter result, What it does, Cost budget, Coverage and prior runs, Full audit planning (+17 more)
+Nodes (25): File Template, UAT Template, 3.6. Handle ADR Ingest Express Path, Structured hunter result, What it does, Cost budget, Coverage and prior runs, Full audit planning (+17 more)
 
 ### Community 133 - "audit-milestone.md"
 Cohesion: 0.07
@@ -1479,7 +1479,7 @@ Nodes (25): 0.1 SUPREME LAW AND CONTEXT ANCHOR, 0.2 AFA-COMPACT PROTOCS (NON-NEG
 
 ### Community 137 - "🏭 META-AGENTE: AGENT FACTORY ARCHITECT (AFA) v2.3"
 Cohesion: 0.08
-Nodes (25): 1. Diagrama C4 (Model-IO), 2. Runbook Operacional, 3. Contratos de Interface, 4. Matriz de Dependências, 5. Plano de Sdoc-arch-0006-uc-v1essão, ⚖️ AUTO-CORREÇÃO & VALIDAÇÃO (Preenchido pelo AFA), `[COMPLETENESS_CHECKLIST]`, `[CONTEXT]` (+17 more)
+Nodes (25): 1. Diagrama C4 (Model-IO), 2. Runbook Operacional, 3. Contratos de Interface, 4. Matriz de Dependências, 5. Plano de Sucessão, ⚖️ AUTO-CORREÇÃO & VALIDAÇÃO (Preenchido pelo AFA), `[COMPLETENESS_CHECKLIST]`, `[CONTEXT]` (+17 more)
 
 ### Community 138 - "gsd2-import.cjs"
 Cohesion: 0.15
@@ -1519,7 +1519,7 @@ Nodes (16): routeDispatchCapacity(), ADR-1016, ADR-1239, DEFAULT_ENGINE, degrada
 
 ### Community 147 - "codex-agent-toml.cjs"
 Cohesion: 0.12
-Nodes (21): BOM_CHAR, ADR-2313, ADR-3473, _codexToolsDeclareWriteOrEdit(), deriveCodexSandboxMode(), _deriveCodexSandboxModeFromTools(), findDeveloperInstrdoc-arch-0006-uc-v1tionsBlockRange(), isSandboxHeld() (+13 more)
+Nodes (21): BOM_CHAR, ADR-2313, ADR-3473, _codexToolsDeclareWriteOrEdit(), deriveCodexSandboxMode(), _deriveCodexSandboxModeFromTools(), findDeveloperInstructionsBlockRange(), isSandboxHeld() (+13 more)
 
 ### Community 148 - "milestone.cjs"
 Cohesion: 0.12
@@ -1599,7 +1599,7 @@ Nodes (11): ./index.js, ./Machine.js, ./RE2.js, LookbehindState, MatcherInput, R
 
 ### Community 167 - "SPEC spec-014 — runtime-agentes-ci-layers-v1 — Camada CI e runtime de agentes SDD (L1/L3) como camadas do Art. 10.1"
 Cohesion: 0.09
-Nodes (22): 1. Contexto e origem, 2. Resolução de conflitos, 3.1 Definição e base constitdoc-arch-0006-uc-v1ional, 3.2 Workflows como contratos de fronteira, 3.3 Zero secrets na camada CI, 3.4 Regime Free Tier sob Bypass REGISTRADO (P-01), 3. Domínio — Camada CI como camada do Art. 10.1, 4.1 Definição e base constitdoc-arch-0006-uc-v1ional (+14 more)
+Nodes (22): 1. Contexto e origem, 2. Resolução de conflitos, 3.1 Definição e base constitucional, 3.2 Workflows como contratos de fronteira, 3.3 Zero secrets na camada CI, 3.4 Regime Free Tier sob Bypass REGISTRADO (P-01), 3. Domínio — Camada CI como camada do Art. 10.1, 4.1 Definição e base constitucional (+14 more)
 
 ### Community 168 - "SYSTEM DIRECTIVE: AGENT-API-SPECIALIST (L2 · SPECIALIST · CONTRACT CUSTODY · COBECO)"
 Cohesion: 0.09
@@ -1731,7 +1731,7 @@ Nodes (21): 1. Contexto e origem, 2. Resolução de conflitos, 3.10 `UNKNOWN - v
 
 ### Community 200 - "TAP COBECO — Linha de Base Congelada (espelho do plano-integral)"
 Cohesion: 0.09
-Nodes (21): 10. Marcos (TAP §6), 11. Premissas (TAP §9), 12. Restrições (TAP §8 e §11), 13. Partes interessadas (TAP §7) — lacuna declarada, 14. Riscos de alto nível (TAP §10) — lacuna declarada, 15. Critérios de sdoc-arch-0006-uc-v1esso (TAP §3.2) — lacuna declarada, 16. Critérios de aceite e testes (deste artefato), 17. Rastreabilidade (+13 more)
+Nodes (21): 10. Marcos (TAP §6), 11. Premissas (TAP §9), 12. Restrições (TAP §8 e §11), 13. Partes interessadas (TAP §7) — lacuna declarada, 14. Riscos de alto nível (TAP §10) — lacuna declarada, 15. Critérios de sucesso (TAP §3.2) — lacuna declarada, 16. Critérios de aceite e testes (deste artefato), 17. Rastreabilidade (+13 more)
 
 ### Community 201 - "SYSTEM DIRECTIVE: AGENT-BASH-SPECIALIST (L2 · SPECIALIST · SHELL CUSTODY)"
 Cohesion: 0.09
@@ -1803,7 +1803,7 @@ Nodes (21): 2a. Git History, 2b. Planning State, 2c. Phase Artifacts, 2d. Sessio
 
 ### Community 219 - "gsd-windsurf-pre-command.js"
 Cohesion: 0.17
-Nodes (21): basename(), CMD_PREFIXES, destrdoc-arch-0006-uc-v1tiveReason(), hasFlag(), indexOfCommandAfterPrefixes(), isDestrdoc-arch-0006-uc-v1tiveRmRf(), isDestrdoc-arch-0006-uc-v1tiveWindowsRmRf(), isForceToken() (+13 more)
+Nodes (21): basename(), CMD_PREFIXES, destructiveReason(), hasFlag(), indexOfCommandAfterPrefixes(), isDestructiveRmRf(), isDestructiveWindowsRmRf(), isForceToken() (+13 more)
 
 ### Community 220 - "RELATORIO ANALITICO — Constituição COBECO vs Estrutura de Requisitos e Especificacoes"
 Cohesion: 0.10
@@ -1827,7 +1827,7 @@ Nodes (20): 0.5 POSTURA DE SEGURANÇA OFENSIVA-DEFENSIVA (WHITE-HAT), 0.7 GENERA
 
 ### Community 225 - "newInst"
 Cohesion: 0.18
-Nodes (21): Core Principle, Core Principle, alt(), cap(), cat(), child(), constrdoc-arch-0006-uc-v1tor(), enter() (+13 more)
+Nodes (21): Core Principle, Core Principle, alt(), cap(), cat(), child(), constructor(), enter() (+13 more)
 
 ### Community 226 - "gsd-project-researcher.md"
 Cohesion: 0.10
@@ -1867,7 +1867,7 @@ Nodes (20): applyWorktreeBaseRef(), buildMsgBaserefHeadHookBypass(), buildMsgBas
 
 ### Community 235 - "AI Evaluation Reference"
 Cohesion: 0.10
-Nodes (20): AI Evaluation Reference, Common Pitfalls, Core Concepts, Eval Tooling Guide, Evals in the Development Lifecycle, Evaluation Dimensions, Execute Phase (Instrument While Building), Model vs. Proddoc-arch-0006-uc-v1t Evaluation (+12 more)
+Nodes (20): AI Evaluation Reference, Common Pitfalls, Core Concepts, Eval Tooling Guide, Evals in the Development Lifecycle, Evaluation Dimensions, Execute Phase (Instrument While Building), Model vs. Product Evaluation (+12 more)
 
 ### Community 236 - "req-func-0001-requisitos-funcionais-canon REVIEW — ROUND 1 (WS-3 · COBECO)"
 Cohesion: 0.10
@@ -1927,7 +1927,7 @@ Nodes (18): CONTEXT.md (per-phase), Core Artifacts, DISCUSSION-LOG.md (per-phase
 
 ### Community 251 - "Variants"
 Cohesion: 0.11
-Nodes (18): Anti-Patterns, Continuation Format, Core Strdoc-arch-0006-uc-v1ture, Don't: Command-only (no context), Don't: Fenced code blocks for commands, Don't: Missing /clear explanation, Don't: "Other options" language, Execute Final Plan in Phase (+10 more)
+Nodes (18): Anti-Patterns, Continuation Format, Core Structure, Don't: Command-only (no context), Don't: Fenced code blocks for commands, Don't: Missing /clear explanation, Don't: "Other options" language, Execute Final Plan in Phase (+10 more)
 
 ### Community 252 - "Complete Field Reference"
 Cohesion: 0.11
@@ -2167,7 +2167,7 @@ Nodes (13): Composition with model_profile, Context Budget Rules, Context Budget
 
 ### Community 312 - "validate-phase.md"
 Cohesion: 0.14
-Nodes (13): 0. Initialize, 1. Detect Input State, 2. Discovery, 2a. Read Phase Artifacts, 2b. Build Requirement-to-Task Map, 2c. Detect Test Infrastrdoc-arch-0006-uc-v1ture, 2d. Cross-Reference, 3. Gap Analysis (+5 more)
+Nodes (13): 0. Initialize, 1. Detect Input State, 2. Discovery, 2a. Read Phase Artifacts, 2b. Build Requirement-to-Task Map, 2c. Detect Test Infrastructure, 2d. Cross-Reference, 3. Gap Analysis (+5 more)
 
 ### Community 313 - "Step 2: Execute Operation"
 Cohesion: 0.14
@@ -2175,7 +2175,7 @@ Nodes (13): complete, create, /gsd-workstreams, list, progress, resume, status, 
 
 ### Community 314 - "Rules"
 Cohesion: 0.15
-Nodes (12): 1. Classical register, 2. Particles carry strdoc-arch-0006-uc-v1ture, 3. Each fact once, 4. Payload in original script, 5. Tool runs, 6. Never perform, Floor, megacave (+4 more)
+Nodes (12): 1. Classical register, 2. Particles carry structure, 3. Each fact once, 4. Payload in original script, 5. Tool runs, 6. Never perform, Floor, megacave (+4 more)
 
 ### Community 315 - "Rules"
 Cohesion: 0.15
@@ -2227,7 +2227,7 @@ Nodes (12): Auth gate handling, Bad checkpoint placement, Checkpoint Examples, D
 
 ### Community 327 - "Planner Preconditions — `<precondition>` Element"
 Cohesion: 0.15
-Nodes (12): Case 1 — External service setup (`user_setup`), Case 2 — Prior-phase artifact dependency, Case 3 — Environment variable / runtime configuration, Executor behavior (assertion contract), Format, Out of scope, Plan-strdoc-arch-0006-uc-v1ture validation, Planner Preconditions — `<precondition>` Element (+4 more)
+Nodes (12): Case 1 — External service setup (`user_setup`), Case 2 — Prior-phase artifact dependency, Case 3 — Environment variable / runtime configuration, Executor behavior (assertion contract), Format, Out of scope, Plan-structure validation, Planner Preconditions — `<precondition>` Element (+4 more)
 
 ### Community 328 - "Phase Prompt Template"
 Cohesion: 0.15
@@ -2267,7 +2267,7 @@ Nodes (13): Anti-patterns, Core principles, Full audit setup, Operating modes, P
 
 ### Community 337 - "Caveman Compress"
 Cohesion: 0.17
-Nodes (11): Boundaries, Caveman Compress, Compress, Compression Rules, Pattern, Preserve EXACTLY (never modify), Preserve Strdoc-arch-0006-uc-v1ture, Process (+3 more)
+Nodes (11): Boundaries, Caveman Compress, Compress, Compression Rules, Pattern, Preserve EXACTLY (never modify), Preserve Structure, Process (+3 more)
 
 ### Community 338 - "caveman"
 Cohesion: 0.17
@@ -2315,7 +2315,7 @@ Nodes (11): init(), checkpoint:decision (9%), checkpoint:human-action (1% - Rare
 
 ### Community 350 - "captureTo"
 Cohesion: 0.17
-Nodes (12): captureTo(), close(), constrdoc-arch-0006-uc-v1tor(), end(), _init(), sAttribValueUnquoted(), sDoctype(), sDTD() (+4 more)
+Nodes (12): captureTo(), close(), constructor(), end(), _init(), sAttribValueUnquoted(), sDoctype(), sDTD() (+4 more)
 
 ### Community 351 - "workstream-name-policy.cjs"
 Cohesion: 0.27
@@ -2327,7 +2327,7 @@ Nodes (10): Agent Skills Self-Load (Bootstrap), Steps, What self-load does and d
 
 ### Community 353 - "Debugger technique catalog"
 Cohesion: 0.17
-Nodes (11): Binary Search / Divide and Conquer, Comment Out Everything, Debugger technique catalog, Delta Debugging, Differential Debugging, Follow the Indirection, Git Bisect, Minimal Reproddoc-arch-0006-uc-v1tion (+3 more)
+Nodes (11): Binary Search / Divide and Conquer, Comment Out Everything, Debugger technique catalog, Delta Debugging, Differential Debugging, Follow the Indirection, Git Bisect, Minimal Reproduction (+3 more)
 
 ### Community 354 - "Positive Examples"
 Cohesion: 0.17
@@ -2463,11 +2463,11 @@ Nodes (10): Behavioral Rules, Context Budget Rules, Error Recovery Rules, File R
 
 ### Community 387 - "Verify-Work — MVP Mode UAT Framing"
 Cohesion: 0.18
-Nodes (10): 1. User-flow walk-through (always first, always required), 2. Technical checks (only if section 1 passes), 3. Coverage check (always last, always required), Anti-patterns to reject under MVP mode, Compatibility with existing verify-work philosophy, Core rule, Generated UAT script strdoc-arch-0006-uc-v1ture under MVP mode, Output: VERIFICATION.md changes under MVP mode (+2 more)
+Nodes (10): 1. User-flow walk-through (always first, always required), 2. Technical checks (only if section 1 passes), 3. Coverage check (always last, always required), Anti-patterns to reject under MVP mode, Compatibility with existing verify-work philosophy, Core rule, Generated UAT script structure under MVP mode, Output: VERIFICATION.md changes under MVP mode (+2 more)
 
 ### Community 388 - "Workstream Flag (`--ws`)"
 Cohesion: 0.18
-Nodes (10): CLI Usage, Directory Strdoc-arch-0006-uc-v1ture, Overview, Pointer Lifecycle, Reserved names, Resolution Priority, Routing Propagation, Session Identity Resolution (+2 more)
+Nodes (10): CLI Usage, Directory Structure, Overview, Pointer Lifecycle, Reserved names, Resolution Priority, Routing Propagation, Session Identity Resolution (+2 more)
 
 ### Community 389 - "Phase {N} — UI Design Contract"
 Cohesion: 0.18
@@ -2543,15 +2543,15 @@ Nodes (10): 6. OUTPUT SCHEMA - FIELD CONTRACT, Step 2 -- Parse Argument, Step 2a
 
 ### Community 407 - "gsd-pattern-mapper.md"
 Cohesion: 0.20
-Nodes (9): Pattern Mapping Complete, PATTERNS.md Strdoc-arch-0006-uc-v1ture, Step 1: Receive Scope and Load Context, Step 2: Classify Files, Step 3: Find Closest Analogs, Step 4: Extract Patterns from Analogs, Step 5: Identify Shared Patterns, Step 6: Write PATTERNS.md (+1 more)
+Nodes (9): Pattern Mapping Complete, PATTERNS.md Structure, Step 1: Receive Scope and Load Context, Step 2: Classify Files, Step 3: Find Closest Analogs, Step 4: Extract Patterns from Analogs, Step 5: Identify Shared Patterns, Step 6: Write PATTERNS.md (+1 more)
 
 ### Community 408 - "gsd-pattern-mapper.compact.md"
 Cohesion: 0.20
-Nodes (9): Pattern Mapping Complete, PATTERNS.md Strdoc-arch-0006-uc-v1ture, Step 1: Receive Scope and Load Context, Step 2: Classify Files, Step 3: Find Closest Analogs, Step 4: Extract Patterns from Analogs, Step 5: Identify Shared Patterns, Step 6: Write PATTERNS.md (+1 more)
+Nodes (9): Pattern Mapping Complete, PATTERNS.md Structure, Step 1: Receive Scope and Load Context, Step 2: Classify Files, Step 3: Find Closest Analogs, Step 4: Extract Patterns from Analogs, Step 5: Identify Shared Patterns, Step 6: Write PATTERNS.md (+1 more)
 
-### Community 409 - "reconstrdoc-arch-0006-uc-v1tFrontmatter"
+### Community 409 - "reconstructFrontmatter"
 Cohesion: 0.36
-Nodes (10): blockSequenceItem(), commentPathKey(), escapeDoubleQuotedScalar(), extractCommentChannel(), generalScalarNeedsNumericQuoting(), isPlainFlowSequenceItem(), nestedScalar(), reconstrdoc-arch-0006-uc-v1tFrontmatter() (+2 more)
+Nodes (10): blockSequenceItem(), commentPathKey(), escapeDoubleQuotedScalar(), extractCommentChannel(), generalScalarNeedsNumericQuoting(), isPlainFlowSequenceItem(), nestedScalar(), reconstructFrontmatter() (+2 more)
 
 ### Community 410 - "gate-codebase-drift.cjs"
 Cohesion: 0.36
@@ -2571,7 +2571,7 @@ Nodes (10): Automatable Quick Reference, ❌ BAD: Asking human to deploy / ✅ G
 
 ### Community 414 - "Prevention / Blameless-Postmortem Output"
 Cohesion: 0.20
-Nodes (9): 1. Blameless 5-Whys that BRANCHES (per Phase 2A RCA), 2. "Why wasn't this caught?", 3. The recurrence guard, Backward compatibility (additive — no format break), Knowledge-base entry: the two strdoc-arch-0006-uc-v1tured fields, Prevention / Blameless-Postmortem Output, Scope boundary (Zawinski's Law), The Prevention block (three blame-free components) (+1 more)
+Nodes (9): 1. Blameless 5-Whys that BRANCHES (per Phase 2A RCA), 2. "Why wasn't this caught?", 3. The recurrence guard, Backward compatibility (additive — no format break), Knowledge-base entry: the two structured fields, Prevention / Blameless-Postmortem Output, Scope boundary (Zawinski's Law), The Prevention block (three blame-free components) (+1 more)
 
 ### Community 415 - "RCA Branching — Anti-Single-Cause Bias"
 Cohesion: 0.20
@@ -2583,11 +2583,11 @@ Nodes (9): Critical Rule: Never Use Package.swift as the Primary Build System fo
 
 ### Community 417 - "Planner: Reversibility Tagging"
 Cohesion: 0.20
-Nodes (9): Already settled, Anti-patterns, Emission rules, Planner: Reversibility Tagging, Related, The override, The plan element, The rationale is data, never instrdoc-arch-0006-uc-v1tions (+1 more)
+Nodes (9): Already settled, Anti-patterns, Emission rules, Planner: Reversibility Tagging, Related, The override, The plan element, The rationale is data, never instructions (+1 more)
 
 ### Community 418 - "Pattern: Check-Revise-Escalate (max 3 iterations)"
 Cohesion: 0.20
-Nodes (9): After 3 Iterations, Conflict Return (REVISION_CONFLICT), Flow, Important Notes, Issue Count Tracking, Pattern: Check-Revise-Escalate (max 3 iterations), Re-spawn Prompt Strdoc-arch-0006-uc-v1ture, Revision Loop Pattern (+1 more)
+Nodes (9): After 3 Iterations, Conflict Return (REVISION_CONFLICT), Flow, Important Notes, Issue Count Tracking, Pattern: Check-Revise-Escalate (max 3 iterations), Re-spawn Prompt Structure, Revision Loop Pattern (+1 more)
 
 ### Community 419 - "Milestone v{{VERSION}}: {{MILESTONE_NAME}}"
 Cohesion: 0.20
@@ -2755,7 +2755,7 @@ Nodes (8): Bug-class gating (pairs with Phase 2B bug-taxonomy routing), Degradat
 
 ### Community 460 - "Semantic Knowledge-Base Recall via MemPalace"
 Cohesion: 0.22
-Nodes (8): Graceful degradation — MemPalace absent, Invocation (the agent has no MCP tools — use the CLI), Read — query MemPalace at Phase 0, Scope boundary (Zawinski's Law), Semantic Knowledge-Base Recall via MemPalace, The approach — reuse MemPalace, add no new infrastrdoc-arch-0006-uc-v1ture, Why this exists, Write — index resolved sessions at archive
+Nodes (8): Graceful degradation — MemPalace absent, Invocation (the agent has no MCP tools — use the CLI), Read — query MemPalace at Phase 0, Scope boundary (Zawinski's Law), Semantic Knowledge-Base Recall via MemPalace, The approach — reuse MemPalace, add no new infrastructure, Why this exists, Write — index resolved sessions at archive
 
 ### Community 461 - "Execute-Phase — TDD Gate (Runtime Enforcement)"
 Cohesion: 0.22
@@ -2869,7 +2869,7 @@ Nodes (7): ADR-0457, node_fs_1, node_path_1, normalizeFallowReport(), normalizeF
 Cohesion: 0.36
 Nodes (6): parsePredicateFlags(), partitionPredicateArgs(), ADR-5057, contextMissingSkip(), evaluateDecisionCoveragePlan(), unreadableDecisionGate()
 
-### Community 489 - "phase-strdoc-arch-0006-uc-v1ture.cjs"
+### Community 489 - "phase-structure.cjs"
 Cohesion: 0.25
 Nodes (7): checkI001(), checkW005(), checkW009(), checkW030(), ADR-0457, ADR-3180, RULES
 
@@ -2887,7 +2887,7 @@ Nodes (5): buildIdentityPayload(), classifyIdentityProbe(), cmdRuntimeIdentity()
 
 ### Community 493 - "requireInt"
 Cohesion: 0.43
-Nodes (7): requireInt(), constrdoc-arch-0006-uc-v1tYamlInteger(), isDecCode(), isHexCode(), isOctCode(), parseYamlInteger(), resolveYamlInteger()
+Nodes (7): requireInt(), constructYamlInteger(), isDecCode(), isHexCode(), isOctCode(), parseYamlInteger(), resolveYamlInteger()
 
 ### Community 494 - "settings.md"
 Cohesion: 0.25
@@ -2947,7 +2947,7 @@ Nodes (7): Accomplishments, Decisions & Deviations, Files Created/Modified, Next
 
 ### Community 508 - "Phase {N} — Validation Strategy"
 Cohesion: 0.25
-Nodes (7): Manual-Only Verifications, Per-Task Verification Map, Phase {N} — Validation Strategy, Sampling Rate, Test Infrastrdoc-arch-0006-uc-v1ture, Validation Sign-Off, Wave 0 Requirements
+Nodes (7): Manual-Only Verifications, Per-Task Verification Map, Phase {N} — Validation Strategy, Sampling Rate, Test Infrastructure, Validation Sign-Off, Wave 0 Requirements
 
 ### Community 509 - "Add Backlog Item Workflow"
 Cohesion: 0.25
@@ -3111,7 +3111,7 @@ Nodes (6): Fake the Backend, Implementation, Making Sketches Feel Alive, Require
 
 ### Community 549 - "Shared Theme System"
 Cohesion: 0.29
-Nodes (6): Creating New Themes, Linking, Setup, Shared Theme System, Theme File Strdoc-arch-0006-uc-v1ture, Theme Switcher
+Nodes (6): Creating New Themes, Linking, Setup, Shared Theme System, Theme File Structure, Theme Switcher
 
 ### Community 550 - "Multi-Variant HTML Patterns"
 Cohesion: 0.29
@@ -3119,7 +3119,7 @@ Nodes (6): Marking the Winner, Multi-Variant HTML Patterns, Side-by-Side (for sm
 
 ### Community 551 - "Verifier Phase Gates"
 Cohesion: 0.29
-Nodes (6): audit_test_quality (run after Step 7b, alongside anti-patterns), Backstop abstention — reporting contract (#3206, companion to agent Step 3 item 5b), identify_human_verification — infrastrdoc-arch-0006-uc-v1ture/foundation scoping (apply at Step 8), Lazy references, Verifier Phase Gates, verify_decisions — Decision Coverage Gate (run after Step 6, requirements coverage)
+Nodes (6): audit_test_quality (run after Step 7b, alongside anti-patterns), Backstop abstention — reporting contract (#3206, companion to agent Step 3 item 5b), identify_human_verification — infrastructure/foundation scoping (apply at Step 8), Lazy references, Verifier Phase Gates, verify_decisions — Decision Coverage Gate (run after Step 6, requirements coverage)
 
 ### Community 552 - "GSD Canonical Artifact Registry"
 Cohesion: 0.29
@@ -3399,7 +3399,7 @@ Nodes (6): ⚙️ 3.2.1 Arquitetura e Código, 🎨 3.2.2 UI/UX e Usabilidade, �
 
 ### Community 621 - "📝 5. CONCLUSÕES E RECOMENDAÇÕES"
 Cohesion: 0.33
-Nodes (6): 📝 5. CONCLUSÕES E RECOMENDAÇÕES, Curto Prazo (Semanas 2-3), Imediato (Próxima Sprint), 📊 Métricas de Sdoc-arch-0006-uc-v1esso do Refinamento, 🎯 Próximos Passos, ✅ Validação Final
+Nodes (6): 📝 5. CONCLUSÕES E RECOMENDAÇÕES, Curto Prazo (Semanas 2-3), Imediato (Próxima Sprint), 📊 Métricas de Sucesso do Refinamento, 🎯 Próximos Passos, ✅ Validação Final
 
 ### Community 622 - "⚙️ 3. req-func-0001-requisitos-funcionais-canon NÃO FUNCIONAIS (RNF) - VERSÃO FINAL"
 Cohesion: 0.33
@@ -3451,7 +3451,7 @@ Nodes (5): cmdEvalScore(), computeEvalScore(), INFRA_TOKENS, INFRA_VALUE, parseF
 
 ### Community 634 - "002-codex-legacy-hooks-json.cjs"
 Cohesion: 0.47
-Nodes (5): ADR-0457, isManagedCodexHookCommand(), isStrdoc-arch-0006-uc-v1turallyEmpty(), migration, pruneLegacyCodexHooksJsonValue()
+Nodes (5): ADR-0457, isManagedCodexHookCommand(), isStructurallyEmpty(), migration, pruneLegacyCodexHooksJsonValue()
 
 ### Community 635 - "003-rename-get-shit-done-to-gsd-core.cjs"
 Cohesion: 0.33
@@ -3539,7 +3539,7 @@ Nodes (5): Activation, Effect, Empty-answer handling, Question rendering, --text
 
 ### Community 656 - "Executor Progress Policy (#4218)"
 Cohesion: 0.33
-Nodes (5): A working executor is never steered, Executor Progress Policy (#4218), If a stalled executor ran in an isolated worktree, Never inject urgency or finalization instrdoc-arch-0006-uc-v1tions into a live executor, The absence of a local OS test/build process is NOT idleness
+Nodes (5): A working executor is never steered, Executor Progress Policy (#4218), If a stalled executor ran in an isolated worktree, Never inject urgency or finalization instructions into a live executor, The absence of a local OS test/build process is NOT idleness
 
 ### Community 657 - "Per-plan executor routing (#1689)"
 Cohesion: 0.33
@@ -3553,9 +3553,9 @@ Nodes (4): _gsd_at(), _gsd_homes(), _gsd_id_ok(), _runtime-launcher.snippet.sh s
 Cohesion: 0.33
 Nodes (5): Anti-Patterns, MVP-Mode Node Rendering, Step 0 -- Banner, Step 1 -- Config Gate, Step 3 -- Build (Inline)
 
-### Community 660 - "Instrdoc-arch-0006-uc-v1tions"
+### Community 660 - "Instructions"
 Cohesion: 0.33
-Nodes (5): Cotação de bens de consumo:, Instrdoc-arch-0006-uc-v1tions, Projeto de avaliação - Entrega da documentação do projeto, Sobre a apresentação:, Sobre a entrega:
+Nodes (5): Cotação de bens de consumo:, Instructions, Projeto de avaliação - Entrega da documentação do projeto, Sobre a apresentação:, Sobre a entrega:
 
 ### Community 661 - "skills/caveman-learn — the Caveman Learn editing skill (Apache-2.0, public)"
 Cohesion: 0.40

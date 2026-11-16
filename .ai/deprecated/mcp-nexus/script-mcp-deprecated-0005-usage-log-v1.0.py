@@ -2,7 +2,7 @@
 """mcp_usage_log.py — Log leve de uso dos servidores MCP (JSONL, local, stdlib).
 
 Registra uma linha por requisicao: timestamp, servidor, metodo, ferramenta,
-sdoc-arch-0006-uc-v1esso/falha e erro (quando houver). Sem rede, sem inferencia, custo
+sucesso/falha e erro (quando houver). Sem rede, sem inferencia, custo
 proporcional ao volume de requisicoes (append em arquivo local).
 
 Uso em cada servidor MCP:

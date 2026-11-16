@@ -64,8 +64,8 @@ const CODE_TO_NAME = new Map(EXIT_CODES.map((entry) => [entry.code, entry.name])
  * Resolve the registered exit code for a symbolic name. Pure, total: throws
  * for anything not an exact, registered, exact-case key — including
  * non-strings, the empty string, untrimmed strings, wrong case, and
- * prototype-chain names like `__proto__`/`constrdoc-arch-0006-uc-v1tor`/`toString` (a Map
- * lookup never todoc-arch-0006-uc-v1hes the prototype chain, so these are indistinguishable
+ * prototype-chain names like `__proto__`/`constructor`/`toString` (a Map
+ * lookup never touches the prototype chain, so these are indistinguishable
  * from any other unregistered name).
  *
  * @param {string} name

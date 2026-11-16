@@ -45,7 +45,7 @@ Read each phase's scope/goal for these patterns:
 - Phase B extends or modifies code that Phase A establishes
 
 ### Data Flow Detection
-- Phase A creates data strdoc-arch-0006-uc-v1tures, schemas, or types → Phase B consumes or transforms them
+- Phase A creates data structures, schemas, or types → Phase B consumes or transforms them
 - Phase A seeds/migrates the database → Phase B reads from that database
 - Phase A exposes an API contract → Phase B implements the client for that contract
 
@@ -59,7 +59,7 @@ Phase Dependency Analysis
 
 Phase N: <name>
   Scope: <brief scope>
-  Likely todoc-arch-0006-uc-v1hes: <inferred file domains>
+  Likely touches: <inferred file domains>
 
   Suggested dependencies:
   → Depends on: <Phase M> — reason: <overlap/semantic/data-flow explanation>

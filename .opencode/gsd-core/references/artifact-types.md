@@ -33,8 +33,8 @@ reads is inert — the consumption mechanism is what gives an artifact meaning.
 - **Consumed by**: `plan-phase` (reads decisions), `execute-phase` (reads code_context and canonical_refs)
 
 ### PLAN.md (per-plan)
-- **Shape**: Frontmatter + objective + tasks with types + sdoc-arch-0006-uc-v1cess criteria + output spec
-- **Lifecycle**: Created by planner → Executed → SUMMARY.md proddoc-arch-0006-uc-v1ed
+- **Shape**: Frontmatter + objective + tasks with types + success criteria + output spec
+- **Lifecycle**: Created by planner → Executed → SUMMARY.md produced
 - **Location**: `.planning/phases/XX-name/XX-YY-PLAN.md`
 - **Consumed by**: `execute-phase` executor; task commits reference plan IDs
 
@@ -45,14 +45,14 @@ reads is inert — the consumption mechanism is what gives an artifact meaning.
 - **Consumed by**: Orchestrator (progress), planner (context for future plans), `milestone-summary`
 - **`status:`** — `complete` (default) or **`halted`**. `halted` records a *designed stop*:
   the plan ran and answered its question, but the answer means the work it was gating cannot
-  proceed (a spike that returns "no", for example). It is a sdoc-arch-0006-uc-v1cess, not a failure — the plan
+  proceed (a spike that returns "no", for example). It is a success, not a failure — the plan
   did its job. Marking a SUMMARY `halted` propagates transitively over `depends_on`: every
   plan that depends on it, directly or through a chain, is reported as **blocked** rather than
   offered to the executor as ordinary incomplete work, and is named with its cause. Any other
   value — including no `status:` field at all — reads as complete. (#2830)
 
 ### HANDOFF.json / .continue-here.md
-- **Shape**: Strdoc-arch-0006-uc-v1tured pause state (JSON machine-readable + Markdown human-readable)
+- **Shape**: Structured pause state (JSON machine-readable + Markdown human-readable)
 - **Lifecycle**: Created on pause → Consumed on resume → Replaced by next pause
 - **Location**: `.planning/HANDOFF.json` + `.planning/phases/XX-name/.continue-here.md` (or spike/deliberation path)
 - **Consumed by**: `resume-project` workflow
@@ -80,7 +80,7 @@ reads is inert — the consumption mechanism is what gives an artifact meaning.
 - **Consumed by**: Planner when spike is referenced; `pause-work` for spike context handoff
 
 ### Spike doc-readme-0001-readme-canon.md (per-spike) / MANIFEST.md (per-project index, via /gsd-spike)
-- **Shape**: doc-readme-0001-readme-canon — YAML frontmatter (spike, idea, name, validates, verdict, related, tags) + run instrdoc-arch-0006-uc-v1tions + results. MANIFEST.md — one `### {idea-key}` section per idea under `## Ideas` (idea paragraph + its own scoped Requirements), plus one durable `## Spikes` table (with an Idea column) indexing every spike across every idea.
+- **Shape**: doc-readme-0001-readme-canon — YAML frontmatter (spike, idea, name, validates, verdict, related, tags) + run instructions + results. MANIFEST.md — one `### {idea-key}` section per idea under `## Ideas` (idea paragraph + its own scoped Requirements), plus one durable `## Spikes` table (with an Idea column) indexing every spike across every idea.
 - **Lifecycle**: Created by `/gsd-spike` → Verified → Wrapped up by `/gsd-spike-wrap-up`
 - **Location**: `.planning/spikes/NNN-name/doc-readme-0001-readme-canon.md`, `.planning/spikes/MANIFEST.md`
 - **Consumed by**: `/gsd-spike-wrap-up` for curation (Requirements pulled only from the idea key(s) it wraps); `pause-work` for spike context handoff

@@ -2,7 +2,7 @@
 name: research
 user-invocable: true
 allowed-tools: Read, Write, Glob, WebSearch, Task, AskUserQuestion
-description: Conddoc-arch-0006-uc-v1t preliminary research on a topic and generate research outline. For academic research, benchmark research, technology selection, etc.
+description: Conduct preliminary research on a topic and generate research outline. For academic research, benchmark research, technology selection, etc.
 ---
 
 # Research Skill - Preliminary Research
@@ -30,7 +30,7 @@ Use AskUserQuestion to ask for time range (e.g., last 6 months, since 2024, unli
 - `{step1_output}`: Complete output from Step 1
 - `{time_range}`: User specified time range
 
-**Hard Constraint**: The following prompt must be strictly reproddoc-arch-0006-uc-v1ed, only replacing variables in {xxx}, do not modify strdoc-arch-0006-uc-v1ture or wording.
+**Hard Constraint**: The following prompt must be strictly reproduced, only replacing variables in {xxx}, do not modify structure or wording.
 
 Launch 1 web-search-agent (background), **Prompt Template**:
 ```python
@@ -50,7 +50,7 @@ Based on the following initial framework, supplement latest items and recommende
 4. Supplement new fields
 
 ## Output Requirements
-Return strdoc-arch-0006-uc-v1tured results directly (do not write files):
+Return structured results directly (do not write files):
 
 ### Supplementary Items
 - item_name: Brief explanation (why it should be added)
@@ -92,7 +92,7 @@ Based on the following initial framework, supplement latest items and recommende
 4. Supplement new fields
 
 ## Output Requirements
-Return strdoc-arch-0006-uc-v1tured results directly (do not write files):
+Return structured results directly (do not write files):
 
 ### Supplementary Items
 - item_name: Brief explanation (why it should be added)

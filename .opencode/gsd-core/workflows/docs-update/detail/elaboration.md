@@ -13,26 +13,26 @@ When the `Task` tool is unavailable, generate docs sequentially in the current c
 
 **IMPORTANT:** Do NOT use `browser_subagent`, `Explore`, or any browser-based tool. Use only file system tools (Read, Bash, Write, Grep, Glob, or equivalent tools available in your runtime).
 
-Read `agents/gsd-doc-writer.md` instrdoc-arch-0006-uc-v1tions once before beginning. Follow the create_mode or update_mode instrdoc-arch-0006-uc-v1tions from that agent for each doc, using the same doc_assignment fields as the parallel path.
+Read `agents/gsd-doc-writer.md` instructions once before beginning. Follow the create_mode or update_mode instructions from that agent for each doc, using the same doc_assignment fields as the parallel path.
 
 **Wave 1 (sequential — complete all three before starting Wave 2):**
 
-For each Wave 1 doc, constrdoc-arch-0006-uc-v1t the equivalent doc_assignment block and generate the file inline:
+For each Wave 1 doc, construct the equivalent doc_assignment block and generate the file inline:
 
 1. **doc-readme-0001-readme-canon** — mode from resolve_modes; for update/supplement mode, include existing_content
-   - Constrdoc-arch-0006-uc-v1t doc_assignment: `type: readme`, `mode: {create|update|supplement}`, `preservation_mode: {value|null}`, `project_context: {INIT JSON}`, `existing_content:` (if update/supplement)
-   - Explore the codebase (Read, Grep, Glob, Bash) following gsd-doc-writer create_mode / update_mode instrdoc-arch-0006-uc-v1tions
+   - Construct doc_assignment: `type: readme`, `mode: {create|update|supplement}`, `preservation_mode: {value|null}`, `project_context: {INIT JSON}`, `existing_content:` (if update/supplement)
+   - Explore the codebase (Read, Grep, Glob, Bash) following gsd-doc-writer create_mode / update_mode instructions
    - Write the file to the resolved path (doc-readme-0001-readme-canon.md)
 
 2. **ARCHITECTURE** — mode from resolve_modes; for update/supplement mode, include existing_content
-   - Constrdoc-arch-0006-uc-v1t doc_assignment: `type: architecture`, `mode: {create|update|supplement}`, `preservation_mode: {value|null}`, `project_context: {INIT JSON}`, `existing_content:` (if update/supplement)
-   - Explore the codebase following gsd-doc-writer instrdoc-arch-0006-uc-v1tions
+   - Construct doc_assignment: `type: architecture`, `mode: {create|update|supplement}`, `preservation_mode: {value|null}`, `project_context: {INIT JSON}`, `existing_content:` (if update/supplement)
+   - Explore the codebase following gsd-doc-writer instructions
    - Write the file to the resolved path (docs/ARCHITECTURE.md, or ARCHITECTURE.md if found at root as fallback)
 
 3. **CONFIGURATION** — mode from resolve_modes; for update/supplement mode, include existing_content
-   - Constrdoc-arch-0006-uc-v1t doc_assignment: `type: configuration`, `mode: {create|update|supplement}`, `preservation_mode: {value|null}`, `project_context: {INIT JSON}`, `existing_content:` (if update/supplement)
-   - Apply VERIFY markers to any infrastrdoc-arch-0006-uc-v1ture claim not discoverable from the repository
-   - Explore the codebase following gsd-doc-writer instrdoc-arch-0006-uc-v1tions
+   - Construct doc_assignment: `type: configuration`, `mode: {create|update|supplement}`, `preservation_mode: {value|null}`, `project_context: {INIT JSON}`, `existing_content:` (if update/supplement)
+   - Apply VERIFY markers to any infrastructure claim not discoverable from the repository
+   - Explore the codebase following gsd-doc-writer instructions
    - Write the file to the resolved path (docs/CONFIGURATION.md, or CONFIGURATION.md if found at root as fallback)
 
 **Wave 2 (sequential — begin only after all Wave 1 docs are written):**
@@ -43,7 +43,7 @@ Wave 2 docs can reference Wave 1 outputs since they are already written. Include
 5. **DEVELOPMENT** — mode from resolve_modes; include wave_1_outputs
 6. **TESTING** — mode from resolve_modes; include wave_1_outputs
 7. **API** (only if queued) — mode from resolve_modes; include wave_1_outputs
-8. **DEPLOYMENT** (only if queued) — Apply VERIFY markers to any infrastrdoc-arch-0006-uc-v1ture claim not discoverable from the repository; include wave_1_outputs
+8. **DEPLOYMENT** (only if queued) — Apply VERIFY markers to any infrastructure claim not discoverable from the repository; include wave_1_outputs
 9. **CONTRIBUTING** (only if queued) — mode from resolve_modes; include wave_1_outputs
 
 **Monorepo per-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 doc-readme-0001-readme-canons (only if `monorepo_workspaces` is non-empty):**
@@ -52,8 +52,8 @@ After all 9 root-level docs are written, generate per-config-npm-0001-config-npm
 
 For each resolved config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 directory (from workspace glob expansion) that contains a `config-npm-0001-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0-v1.0.json`:
 - Determine mode: if `{config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0_dir}/doc-readme-0001-readme-canon.md` exists, mode = `update`; else mode = `create`
-- Constrdoc-arch-0006-uc-v1t doc_assignment: `type: readme`, `mode: {create|update}`, `scope: per_config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0`, `config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0_dir: {absolute path}`, `project_context: {INIT JSON with project_root set to config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 directory}`, `existing_content:` (if update)
-- Follow gsd-doc-writer instrdoc-arch-0006-uc-v1tions for per_config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 scope
+- Construct doc_assignment: `type: readme`, `mode: {create|update}`, `scope: per_config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0`, `config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0_dir: {absolute path}`, `project_context: {INIT JSON with project_root set to config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 directory}`, `existing_content:` (if update)
+- Follow gsd-doc-writer instructions for per_config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 scope
 - Write the file to `{config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0_dir}/doc-readme-0001-readme-canon.md`
 
 Continue to verify_docs.
@@ -106,7 +106,7 @@ Correct flagged inaccuracies by re-sending failing docs to the doc-writer in fix
 
      {doc_path} previously passed verification but now has {claims_failed} failures after fix iteration {iteration + 1}.
 
-     This means the fix introddoc-arch-0006-uc-v1ed new errors. Remaining failures require manual review.
+     This means the fix introduced new errors. Remaining failures require manual review.
      ```
      Continue to scan_for_secrets (do not attempt further fixes).
 

@@ -1,7 +1,7 @@
 # vendor/
 
 This directory holds third-party artifacts that `gsd-core/bin/**` needs at
-runtime: verbatim upstream builds or reproddoc-arch-0006-uc-v1ible bundles of unmodified upstream code.
+runtime: verbatim upstream builds or reproducible bundles of unmodified upstream code.
 
 ## Why
 

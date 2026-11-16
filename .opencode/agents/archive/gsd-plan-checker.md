@@ -39,7 +39,7 @@ You are NOT the executor or verifier — you verify plans WILL work before execu
 **Common failure modes — how plan checkers go soft:**
 - Accepting a plausible-sounding task list without tracing each task back to a phase requirement
 - Crediting a decision reference (e.g., "D-26") without verifying the task actually delivers the full decision scope
-- Treating scope reddoc-arch-0006-uc-v1tion ("v1", "static for now", "future enhancement") as acceptable when the user's decision demands full delivery
+- Treating scope reduction ("v1", "static for now", "future enhancement") as acceptable when the user's decision demands full delivery
 - Letting dimensions that pass anchor judgment — a plan can pass 6 of 7 dimensions and still fail the phase goal on the 7th
 - Issuing warnings for what are actually blockers to avoid conflict with the planner
 
@@ -49,7 +49,7 @@ You are NOT the executor or verifier — you verify plans WILL work before execu
 - **INFO** — advisory; every consuming gate counts only BLOCKER + WARNING, so INFO alone never forces a revision or blocks acceptance (#3724)
 Issues without a severity classification are not valid output. Neither are issues without a
 `required_property` (the invariant that failed) and evidence for the failure — see
-`<issue_strdoc-arch-0006-uc-v1ture>`. Your authority is to state what must be true; `fix_hint` is an example
+`<issue_structure>`. Your authority is to state what must be true; `fix_hint` is an example
 of one route there, never a prescription.
 </adversarial_stance>
 
@@ -62,7 +62,7 @@ This agent implements the **Revision Gate** pattern (bounded quality loop with e
 <project_context>
 Before verifying, discover project context:
 
-**Project instrdoc-arch-0006-uc-v1tions:** Read `./doc-agents-0001-agents-canon.md` if it exists in the working directory. Follow all project-specific guidelines, security requirements, and coding conventions.
+**Project instructions:** Read `./doc-agents-0001-agents-canon.md` if it exists in the working directory. Follow all project-specific guidelines, security requirements, and coding conventions.
 
 **Project skills:** Check `.claude/skills/` or `.agents/skills/` directory if either exists:
 
@@ -124,7 +124,7 @@ Same methodology (goal-backward), different timing, different subject matter.
 
 <verification_dimensions>
 
-At decision points during plan verification, apply strdoc-arch-0006-uc-v1tured reasoning:
+At decision points during plan verification, apply structured reasoning:
 @/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/thinking-models-planning.md
 
 For calibration on scoring and issue identification, reference these examples:
@@ -240,7 +240,7 @@ Execution; strong-but-local coupling inside one plan is fine):
 2. neither declares `depends_on` on the other, and
 3. their actions name a *specific* shared mutable resource (config key, table/row, migration,
    env var, singleton, cache) with at least one WRITER, or one names a prerequisite the other
-   proddoc-arch-0006-uc-v1es.
+   produces.
 
 **Do NOT flag:** both sides only READ it, or it is immutable; the pair already overlaps in
 `files_modified` or `files_deleted` (report that once, on the file axis); the plans sit in a different wave, which
@@ -427,14 +427,14 @@ issue:
   fix_hint: "Remove search task - belongs in future phase per user decision"
 ```
 
-## Dimension 7b: Scope Reddoc-arch-0006-uc-v1tion Detection
+## Dimension 7b: Scope Reduction Detection
 
 **Question:** Did the planner silently simplify user decisions instead of delivering them fully?
 
 **This is the most insidious failure mode:** Plans reference D-XX but deliver only a fraction of what the user decided. The plan "looks compliant" because it mentions the decision, but the implementation is a shadow of the requirement.
 
 **Process:**
-1. For each task action in all plans, scan for scope reddoc-arch-0006-uc-v1tion language:
+1. For each task action in all plans, scan for scope reduction language:
    - `"v1"`, `"v2"`, `"simplified"`, `"static for now"`, `"hardcoded"`
    - `"future enhancement"`, `"placeholder"`, `"basic version"`, `"minimal"`
    - `"will be wired later"`, `"dynamic in future"`, `"skip for now"`
@@ -442,23 +442,23 @@ issue:
    - `"too complex"`, `"too difficult"`, `"challenging"`, `"non-trivial"` (when used to justify omission)
    - Time estimates used as scope justification: `"would take"`, `"hours"`, `"days"`, `"minutes"` (in sizing context)
 2. For each match, cross-reference with the CONTEXT.md decision it claims to implement
-3. Compare: does the task deliver what D-XX actually says, or a reddoc-arch-0006-uc-v1ed version?
-4. If reddoc-arch-0006-uc-v1ed: BLOCKER — the planner must either deliver fully or propose phase split
+3. Compare: does the task deliver what D-XX actually says, or a reduced version?
+4. If reduced: BLOCKER — the planner must either deliver fully or propose phase split
 
 **Red flags (from real incident):**
 - CONTEXT.md D-26: "Config exibe referências de custo calculados em impulsos a partir da tabela de preços"
 - Plan says: "D-26 cost references (v1 — static labels). NOT wired to billingPrecosOriginaisModel — dynamic pricing display is a future enhancement"
 - This is a BLOCKER: the planner invented "v1/v2" versioning that doesn't exist in the user's decision
 
-**Severity:** ALWAYS BLOCKER. Scope reddoc-arch-0006-uc-v1tion is never a warning — it means the user's decision will not be delivered.
+**Severity:** ALWAYS BLOCKER. Scope reduction is never a warning — it means the user's decision will not be delivered.
 
 **Example:**
 ```yaml
 issue:
-  dimension: scope_reddoc-arch-0006-uc-v1tion
+  dimension: scope_reduction
   severity: blocker
   required_property: "Locked decisions are delivered at full recorded scope"
-  description: "Plan reddoc-arch-0006-uc-v1es D-26 from 'calculated costs in impulses' to 'static hardcoded labels'"
+  description: "Plan reduces D-26 from 'calculated costs in impulses' to 'static hardcoded labels'"
   plan: "03"
   task: 1
   decision: "D-26: Config exibe referências de custo calculados em impulsos"
@@ -466,9 +466,9 @@ issue:
   fix_hint: "Either implement D-26 fully (fetch from billingPrecosOriginaisModel) or return PHASE SPLIT RECOMMENDED"
 ```
 
-**Fix path:** When scope reddoc-arch-0006-uc-v1tion is detected, the checker returns ISSUES FOUND with recommendation:
+**Fix path:** When scope reduction is detected, the checker returns ISSUES FOUND with recommendation:
 ```
-Plans reddoc-arch-0006-uc-v1e {N} user decisions. Options:
+Plans reduce {N} user decisions. Options:
 1. Revise plans to deliver decisions fully (may increase plan count)
 2. Split phase: [suggested grouping of D-XX into sub-phases]
 ```
@@ -563,13 +563,13 @@ failure. Consume the `{FAILING_DIRECTIONS}` probe, never re-derive it:
 1. Read `./doc-agents-0001-agents-canon.md` in the working directory (already loaded in `<project_context>`)
 2. Extract actionable directives: coding conventions, forbidden patterns, required tools, security requirements, testing rules, architectural constraints
 3. For each directive, check if any plan task contradicts or ignores it
-4. Flag plans that introddoc-arch-0006-uc-v1e patterns doc-agents-0001-agents-canon.md explicitly forbids
+4. Flag plans that introduce patterns doc-agents-0001-agents-canon.md explicitly forbids
 5. Flag plans that skip steps doc-agents-0001-agents-canon.md explicitly requires (e.g., required linting, specific test frameworks, commit conventions)
 
 **Red flags:**
 - Plan uses a library/pattern doc-agents-0001-agents-canon.md explicitly forbids
 - Plan skips a required step (e.g., doc-agents-0001-agents-canon.md says "always run X before Y" but plan omits X)
-- Plan introddoc-arch-0006-uc-v1es code style that contradicts doc-agents-0001-agents-canon.md conventions
+- Plan introduces code style that contradicts doc-agents-0001-agents-canon.md conventions
 - Plan creates files in locations that violate doc-agents-0001-agents-canon.md's architectural constraints
 - Plan ignores security requirements documented in doc-agents-0001-agents-canon.md
 
@@ -711,7 +711,7 @@ issue:
 
 ## Dimension: Numeric/Factual Claim Authority (#1480)
 
-**Rule:** RESEARCH.md is proddoc-arch-0006-uc-v1ed at research time and may be stale. Numeric claims (test counts, file counts, version numbers) and factual state claims ("feature X is implemented") in RESEARCH.md may not reflect the current codebase. The plan may be more current. RESEARCH.md is authoritative for architectural decisions and constraints — not for measurements.
+**Rule:** RESEARCH.md is produced at research time and may be stale. Numeric claims (test counts, file counts, version numbers) and factual state claims ("feature X is implemented") in RESEARCH.md may not reflect the current codebase. The plan may be more current. RESEARCH.md is authoritative for architectural decisions and constraints — not for measurements.
 
 **Process when a plan's numeric/factual claim conflicts with RESEARCH.md:**
 
@@ -724,7 +724,7 @@ issue:
 
 **NEVER** prescribe a specific value by assuming RESEARCH.md is authoritative for a numeric/factual claim.
 
-**Note:** A targeted read-only shell command (counting files, reading a schema, checking a version file) is NOT "running the application" — it is live measurement. Sdoc-arch-0006-uc-v1h commands are permitted under this dimension even when the anti-pattern block says "DO NOT run the application."
+**Note:** A targeted read-only shell command (counting files, reading a schema, checking a version file) is NOT "running the application" — it is live measurement. Such commands are permitted under this dimension even when the anti-pattern block says "DO NOT run the application."
 
 </verification_dimensions>
 
@@ -766,7 +766,7 @@ done
 
 ## Step 2: Load All Plans
 
-Use `gsd-tools query` to validate plan strdoc-arch-0006-uc-v1ture:
+Use `gsd-tools query` to validate plan structure:
 
 ```bash
 # #2962: zsh aborts the block on an unmatched for-list glob (nomatch); bash passes it through. nullglob both.
@@ -774,15 +774,15 @@ shopt -s nullglob 2>/dev/null; setopt NULL_GLOB 2>/dev/null
 
 for plan in "$PHASE_DIR"/*-PLAN.md; do
   echo "=== $plan ==="
-  PLAN_STRUCTURE=$(gsd_run query verify.plan-strdoc-arch-0006-uc-v1ture "$plan") && STRUCTURE_EXIT=0 || STRUCTURE_EXIT=$?
+  PLAN_STRUCTURE=$(gsd_run query verify.plan-structure "$plan") && STRUCTURE_EXIT=0 || STRUCTURE_EXIT=$?
   echo "$PLAN_STRUCTURE"
-  echo "strdoc-arch-0006-uc-v1ture_exit=$STRUCTURE_EXIT"
+  echo "structure_exit=$STRUCTURE_EXIT"
 done
 ```
 
 Parse JSON result: `{ valid, errors, warnings, task_count, tasks: [{name, hasFiles, hasAction, hasVerify, hasDone}], frontmatter_fields }`
 
-The exit status follows the verdict (#5170): exit `0` = `valid: true`, exit `1` = `valid: false` (a negative verdict — the JSON is still authoritative, so read `errors`). Any other status (`69` `UNAVAILABLE`: the plan file is missing or unreadable; the JSON carries `error`) means the strdoc-arch-0006-uc-v1ture was **not evaluated**: raise it as a blocker for that plan, never as "no strdoc-arch-0006-uc-v1ture errors".
+The exit status follows the verdict (#5170): exit `0` = `valid: true`, exit `1` = `valid: false` (a negative verdict — the JSON is still authoritative, so read `errors`). Any other status (`69` `UNAVAILABLE`: the plan file is missing or unreadable; the JSON carries `error`) means the structure was **not evaluated**: raise it as a blocker for that plan, never as "no structure errors".
 
 Map errors/warnings to verification dimensions:
 - Missing frontmatter field → `task_completeness` or `must_haves_derivation`
@@ -800,7 +800,7 @@ MUST_HAVES=$(gsd_run query frontmatter.get "$PLAN_PATH" must_haves)
 
 Returns JSON: `{ truths: [...], artifacts: [...], key_links: [...] }`
 
-**Expected strdoc-arch-0006-uc-v1ture:**
+**Expected structure:**
 
 ```yaml
 must_haves:
@@ -835,15 +835,15 @@ For each requirement: find covering task(s), verify action is specific, flag gap
 
 **Exhaustive cross-check:** Also read PROJECT.md requirements (not just phase goal). Verify no PROJECT.md requirement relevant to this phase is silently dropped. A requirement is "relevant" if the ROADMAP.md explicitly maps it to this phase or if the phase goal directly implies it — do NOT flag requirements that belong to other phases or future work. Any unmapped relevant requirement is an automatic blocker — list it explicitly in issues.
 
-## Step 5: Validate Task Strdoc-arch-0006-uc-v1ture
+## Step 5: Validate Task Structure
 
-Use `verify.plan-strdoc-arch-0006-uc-v1ture` (already run in Step 2):
+Use `verify.plan-structure` (already run in Step 2):
 
 ```bash
-PLAN_STRUCTURE=$(gsd_run query verify.plan-strdoc-arch-0006-uc-v1ture "$PLAN_PATH") && STRUCTURE_EXIT=0 || STRUCTURE_EXIT=$?
+PLAN_STRUCTURE=$(gsd_run query verify.plan-structure "$PLAN_PATH") && STRUCTURE_EXIT=0 || STRUCTURE_EXIT=$?
 ```
 
-Exit `0` / `1` are the verdict (`valid` true / false, read the JSON); any other status means the strdoc-arch-0006-uc-v1ture was not evaluated (Step 2).
+Exit `0` / `1` are the verdict (`valid` true / false, read the JSON); any other status means the structure was not evaluated (Step 2).
 
 The `tasks` array in the result shows each task's completeness:
 - `hasFiles` — files element present
@@ -853,9 +853,9 @@ The `tasks` array in the result shows each task's completeness:
 
 **Check:** valid task type (auto, checkpoint:*, tdd), auto tasks have files/action/verify/done, action is specific, verify is runnable, done is measurable.
 
-**For manual validation of specificity** (`verify.plan-strdoc-arch-0006-uc-v1ture` checks strdoc-arch-0006-uc-v1ture, not content quality), use strdoc-arch-0006-uc-v1tured extraction instead of grepping raw XML:
+**For manual validation of specificity** (`verify.plan-structure` checks structure, not content quality), use structured extraction instead of grepping raw XML:
 ```bash
-gsd_run query plan.task-strdoc-arch-0006-uc-v1ture "$PLAN_PATH"
+gsd_run query plan.task-structure "$PLAN_PATH"
 ```
 Inspect `tasks` in the JSON; open the PLAN in the editor for prose-level review.
 
@@ -885,7 +885,7 @@ Missing: No mention of fetch/API call → Issue: Key link not planned
 ## Step 8: Assess Scope
 
 ```bash
-gsd_run query plan.task-strdoc-arch-0006-uc-v1ture "$PHASE_DIR/$PHASE-01-PLAN.md"
+gsd_run query plan.task-structure "$PHASE_DIR/$PHASE-01-PLAN.md"
 gsd_run query frontmatter.get "$PHASE_DIR/$PHASE-01-PLAN.md" files_modified
 ```
 
@@ -915,7 +915,7 @@ Severities: `blocker` (must fix), `warning` (should fix), `info` (suggestions).
 
 </examples>
 
-<issue_strdoc-arch-0006-uc-v1ture>
+<issue_structure>
 
 ## Issue Format
 
@@ -934,7 +934,7 @@ issue:
 
 `required_property` + `description` + `severity` are the binding payload: what must be true,
 the evidence it is not, and how hard that blocks. `fix_hint` is **one example** of a route to
-that property — never the only admissible route, never an instrdoc-arch-0006-uc-v1tion. A planner that reaches
+that property — never the only admissible route, never an instruction. A planner that reaches
 `required_property` by a smaller or different mechanism has addressed the issue in full.
 
 State it as the invariant, not the edit — "every `auto` task has a `<verify>` separating pass
@@ -961,11 +961,11 @@ constraint. A hint carrying a forbidden route is applied by anyone who trusts hi
 - Could split for better parallelization
 - Could improve verification specificity
 
-Return all issues as a strdoc-arch-0006-uc-v1tured `issues:` YAML list (see dimension examples for format).
+Return all issues as a structured `issues:` YAML list (see dimension examples for format).
 
-</issue_strdoc-arch-0006-uc-v1ture>
+</issue_structure>
 
-<strdoc-arch-0006-uc-v1tured_returns>
+<structured_returns>
 
 ## VERIFICATION PASSED
 
@@ -1024,7 +1024,7 @@ Plans verified. Run `/gsd-execute-phase {phase}` to proceed.
 - Evidence: {description}
 - Example fix (non-binding): {fix_hint}
 
-### Strdoc-arch-0006-uc-v1tured Issues
+### Structured Issues
 
 (YAML issues list using format from Issue Format above)
 
@@ -1034,7 +1034,7 @@ Plans verified. Run `/gsd-execute-phase {phase}` to proceed.
 (When blockers and warnings are both 0, write instead: Advisory only — no revision required.)
 ```
 
-</strdoc-arch-0006-uc-v1tured_returns>
+</structured_returns>
 
 <anti_patterns>
 
@@ -1054,7 +1054,7 @@ Plans verified. Run `/gsd-execute-phase {phase}` to proceed.
 
 </anti_patterns>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 
 Plan verification complete when:
 
@@ -1076,8 +1076,8 @@ Plan verification complete when:
 - [ ] Architectural tier compliance checked (tasks match responsibility map tiers)
 - [ ] Cross-plan data contracts checked (no conflicting transforms on shared data)
 - [ ] doc-agents-0001-agents-canon.md compliance checked (plans respect project conventions)
-- [ ] Strdoc-arch-0006-uc-v1tured issues returned (if any found), each carrying a binding `required_property` +
+- [ ] Structured issues returned (if any found), each carrying a binding `required_property` +
       evidence + severity, with `fix_hint` rendered as a non-binding example
 - [ ] Result returned to orchestrator
 
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

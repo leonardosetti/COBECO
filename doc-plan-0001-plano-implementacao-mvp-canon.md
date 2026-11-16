@@ -120,9 +120,9 @@ O scaffold do MVP já está publicado e versionado:
 
 Criar, preencher e versionar os seguintes artefatos usando os templates de elite já existentes:
 
-### 4.1 PRD (Proddoc-arch-0006-uc-v1t Requirements Document)
+### 4.1 PRD (Product Requirements Document)
 - **Arquivo:** `docs/strategy/PRD-001-cobeco-mvp.md`
-- **Conteúdo:** requisitos de negócio, objetivos do produto, público-alvo, métricas de sdoc-arch-0006-uc-v1esso, RFs RF01–RF18, RNFs RNF01–RNF12.
+- **Conteúdo:** requisitos de negócio, objetivos do produto, público-alvo, métricas de sucesso, RFs RF01–RF18, RNFs RNF01–RNF12.
 - **Template:** `docs/strategy/TEMPLATE-PRD.md`
 
 ### 4.2 BRD (Business Requirements Document)

@@ -16,7 +16,7 @@ Template for `.planning/research/SUMMARY.md` — executive summary of project re
 
 [2-3 paragraph overview of research findings]
 
-- What type of proddoc-arch-0006-uc-v1t this is and how experts build it
+- What type of product this is and how experts build it
 - The recommended approach based on research
 - Key risks and how to mitigate them
 
@@ -65,23 +65,23 @@ Template for `.planning/research/SUMMARY.md` — executive summary of project re
 
 ## Implications for Roadmap
 
-Based on research, suggested phase strdoc-arch-0006-uc-v1ture:
+Based on research, suggested phase structure:
 
 ### Phase 1: [Name]
 **Rationale:** [why this comes first based on research]
-**Delivers:** [what this phase proddoc-arch-0006-uc-v1es]
+**Delivers:** [what this phase produces]
 **Addresses:** [features from FEATURES.md]
 **Avoids:** [pitfall from PITFALLS.md]
 
 ### Phase 2: [Name]
 **Rationale:** [why this order]
-**Delivers:** [what this phase proddoc-arch-0006-uc-v1es]
+**Delivers:** [what this phase produces]
 **Uses:** [stack elements from STACK.md]
 **Implements:** [architecture component]
 
 ### Phase 3: [Name]
 **Rationale:** [why this order]
-**Delivers:** [what this phase proddoc-arch-0006-uc-v1es]
+**Delivers:** [what this phase produces]
 
 [Continue for suggested phases...]
 

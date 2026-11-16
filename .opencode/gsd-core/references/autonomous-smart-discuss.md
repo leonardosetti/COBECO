@@ -1,6 +1,6 @@
 # Smart Discuss — Autonomous Mode
 
-Smart discuss is the autonomous-optimized variant of `gsd-discuss-phase`. It proposes grey area answers in batch tables — the user accepts or overrides per area — then writes an identical CONTEXT.md to what discuss-phase proddoc-arch-0006-uc-v1es.
+Smart discuss is the autonomous-optimized variant of `gsd-discuss-phase`. It proposes grey area answers in batch tables — the user accepts or overrides per area — then writes an identical CONTEXT.md to what discuss-phase produces.
 
 **Inputs:** `PHASE_NUM` from execute_phase. Run init to get phase paths:
 
@@ -98,41 +98,41 @@ Read the 3-5 most relevant files to understand existing patterns.
 DETAIL=$(gsd_run query roadmap.get-phase ${PHASE_NUM})
 ```
 
-Extract `goal`, `requirements`, `sdoc-arch-0006-uc-v1cess_criteria` from the JSON response.
+Extract `goal`, `requirements`, `success_criteria` from the JSON response.
 
-**Infrastrdoc-arch-0006-uc-v1ture detection — check FIRST before generating grey areas:**
+**Infrastructure detection — check FIRST before generating grey areas:**
 
-A phase is pure infrastrdoc-arch-0006-uc-v1ture when ALL of these are true:
-1. Goal keywords match: "scaffolding", "plumbing", "setup", "configuration", "migration", "refactor", "rename", "restrdoc-arch-0006-uc-v1ture", "upgrade", "infrastrdoc-arch-0006-uc-v1ture"
-2. AND sdoc-arch-0006-uc-v1cess criteria are all technical: "file exists", "test passes", "config valid", "command runs"
+A phase is pure infrastructure when ALL of these are true:
+1. Goal keywords match: "scaffolding", "plumbing", "setup", "configuration", "migration", "refactor", "rename", "restructure", "upgrade", "infrastructure"
+2. AND success criteria are all technical: "file exists", "test passes", "config valid", "command runs"
 3. AND no user-facing behavior is described (no "users can", "displays", "shows", "presents")
 
-**If infrastrdoc-arch-0006-uc-v1ture-only:** Skip Sub-step 4. Jump directly to Sub-step 5 with minimal CONTEXT.md. Display:
+**If infrastructure-only:** Skip Sub-step 4. Jump directly to Sub-step 5 with minimal CONTEXT.md. Display:
 
 ```
-Phase ${PHASE_NUM}: Infrastrdoc-arch-0006-uc-v1ture phase — skipping discuss, writing minimal context.
+Phase ${PHASE_NUM}: Infrastructure phase — skipping discuss, writing minimal context.
 ```
 
 Use these defaults for the CONTEXT.md:
 - `<domain>`: Phase boundary from ROADMAP goal
-- `<decisions>`: Single "### the agent's Discretion" subsection — "All implementation choices are at the agent's discretion — pure infrastrdoc-arch-0006-uc-v1ture phase"
+- `<decisions>`: Single "### the agent's Discretion" subsection — "All implementation choices are at the agent's discretion — pure infrastructure phase"
 - `<code_context>`: Whatever the codebase scout found
-- `<specifics>`: "No specific requirements — infrastrdoc-arch-0006-uc-v1ture phase"
+- `<specifics>`: "No specific requirements — infrastructure phase"
 - `<deferred>`: "None"
 
-**If NOT infrastrdoc-arch-0006-uc-v1ture — generate grey area proposals:**
+**If NOT infrastructure — generate grey area proposals:**
 
 Determine domain type from the phase goal:
 - Something users **SEE** → visual: layout, interactions, states, density
 - Something users **CALL** → interface: contracts, responses, errors, auth
 - Something users **RUN** → execution: invocation, output, behavior modes, flags
-- Something users **READ** → content: strdoc-arch-0006-uc-v1ture, tone, depth, flow
+- Something users **READ** → content: structure, tone, depth, flow
 - Something being **ORGANIZED** → organization: criteria, grouping, exceptions, naming
 
 Check prior_decisions — skip grey areas already decided in prior phases.
 
 Generate **3-4 grey areas** with **~4 questions each**. For each question:
-- **Pre-select a recommended answer** based on: prior decisions (consistency), codebase patterns (reuse), domain conventions (standard approaches), ROADMAP sdoc-arch-0006-uc-v1cess criteria
+- **Pre-select a recommended answer** based on: prior decisions (consistency), codebase patterns (reuse), domain conventions (standard approaches), ROADMAP success criteria
 - Generate **1-2 alternatives** per question
 - **Annotate** with prior decision context ("You decided X in Phase N") and code context ("Component Y exists with Z variants") where relevant
 
@@ -193,11 +193,11 @@ Track deferred ideas internally for inclusion in CONTEXT.md.
 
 ## Sub-step 5: Write CONTEXT.md
 
-After all areas are resolved (or infrastrdoc-arch-0006-uc-v1ture skip), write the CONTEXT.md file.
+After all areas are resolved (or infrastructure skip), write the CONTEXT.md file.
 
 **File path:** `${phase_dir}/${padded_phase}-CONTEXT.md`
 
-Use **exactly** this strdoc-arch-0006-uc-v1ture (identical to discuss-phase output):
+Use **exactly** this structure (identical to discuss-phase output):
 
 ```markdown
 # Phase {PHASE_NUM}: {Phase Name} - Context

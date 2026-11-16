@@ -203,7 +203,7 @@ The one-liner MUST be substantive:
 
 **Good:**
 - "JWT auth with refresh rotation using jose library"
-- "Prisma schema with User, Session, and Proddoc-arch-0006-uc-v1t models"
+- "Prisma schema with User, Session, and Product models"
 - "Dashboard with real-time metrics via Server-Sent Events"
 
 **Bad:**
@@ -264,7 +264,7 @@ The one-liner should tell someone what actually shipped.
 - **Issue:** jose config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 not in config-npm-0001-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0-v1.0.json, import failing
 - **Fix:** Ran `npm install jose`
 - **Files modified:** config-npm-0001-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0-v1.0.json, config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0-lock.json
-- **Verification:** Import sdoc-arch-0006-uc-v1ceeds, build passes
+- **Verification:** Import succeeds, build passes
 - **Committed in:** def456g (Task 4 commit)
 
 ---

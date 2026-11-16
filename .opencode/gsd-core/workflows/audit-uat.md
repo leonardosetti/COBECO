@@ -1,7 +1,7 @@
 @/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/response-language-directive.md
 
 <purpose>
-Cross-phase audit of all UAT and verification files. Finds every outstanding item (pending, skipped, blocked, human_needed), optionally verifies against the codebase to detect stale docs, and proddoc-arch-0006-uc-v1es a prioritized human test plan.
+Cross-phase audit of all UAT and verification files. Finds every outstanding item (pending, skipped, blocked, human_needed), optionally verifies against the codebase to detect stale docs, and produces a prioritized human test plan.
 </purpose>
 
 <process>
@@ -58,7 +58,7 @@ If `summary.parse_gap_files` is greater than 0, render this section FIRST (befor
 | {phase} | {file_path} | {unparsed_blocks} |
 ...
 
-These files have `### N.` test blocks with no readable `result:` line. Fix the file's strdoc-arch-0006-uc-v1ture, then re-run the audit.
+These files have `### N.` test blocks with no readable `result:` line. Fix the file's structure, then re-run the audit.
 ```
 This fires for ANY project with `parse_gap_files > 0`, including a mixed project where other phases also have real outstanding `items` — the two sections are not mutually exclusive. An outstanding item does not stop mattering because its phase belongs to an already-archived milestone (a deferred human-UAT scenario or a `skipped` live-stack test is exactly what gets archived still-open), so an archived phase's parse gap is listed in this same table, unfiltered by `archived_milestone`. If `total_items` is 0, stop after this section (there is no `## UAT Audit Report` to present). Otherwise continue below.
 

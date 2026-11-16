@@ -1,7 +1,7 @@
 # Phase Prompt Template
 
 > **Note:** Planning methodology is in `agents/gsd-planner.md`.
-> This template defines the PLAN.md output format that the agent proddoc-arch-0006-uc-v1es.
+> This template defines the PLAN.md output format that the agent produces.
 
 Template for `.planning/phases/XX-name/{phase}-{plan}-PLAN.md` - executable phase plans optimized for parallel execution.
 
@@ -119,13 +119,13 @@ Before declaring plan complete:
 - [ ] [Behavior verification]
 </verification>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 
 - All tasks completed
 - All verification checks pass
-- No errors or warnings introddoc-arch-0006-uc-v1ed
+- No errors or warnings introduced
 - [Plan-specific criteria]
-  </sdoc-arch-0006-uc-v1cess_criteria>
+  </success_criteria>
 
 <output>
 After completion, create `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
@@ -143,7 +143,7 @@ After completion, create `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
 | `type` | Yes | Always `execute` for standard plans, `tdd` for TDD plans |
 | `wave` | Yes | Execution wave number (1, 2, 3...). Pre-computed at plan time. |
 | `depends_on` | Yes | Array of plan IDs this plan requires. |
-| `files_modified` | Yes | Files this plan todoc-arch-0006-uc-v1hes. |
+| `files_modified` | Yes | Files this plan touches. |
 | `autonomous` | Yes | `true` if no checkpoints, `false` if has checkpoints |
 | `requirements` | Yes | **MUST** list requirement IDs from ROADMAP. Every roadmap requirement MUST appear in at least one plan. |
 | `user_setup` | No | Array of human-required setup items (external services) |
@@ -168,10 +168,10 @@ depends_on: []
 files_modified: [src/models/user.ts, src/api/users.ts]
 autonomous: true
 
-# Plan 02 - Proddoc-arch-0006-uc-v1t feature (no overlap with Plan 01)
+# Plan 02 - Product feature (no overlap with Plan 01)
 wave: 1
 depends_on: []
-files_modified: [src/models/proddoc-arch-0006-uc-v1t.ts, src/api/proddoc-arch-0006-uc-v1ts.ts]
+files_modified: [src/models/product.ts, src/api/products.ts]
 autonomous: true
 
 # Plan 03 - Order feature (no overlap)
@@ -268,7 +268,7 @@ Wave 3 runs after Waves 1 and 2. Pauses at checkpoint, orchestrator presents to 
 
 ```
 PREFER: Plan 01 = User (model + API + UI)
-        Plan 02 = Proddoc-arch-0006-uc-v1t (model + API + UI)
+        Plan 02 = Product (model + API + UI)
 
 AVOID:  Plan 01 = All models
         Plan 02 = All APIs
@@ -285,7 +285,7 @@ TDD features get dedicated plans with `type: tdd`.
 → Yes: Create a TDD plan
 → No: Standard task in standard plan
 
-See `/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/tdd.md` for TDD plan strdoc-arch-0006-uc-v1ture.
+See `/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/tdd.md` for TDD plan structure.
 
 ---
 
@@ -354,14 +354,14 @@ Output: User model, API endpoints, and UI components.
 </tasks>
 
 <verification>
-- [ ] npm run build sdoc-arch-0006-uc-v1ceeds
+- [ ] npm run build succeeds
 - [ ] API endpoints respond correctly
 </verification>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - All tasks completed
 - User feature works end-to-end
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>
 
 <output>
 After completion, create `.planning/phases/03-features/03-01-SUMMARY.md`
@@ -384,7 +384,7 @@ autonomous: false
 <objective>
 Build dashboard with visual verification.
 
-Purpose: Integrate user and proddoc-arch-0006-uc-v1t features into unified view.
+Purpose: Integrate user and product features into unified view.
 Output: Working dashboard component.
 </objective>
 
@@ -405,8 +405,8 @@ Output: Working dashboard component.
 <task type="auto">
   <name>Task 1: Build Dashboard layout</name>
   <files>src/components/Dashboard.tsx</files>
-  <action>Create responsive grid with UserList and Proddoc-arch-0006-uc-v1tList components. Use Tailwind for styling.</action>
-  <verify>npm run build sdoc-arch-0006-uc-v1ceeds</verify>
+  <action>Create responsive grid with UserList and ProductList components. Use Tailwind for styling.</action>
+  <verify>npm run build succeeds</verify>
   <done>Dashboard renders without errors</done>
 </task>
 
@@ -425,14 +425,14 @@ Output: Working dashboard component.
 </tasks>
 
 <verification>
-- [ ] npm run build sdoc-arch-0006-uc-v1ceeds
+- [ ] npm run build succeeds
 - [ ] Visual verification passed
 </verification>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - All tasks completed
 - User approved visual layout
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>
 
 <output>
 After completion, create `.planning/phases/03-features/03-03-SUMMARY.md`
@@ -477,7 +477,7 @@ files_modified: [...]
   <name>Update database config</name>
   <files>src/config/database.ts</files>
   <!-- No read_first! Executor doesn't know current state or conventions -->
-  <action>Update the database config to match proddoc-arch-0006-uc-v1tion settings</action>
+  <action>Update the database config to match production settings</action>
 </task>
 ```
 
@@ -495,7 +495,7 @@ files_modified: [...]
   <name>Update database config for connection pooling</name>
   <files>src/config/database.ts</files>
   <read_first>src/config/database.ts, config-env-0001-env-example-v1.0.example, config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0002-docker-compose-override-v1-v1-v1.0-v1.0-v1.0.yml</read_first>
-  <action>Add pool configuration: min=2, max=20, idleTimeoutMs=30000. Add SSL config: rejectUnauthorized=true when NODE_ENV=proddoc-arch-0006-uc-v1tion. Add config-env-0001-env-example-v1.0.example entry: DATABASE_POOL_MAX=20.</action>
+  <action>Add pool configuration: min=2, max=20, idleTimeoutMs=30000. Add SSL config: rejectUnauthorized=true when NODE_ENV=production. Add config-env-0001-env-example-v1.0.example entry: DATABASE_POOL_MAX=20.</action>
   <acceptance_criteria>
     - database.ts contains "max: 20" and "idleTimeoutMillis: 30000"
     - database.ts contains SSL conditional on NODE_ENV
@@ -508,7 +508,7 @@ files_modified: [...]
 
 ## Guidelines
 
-- Always use XML strdoc-arch-0006-uc-v1ture for the agent parsing
+- Always use XML structure for the agent parsing
 - Include `wave`, `depends_on`, `files_modified`, `autonomous` in every plan
 - Prefer vertical slices over horizontal layers
 - Only reference prior SUMMARYs when genuinely needed
@@ -519,7 +519,7 @@ files_modified: [...]
 
 ## User Setup (External Services)
 
-When a plan introddoc-arch-0006-uc-v1es external services requiring human configuration, declare in frontmatter:
+When a plan introduces external services requiring human configuration, declare in frontmatter:
 
 ```yaml
 user_setup:
@@ -555,7 +555,7 @@ See `/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-openco
 
 The `must_haves` field defines what must be TRUE for the phase goal to be achieved. Derived during planning, verified after execution.
 
-**Strdoc-arch-0006-uc-v1ture:**
+**Structure:**
 
 ```yaml
 must_haves:

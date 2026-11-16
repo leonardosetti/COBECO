@@ -1,12 +1,12 @@
 @/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/response-language-directive.md
 
 <purpose>
-Autonomous repair operator for failed task verification. Invoked by execute-plan when a task fails its done-criteria. Proposes and attempts strdoc-arch-0006-uc-v1tured fixes before escalating to the user.
+Autonomous repair operator for failed task verification. Invoked by execute-plan when a task fails its done-criteria. Proposes and attempts structured fixes before escalating to the user.
 </purpose>
 
 <inputs>
 - FAILED_TASK: Task number, name, and done-criteria from the plan
-- ERROR: What verification proddoc-arch-0006-uc-v1ed — actual result vs expected
+- ERROR: What verification produced — actual result vs expected
 - PLAN_CONTEXT: Adjacent tasks and phase goal (for constraint awareness)
 - REPAIR_BUDGET: Max repair attempts remaining (default: 2)
 </inputs>
@@ -19,7 +19,7 @@ Analyze the failure and choose exactly one repair strategy:
 - Output: `RETRY: [specific adjustment to make before retrying]`
 
 **DECOMPOSE** — The task is too coarse. Break it into smaller verifiable sub-steps.
-- Use when: done-criteria covers multiple concerns, implementation gaps are strdoc-arch-0006-uc-v1tural
+- Use when: done-criteria covers multiple concerns, implementation gaps are structural
 - Output: `DECOMPOSE: [sub-task 1] | [sub-task 2] | ...` (max 3 sub-tasks)
 - Sub-tasks must each have a single verifiable outcome
 
@@ -28,7 +28,7 @@ Analyze the failure and choose exactly one repair strategy:
 - Output: `PRUNE: [one-sentence justification]`
 
 **ESCALATE** — Repair budget exhausted, or this is an architectural decision (Rule 4).
-- Use when: RETRY failed more than once with different approaches, or fix requires strdoc-arch-0006-uc-v1tural change
+- Use when: RETRY failed more than once with different approaches, or fix requires structural change
 - Output: `ESCALATE: [what was tried] | [what decision is needed]`
 </repair_directive>
 
@@ -55,7 +55,7 @@ If RETRY:
 If DECOMPOSE:
 1. Replace the failed task inline with the sub-tasks (do not modify PLAN.md on disk)
 2. Execute sub-tasks sequentially, each with its own verification
-3. If all sub-tasks pass → treat original task as sdoc-arch-0006-uc-v1ceeded, log `[Node Repair - DECOMPOSE] Task [X] → [N] sub-tasks`
+3. If all sub-tasks pass → treat original task as succeeded, log `[Node Repair - DECOMPOSE] Task [X] → [N] sub-tasks`
 4. If a sub-task fails → re-invoke node-repair for that sub-task (REPAIR_BUDGET applies per sub-task)
 </step>
 
@@ -80,7 +80,7 @@ All repair actions must appear in SUMMARY.md under "## Deviations from Plan":
 
 | Type | Format |
 |------|--------|
-| RETRY sdoc-arch-0006-uc-v1cess | `[Node Repair - RETRY] Task X: [adjustment] — resolved` |
+| RETRY success | `[Node Repair - RETRY] Task X: [adjustment] — resolved` |
 | RETRY fail → ESCALATE | `[Node Repair - RETRY] Task X: [N] attempts exhausted — escalated to user` |
 | DECOMPOSE | `[Node Repair - DECOMPOSE] Task X split into [N] sub-tasks — all passed` |
 | PRUNE | `[Node Repair - PRUNE] Task X skipped: [justification]` |

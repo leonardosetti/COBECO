@@ -7,7 +7,7 @@ Static mockups are barely better than screenshots. Every interactive element in 
 | Element | Must Have |
 |---------|-----------|
 | Buttons | Click handler with visible feedback (state change, animation, toast) |
-| Forms | Input validation on blur, submit handler that shows sdoc-arch-0006-uc-v1cess state |
+| Forms | Input validation on blur, submit handler that shows success state |
 | Lists | Add/remove items, empty state, populated state |
 | Toggles/switches | Working toggle with visible state change |
 | Tabs/nav | Click to switch content |
@@ -21,7 +21,7 @@ Add `transition: all 0.15s ease` as a baseline to interactive elements. Subtle m
 
 ## Fake the Backend
 
-If the sketch shows a "Save" button, clicking it should show a brief loading state then a sdoc-arch-0006-uc-v1cess message. If it shows a search bar, typing should filter hardcoded results. The goal is to feel the full interaction loop, not just see the resting state.
+If the sketch shows a "Save" button, clicking it should show a brief loading state then a success message. If it shows a search bar, typing should filter hardcoded results. The goal is to feel the full interaction loop, not just see the resting state.
 
 ## State Cycling
 

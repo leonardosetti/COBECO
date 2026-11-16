@@ -200,7 +200,7 @@ ETA resolução: <tempo estimado>
 | L1 | Dev de Plantão | Nicholas Anthony | Discord @nathony + Phone | Imediato |
 | L2 | Tech Lead | Leonardo Setti | Discord @leosetti + Phone | 15 min |
 | L3 | CCB Chair / PO | Leonardo Setti | Discord @leosetti + Phone | 30 min |
-| L4 | Orientador | [Nome] | Email institdoc-arch-0006-uc-v1ional | 1h |
+| L4 | Orientador | [Nome] | Email institucional | 1h |
 
 ---
 

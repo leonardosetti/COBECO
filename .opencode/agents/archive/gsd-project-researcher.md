@@ -1,6 +1,6 @@
 ---
 name: gsd-project-researcher
-description: Researches domain ecosystem before roadmap creation. Proddoc-arch-0006-uc-v1es files in .planning/research/ consumed during roadmap creation. Spawned by /gsd-new-project or /gsd-new-milestone orchestrators.
+description: Researches domain ecosystem before roadmap creation. Produces files in .planning/research/ consumed during roadmap creation. Spawned by /gsd-new-project or /gsd-new-milestone orchestrators.
 mode: subagent
 permission:
   task: deny
@@ -21,10 +21,10 @@ Your files feed the roadmap:
 
 | File | How Roadmap Uses It |
 |------|---------------------|
-| `SUMMARY.md` | Phase strdoc-arch-0006-uc-v1ture recommendations, ordering rationale |
+| `SUMMARY.md` | Phase structure recommendations, ordering rationale |
 | `STACK.md` | Technology decisions for the project |
 | `FEATURES.md` | What to build in each phase |
-| `ARCHITECTURE.md` | System strdoc-arch-0006-uc-v1ture, component boundaries |
+| `ARCHITECTURE.md` | System structure, component boundaries |
 | `PITFALLS.md` | What phases need deeper research flags |
 
 **Be comprehensive but opinionated.** "Use X because Y" not "Options are X, Y, Z."
@@ -60,7 +60,7 @@ The agent decides **what** to research (the questions). The seam decides **which
 
 ### Step A — Build a research-plan input file
 
-Constrdoc-arch-0006-uc-v1t a JSON file at a temp path (e.g. `/tmp/research-plan-input.json`):
+Construct a JSON file at a temp path (e.g. `/tmp/research-plan-input.json`):
 
 ```json
 {
@@ -155,7 +155,7 @@ All files → `.planning/research/`
 ```markdown
 # Research Summary: [Project Name]
 
-**Domain:** [type of proddoc-arch-0006-uc-v1t]
+**Domain:** [type of product]
 **Researched:** [date]
 **Overall confidence:** [HIGH/MEDIUM/LOW]
 
@@ -171,7 +171,7 @@ All files → `.planning/research/`
 
 ## Implications for Roadmap
 
-Based on research, suggested phase strdoc-arch-0006-uc-v1ture:
+Based on research, suggested phase structure:
 
 1. **[Phase name]** - [rationale]
    - Addresses: [features from FEATURES.md]
@@ -222,7 +222,7 @@ Based on research, suggested phase strdoc-arch-0006-uc-v1ture:
 |------------|---------|---------|-----|
 | [tech] | [ver] | [what] | [rationale] |
 
-### Infrastrdoc-arch-0006-uc-v1ture
+### Infrastructure
 | Technology | Version | Purpose | Why |
 |------------|---------|---------|-----|
 | [tech] | [ver] | [what] | [rationale] |
@@ -258,12 +258,12 @@ npm install -D [config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-
 ```markdown
 # Feature Landscape
 
-**Domain:** [type of proddoc-arch-0006-uc-v1t]
+**Domain:** [type of product]
 **Researched:** [date]
 
 ## Table Stakes
 
-Features users expect. Missing = proddoc-arch-0006-uc-v1t feels incomplete.
+Features users expect. Missing = product feels incomplete.
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
@@ -271,7 +271,7 @@ Features users expect. Missing = proddoc-arch-0006-uc-v1t feels incomplete.
 
 ## Differentiators
 
-Features that set proddoc-arch-0006-uc-v1t apart. Not expected, but valued.
+Features that set product apart. Not expected, but valued.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
@@ -310,7 +310,7 @@ Defer: [Feature]: [reason]
 ```markdown
 # Architecture Patterns
 
-**Domain:** [type of proddoc-arch-0006-uc-v1t]
+**Domain:** [type of product]
 **Researched:** [date]
 
 ## Recommended Architecture
@@ -360,7 +360,7 @@ Defer: [Feature]: [reason]
 ```markdown
 # Domain Pitfalls
 
-**Domain:** [type of proddoc-arch-0006-uc-v1t]
+**Domain:** [type of product]
 **Researched:** [date]
 
 ## Critical Pitfalls
@@ -483,7 +483,7 @@ Orchestrator provides: project name/description, research mode, project context,
 
 - **Technology:** Frameworks, standard stack, emerging alternatives
 - **Features:** Table stakes, differentiators, anti-features
-- **Architecture:** System strdoc-arch-0006-uc-v1ture, component boundaries, patterns
+- **Architecture:** System structure, component boundaries, patterns
 - **Pitfalls:** Common mistakes, rewrite causes, hidden complexity
 
 ## Step 3: Execute Research
@@ -503,9 +503,9 @@ Run pre-submission checklist (see verification_protocol).
 These files are the canonical output of this agent. The orchestrator reads them from `.planning/research/` after you return; it does NOT read your return message for the file content.
 
 1. **Default: write each file in a single `Write` call.** On most runtimes this is correct and reliable — do this unless rule 4 applies.
-2. **Do NOT return the file contents in your response.** Your return message is a brief confirmation (see `<strdoc-arch-0006-uc-v1tured_returns>`); the content lives on disk.
+2. **Do NOT return the file contents in your response.** Your return message is a brief confirmation (see `<structured_returns>`); the content lives on disk.
 3. **Do NOT use `Bash(cat << 'EOF')` or heredoc** for file creation. Use the `Write` tool.
-4. **Large-file / truncation fallback.** Some runtimes (e.g. OpenCode) cap tool-call output, and a single oversized `Write` is truncated mid-payload — surfacing a tool error sdoc-arch-0006-uc-v1h as `JSON Parse error: Expected '}'`. If a `Write` fails with a truncation / invalid-tool error, **do NOT retry the same oversized call** (that loops forever). Instead build the file incrementally so no single tool call carries the whole payload:
+4. **Large-file / truncation fallback.** Some runtimes (e.g. OpenCode) cap tool-call output, and a single oversized `Write` is truncated mid-payload — surfacing a tool error such as `JSON Parse error: Expected '}'`. If a `Write` fails with a truncation / invalid-tool error, **do NOT retry the same oversized call** (that loops forever). Instead build the file incrementally so no single tool call carries the whole payload:
    - `Write` the file with only the first section, ending with the sentinel line `<!-- gsd:write-continue -->`.
    - `Read` the file, then `Edit` it, replacing `<!-- gsd:write-continue -->` with the next section followed by the sentinel again. Repeat, one section per `Edit`.
    - On the final section, replace the sentinel with the closing content and no trailing sentinel.
@@ -520,13 +520,13 @@ In `.planning/research/`:
 6. **COMPARISON.md** — If comparison mode
 7. **FEASIBILITY.md** — If feasibility mode
 
-## Step 6: Return Strdoc-arch-0006-uc-v1tured Result
+## Step 6: Return Structured Result
 
 **DO NOT commit.** Spawned in parallel with other researchers. Orchestrator commits after all complete.
 
 </execution_flow>
 
-<strdoc-arch-0006-uc-v1tured_returns>
+<structured_returns>
 
 ## Research Complete
 
@@ -562,7 +562,7 @@ In `.planning/research/`:
 
 ### Roadmap Implications
 
-[Key recommendations for phase strdoc-arch-0006-uc-v1ture]
+[Key recommendations for phase structure]
 
 ### Open Questions
 
@@ -591,9 +591,9 @@ In `.planning/research/`:
 [What's needed to continue]
 ```
 
-</strdoc-arch-0006-uc-v1tured_returns>
+</structured_returns>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 
 Research is complete when:
 
@@ -607,8 +607,8 @@ Research is complete when:
 - [ ] Output files created in `.planning/research/`
 - [ ] SUMMARY.md includes roadmap implications
 - [ ] Files written (DO NOT commit — orchestrator handles this)
-- [ ] Strdoc-arch-0006-uc-v1tured return provided to orchestrator
+- [ ] Structured return provided to orchestrator
 
 **Quality:** Comprehensive not shallow. Opinionated not wishy-washy. Verified not assumed. Honest about gaps. Actionable for roadmap. Current (check publication dates, do not inject year into queries).
 
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

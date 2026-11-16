@@ -124,7 +124,7 @@ workflow:
 
 **Happy Paths:**
 - **HP1:** Visitante preenche formulário (nome_usuario, nome, email, senha, confirmação, pergunta de segurança, resposta) → validação frontend → backend hasheia senha (bcrypt salt=12) → INSERT em `usuarios` → retorna 201 Created → redireciona para login.
-- **HP2:** Visitante preenche todos os campos com valores válidos → backend valida unicidade de nome_usuario e email → retorna 201 → toast verde "Conta criada com sdoc-arch-0006-uc-v1esso" → redireciona para /login.
+- **HP2:** Visitante preenche todos os campos com valores válidos → backend valida unicidade de nome_usuario e email → retorna 201 → toast verde "Conta criada com sucesso" → redireciona para /login.
 
 **Exceções:**
 
@@ -215,7 +215,7 @@ workflow:
 
 **Happy Paths:**
 - **HP1:** Usuário autenticado altera email → valida formato → confirma senha antiga → atualiza no DB → toast "Perfil atualizado".
-- **HP2:** Usuário altera senha → informa senha antiga → nova senha hasheada (bcrypt) → atualiza → toast "Senha alterada com sdoc-arch-0006-uc-v1esso".
+- **HP2:** Usuário altera senha → informa senha antiga → nova senha hasheada (bcrypt) → atualiza → toast "Senha alterada com sucesso".
 
 **Exceções:**
 
@@ -330,7 +330,7 @@ workflow:
 #### UC14 — Salvar Lista (Persistir) (RF08)
 
 **Happy Paths:**
-- **HP1:** Usuário autenticado clica "Salvar" → backend valida FK de produto (UC20) + valida categorias selecionadas (UC03) → INSERT em `listas` + `itens_lista` (transação ACID) → retorna 201 → toast "Lista salva com sdoc-arch-0006-uc-v1esso".
+- **HP1:** Usuário autenticado clica "Salvar" → backend valida FK de produto (UC20) + valida categorias selecionadas (UC03) → INSERT em `listas` + `itens_lista` (transação ACID) → retorna 201 → toast "Lista salva com sucesso".
 - **HP2:** Usuário promove lista efêmera (UC17) → modal confirma → transação ACID → lista persistida.
 
 **Exceções:**

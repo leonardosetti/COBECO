@@ -161,7 +161,7 @@ graph TD
 | `backend/src/domain` | Domain Layer (Clean Arch) | Entities, Rules, Value Objects — **zero deps framework** |
 | `backend/src/usecases` | Application Layer | Use Cases (um por UC), orquestração, transações |
 | `backend/src/adapters` | Interface Adapters | Repositories (SQLAlchemy), PDF (ReportLab), Auth (JWT), Cache |
-| `backend/src/infra` | Infrastrdoc-arch-0006-uc-v1ture | Config (Pydantic), Migrations (Alembic), Seed |
+| `backend/src/infra` | Infrastructure | Config (Pydantic), Migrations (Alembic), Seed |
 | `backend/src/api` | Interface Adapters (Routers) | FastAPI Routers, Pydantic Schemas, Dependencies |
 | `frontend/` | SPA Vanilla JS | Módulos ES6, componentes, utils, API client |
 | `frontend/components/` | Design System Mínimo | Toast, Modal, Skeleton, Autocomplete, DataTable, Badge |
@@ -232,7 +232,7 @@ flowchart TD
 | **Milestones** | `S<N>: <Tema>` | `S1: Setup, Docs e Auth` |
 | **Labels** | `P0/P1/P2`, `camada:*`, `tipo:*` | `P0`, `camada:backend`, `tipo:feature` |
 | **Issues GitHub** | Título: `UC<NN>: <Descrição> (RF<NN>)` | `UC09: Cadastrar Usuário (RF01)` |
-| **Test Files** | `test_<modulo>_<cenario>.py` | `test_cadastrar_usuario_sdoc-arch-0006-uc-v1esso.py` |
+| **Test Files** | `test_<modulo>_<cenario>.py` | `test_cadastrar_usuario_sucesso.py` |
 | **Runbooks** | `RUNBOOK-<OPERACAO>.md` | `RUNBOOK-DEPLOY.md` |
 | **Release Notes** | `RELEASE-NOTES-v<X.Y.Z>.md` | `RELEASE-NOTES-v0.1.0.md` |
 | **Status Reports** | `STATUS-REPORT-S<NN>-<YYYYMMDD>.md` | `STATUS-REPORT-S01-20260915.md` |

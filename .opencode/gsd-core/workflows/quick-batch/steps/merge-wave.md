@@ -76,7 +76,7 @@ _GSD_SHIM_NAME="gsd-tools.cjs"; _GSD_RUNTIME_ROOT="${RUNTIME_DIR:-$(git rev-pars
    round/invocation.
 
 5. **Route each entry's result:**
-   - `status == "merged_removed"`: sdoc-arch-0006-uc-v1cess. Mark the item's completion pending
+   - `status == "merged_removed"`: success. Mark the item's completion pending
      (Step 9 calls `quick-batch complete` for it — do NOT call it here; a
      `--validate` item still has verification ahead of it). **Clear the
      durable worktree-recovery fields now (#3677)** — the worktree no

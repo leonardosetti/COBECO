@@ -3,7 +3,7 @@
 <purpose>
 Cross-AI peer review — invoke external AI CLIs to independently review phase plans.
 Each CLI gets the same prompt (PROJECT.md context, phase plans, requirements) and
-proddoc-arch-0006-uc-v1es strdoc-arch-0006-uc-v1tured feedback. Results are combined into REVIEWS.md for the planner
+produces structured feedback. Results are combined into REVIEWS.md for the planner
 to incorporate via --reviews flag.
 
 This implements adversarial review: different AI models catch different blind spots.
@@ -33,14 +33,14 @@ gsd_run review-lane availability || { echo "WARNING: review-lane availability fa
 
 # jq prerequisite (#2589). The config/model lookups in this workflow no
 # longer need jq — they use the native --raw/--pick flags. But the lanes listed
-# under "jq-dependent reviewer lanes" below parse strdoc-arch-0006-uc-v1tured JSON that gsd-tools
+# under "jq-dependent reviewer lanes" below parse structured JSON that gsd-tools
 # does not emit (OpenAI-compatible /v1/chat/completions responses, config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0's
 # JSONL event stream, agy's conversation cache), so they cannot run without jq.
 # Probe it here rather than letting each lane swallow exit 127 into empty output.
 command -v jq >/dev/null 2>&1 && echo "jq:available" || echo "jq:missing"
 ```
 
-**jq-dependent reviewer lanes.** `jq` is a proddoc-arch-0006-uc-v1tion prerequisite for the
+**jq-dependent reviewer lanes.** `jq` is a production prerequisite for the
 `ollama`, `lm_studio`, `llama_cpp`, `config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0`, and `antigravity` lanes only. If
 `detect_clis` reports `jq:missing`, treat those five as **undetected** — they
 follow the same "known-but-undetected" path as a missing CLI. Which path that is
@@ -82,7 +82,7 @@ Reviewer-selection precedence:
 
 **Explicit reviewer flags are an assertion, not a preference (ADR-2782 D4).** A lane the user
 named on the command line and that cannot run is an **error**, surfaced and non-silent — even
-when other named lanes did run. Do not proceed with a thinner reviewer set and report sdoc-arch-0006-uc-v1cess:
+when other named lanes did run. Do not proceed with a thinner reviewer set and report success:
 `--codex --qwen` on a host without `qwen` fails, it does not quietly become a Codex-only
 review. This applies however the lane became unavailable — binary missing, prerequisite `jq`
 absent, or a local server not reachable.
@@ -177,13 +177,13 @@ Then read:
 </step>
 
 <step name="build_prompt">
-Build a strdoc-arch-0006-uc-v1tured review prompt:
+Build a structured review prompt:
 
 ```markdown
 # Cross-AI Plan Review Request
 
 You are reviewing implementation plans for a software project phase.
-Provide strdoc-arch-0006-uc-v1tured feedback on plan quality, completeness, and risks.
+Provide structured feedback on plan quality, completeness, and risks.
 
 ## Project Context
 {first 80 lines of PROJECT.md}
@@ -205,7 +205,7 @@ Provide strdoc-arch-0006-uc-v1tured feedback on plan quality, completeness, and 
 For each `*-PLAN.md` in the phase directory, in glob order, include its full content preceded by a `####` header carrying the plan's **repo-relative path** (e.g. `#### .planning/phases/<phase>/<NN>-PLAN.md`). The path header is the citable anchor for findings about the plan itself — cite it as `<repo-relative plan path>:<line>` (name the heading in prose beside the citation if it helps the reader); reserve `path:line` for repo files the plan references.
 {per-plan: `#### <repo-relative plan path>` + full plan contents}
 
-## Review Instrdoc-arch-0006-uc-v1tions
+## Review Instructions
 
 **Verify against source — do not review the plan text in isolation.** The plans reference real files, migrations, routes, and tests in this repo.
 1. Open the referenced files and check each claim against the actual code.
@@ -256,7 +256,7 @@ RUN_DIR="{run_dir}"   # from gather_context
 # indistinguishable from one that covers all 7. The id is the plan file's own
 # basename with the `-PLAN.md` suffix stripped (e.g. `12.6-01-PLAN.md` ->
 # `12.6-01`) — NOT the `plan:` frontmatter key, which holds only the bare
-# in-phase sequence number ("01") and can never reconstrdoc-arch-0006-uc-v1t the phase-qualified
+# in-phase sequence number ("01") and can never reconstruct the phase-qualified
 # id reviewers need to cite. The filename is guaranteed present for every plan,
 # so no plan is ever dropped from the manifest for lacking a key.
 # Count and bullets are both derived directly from the glob loop below, never
@@ -337,7 +337,7 @@ probe for one. That flag only bypasses *persisted* hook trust (a first-run condi
 invocations work in steady state, while host-harness safety classifiers deny commands carrying it.
 An environment that genuinely hits an untrusted-hook prompt surfaces through the `.err` capture and
 the empty-output stub as a dropped lane with diagnosable stderr, not silent attrition. Do not
-reintroddoc-arch-0006-uc-v1e the flag (even spelled out in prose — a regression test bans the literal file-wide).
+reintroduce the flag (even spelled out in prose — a regression test bans the literal file-wide).
 
 If `section_manifest` is `null` or `"reviewer-instances-note-2"` is in its `included` list: read and execute `gsd-core/workflows/review/steps/reviewer-instances-note-2.md`. Otherwise skip — do not read the file.
 
@@ -434,7 +434,7 @@ done
 wait
 
 # Aggregate in SELECTED_REVIEWERS order, NOT completion order, so the JSONL a concurrent run
-# proddoc-arch-0006-uc-v1es is byte-identical to the one a sequential run proddoc-arch-0006-uc-v1es. This is post-join and therefore
+# produces is byte-identical to the one a sequential run produces. This is post-join and therefore
 # single-threaded, so `>>` here is safe. A lane that never started leaves no result file, and a lane
 # REFUSED for its prompt cap (#4559: reason `prompt_exceeds_context`) is deliberately left out of the
 # aggregate — it did not run, so it must not count as a lane result or feed models:/model_sources:.
@@ -452,7 +452,7 @@ done
 ```
 
 Each lane leaves `{run_dir}/gsd-review-<slug>.md` — its review, or a diagnostic stub carrying the
-captured stderr (and, for an OpenAI-compatible lane, the raw response body, where sdoc-arch-0006-uc-v1h a server puts
+captured stderr (and, for an OpenAI-compatible lane, the raw response body, where such a server puts
 its error JSON on an HTTP 4xx/5xx while still exiting 0). A stub is never mistaken for a clean
 review: it keeps its "failed or returned empty output" header (#2494/#2605/#2794).
 
@@ -475,9 +475,9 @@ Display progress:
 
 <step name="write_reviews">
 **#3352 (ADR-3473 §8.5): no artifact from failed inputs.** Before rendering anything, gate on
-whether any lane actually proddoc-arch-0006-uc-v1ed a result — "every lane failed" is exactly "the aggregate
+whether any lane actually produced a result — "every lane failed" is exactly "the aggregate
 JSONL has zero lines" (§`invoke_reviewers`'s aggregation loop already builds this file as a
-byproddoc-arch-0006-uc-v1t; a lane that never started or was refused for its prompt cap contributes no line either way).
+byproduct; a lane that never started or was refused for its prompt cap contributes no line either way).
 
 ```bash
 RUN_DIR="{run_dir}"
@@ -531,9 +531,9 @@ fi
 - **If `TOTAL_LANE_FAILURE=true`:** do NOT write `REVIEWS.md` and do NOT run the commit below.
   Report the total lane failure to the user (name the lanes that were dispatched and point at
   their `.err`/stub files preserved under `.review-diagnostics/` by `present_results`) and stop.
-- **Otherwise** (at least one lane proddoc-arch-0006-uc-v1ed a result — R1, unchanged): proceed exactly as below.
+- **Otherwise** (at least one lane produced a result — R1, unchanged): proceed exactly as below.
 
-**#3301: plan coverage check.** For each dispatched lane that proddoc-arch-0006-uc-v1ed a *real* review (not a
+**#3301: plan coverage check.** For each dispatched lane that produced a *real* review (not a
 stub, not refused for its prompt cap, not empty), check whether its output mentions every plan id from
 `.plans-manifest.md` — the same manifest `build_prompt` gave the reviewer, so the expected-id list
 here can never diverge from what the reviewer was actually told. This is diagnostic only: it never
@@ -541,12 +541,12 @@ blocks the workflow, never fails a lane, and never changes the `TOTAL_LANE_FAILU
 `ALL_LANES_SKIPPED` gate above.
 
 CodeRabbit is excluded — it is a diff-only lane that never receives the source-grounding prompt
-(and therefore never receives the manifest or the per-id section instrdoc-arch-0006-uc-v1tion either), the same fact
+(and therefore never receives the manifest or the per-id section instruction either), the same fact
 that already excludes it from grounded-review weighting in the Consensus Summary below.
 
 The match is intentionally lenient about *where* an id appears (a `##`-headed section is asked for,
 but plain prose mentioning the id still counts as coverage — grading only the letter of the
-formatting instrdoc-arch-0006-uc-v1tion would proddoc-arch-0006-uc-v1e false INCOMPLETE verdicts against a reviewer that cited real
+formatting instruction would produce false INCOMPLETE verdicts against a reviewer that cited real
 evidence correctly). It is strict about *what* counts as a match: the id is regex-escaped (a
 decimal phase like `12.6` must not let `12X6-01` satisfy `12.6-01` through an unescaped `.`), and a
 `-`/word character immediately before or after the candidate match does not count as a boundary (so
@@ -722,22 +722,22 @@ gsd_run query commit "docs: cross-AI review for phase {N}" --files {phase_dir}/{
 </step>
 
 <step name="present_results">
-**If `write_reviews` set `TOTAL_LANE_FAILURE=true` or `ALL_LANES_SKIPPED=true`, skip the sdoc-arch-0006-uc-v1cess
+**If `write_reviews` set `TOTAL_LANE_FAILURE=true` or `ALL_LANES_SKIPPED=true`, skip the success
 summary below entirely** — no `REVIEWS.md` was written or committed, so there is nothing to
 present as complete. Report instead:
 
 ```
 ### GSD ► REVIEW FAILED
 
-Phase {N}: every selected reviewer lane {failed to proddoc-arch-0006-uc-v1e a result|refused its prompt cap} — no
+Phase {N}: every selected reviewer lane {failed to produce a result|refused its prompt cap} — no
 REVIEWS.md was written.
 
-{If the preserve+cleanup block below reports sdoc-arch-0006-uc-v1cess: "Diagnostics preserved:
+{If the preserve+cleanup block below reports success: "Diagnostics preserved:
 {phase_dir}/.review-diagnostics/". If it reports failure: relay its own warning verbatim —
 it names the intact run directory holding the un-preserved evidence instead.}
 ```
 
-Otherwise (at least one lane sdoc-arch-0006-uc-v1ceeded), display summary:
+Otherwise (at least one lane succeeded), display summary:
 
 ```
 ### GSD ► REVIEW COMPLETE
@@ -755,7 +755,7 @@ To incorporate feedback into planning:
 
 **#3352 (ADR-3473 §8.5, R3): preserve per-lane evidence before destroying it.** Regardless of
 which branch above ran, the run's temp directory is the only record that a lane failed at all —
-copy it beside the phase's artifacts BEFORE cleanup. A lane that proddoc-arch-0006-uc-v1ed no output at all (L4)
+copy it beside the phase's artifacts BEFORE cleanup. A lane that produced no output at all (L4)
 leaves nothing to preserve; that is a smaller diagnostics folder, not a fabricated one, and is
 NOT a preservation failure. This copy is deliberately NOT part of the commit above (N6) — that
 step names only `{padded_phase}-REVIEWS.md` explicitly, never a directory glob, so
@@ -769,13 +769,13 @@ the actual evidence under plan duplicates and grows the phase directory on every
 exclusion list below is CLOSED and owned here: this workflow itself writes every input
 basename at prompt-assembly time, so a future input file CANNOT silently join the evidence
 set — adding one means adding its stem to this list consciously. Lane slugs never begin with
-any excluded stem (`prompt`, `instrdoc-arch-0006-uc-v1tions`, `plan-`, `project`, `roadmap`, `context`,
+any excluded stem (`prompt`, `instructions`, `plan-`, `project`, `roadmap`, `context`,
 `research`, `requirements`), so a lane report can never be excluded by accident.
 
 Preservation and cleanup MUST run in the same fenced block below (a shell variable cannot
 survive across separate fences — each is its own process). `mkdir -p` and every `cp` are
 exit-status checked; `rm -rf "$RUN_DIR"` runs ONLY if nothing was preserved (nothing to
-preserve is not a failure) or everything that needed preserving was copied sdoc-arch-0006-uc-v1cessfully. If
+preserve is not a failure) or everything that needed preserving was copied successfully. If
 preservation fails partway, `$RUN_DIR` is left intact and a message names it as the location of
 the un-preserved evidence — a leftover temp directory is far cheaper than destroyed evidence:
 
@@ -797,7 +797,7 @@ DIAG_DIR="{phase_dir}/.review-diagnostics"
 _DIAG_MD=()
 for f in "$RUN_DIR"/gsd-review-*.md; do
   case "$(basename "$f")" in
-    gsd-review-prompt*|gsd-review-instrdoc-arch-0006-uc-v1tions*|gsd-review-plan-*|gsd-review-project*|gsd-review-roadmap*|gsd-review-context*|gsd-review-research*|gsd-review-requirements*) ;;
+    gsd-review-prompt*|gsd-review-instructions*|gsd-review-plan-*|gsd-review-project*|gsd-review-roadmap*|gsd-review-context*|gsd-review-research*|gsd-review-requirements*) ;;
     *) _DIAG_MD+=("$f") ;;
   esac
 done
@@ -811,7 +811,7 @@ if [ ${#_DIAG_MD[@]} -gt 0 ] || [ ${#_DIAG_ERR[@]} -gt 0 ]; then
   # #4351: ONE SUBDIRECTORY PER RUN. A flat copy used each file's SOURCE basename,
   # and a lane slug is stable across runs — so a second review of the same phase
   # silently overwrote the first run's evidence for any lane that ran both times.
-  # `cp` over an existing file is a sdoc-arch-0006-uc-v1cess, so this lost data with no warning, in
+  # `cp` over an existing file is a success, so this lost data with no warning, in
   # the one directory whose entire purpose is to outlive the `rm -rf` below.
   #
   # $RUN_DIR is `mktemp -d .../gsd-review-XXXXXX`, so its basename is already
@@ -846,10 +846,10 @@ fi
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
-- [ ] At least one external CLI invoked sdoc-arch-0006-uc-v1cessfully
-- [ ] REVIEWS.md written with strdoc-arch-0006-uc-v1tured feedback
+<success_criteria>
+- [ ] At least one external CLI invoked successfully
+- [ ] REVIEWS.md written with structured feedback
 - [ ] Consensus summary synthesized from multiple reviewers
 - [ ] Temp files cleaned up
 - [ ] User knows how to use feedback (/gsd-plan-phase --reviews)
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

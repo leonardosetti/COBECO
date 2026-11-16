@@ -11,10 +11,10 @@ Read config.json for planning behavior settings.
 
 <atomic_close_out_invariant>
 For each executed plan, the only complete close-out order is:
-`proddoc-arch-0006-uc-v1tion-code commit(s) -> SUMMARY commit -> STATE/ROADMAP update`.
+`production-code commit(s) -> SUMMARY commit -> STATE/ROADMAP update`.
 
-For a synchronous executor, the only legal half-state is mid-proddoc-arch-0006-uc-v1tion-commits
-while the executor is still actively working. Once proddoc-arch-0006-uc-v1tion commits for a plan
+For a synchronous executor, the only legal half-state is mid-production-commits
+while the executor is still actively working. Once production commits for a plan
 exist, returning without a committed SUMMARY.md is an illegal partial-plan state.
 The next execute-phase resume must detect that condition before dispatching
 another executor.
@@ -147,7 +147,7 @@ Otherwise: Apply checkpoint-based routing below.
 
 > **Runtime-aware dispatch (#2508 Phase 4).** GSD workflows dispatch specialized subagents by role. Before dispatching on a built-in-only runtime (kimi-code — three built-ins only), resolve the role to a built-in via `gsd_run query resolve-dispatch-type --requested <role> --raw`. On named-dispatch runtimes (the agent/OpenCode/…) the role is returned unchanged; on kimi-code it maps to `coder`/`explore`/`plan` by role-suffix. The persona rides `${AGENT_SKILLS_<ROLE>}` (Phase 3) regardless. See @gsd-core/references/runtime-aware-dispatch.md.
 
-**Pattern A:** init_agent_tracking → capture `EXPECTED_BASE=$(git rev-parse HEAD)` → **before spawning, run the #2649 pre-dispatch worktree base-check** (mirrors execute-phase #683/#1369 and quick #1941): if `ISOLATION = "harness-worktree"`, run `gsd_run query worktree.base-check --mode "$ISOLATION" --pick shouldDegrade` (#3659/#4588: `--mode` names the creator; `"head"` suppresses the check — honored by GSD worktrees and, measured, by Claude Code); if it returns `true`, print its `--pick message` to stderr, emit the `⚠ [#2649] Worktree fork base diverged from orchestrator HEAD — auto-degrading to sequential mode for this plan to avoid a base-mismatch halt.` warning, and treat `ISOLATION` as `"none"` for this dispatch (spawn without `{harnessFlag}`), **then re-record the degrade before spawning** — run `gsd_run query dispatch-isolation --raw --force-isolation none >/dev/null 2>&1 || true`. That re-record is mandatory, not bookkeeping: the resolve step already persisted `harness-worktree` to the run-scoped sentinel, the degrade above happens where the resolver cannot see it, and the shipped `PreToolUse` isolation guard (#3045) reads that sentinel at the instant of the `Agent()` call — a stale `harness-worktree` against a dispatch that correctly omits `{harnessFlag}` is denied with `exit 2`, so the plan does not run at all. See `Re-record after every degrade` in `gsd-core/references/dispatch-isolation-gate.md`. With `worktree.baseRef` unset, Claude Code's `isolation="worktree"` forks from `origin/HEAD`, not live local HEAD; without this gate a plan whose commit advanced local HEAD past a stale `origin/HEAD` hits the verify-only guard's `exit 42` mid-execution with no auto-degrade. Setting `"head"` is what changes that, and the harness is measured to honor it (#4588) — except where a `WorktreeCreate` hook creates the worktree, which the base-check detects and reports separately (#4881). → print `Spawning executor agent (runs in a subagent — no output until it returns, ~1–5 min; expected, not a freeze)` → spawn Agent(subagent_type="gsd-executor", model=executor_model) with prompt: execute plan at [path], autonomous, all tasks + SUMMARY + commit, follow deviation/auth rules, honor checkpoint gate semantics (#3370) — gate="blocking" (the default) is auto-approvable in auto-mode per the executor's own checkpoint protocol, gate="blocking-human" always surfaces to a human; add no instrdoc-arch-0006-uc-v1tion overriding that protocol — report: plan name, tasks, SUMMARY path, commit hash → track agent_id → wait → update tracking → report. **Include `{harnessFlag}` only when `ISOLATION = "harness-worktree"` and the #2649 base-check did not degrade** — never hardcode `isolation="worktree"`, which is Claude Code's own literal and wrong on any other harness-worktree host. **When dispatching with `{harnessFlag}`, embed the `<worktree_branch_check>` block from `gsd-core/references/worktree-branch-check.md` into the prompt, substituting `{EXPECTED_BASE}` with the captured base SHA.** That guard is **verify-only and fail-closed** (#48) and stays active as a backstop whether or not the base-check degraded: it asserts a per-agent `agent-*` / `worktree-agent-*` branch and the exact base, forbids `git update-ref` self-recovery (#2924), and on any mismatch prints `FATAL:` and `exit 42` so the orchestrator can recover — the sub-agent never rewrites a worktree it did not create. This supersedes the former self-recovery (#2015), whose destrdoc-arch-0006-uc-v1tive base rewrite could fail silently under a deny rule; the base-drift it addressed affects all platforms, and base correction is now the orchestrator's responsibility.
+**Pattern A:** init_agent_tracking → capture `EXPECTED_BASE=$(git rev-parse HEAD)` → **before spawning, run the #2649 pre-dispatch worktree base-check** (mirrors execute-phase #683/#1369 and quick #1941): if `ISOLATION = "harness-worktree"`, run `gsd_run query worktree.base-check --mode "$ISOLATION" --pick shouldDegrade` (#3659/#4588: `--mode` names the creator; `"head"` suppresses the check — honored by GSD worktrees and, measured, by Claude Code); if it returns `true`, print its `--pick message` to stderr, emit the `⚠ [#2649] Worktree fork base diverged from orchestrator HEAD — auto-degrading to sequential mode for this plan to avoid a base-mismatch halt.` warning, and treat `ISOLATION` as `"none"` for this dispatch (spawn without `{harnessFlag}`), **then re-record the degrade before spawning** — run `gsd_run query dispatch-isolation --raw --force-isolation none >/dev/null 2>&1 || true`. That re-record is mandatory, not bookkeeping: the resolve step already persisted `harness-worktree` to the run-scoped sentinel, the degrade above happens where the resolver cannot see it, and the shipped `PreToolUse` isolation guard (#3045) reads that sentinel at the instant of the `Agent()` call — a stale `harness-worktree` against a dispatch that correctly omits `{harnessFlag}` is denied with `exit 2`, so the plan does not run at all. See `Re-record after every degrade` in `gsd-core/references/dispatch-isolation-gate.md`. With `worktree.baseRef` unset, Claude Code's `isolation="worktree"` forks from `origin/HEAD`, not live local HEAD; without this gate a plan whose commit advanced local HEAD past a stale `origin/HEAD` hits the verify-only guard's `exit 42` mid-execution with no auto-degrade. Setting `"head"` is what changes that, and the harness is measured to honor it (#4588) — except where a `WorktreeCreate` hook creates the worktree, which the base-check detects and reports separately (#4881). → print `Spawning executor agent (runs in a subagent — no output until it returns, ~1–5 min; expected, not a freeze)` → spawn Agent(subagent_type="gsd-executor", model=executor_model) with prompt: execute plan at [path], autonomous, all tasks + SUMMARY + commit, follow deviation/auth rules, honor checkpoint gate semantics (#3370) — gate="blocking" (the default) is auto-approvable in auto-mode per the executor's own checkpoint protocol, gate="blocking-human" always surfaces to a human; add no instruction overriding that protocol — report: plan name, tasks, SUMMARY path, commit hash → track agent_id → wait → update tracking → report. **Include `{harnessFlag}` only when `ISOLATION = "harness-worktree"` and the #2649 base-check did not degrade** — never hardcode `isolation="worktree"`, which is Claude Code's own literal and wrong on any other harness-worktree host. **When dispatching with `{harnessFlag}`, embed the `<worktree_branch_check>` block from `gsd-core/references/worktree-branch-check.md` into the prompt, substituting `{EXPECTED_BASE}` with the captured base SHA.** That guard is **verify-only and fail-closed** (#48) and stays active as a backstop whether or not the base-check degraded: it asserts a per-agent `agent-*` / `worktree-agent-*` branch and the exact base, forbids `git update-ref` self-recovery (#2924), and on any mismatch prints `FATAL:` and `exit 42` so the orchestrator can recover — the sub-agent never rewrites a worktree it did not create. This supersedes the former self-recovery (#2015), whose destructive base rewrite could fail silently under a deny rule; the base-drift it addressed affects all platforms, and base correction is now the orchestrator's responsibility.
 
 **Pattern B:** Execute segment-by-segment. Autonomous segments: spawn subagent for assigned tasks only (no SUMMARY/commit). Checkpoints: main context. After all segments: aggregate, create SUMMARY, commit. See segment_execution. **Segments run unisolated on the main working tree by design** — each continues where the previous one stopped — so dispatch them WITHOUT `{harnessFlag}`, and only after the `ISOLATION=none` re-record above has run (#2652/#3045).
 
@@ -198,7 +198,7 @@ Pattern B only (verify-only checkpoints). Skip for A/C.
    - Append `## Self-Check: PASSED` or `## Self-Check: FAILED` to SUMMARY
    Then commit (no narrative between Write and commit).
 
-   **Known Claude Code bug (classifyHandoffIfNeeded):** If any segment agent reports "failed" with `classifyHandoffIfNeeded is not defined`, this is a Claude Code runtime bug — not a real failure. Run spot-checks; if they pass, treat as sdoc-arch-0006-uc-v1cessful.
+   **Known Claude Code bug (classifyHandoffIfNeeded):** If any segment agent reports "failed" with `classifyHandoffIfNeeded is not defined`, this is a Claude Code runtime bug — not a real failure. Run spot-checks; if they pass, treat as successful.
 
 </step>
 
@@ -206,7 +206,7 @@ Pattern B only (verify-only checkpoints). Skip for A/C.
 ```bash
 cat .planning/phases/XX-name/{phase}-{plan}-PLAN.md
 ```
-This IS the execution instrdoc-arch-0006-uc-v1tions. Follow exactly. If plan references CONTEXT.md: honor user's vision throughout.
+This IS the execution instructions. Follow exactly. If plan references CONTEXT.md: honor user's vision throughout.
 
 **If plan contains `<interfaces>` block:** These are pre-extracted type definitions and contracts. Use them directly — do NOT re-read the source files to discover types. The planner already extracted what you need.
 </step>
@@ -225,12 +225,12 @@ If previous SUMMARY has unresolved "Issues Encountered" or "Next Phase Readiness
 Deviations are normal — handle via rules below.
 
 1. Read @context files from prompt
-2. **MCP tools:** If doc-agents-0001-agents-canon.md or project instrdoc-arch-0006-uc-v1tions reference MCP tools (e.g. jCodeMunch for code navigation), prefer them over Grep/Glob when available. Fall back to Grep/Glob if MCP tools are not accessible.
+2. **MCP tools:** If doc-agents-0001-agents-canon.md or project instructions reference MCP tools (e.g. jCodeMunch for code navigation), prefer them over Grep/Glob when available. Fall back to Grep/Glob if MCP tools are not accessible.
 3. Per task:
-   - **Task-content resolution:** If this task is NOT `type="checkpoint:*"` AND it carries a `tracker-id` attribute, run `gsd_run task resolve-content --plan "<plan path>" --task-id "<tracker-id>" --raw` BEFORE anything else for this task — before the read_first gate below, since read_first is itself a field this call can resolve. A `type="checkpoint:*"` task NEVER enters this resolution, regardless of whether it carries a `tracker-id` attribute — its interactive strdoc-arch-0006-uc-v1ture always stays sourced from PLAN.md (ADR-3646 Decision 1); see the `type="checkpoint:*"` bullet below. A **non-zero exit is a HARD HALT**: surface the tracker-id, the tracker prefix, and the command's stderr, and STOP — do NOT proceed to read this task's inline PLAN.md content as a fallback (that defeats the point of the seam: see ADR-3646). On exit 0 with `resolved: true`, the returned `content` object SUPERSEDES this task's `<read_first>`/`<action>`/`<verify>`/`<acceptance_criteria>`/`<done>` for every remaining bullet in this step — every gate below reads from the resolved content instead of PLAN.md. On exit 0 with `resolved: false` (for any `reason`), proceed exactly as today and read the task's inline PLAN.md content. A task with no `tracker-id` attribute, or a checkpoint task, is unaffected — this step is unconditional but resolves to a no-op instantly for the common case.
+   - **Task-content resolution:** If this task is NOT `type="checkpoint:*"` AND it carries a `tracker-id` attribute, run `gsd_run task resolve-content --plan "<plan path>" --task-id "<tracker-id>" --raw` BEFORE anything else for this task — before the read_first gate below, since read_first is itself a field this call can resolve. A `type="checkpoint:*"` task NEVER enters this resolution, regardless of whether it carries a `tracker-id` attribute — its interactive structure always stays sourced from PLAN.md (ADR-3646 Decision 1); see the `type="checkpoint:*"` bullet below. A **non-zero exit is a HARD HALT**: surface the tracker-id, the tracker prefix, and the command's stderr, and STOP — do NOT proceed to read this task's inline PLAN.md content as a fallback (that defeats the point of the seam: see ADR-3646). On exit 0 with `resolved: true`, the returned `content` object SUPERSEDES this task's `<read_first>`/`<action>`/`<verify>`/`<acceptance_criteria>`/`<done>` for every remaining bullet in this step — every gate below reads from the resolved content instead of PLAN.md. On exit 0 with `resolved: false` (for any `reason`), proceed exactly as today and read the task's inline PLAN.md content. A task with no `tracker-id` attribute, or a checkpoint task, is unaffected — this step is unconditional but resolves to a no-op instantly for the common case.
    - **MANDATORY read_first gate:** If the task has a `<read_first>` field (or the resolved content carries one), you MUST read every listed file BEFORE making any edits. This is not optional. Do not skip files because you "already know" what's in them — read them. The read_first files establish ground truth for the task.
    - `type="auto"`: if `tdd="true"` → TDD execution. Implement with deviation rules + auth gates. Verify done criteria. Commit (see task_commit). Track hash for Summary.
-   - `type="tracer"`: execute like `type="auto"` (proddoc-arch-0006-uc-v1tion-quality, real `<verify>`, commit), then run the tracer feedback gate BEFORE any expansion task — an early integration checkpoint. Evaluate in order (#3299). First, `gate="blocking-human"` → STOP → return a `checkpoint:human-verify` via checkpoint_protocol — every mode, auto included (golden rule 6, checkpoints.md). Next, Auto mode active (`AUTO_CHAIN` or `AUTO_CFG`): re-run the tracer `<verify>`; on failure HALT and surface (deviation) — do NOT start expansion tasks. Next, `HUMAN_VERIFY_MODE` is `end-of-phase` (default) AND the tracer's `<verify>` carries only `<automated>` (no `<human-check>`) → re-run the tracer `<verify>`; on failure HALT and surface as a deviation exactly as in the auto-mode branch — never a checkpoint; on sdoc-arch-0006-uc-v1cess log `⚡ Tracer verified end-to-end — expanding` and continue to expansion, do NOT synthesize a checkpoint. Otherwise (`mid-flight`, or the tracer carries genuine human-observable evidence) → STOP → return a `checkpoint:human-verify` for the tracer via checkpoint_protocol before expansion.
+   - `type="tracer"`: execute like `type="auto"` (production-quality, real `<verify>`, commit), then run the tracer feedback gate BEFORE any expansion task — an early integration checkpoint. Evaluate in order (#3299). First, `gate="blocking-human"` → STOP → return a `checkpoint:human-verify` via checkpoint_protocol — every mode, auto included (golden rule 6, checkpoints.md). Next, Auto mode active (`AUTO_CHAIN` or `AUTO_CFG`): re-run the tracer `<verify>`; on failure HALT and surface (deviation) — do NOT start expansion tasks. Next, `HUMAN_VERIFY_MODE` is `end-of-phase` (default) AND the tracer's `<verify>` carries only `<automated>` (no `<human-check>`) → re-run the tracer `<verify>`; on failure HALT and surface as a deviation exactly as in the auto-mode branch — never a checkpoint; on success log `⚡ Tracer verified end-to-end — expanding` and continue to expansion, do NOT synthesize a checkpoint. Otherwise (`mid-flight`, or the tracer carries genuine human-observable evidence) → STOP → return a `checkpoint:human-verify` for the tracer via checkpoint_protocol before expansion.
    - `type="checkpoint:*"`: STOP → checkpoint_protocol → wait for user → continue only after confirmation.
    - **HARD GATE — acceptance_criteria verification:** After completing each task, if it has `<acceptance_criteria>` (inline or resolved), you MUST run a verification loop before proceeding:
      1. For each criterion: execute the grep, file check, or CLI command that proves it passes
@@ -240,7 +240,7 @@ Deviations are normal — handle via rules below.
      5. If a criterion cannot be satisfied after 2 fix attempts, log it as a deviation with reason — do NOT silently skip it
      This is not advisory. A task with failing acceptance criteria is an incomplete task.
 3. Run `<verification>` checks
-4. Confirm `<sdoc-arch-0006-uc-v1cess_criteria>` met
+4. Confirm `<success_criteria>` met
 5. Document deviations in Summary
 </step>
 
@@ -297,7 +297,7 @@ End with: **Total deviations:** N auto-fixed (breakdown). **Impact:** assessment
 
 For `type: tdd` plans — RED-GREEN-REFACTOR:
 
-1. **Infrastrdoc-arch-0006-uc-v1ture** (first TDD plan only): detect project, install framework, config, verify empty suite
+1. **Infrastructure** (first TDD plan only): detect project, install framework, config, verify empty suite
 2. **Cycle (#3990: stated ONCE; #4267: cited correctly):** execute RED → GREEN → REFACTOR
 exactly as specified in the canonical `/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/tdd.md` reference — the
 "Red-Green-Refactor Cycle" section's commit-scope contract (`test({phase}-{plan})` →
@@ -314,7 +314,7 @@ Your commits may trigger pre-commit hooks. Auto-fix hooks handle themselves tran
 
 **If running as a parallel executor agent (spawned by execute-phase):**
 Run commits normally — let pre-commit hooks run. Do NOT use `--no-verify` by default
-(#2924). Hooks should run so issues surface at the introddoc-arch-0006-uc-v1ing commit, and silent
+(#2924). Hooks should run so issues surface at the introducing commit, and silent
 bypass violates project doc-agents-0001-agents-canon.md guidance. If a project explicitly opts out via
 `workflow.worktree_skip_hooks=true`, the orchestrator will surface that flag in the
 prompt; absent that signal, hooks run normally. If a hook fails, follow the
@@ -351,13 +351,13 @@ Display: `### CHECKPOINT: [Type]` heading → Progress {X}/{Y} → Task name →
 | decision (9%) | Decision needed + context + options with pros/cons | "Select: option-id" |
 | human-action (1%) | What was automated + ONE manual step + verification plan | "done" |
 
-After response: verify if specified. Pass → continue. Fail → inform, wait. WAIT for user — do NOT halldoc-arch-0006-uc-v1inate completion.
+After response: verify if specified. Pass → continue. Fail → inform, wait. WAIT for user — do NOT hallucinate completion.
 
 See /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/checkpoints.md for details.
 </step>
 
 <step name="checkpoint_return_for_orchestrator">
-When spawned via Task and hitting checkpoint: return strdoc-arch-0006-uc-v1tured state (cannot interact with user directly).
+When spawned via Task and hitting checkpoint: return structured state (cannot interact with user directly).
 
 **Required return:** 1) Completed Tasks table (hashes + files) 2) Current Task (what's blocking) 3) Checkpoint Details (user-facing content) 4) Awaiting (what's needed from user)
 
@@ -419,7 +419,7 @@ Create `{phase}-{plan}-SUMMARY.md` at `.planning/phases/XX-name/`. Use the templ
 
 **Frontmatter:** phase, plan, subsystem, tags | requires/provides/affects | tech-stack.added/patterns | key-files.created/modified | key-decisions | requirements-completed (**MUST** copy `requirements` array from PLAN.md frontmatter verbatim) | duration ($DURATION), completed ($PLAN_END_TIME date).
 
-**Coverage block (#1602):** Populate the `coverage:` frontmatter block — one entry per shipped deliverable (the strdoc-arch-0006-uc-v1tured form of each `## Accomplishments` bullet). For each deliverable, aggregate the task-level `<verify>` results and tests:
+**Coverage block (#1602):** Populate the `coverage:` frontmatter block — one entry per shipped deliverable (the structured form of each `## Accomplishments` bullet). For each deliverable, aggregate the task-level `<verify>` results and tests:
 - A task whose `<verify>` command passed or whose matching test passed → a `verification` entry with `kind` + `ref` (`tests/path#name`, Playwright screenshot ref, or command) + `status: pass`, and `human_judgment: false`.
 - A judgment-dependent deliverable (UX adequacy, external/multi-session behavior, anything no test asserts) → `human_judgment: true` with a `rationale`.
 - **Every deliverable MUST be classified.** If you cannot determine coverage, default to `human_judgment: true` with `rationale: "Coverage not determined at authoring time — verifier must classify"`. Never set `human_judgment: false` without a non-empty all-`pass` `verification` — `verify-work` auto-passes (skips the human) ONLY on that proof, so an unproven `false` still routes to the human but loses the audit trail. Omit the whole block only for a genuinely prose-only SUMMARY (verify-work then uses the legacy `## Accomplishments` path). The block is validated downstream by `gsd-tools uat classify-coverage`.
@@ -492,7 +492,7 @@ If SUMMARY "Issues Encountered" ≠ "None": yolo → log and continue. Interacti
 
 <step name="update_roadmap">
 Run this step only when NOT executing inside a git worktree (i.e.
-`use_worktrees: false`, the bug #2661 reproddoc-arch-0006-uc-v1er). In worktree mode each
+`use_worktrees: false`, the bug #2661 reproducer). In worktree mode each
 worktree has its own ROADMAP.md, so per-plan writes here would diverge
 across siblings; the orchestrator owns the post-merge sync centrally
 (see execute-phase.md §5.7, single-writer contract from #1486 / dcb50396).
@@ -515,7 +515,7 @@ Mark completed requirements from the PLAN.md frontmatter `requirements:` field.
 
 Extract requirement IDs from the plan's frontmatter (e.g., `requirements: [AUTH-01, AUTH-02]`) into `REQ_IDS`. If no requirements field, skip this step.
 
-**Shared-ID gate (#2388):** a requirement ID declared by more than one plan in this phase must not read `Complete` until every plan declaring it has finished (proddoc-arch-0006-uc-v1ed a `*-SUMMARY.md`) — otherwise the first plan to finish flips it `Complete` while its sibling plans are still running, before phase verification ever gets a chance to catch a real gap. Compute the ready subset first, then mark only those:
+**Shared-ID gate (#2388):** a requirement ID declared by more than one plan in this phase must not read `Complete` until every plan declaring it has finished (produced a `*-SUMMARY.md`) — otherwise the first plan to finish flips it `Complete` while its sibling plans are still running, before phase verification ever gets a chance to catch a real gap. Compute the ready subset first, then mark only those:
 
 ```bash
 READY=$(gsd_run query requirements.ready-ids "${PLAN_PATH}" ${REQ_IDS})
@@ -563,7 +563,7 @@ SCOPE_JSON=$(gsd_run check evaluation-scope --phase-dir ".planning/phases/XX-nam
 if [ "$SCOPE_RC" -ne 0 ]; then echo "Warning: evaluation scope unavailable (exit ${SCOPE_RC}); no changed-file list, so the map update below is skipped, not 'nothing changed'." >&2; else printf '%s' "$SCOPE_JSON" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{process.stdout.write(JSON.parse(s).changedFiles.join('\n'))}catch{}})" || true; fi
 ```
 
-Update only strdoc-arch-0006-uc-v1tural changes: new src/ dir → STRUCTURE.md | deps → STACK.md | file pattern → CONVENTIONS.md | API client → INTEGRATIONS.md | config → STACK.md | renamed → update paths. Skip code-only/bugfix/content changes.
+Update only structural changes: new src/ dir → STRUCTURE.md | deps → STACK.md | file pattern → CONVENTIONS.md | API client → INTEGRATIONS.md | config → STACK.md | renamed → update paths. Skip code-only/bugfix/content changes.
 
 ```bash
 gsd_run query commit "" --files .planning/codebase/*.md --amend
@@ -594,7 +594,7 @@ All routes: `/clear` first for fresh context.
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 
 - All tasks from PLAN.md completed
 - All verifications pass
@@ -604,4 +604,4 @@ All routes: `/clear` first for fresh context.
 - ROADMAP.md updated — same exception
 - If codebase map exists: map updated with execution changes (or skipped if no significant changes)
 - If USER-SETUP.md created: surfaced in completion output
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

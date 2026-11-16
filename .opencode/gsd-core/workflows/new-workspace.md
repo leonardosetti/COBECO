@@ -163,7 +163,7 @@ cd "$TARGET_PATH/$REPO_NAME"
 git checkout -b "$BRANCH_NAME" 2>&1
 ```
 
-Track results: which repos sdoc-arch-0006-uc-v1ceeded, which failed, what branch was used.
+Track results: which repos succeeded, which failed, what branch was used.
 
 ## 7. Write WORKSPACE.md
 
@@ -195,7 +195,7 @@ mkdir -p "$TARGET_PATH/.planning"
 
 ## 9. Report and Next Steps
 
-**If all repos sdoc-arch-0006-uc-v1ceeded:**
+**If all repos succeeded:**
 
 ```
 Workspace created: $TARGET_PATH
@@ -214,7 +214,7 @@ Next steps:
 ```
 Workspace created with $SUCCESS_COUNT of $TOTAL_COUNT repos: $TARGET_PATH
 
-  Sdoc-arch-0006-uc-v1ceeded: repo1, repo2
+  Succeeded: repo1, repo2
   Failed: repo3 (branch already exists), repo4 (not a git repo)
 
 Next steps:
@@ -233,10 +233,10 @@ Use question:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Workspace directory created at target path
 - [ ] All specified repos copied (worktree or clone) into workspace
 - [ ] WORKSPACE.md manifest written with correct repo table
 - [ ] `.planning/` directory initialized at workspace root
 - [ ] User informed of workspace path and next steps
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

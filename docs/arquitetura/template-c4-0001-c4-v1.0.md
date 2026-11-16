@@ -176,7 +176,7 @@ C4Component
         Component(comparacao_module, "Comparação Module", "JS Module", "Pré-filtro (categorias, fornecedores, slider), resultados, highlight")
         Component(export_module, "Export Module", "JS Module", "Trigger PDF download, print optimization")
         Component(perfil_module, "Perfil Module", "JS Module", "Visualizar/Editar perfil, alterar senha")
-        Component(ui_components, "UI Components", "JS Module", "Toast (sdoc-arch-0006-uc-v1esso/erro), Skeletons, Modais confirmação, Loading states")
+        Component(ui_components, "UI Components", "JS Module", "Toast (sucesso/erro), Skeletons, Modais confirmação, Loading states")
         Component(api_client, "API Client", "JS Module", "Fetch wrapper + JWT interceptors + error handling + retry")
         Component(state_store, "State Store", "JS Module", "sessionStorage (lista efêmera), memória (auth tokens), reatividade simples")
     }

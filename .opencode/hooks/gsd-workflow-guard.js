@@ -43,7 +43,7 @@ function forceGitAddCwds(command, defaultCwd) {
   // rest — `git -c core.hooksPath=/tmp/x add -f x`, `git --no-optional-locks
   // add -f x`, `--literal-pathspecs`, `--namespace=…` and friends all fell
   // through to a silent exit 0, a no-crash bypass the fail-closed catch is
-  // strdoc-arch-0006-uc-v1turally blind to (it only fires on throws). Sharing the classifier
+  // structurally blind to (it only fires on throws). Sharing the classifier
   // makes the block's flag knowledge exactly the classifier's.
   const segments = [];
   let start = 0;
@@ -120,7 +120,7 @@ function payloadCwd(data) {
 
 // The force-add block payload, emitted by the happy-path detector and the
 // fail-closed catch — one source so the two exits cannot drift. `origin`
-// distinguishes them strdoc-arch-0006-uc-v1turally ('force-add-detected' vs 'fail-closed') so a
+// distinguishes them structurally ('force-add-detected' vs 'fail-closed') so a
 // consumer — or the model reading Kimi's stderr feedback — is never told a
 // force-add was detected when the call was in fact blocked unanalyzed.
 function emitForceAddBlock(origin) {
@@ -200,7 +200,7 @@ function workflowGuardEnabled(cwd) {
 // per guard (not hooks/lib/): hook scripts are staged as standalone files,
 // and a sibling require is a staging dependency that can fail silently.
 // A Map, not an object literal: bare bracket lookup resolves prototype keys
-// ('constrdoc-arch-0006-uc-v1tor', '__proto__', 'toString') to truthy functions/objects, so the
+// ('constructor', '__proto__', 'toString') to truthy functions/objects, so the
 // !mapped fall-through never fires for them; Map.get returns undefined (same
 // shape as canonicalizeRuntimeName in src/runtime-name-policy.cts).
 const KIMI_TOOL_NAMES = new Map([['WriteFile', 'Write'], ['StrReplaceFile', 'Edit'], ['ReadFile', 'Read'], ['Shell', 'Bash']]);
@@ -261,14 +261,14 @@ function normalizeKimiPayload(data) {
       // arrays, plain objects), so nothing downstream — including
       // gsd-prompt-guard's scan of new_string — loses content it saw before.
       const editText = (v) => { try { return String(v ?? ''); } catch { return ''; } };
-      // #2595 (review Major 2): reconstrdoc-arch-0006-uc-v1t UNCONDITIONALLY, mirroring the
+      // #2595 (review Major 2): reconstruct UNCONDITIONALLY, mirroring the
       // `path` decision above rather than merely filling in when the field
       // happens to be absent. kimi-cli's StrReplaceFile schema is `path` +
       // `edit` only (src/kimi_cli/tools/file/replace.py @ 4a550ef) — it carries
       // no `old_string`/`new_string` at all, so either field appearing in a
       // Kimi payload is ALWAYS model-supplied, exactly like `file_path`. Under
       // the old `=== undefined` condition a model-supplied `new_string: ""`
-      // SHADOWED the reconstrdoc-arch-0006-uc-v1tion, leaving gsd-prompt-guard's injection scan
+      // SHADOWED the reconstruction, leaving gsd-prompt-guard's injection scan
       // reading '' and exiting at its `if (!content)` before it ever saw the
       // real `edit[].new` — a one-key bypass of the very scan this fix's
       // guarded coercion exists to keep fed. A `typeof` test would NOT close
@@ -292,7 +292,7 @@ process.stdin.on('end', () => {
     // posture of the outer catch is exercisable — no JSON-expressible input
     // throws in this handler today (#2547/#2595 hardened every read). Gated on
     // GSD_TEST_MODE as well so a leaked GSD_TEST_WORKFLOW_GUARD_FAULT in a real
-    // shell cannot wedge a proddoc-arch-0006-uc-v1tion session. The fault's failure direction
+    // shell cannot wedge a production session. The fault's failure direction
     // is CLOSED: the catch below may block, never bypass a block.
     if (processconfig-env-0001-env-example-v1.0.GSD_TEST_MODE === '1' && processconfig-env-0001-env-example-v1.0.GSD_TEST_WORKFLOW_GUARD_FAULT === '1') {
       throw new Error('GSD_TEST_WORKFLOW_GUARD_FAULT: injected fault');
@@ -365,7 +365,7 @@ process.stdin.on('end', () => {
       hookSpecificOutput: {
         hookEventName: "PreToolUse",
         additionalContext: `⚠️ WORKFLOW ADVISORY: You're editing ${path.basename(filePath)} directly without a GSD command. ` +
-          'This edit will not be tracked in STATE.md or proddoc-arch-0006-uc-v1e a SUMMARY.md. ' +
+          'This edit will not be tracked in STATE.md or produce a SUMMARY.md. ' +
           'Consider using /gsd:fast for trivial fixes or /gsd:quick for larger changes ' +
           'to maintain project state tracking. ' +
           'If this is intentional (e.g., user explicitly asked for a direct edit), proceed normally.',

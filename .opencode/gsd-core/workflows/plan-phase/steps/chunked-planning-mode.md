@@ -95,7 +95,7 @@ path regardless of `CHUNKED_PARALLEL` — there is nothing to batch.
 
 1. **Build the batch's plan-ID list** from the outline rows sharing this Wave value, in outline
    row order, deduplicated defensively — a malformed outline naming the same Plan ID twice must
-   never proddoc-arch-0006-uc-v1e two concurrent Agent() calls targeting the same `{plan_id}-PLAN.md` output path
+   never produce two concurrent Agent() calls targeting the same `{plan_id}-PLAN.md` output path
    (mirrors `review.md`'s `DISPATCH_SLUGS` dedup, #3034):
    ```bash
    # Rewrapped through unquoted command substitution, not consumed as a bare

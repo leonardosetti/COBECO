@@ -28,7 +28,7 @@ Add this entry to `.planning/MILESTONES.md` when completing a milestone:
 ---
 ```
 
-<strdoc-arch-0006-uc-v1ture>
+<structure>
 If MILESTONES.md doesn't exist, create it with header:
 
 ```markdown
@@ -36,7 +36,7 @@ If MILESTONES.md doesn't exist, create it with header:
 
 [Entries in reverse chronological order - newest first]
 ```
-</strdoc-arch-0006-uc-v1ture>
+</structure>
 
 <guidelines>
 **When to create milestones:**

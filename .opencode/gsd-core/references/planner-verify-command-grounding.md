@@ -43,7 +43,7 @@ workflow:
 `prior_verify_commands` — the `<automated>` commands from the most recent prior phase that had
 any, surfaced **at every context window**, not only on 1M-class models. When this phase's build
 or test story is the same one a prior phase already proved, **reuse that command verbatim**
-rather than re-deriving a path. Re-invention is what proddoc-arch-0006-uc-v1ed `cd ../../frontend && npm run
+rather than re-deriving a path. Re-invention is what produced `cd ../../frontend && npm run
 lint` against a directory that holds no `config-npm-0001-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0-v1.0.json`, and cost two revision cycles.
 
 Ground every path you do author: a command's `cd` target or `npm --prefix` target must be a
@@ -56,7 +56,7 @@ guessing one.
 **Run a count/match gate before it ships (#4927).** A gate you author — or one a `RESEARCH.md`
 hands you — that counts or matches text (`grep -c`, `grep -q`, `rg`, `test -n "$(grep …)"`) is a
 claim about the tree, and two defects are invisible to reading and take one command to expose. You
-have a shell when you author the plan, so run each sdoc-arch-0006-uc-v1h gate against the **current tree** and write
+have a shell when you author the plan, so run each such gate against the **current tree** and write
 the pre-change result next to it as its baseline (`# baseline at HEAD: 0`):
 
 - **It already passes at HEAD.** `grep -c "Agent" .planning/PROJECT.md` returned `6` before any work
@@ -78,7 +78,7 @@ task actions — is repo-root-relative, and every `<automated>` command assumes 
 root. An absolute path copied from the prompt into `<automated>` pins the command to the
 orchestrator's checkout; under worktree isolation the executor's checkout is a different
 directory, so the command `cd`s into the main tree, finds it, runs, and **passes against code the
-worktree changed and the main tree did not**. The path probe reports sdoc-arch-0006-uc-v1h a target as
+worktree changed and the main tree did not**. The path probe reports such a target as
 `outside_root` (a warning), but only when the target is outside the *orchestrator's* root — an
 absolute path *inside* it is exactly the shape that passes the probe and still misfires under
 isolation. The authoring rule is the fix; the probe is the backstop. It binds `prior_verify_commands`

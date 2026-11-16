@@ -682,13 +682,13 @@ AÇÕES
 3. Registrar medido vs target. Se tg < 10 ⇒ abrir blocker, não "ajustar" L1.
 4. Consolidar parcel por fase em docs/auditorias/AUD-CANON-<run>.md.
 5. Marcar canon_run.status=COMPLETED somente se todos os gates verdes.
-6. Fases BLOCKED (F05/F10) permanecem explicitamente abertas — não fingir sdoc-arch-0006-uc-v1esso.
+6. Fases BLOCKED (F05/F10) permanecem explicitamente abertas — não fingir sucesso.
 
 GATE
 canon_run.status == COMPLETED ou COMPLETED_WITH_BLOCKERS (explícito)
 Nenhum hash de baseline não autorizado mudou.
 
-KILL: KS-01..KS-14 aplicáveis. Falhar honestamente é sdoc-arch-0006-uc-v1esso de governança.
+KILL: KS-01..KS-14 aplicáveis. Falhar honestamente é sucesso de governança.
 <!-- /PHASE:F12 -->
 ```
 
@@ -1169,7 +1169,7 @@ python3 scripts/canon_guard.py verify --snapshot "$SNAP"
 python3 scripts/canon_guard.py restore --snapshot "$SNAP" --confirm-ccb
 ```
 
-## Critério de sdoc-arch-0006-uc-v1esso desta rodada
+## Critério de sucesso desta rodada
 
 **Não é "implementar tudo".** É:
 
@@ -1219,7 +1219,7 @@ A Parte 0 (diagnóstico das cinco falhas do v3.0.0 e correções adotadas no v3.
 | (b) Contexto/origem | §11.1 | aplicada |
 | (c) Resolução de conflitos | §11.2 → Parte 0 | aplicada |
 | (d) Corpo de decisões/contratos | Partes 1–7 e 10 | aplicada |
-| (e) Critérios de aceite/testes | Parte 8 (critério de avanço) + "Critério de sdoc-arch-0006-uc-v1esso desta rodada" (fim da Parte 10) | aplicada |
+| (e) Critérios de aceite/testes | Parte 8 (critério de avanço) + "Critério de sucesso desta rodada" (fim da Parte 10) | aplicada |
 | (f) Rastreabilidade | §11.3 | aplicada |
 | (g) Fora de escopo (YAGNI) | Parte 9 (o que o documento proíbe expressamente) | aplicada |
 | (h) Changelog | §11.4 | aplicada (criada em TA-0031) |

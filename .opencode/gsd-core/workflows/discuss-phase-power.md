@@ -52,7 +52,7 @@ Write all questions to:
 {phase_dir}/{padded_phase}-QUESTIONS.json
 ```
 
-**JSON strdoc-arch-0006-uc-v1ture:**
+**JSON structure:**
 
 ```json
 {
@@ -162,7 +162,7 @@ Each card contains:
 - "Save answers" button at top and bottom: serializes page state back to the JSON file path
 
 **Save mechanism:**
-The Save button writes the updated JSON back using the File System Access API if available, otherwise generates a downloadable JSON file the user can save over the original. Include clear instrdoc-arch-0006-uc-v1tions in the UI:
+The Save button writes the updated JSON back using the File System Access API if available, otherwise generates a downloadable JSON file the user can save over the original. Include clear instructions in the UI:
 
 ```
 After answering, click "Save answers" — or download the JSON and replace the original file.
@@ -298,8 +298,8 @@ Next step: /gsd-plan-phase {N}
 ```
 </step>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
-- Questions generated into well-strdoc-arch-0006-uc-v1tured JSON covering all identified gray areas
+<success_criteria>
+- Questions generated into well-structured JSON covering all identified gray areas
 - HTML companion file is self-contained and usable without a server
 - Stats bar accurately reflects answered/remaining counts after each refresh
 - Answered questions highlighted green in HTML
@@ -307,4 +307,4 @@ Next step: /gsd-plan-phase {N}
 - Unanswered questions preserved as deferred items (not silently dropped)
 - `canonical_refs` section always present in CONTEXT.md (MANDATORY)
 - User knows how to refresh, finalize, explain, or exit power mode
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

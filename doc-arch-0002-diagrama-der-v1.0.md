@@ -66,8 +66,8 @@ workflow:
 | 4 | `categories` | 🏪 Catálogo | Categorias **MACRO de fornecedores** |
 | 5 | `suppliers` | 🏪 Catálogo | Fornecedores mockados |
 | 6 | `supplier_categories` | 🏪 Catálogo | **Pivô N:N** (fornecedor ↔ categorias) |
-| 7 | `proddoc-arch-0006-uc-v1ts` | 🏪 Catálogo | Produtos agnósticos a categoria |
-| 8 | `supplier_proddoc-arch-0006-uc-v1ts` | 🏪 Catálogo | Preços e estoque por fornecedor |
+| 7 | `products` | 🏪 Catálogo | Produtos agnósticos a categoria |
+| 8 | `supplier_products` | 🏪 Catálogo | Preços e estoque por fornecedor |
 
 ### Relacionamentos (Cardinalidades)
 
@@ -75,9 +75,9 @@ workflow:
 |--------|---|---------|---------------|------------|
 | `users` | → | `lists` | 1:N | FK `user_id` ON DELETE CASCADE |
 | `lists` | → | `list_items` | 1:N | FK `list_id` ON DELETE CASCADE |
-| `proddoc-arch-0006-uc-v1ts` | → | `list_items` | 1:N | FK `proddoc-arch-0006-uc-v1t_id` ON DELETE RESTRICT |
-| `suppliers` | → | `supplier_proddoc-arch-0006-uc-v1ts` | 1:N | FK `supplier_id` ON DELETE CASCADE |
-| `proddoc-arch-0006-uc-v1ts` | → | `supplier_proddoc-arch-0006-uc-v1ts` | 1:N | FK `proddoc-arch-0006-uc-v1t_id` ON DELETE RESTRICT |
+| `products` | → | `list_items` | 1:N | FK `product_id` ON DELETE RESTRICT |
+| `suppliers` | → | `supplier_products` | 1:N | FK `supplier_id` ON DELETE CASCADE |
+| `products` | → | `supplier_products` | 1:N | FK `product_id` ON DELETE RESTRICT |
 | `suppliers` | ↔ | `categories` | N:N | Via `supplier_categories` |
 
 ---
@@ -189,7 +189,7 @@ workflow:
         <mxCell id="li2" value="🔗 &lt;b&gt;list_id&lt;/b&gt; : INTEGER &lt;font color=&quot;#1565C0&quot;&gt;[FK, NN]&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblListItems">
           <mxGeometry x="0" y="60" width="340" height="25" as="geometry"/>
         </mxCell>
-        <mxCell id="li3" value="🔗 &lt;b&gt;proddoc-arch-0006-uc-v1t_id&lt;/b&gt; : INTEGER &lt;font color=&quot;#1565C0&quot;&gt;[FK, NN]&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblListItems">
+        <mxCell id="li3" value="🔗 &lt;b&gt;product_id&lt;/b&gt; : INTEGER &lt;font color=&quot;#1565C0&quot;&gt;[FK, NN]&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblListItems">
           <mxGeometry x="0" y="85" width="340" height="25" as="geometry"/>
         </mxCell>
         <mxCell id="li4" value="&lt;b&gt;quantity&lt;/b&gt; : INTEGER [NN]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblListItems">
@@ -199,7 +199,7 @@ workflow:
           <mxGeometry x="0" y="135" width="340" height="25" as="geometry"/>
         </mxCell>
 
-        <mxCell id="liConst" value="&lt;font color=&quot;#1565C0&quot;&gt;&lt;b&gt;CONSTRAINTS&lt;/b&gt;&lt;/font&gt;&lt;br&gt;PK(id)&lt;br&gt;FK(list_id) → lists(id) ON DELETE CASCADE&lt;br&gt;FK(proddoc-arch-0006-uc-v1t_id) → proddoc-arch-0006-uc-v1ts(id) ON DELETE RESTRICT&lt;br&gt;CHECK(quantity BETWEEN 1 AND 9999)&lt;br&gt;UNIQUE(list_id, proddoc-arch-0006-uc-v1t_id)" style="text;html=1;strokeColor=#1565C0;fillColor=#E3F2FD;align=left;verticalAlign=top;fontSize=10;spacingLeft=8;spacingTop=4;rounded=1;strokeWidth=1;" vertex="1" parent="tblListItems">
+        <mxCell id="liConst" value="&lt;font color=&quot;#1565C0&quot;&gt;&lt;b&gt;CONSTRAINTS&lt;/b&gt;&lt;/font&gt;&lt;br&gt;PK(id)&lt;br&gt;FK(list_id) → lists(id) ON DELETE CASCADE&lt;br&gt;FK(product_id) → products(id) ON DELETE RESTRICT&lt;br&gt;CHECK(quantity BETWEEN 1 AND 9999)&lt;br&gt;UNIQUE(list_id, product_id)" style="text;html=1;strokeColor=#1565C0;fillColor=#E3F2FD;align=left;verticalAlign=top;fontSize=10;spacingLeft=8;spacingTop=4;rounded=1;strokeWidth=1;" vertex="1" parent="tblListItems">
           <mxGeometry x="10" y="170" width="320" height="90" as="geometry"/>
         </mxCell>
 
@@ -266,51 +266,51 @@ workflow:
           <mxGeometry x="10" y="105" width="360" height="85" as="geometry"/>
         </mxCell>
 
-        <mxCell id="tblProddoc-arch-0006-uc-v1ts" value="&lt;b&gt;proddoc-arch-0006-uc-v1ts&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;&quot; color=&quot;#2E7D32&quot;&gt;(agnósticos à categoria)&lt;/font&gt;" style="swimlane;startSize=40;fillColor=#FFFFFF;strokeColor=#2E7D32;fontStyle=1;fontSize=13;rounded=1;arcSize=4;shadow=1;strokeWidth=2;swimlaneLine=0;fontColor=#1B5E20;" vertex="1" parent="groupCatalog">
+        <mxCell id="tblProducts" value="&lt;b&gt;products&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;&quot; color=&quot;#2E7D32&quot;&gt;(agnósticos à categoria)&lt;/font&gt;" style="swimlane;startSize=40;fillColor=#FFFFFF;strokeColor=#2E7D32;fontStyle=1;fontSize=13;rounded=1;arcSize=4;shadow=1;strokeWidth=2;swimlaneLine=0;fontColor=#1B5E20;" vertex="1" parent="groupCatalog">
           <mxGeometry x="450" y="290" width="380" height="280" as="geometry"/>
         </mxCell>
 
-        <mxCell id="p1" value="🔑 &lt;b&gt;id&lt;/b&gt; : INTEGER" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblProddoc-arch-0006-uc-v1ts">
+        <mxCell id="p1" value="🔑 &lt;b&gt;id&lt;/b&gt; : INTEGER" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblProducts">
           <mxGeometry x="0" y="45" width="380" height="25" as="geometry"/>
         </mxCell>
-        <mxCell id="p2" value="&lt;b&gt;name&lt;/b&gt; : TEXT [NN]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblProddoc-arch-0006-uc-v1ts">
+        <mxCell id="p2" value="&lt;b&gt;name&lt;/b&gt; : TEXT [NN]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblProducts">
           <mxGeometry x="0" y="70" width="380" height="25" as="geometry"/>
         </mxCell>
-        <mxCell id="p3" value="&lt;b&gt;unit&lt;/b&gt; : TEXT [NN] &lt;font color=&quot;#666&quot;&gt;(un, kg, L, m)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblProddoc-arch-0006-uc-v1ts">
+        <mxCell id="p3" value="&lt;b&gt;unit&lt;/b&gt; : TEXT [NN] &lt;font color=&quot;#666&quot;&gt;(un, kg, L, m)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblProducts">
           <mxGeometry x="0" y="95" width="380" height="25" as="geometry"/>
         </mxCell>
-        <mxCell id="p4" value="&lt;b&gt;active&lt;/b&gt; : BOOLEAN [NN, DEFAULT 1]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblProddoc-arch-0006-uc-v1ts">
+        <mxCell id="p4" value="&lt;b&gt;active&lt;/b&gt; : BOOLEAN [NN, DEFAULT 1]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblProducts">
           <mxGeometry x="0" y="120" width="380" height="25" as="geometry"/>
         </mxCell>
-        <mxCell id="p5" value="&lt;b&gt;created_at&lt;/b&gt; : DATETIME [NN]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblProddoc-arch-0006-uc-v1ts">
+        <mxCell id="p5" value="&lt;b&gt;created_at&lt;/b&gt; : DATETIME [NN]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblProducts">
           <mxGeometry x="0" y="145" width="380" height="25" as="geometry"/>
         </mxCell>
 
-        <mxCell id="pConst" value="&lt;font color=&quot;#2E7D32&quot;&gt;&lt;b&gt;CONSTRAINTS&lt;/b&gt;&lt;/font&gt;&lt;br&gt;PK(id)&lt;br&gt;INDEX(name)&lt;br&gt;Seed: 50 produtos&lt;br&gt;&lt;font color=&quot;#C62828&quot;&gt;⚠️ SEM FK para categories (correção v3.1)&lt;/font&gt;" style="text;html=1;strokeColor=#2E7D32;fillColor=#E8F5E9;align=left;verticalAlign=top;fontSize=10;spacingLeft=8;spacingTop=4;rounded=1;strokeWidth=1;" vertex="1" parent="tblProddoc-arch-0006-uc-v1ts">
+        <mxCell id="pConst" value="&lt;font color=&quot;#2E7D32&quot;&gt;&lt;b&gt;CONSTRAINTS&lt;/b&gt;&lt;/font&gt;&lt;br&gt;PK(id)&lt;br&gt;INDEX(name)&lt;br&gt;Seed: 50 produtos&lt;br&gt;&lt;font color=&quot;#C62828&quot;&gt;⚠️ SEM FK para categories (correção v3.1)&lt;/font&gt;" style="text;html=1;strokeColor=#2E7D32;fillColor=#E8F5E9;align=left;verticalAlign=top;fontSize=10;spacingLeft=8;spacingTop=4;rounded=1;strokeWidth=1;" vertex="1" parent="tblProducts">
           <mxGeometry x="10" y="180" width="360" height="90" as="geometry"/>
         </mxCell>
 
-        <mxCell id="tblSupplierProddoc-arch-0006-uc-v1ts" value="&lt;b&gt;supplier_proddoc-arch-0006-uc-v1ts&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;&quot; color=&quot;#2E7D32&quot;&gt;(preços e estoque por fornecedor)&lt;/font&gt;" style="swimlane;startSize=40;fillColor=#FFFFFF;strokeColor=#2E7D32;fontStyle=1;fontSize=13;rounded=1;arcSize=4;shadow=1;strokeWidth=2;swimlaneLine=0;fontColor=#1B5E20;" vertex="1" parent="groupCatalog">
+        <mxCell id="tblSupplierProducts" value="&lt;b&gt;supplier_products&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;&quot; color=&quot;#2E7D32&quot;&gt;(preços e estoque por fornecedor)&lt;/font&gt;" style="swimlane;startSize=40;fillColor=#FFFFFF;strokeColor=#2E7D32;fontStyle=1;fontSize=13;rounded=1;arcSize=4;shadow=1;strokeWidth=2;swimlaneLine=0;fontColor=#1B5E20;" vertex="1" parent="groupCatalog">
           <mxGeometry x="900" y="50" width="400" height="340" as="geometry"/>
         </mxCell>
 
-        <mxCell id="sp1" value="🔑🔗 &lt;b&gt;supplier_id&lt;/b&gt; : INTEGER &lt;font color=&quot;#2E7D32&quot;&gt;[FK, PK]&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblSupplierProddoc-arch-0006-uc-v1ts">
+        <mxCell id="sp1" value="🔑🔗 &lt;b&gt;supplier_id&lt;/b&gt; : INTEGER &lt;font color=&quot;#2E7D32&quot;&gt;[FK, PK]&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblSupplierProducts">
           <mxGeometry x="0" y="45" width="400" height="25" as="geometry"/>
         </mxCell>
-        <mxCell id="sp2" value="🔑🔗 &lt;b&gt;proddoc-arch-0006-uc-v1t_id&lt;/b&gt; : INTEGER &lt;font color=&quot;#2E7D32&quot;&gt;[FK, PK]&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblSupplierProddoc-arch-0006-uc-v1ts">
+        <mxCell id="sp2" value="🔑🔗 &lt;b&gt;product_id&lt;/b&gt; : INTEGER &lt;font color=&quot;#2E7D32&quot;&gt;[FK, PK]&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblSupplierProducts">
           <mxGeometry x="0" y="70" width="400" height="25" as="geometry"/>
         </mxCell>
-        <mxCell id="sp3" value="&lt;b&gt;price&lt;/b&gt; : DECIMAL(10,2) [NN]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblSupplierProddoc-arch-0006-uc-v1ts">
+        <mxCell id="sp3" value="&lt;b&gt;price&lt;/b&gt; : DECIMAL(10,2) [NN]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblSupplierProducts">
           <mxGeometry x="0" y="95" width="400" height="25" as="geometry"/>
         </mxCell>
-        <mxCell id="sp4" value="&lt;b&gt;stock&lt;/b&gt; : INTEGER [NN, DEFAULT 0]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblSupplierProddoc-arch-0006-uc-v1ts">
+        <mxCell id="sp4" value="&lt;b&gt;stock&lt;/b&gt; : INTEGER [NN, DEFAULT 0]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblSupplierProducts">
           <mxGeometry x="0" y="120" width="400" height="25" as="geometry"/>
         </mxCell>
-        <mxCell id="sp5" value="&lt;b&gt;active&lt;/b&gt; : BOOLEAN [NN, DEFAULT 1]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblSupplierProddoc-arch-0006-uc-v1ts">
+        <mxCell id="sp5" value="&lt;b&gt;active&lt;/b&gt; : BOOLEAN [NN, DEFAULT 1]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#333333;spacingLeft=8;" vertex="1" parent="tblSupplierProducts">
           <mxGeometry x="0" y="145" width="400" height="25" as="geometry"/>
         </mxCell>
 
-        <mxCell id="spConst" value="&lt;font color=&quot;#2E7D32&quot;&gt;&lt;b&gt;CONSTRAINTS&lt;/b&gt;&lt;/font&gt;&lt;br&gt;PK(supplier_id, proddoc-arch-0006-uc-v1t_id) — composta&lt;br&gt;FK(supplier_id) → suppliers(id) ON DELETE CASCADE&lt;br&gt;FK(proddoc-arch-0006-uc-v1t_id) → proddoc-arch-0006-uc-v1ts(id) ON DELETE RESTRICT&lt;br&gt;CHECK(price &amp;gt;= 0)&lt;br&gt;CHECK(stock &amp;gt;= 0)&lt;br&gt;Seed: ~300 preços (variação ±20%)" style="text;html=1;strokeColor=#2E7D32;fillColor=#E8F5E9;align=left;verticalAlign=top;fontSize=10;spacingLeft=8;spacingTop=4;rounded=1;strokeWidth=1;" vertex="1" parent="tblSupplierProddoc-arch-0006-uc-v1ts">
+        <mxCell id="spConst" value="&lt;font color=&quot;#2E7D32&quot;&gt;&lt;b&gt;CONSTRAINTS&lt;/b&gt;&lt;/font&gt;&lt;br&gt;PK(supplier_id, product_id) — composta&lt;br&gt;FK(supplier_id) → suppliers(id) ON DELETE CASCADE&lt;br&gt;FK(product_id) → products(id) ON DELETE RESTRICT&lt;br&gt;CHECK(price &amp;gt;= 0)&lt;br&gt;CHECK(stock &amp;gt;= 0)&lt;br&gt;Seed: ~300 preços (variação ±20%)" style="text;html=1;strokeColor=#2E7D32;fillColor=#E8F5E9;align=left;verticalAlign=top;fontSize=10;spacingLeft=8;spacingTop=4;rounded=1;strokeWidth=1;" vertex="1" parent="tblSupplierProducts">
           <mxGeometry x="10" y="180" width="380" height="110" as="geometry"/>
         </mxCell>
 
@@ -336,8 +336,8 @@ workflow:
           </mxGeometry>
         </mxCell>
 
-        <!-- proddoc-arch-0006-uc-v1ts 1:N list_items (cross-group) -->
-        <mxCell id="rel3" value="1 : N" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#1565C0;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#0D47A1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;curved=1;" edge="1" source="tblProddoc-arch-0006-uc-v1ts" target="tblListItems" parent="groupCatalog">
+        <!-- products 1:N list_items (cross-group) -->
+        <mxCell id="rel3" value="1 : N" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#1565C0;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#0D47A1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;curved=1;" edge="1" source="tblProducts" target="tblListItems" parent="groupCatalog">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
         <mxCell id="rel3t" value="&lt;b&gt;referencia&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=#FFFFFF;align=center;verticalAlign=middle;fontSize=10;fontColor=#0D47A1;rounded=1;spacingLeft=4;spacingRight=4;" vertex="1" connectable="0" parent="rel3">
@@ -346,8 +346,8 @@ workflow:
           </mxGeometry>
         </mxCell>
 
-        <!-- suppliers 1:N supplier_proddoc-arch-0006-uc-v1ts -->
-        <mxCell id="rel4" value="1 : N" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#2E7D32;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#1B5E20;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;curved=1;" edge="1" source="tblSuppliers" target="tblSupplierProddoc-arch-0006-uc-v1ts" parent="groupCatalog">
+        <!-- suppliers 1:N supplier_products -->
+        <mxCell id="rel4" value="1 : N" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#2E7D32;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#1B5E20;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;curved=1;" edge="1" source="tblSuppliers" target="tblSupplierProducts" parent="groupCatalog">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
         <mxCell id="rel4t" value="&lt;b&gt;vende&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=#FFFFFF;align=center;verticalAlign=middle;fontSize=10;fontColor=#1B5E20;rounded=1;spacingLeft=4;spacingRight=4;" vertex="1" connectable="0" parent="rel4">
@@ -356,8 +356,8 @@ workflow:
           </mxGeometry>
         </mxCell>
 
-        <!-- proddoc-arch-0006-uc-v1ts 1:N supplier_proddoc-arch-0006-uc-v1ts -->
-        <mxCell id="rel5" value="1 : N" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#2E7D32;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#1B5E20;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" source="tblProddoc-arch-0006-uc-v1ts" target="tblSupplierProddoc-arch-0006-uc-v1ts" parent="groupCatalog">
+        <!-- products 1:N supplier_products -->
+        <mxCell id="rel5" value="1 : N" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#2E7D32;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#1B5E20;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" source="tblProducts" target="tblSupplierProducts" parent="groupCatalog">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
         <mxCell id="rel5t" value="&lt;b&gt;ofertado por&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=#FFFFFF;align=center;verticalAlign=middle;fontSize=10;fontColor=#1B5E20;rounded=1;spacingLeft=4;spacingRight=4;" vertex="1" connectable="0" parent="rel5">
@@ -508,7 +508,7 @@ workflow:
 
 | v3.0 (incorreto) | v3.1 (corrigido) |
 |------------------|------------------|
-| `proddoc-arch-0006-uc-v1ts.category_id` FK → `categories` | ❌ **Removido** — produtos são agnósticos |
+| `products.category_id` FK → `categories` | ❌ **Removido** — produtos são agnósticos |
 | Categorias de produtos | ✅ Categorias de **FORNECEDORES** |
 | Relacionamento 1:N produto→categoria | ✅ N:N fornecedor↔categoria via `supplier_categories` |
 
@@ -527,7 +527,7 @@ workflow:
 
 - [x] 8 tabelas conforme especificação v3.1
 - [x] Tabela pivô `supplier_categories` presente (N:N)
-- [x] `proddoc-arch-0006-uc-v1ts` SEM FK para `categories` (correção conceitual)
+- [x] `products` SEM FK para `categories` (correção conceitual)
 - [x] Todas PKs, FKs, UNIQUE, CHECK visíveis
 - [x] Cardinalidades 1:N e N:N corretas
 - [x] Soft delete em `users` e `lists` (deleted_at)

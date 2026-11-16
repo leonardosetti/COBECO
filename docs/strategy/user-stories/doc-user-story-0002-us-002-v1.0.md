@@ -60,7 +60,7 @@ para **obter tokens de acesso (JWT) e usar o sistema autenticado**.
 
 ## 2. Critérios de Aceite — Formato Gherkin
 
-### Cenário 1: Login bem-sdoc-arch-0006-uc-v1edido
+### Cenário 1: Login bem-sucedido
 ```gherkin
 Dado que sou um usuário cadastrado com "nome_usuario" = "joao123" e "senha" = "senha123456"
 Quando faço POST /v1/auth/login com {"nome_usuario": "joao123", "senha": "senha123456"}
@@ -101,7 +101,7 @@ E bloqueia temporariamente o IP
 
 | # | Critério | Tipo | Automatizável? | Teste | Status |
 |---|----------|------|----------------|-------|--------|
-| AC-01 | Login sdoc-arch-0006-uc-v1esso → access_token (15min) + refresh_token cookie (7d) | Funcional | Sim | `test_login_sdoc-arch-0006-uc-v1esso.py` | ✅ |
+| AC-01 | Login sucesso → access_token (15min) + refresh_token cookie (7d) | Funcional | Sim | `test_login_sucesso.py` | ✅ |
 | AC-02 | Login falha senha errada → 401 | Funcional | Sim | `test_login_senha_errada.py` | ✅ |
 | AC-03 | Login falha usuário inexistente → 401 (mesma msg) | Segurança | Sim | `test_login_usuario_inexistente.py` | ✅ |
 | AC-04 | Rate limit 6/15min → 429 | Não-funcional | Sim | `test_login_rate_limit.py` | ✅ |
@@ -117,7 +117,7 @@ E bloqueia temporariamente o IP
 | TA-010 | Endpoint POST /v1/auth/login: validação, verificação bcrypt, geração JWT access+refresh | Backend | 4 | Fabrício | ✅ | `feat/UC-10-login-jwt` |
 | TA-011 | Cookie refresh_token: httpOnly, SameSite=Strict, Secure, max-age 7d | Backend | 2 | Fabrício | ✅ | `feat/UC-10-login-jwt` |
 | TA-012 | Rate limiting: middleware 6 tentativas/15min por IP (memória/Redis) | Backend | 3 | Fabrício | ✅ | `feat/UC-10-login-jwt` |
-| TA-013 | Testes unitários: sdoc-arch-0006-uc-v1esso, falhas, rate limit, JWT payload, cookie | Backend | 3 | Nicolas | ✅ | `feat/UC-10-login-jwt` |
+| TA-013 | Testes unitários: sucesso, falhas, rate limit, JWT payload, cookie | Backend | 3 | Nicolas | ✅ | `feat/UC-10-login-jwt` |
 | TA-014 | Página Login (tabs Cadastro/Login): form, validação, submit, armazenar access_token memória | Frontend | 4 | Eduardo | ✅ | `feat/UC-10-login-jwt` |
 | TA-014 | Redirect pós-login → Dashboard (ou página anterior) | Frontend | 1 | Eduardo | ✅ | `feat/UC-10-login-jwt` |
 

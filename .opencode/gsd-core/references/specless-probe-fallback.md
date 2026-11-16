@@ -109,7 +109,7 @@ fi
 rm -f "$REQS_JSON"
 # Exit-0-but-garbage guard: report must parse as JSON with { items[], coverage{} }.
 if ! printf '%s' "$COVERAGE" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{let r;try{r=JSON.parse(s)}catch{process.exit(1)}if(!r||!Array.isArray(r.items)||typeof r.coverage!=="object"||r.coverage===null)process.exit(1)})'; then
-  echo "ERROR: edge-probe proddoc-arch-0006-uc-v1ed an unparseable/malformed coverage report — refusing to proceed." >&2
+  echo "ERROR: edge-probe produced an unparseable/malformed coverage report — refusing to proceed." >&2
   exit 1
 fi
 # Zero-applicable guard: surface a likely classification miss loudly (spec-phase 5.5:277 shape).
@@ -122,7 +122,7 @@ fi
 **Edge `--auto` resolution rules (reuse spec-phase 5.5 verbatim, D-06):** auto-`resolved`
 (verification: explicit) where a defensible acceptance criterion can be written (→ a plain
 `must_haves.truths` string); else auto-`resolved` (verification: backstop) → author it as a
-**strdoc-arch-0006-uc-v1tured flat-scalar marker** `{ statement: <the check>,
+**structured flat-scalar marker** `{ statement: <the check>,
 verification: backstop }` in `must_haves.truths`, NOT a prose note (the verifier branches
 deterministically on the `verification: backstop` field; a parenthetical is unparseable — the #1110
 fragility; flat scalar `verification:` key, never a nested object, ADR-550 #1278). A `backstop` truth
@@ -140,7 +140,7 @@ this in-prompt. Full two-stage protocol, canon-referral rule, and status×verifi
 `/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/prohibition-probe.md` (do not inline it). Summary:
 
 - **Stage 1 — Recall (adversarial).** Per requirement: *"What could this feature silently become that
-  the author would NOT want, but the spec does not forbid?"* Over-proddoc-arch-0006-uc-v1e (~10 raw must-NOT candidates).
+  the author would NOT want, but the spec does not forbid?"* Over-produce (~10 raw must-NOT candidates).
 - **Stage 2 — Precision.** DROP routine-engineering (normal correctness/hygiene — owned by the edge
   probe or code review); KEEP values / safety / ethics (~2–3 survive).
 - **Canon-referral drop (ADR-550 D6).** A kept candidate that is canon security/compliance (OWASP /
@@ -161,13 +161,13 @@ Author the fallback report into `must_haves` with the SAME lift the SPEC path us
 changes (the fallback report, not the SPEC):
 
 - **Edges →** every resolved (verification: explicit) edge's acceptance criterion → `must_haves.truths` as a plain string;
-  every resolved (verification: backstop) edge → `must_haves.truths` as a strdoc-arch-0006-uc-v1tured `{ statement, verification: backstop }`
+  every resolved (verification: backstop) edge → `must_haves.truths` as a structured `{ statement, verification: backstop }`
   marker (NOT prose; #1110/#1278), which abstains → `human_needed` at verify time when unconfirmed
   (#1154); every `unresolved`/`unclassified` row → an explicit flagged assumption (never a silent drop).
 - **Prohibitions →** every kept prohibition → the `must_haves.prohibitions:` sibling block (NOT
   `truths`, ADR-550 D3) via the single `projectProhibitions` serializer (Hyrum — no second
   serializer), authored **descriptor-less** (no `check_*` scalar) so each disposes flagged-unverified.
 - **Section-level precedence:** a SPEC-supplied section is never re-run or overwritten — exactly one
-  proddoc-arch-0006-uc-v1er per section.
+  producer per section.
 - **No-silent-drop equality:** for each section, (# probe-surfaced items) == (# authored into
   `must_haves` + # surfaced as flagged assumptions).

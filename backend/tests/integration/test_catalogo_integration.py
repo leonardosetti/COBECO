@@ -24,7 +24,7 @@ class TestCatalogoIntegration:
         data = response.json()
         assert isinstance(data, list)
         assert len(data) >= 11  # Seed tem 11 categorias
-        
+
         # Verifica estrutura
         cat = data[0]
         assert "id" in cat
@@ -39,7 +39,7 @@ class TestCatalogoIntegration:
         data = response.json()
         assert isinstance(data, list)
         assert len(data) >= 10  # Seed tem 10 fornecedores
-        
+
         forn = data[0]
         assert "id" in forn
         assert "nome" in forn
@@ -55,13 +55,11 @@ class TestCatalogoIntegration:
         categorias = cat_resp.json()
         cat_ids = [c["id"] for c in categorias[:2]]
 
-        response = await client.get(
-            f"/catalogo/fornecedores?categorias={cat_ids[0]},{cat_ids[1]}"
-        )
+        response = await client.get(f"/catalogo/fornecedores?categorias={cat_ids[0]},{cat_ids[1]}")
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
-        
+
         # Todos fornecedores retornados devem ter pelo menos uma das categorias
         for forn in data:
             forn_cat_ids = [c["id"] for c in forn.get("categorias", [])]
@@ -76,7 +74,7 @@ class TestCatalogoIntegration:
         data = response.json()
         assert isinstance(data, list)
         assert len(data) <= 5
-        
+
         if data:
             prod = data[0]
             assert "id" in prod
@@ -106,6 +104,7 @@ class TestCatalogoIntegration:
         assert isinstance(data, list)
         assert len(data) >= 50  # Seed tem 50 produtos
 
+
 class TestCatalogoPrefiltroComparacao:
     """Testes para pré-filtro por categorias na comparação (RF12, UC3)"""
 
@@ -115,7 +114,7 @@ class TestCatalogoPrefiltroComparacao:
         response = await client.get("/catalogo/fornecedores")
         assert response.status_code == 200
         data = response.json()
-        
+
         for forn in data:
             assert "categorias" in forn
             assert isinstance(forn["categorias"], list)

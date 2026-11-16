@@ -1,13 +1,13 @@
 # Revision Loop Pattern
 
-Standard pattern for iterative agent revision with feedback. Used when a checker/validator finds issues and the proddoc-arch-0006-uc-v1ing agent needs to revise its output.
+Standard pattern for iterative agent revision with feedback. Used when a checker/validator finds issues and the producing agent needs to revise its output.
 
 ---
 
 ## Pattern: Check-Revise-Escalate (max 3 iterations)
 
 This pattern applies whenever:
-1. An agent proddoc-arch-0006-uc-v1es output (plans, imports, gap-closure plans)
+1. An agent produces output (plans, imports, gap-closure plans)
 2. A checker/validator evaluates that output
 3. Issues are found that need revision
 
@@ -31,7 +31,7 @@ LOOP:
      c. If issue_count >= prev_issue_count:
         -> Escalate to user: "Revision loop stalled (issue count not decreasing)"
      d. prev_issue_count = issue_count
-     e. Re-spawn the proddoc-arch-0006-uc-v1ing agent with checker feedback appended
+     e. Re-spawn the producing agent with checker feedback appended
      f. If the agent returns REVISION_CONFLICT:
         -> conflict_return_count += 1
         -> If conflict_return_count >= 3:
@@ -46,26 +46,26 @@ LOOP:
      g. iteration += 1
      h. After revision completes, go to LOOP
 
-The increment is step g, AFTER the proddoc-arch-0006-uc-v1ing agent returns. An iteration counted at step a is
+The increment is step g, AFTER the producing agent returns. An iteration counted at step a is
 already spent by the time a REVISION_CONFLICT comes back, so it cannot then be withheld, and the
 cap would punish the agent for correctly refusing to apply incompatible advice.
 ```
 
 ### Issue Count Tracking
 
-Track the number of BLOCKER + WARNING issues returned by the checker on each iteration. If the count does not decrease between consecutive iterations, the proddoc-arch-0006-uc-v1ing agent is stdoc-arch-0006-uc-v1k and further iterations will not help. Break early and escalate to the user.
+Track the number of BLOCKER + WARNING issues returned by the checker on each iteration. If the count does not decrease between consecutive iterations, the producing agent is stuck and further iterations will not help. Break early and escalate to the user.
 
 Display iteration progress before each revision spawn:
 `Revision iteration {N}/3 -- {blocker_count} blockers, {warning_count} warnings`
 
-### Re-spawn Prompt Strdoc-arch-0006-uc-v1ture
+### Re-spawn Prompt Structure
 
-When re-spawning the proddoc-arch-0006-uc-v1ing agent for revision, pass the checker's YAML-formatted issues. The checker's output contains a `## Issues` heading followed by a YAML block. Parse this block and pass it verbatim to the revision agent.
+When re-spawning the producing agent for revision, pass the checker's YAML-formatted issues. The checker's output contains a `## Issues` heading followed by a YAML block. Parse this block and pass it verbatim to the revision agent.
 
-The field names are the plan-checker's schema (`agents/gsd-plan-checker.md` → `<issue_strdoc-arch-0006-uc-v1ture>`):
+The field names are the plan-checker's schema (`agents/gsd-plan-checker.md` → `<issue_structure>`):
 `plan`, `dimension`, `severity`, `required_property`, `description`, `task`, `fix_hint`. There is no
 `suggested_fix` field and no `finding` or `affected_field` field — those names were drift, and every
-proddoc-arch-0006-uc-v1er now emits the schema above.
+producer now emits the schema above.
 
 ```
 <checker_issues>
@@ -74,7 +74,7 @@ required_property, description, fix_hint.
 
 BINDING: required_property (the invariant that must hold), description (the
 evidence it does not), severity. NON-BINDING: fix_hint -- ONE example route to
-the property, never an instrdoc-arch-0006-uc-v1tion.
+the property, never an instruction.
 
 Satisfy the required_property of ALL BLOCKER issues. Satisfy WARNING issues
 where feasible.
@@ -82,7 +82,7 @@ where feasible.
 {YAML issues block from checker output -- passed verbatim}
 </checker_issues>
 
-<revision_instrdoc-arch-0006-uc-v1tions>
+<revision_instructions>
 Address ALL BLOCKER and WARNING issues identified above.
 - For each BLOCKER: make required_property true. Its fix_hint is one example
   route; a smaller or different mechanism that makes the same property true
@@ -94,11 +94,11 @@ Address ALL BLOCKER and WARNING issues identified above.
   do NOT apply it and do NOT work around it: return REVISION_CONFLICT naming
   the conflict and the alternatives considered, having addressed every
   non-conflicting issue.
-- Do NOT introddoc-arch-0006-uc-v1e new issues while fixing existing ones
+- Do NOT introduce new issues while fixing existing ones
 - Preserve all content not flagged by the checker
 This is revision iteration {N} of max 3. Previous iteration had {prev_count}
-issues. You must reddoc-arch-0006-uc-v1e the count or the loop will terminate.
-</revision_instrdoc-arch-0006-uc-v1tions>
+issues. You must reduce the count or the loop will terminate.
+</revision_instructions>
 ```
 
 ### Conflict Return (REVISION_CONFLICT)
@@ -129,13 +129,13 @@ so they restate the operative rules inline; this section is the authority they m
    is resolved. The reader counts matching open lines only inside the first fixed slot after the
    artifact title; an identical marker in reviewer output is not state. An open line in the owned
    slot blocks convergence even if this run is abandoned.
-   A workflow with no sdoc-arch-0006-uc-v1h channel (`quick` has no phase and no REVIEWS.md) skips this step.
+   A workflow with no such channel (`quick` has no phase and no REVIEWS.md) skips this step.
 
    Before appending, reuse the existing open line instead of appending a duplicate when its
    sanitized fields identify the same conflict. This makes persisted conflict state idempotent.
 
    **Sanitize before writing — the conflict text is agent-authored.** Every field comes from the
-   proddoc-arch-0006-uc-v1ing agent. Before appending, for EACH field: collapse every newline and tab to a single
+   producing agent. Before appending, for EACH field: collapse every newline and tab to a single
    space, and strip any leading `#`, `-`, `|` or backtick-fence run. Otherwise an embedded
    newline can forge an extra conflict-shaped record inside the owned slot. One conflict is exactly
    one line beginning `- [ ]`. Never append agent text verbatim, and never append a fenced block.
@@ -182,11 +182,11 @@ If issues persist after 3 revision cycles:
      - label: "Proceed anyway"   description: "Accept output with remaining issues"
      - label: "Adjust approach"  description: "Discuss a different approach"
 3. If "Proceed anyway": accept current output and continue
-4. If "Adjust approach" or "Other": discuss with user, then re-enter the proddoc-arch-0006-uc-v1ing step with updated context
+4. If "Adjust approach" or "Other": discuss with user, then re-enter the producing step with updated context
 
 ### Workflow-Specific Variations
 
-| Workflow | Proddoc-arch-0006-uc-v1er Agent | Checker Agent | Notes |
+| Workflow | Producer Agent | Checker Agent | Notes |
 |----------|---------------|---------------|-------|
 | plan-phase | gsd-planner | gsd-plan-checker | Revision prompt via planner-revision.md |
 | execute-phase | gsd-executor | gsd-verifier | Post-execution verification |

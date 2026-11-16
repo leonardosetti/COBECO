@@ -13,6 +13,7 @@ router = APIRouter(tags=["Perfil"])
 # Este router existe para manter a estrutura modular da Clean Architecture
 # e pode ser expandido com endpoints específicos de perfil no futuro
 
+
 @router.get("/health")
 async def perfil_health():
     return {"status": "ok", "module": "perfil"}

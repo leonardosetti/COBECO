@@ -60,7 +60,7 @@ para **manter meus dados atualizados e seguro**.
 
 ## 2. Critérios de Aceite — Gherkin
 
-### Cenário 1: Alterar email com sdoc-arch-0006-uc-v1esso
+### Cenário 1: Alterar email com sucesso
 ```gherkin
 Dado que sou usuário autenticado com email "antigo@email.com"
 Quando faço PUT /v1/perfil com {"email": "novo@email.com", "senha_atual": "senha123456"}
@@ -72,7 +72,7 @@ E invalida refresh_token atual (força re-login por segurança)
 E toast "Perfil atualizado. Faça login novamente."
 ```
 
-### Cenário 2: Alterar nome com sdoc-arch-0006-uc-v1esso
+### Cenário 2: Alterar nome com sucesso
 ```gherkin
 Dado que sou usuário autenticado
 Quando faço PUT /v1/perfil com {"nome": "João Silva Santos", "senha_atual": "senha123456"}
@@ -81,7 +81,7 @@ E retorna 200 com perfil atualizado
 E invalida refresh_token
 ```
 
-### Cenário 3: Alterar senha com sdoc-arch-0006-uc-v1esso
+### Cenário 3: Alterar senha com sucesso
 ```gherkin
 Dado que sou usuário autenticado
 Quando faço PUT /v1/perfil com {"senha_atual": "senha123456", "nova_senha": "novaSenha789", "confirmar_nova_senha": "novaSenha789"}

@@ -14,7 +14,7 @@ role: None
 ---
 
 <role>
-GSD doc classifier. Read ONE document, write a strdoc-arch-0006-uc-v1tured classification to
+GSD doc classifier. Read ONE document, write a structured classification to
 `.planning/intel/classifications/`. Spawned by `/gsd-ingest-docs` in parallel with siblings —
 each handles one file. Output is consumed by `gsd-doc-synthesizer`.
 
@@ -37,18 +37,18 @@ weaker sources. Fidelity here is load-bearing for the entire ingest pipeline.
 <taxonomy>
 **ADR** — one architectural/technical decision, locked once made. Hallmarks: `Status:
 Accepted|Proposed|Superseded`, numbered filename (`0001-`, `ADR-001-`), `Context / Decision /
-Consequences` sections. Proddoc-arch-0006-uc-v1es **locked decisions** (highest precedence by default).
+Consequences` sections. Produces **locked decisions** (highest precedence by default).
 
-**PRD** — what the proddoc-arch-0006-uc-v1t/feature should do, user/business perspective. Hallmarks: user
-stories, acceptance criteria, sdoc-arch-0006-uc-v1cess metrics, goals/non-goals, "as a user..." language.
-Proddoc-arch-0006-uc-v1es **requirements** (mid precedence).
+**PRD** — what the product/feature should do, user/business perspective. Hallmarks: user
+stories, acceptance criteria, success metrics, goals/non-goals, "as a user..." language.
+Produces **requirements** (mid precedence).
 
 **SPEC** — how something is built: APIs, schemas, contracts, non-functional requirements.
 Hallmarks: endpoint tables, request/response schemas, SLOs, protocol definitions, data models.
-Proddoc-arch-0006-uc-v1es **technical constraints** (above PRD, below ADR).
+Produces **technical constraints** (above PRD, below ADR).
 
 **DOC** — supporting context: guides, tutorials, design rationales, onboarding, runbooks.
-Prose-heavy, no decision or requirement. Proddoc-arch-0006-uc-v1es **context only** (lowest precedence).
+Prose-heavy, no decision or requirement. Produces **context only** (lowest precedence).
 
 **UNKNOWN** — cannot be confidently placed above. Record observed signals; let the synthesizer
 or user decide.
@@ -184,11 +184,11 @@ Do NOT:
 - Use markdown tables or prose in your JSON output — stick to the schema
 </anti_patterns>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Exactly one JSON file written to OUTPUT_DIR
 - [ ] Schema matches the template above, all required fields present
 - [ ] Confidence level reflects the actual signal strength
 - [ ] `locked` is true only for Accepted ADRs
 - [ ] Confirmation line returned to orchestrator (≤1 line)
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>
 </output>

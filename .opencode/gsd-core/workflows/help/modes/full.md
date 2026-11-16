@@ -52,7 +52,7 @@ One command takes you from idea to ready-for-planning:
 - Deep questioning to understand what you're building
 - Optional domain research (spawns 4 parallel researcher agents)
 - Requirements definition with v1/v2/out-of-scope scoping
-- Roadmap creation with phase breakdown and sdoc-arch-0006-uc-v1cess criteria
+- Roadmap creation with phase breakdown and success criteria
 
 Creates all `.planning/` artifacts:
 - `PROJECT.md` — vision and requirements
@@ -83,7 +83,7 @@ Map an existing codebase for brownfield projects.
 
 - Analyzes codebase with parallel Explore agents
 - Creates `.planning/codebase/` with 7 focused documents
-- Covers stack, architecture, strdoc-arch-0006-uc-v1ture, conventions, testing, integrations, concerns
+- Covers stack, architecture, structure, conventions, testing, integrations, concerns
 - Usually reached through `/gsd-onboard` for first-time existing-codebase setup; run directly to refresh or focus a map
 
 Usage: `/gsd-map-codebase`
@@ -129,7 +129,7 @@ Create detailed execution plan for a specific phase.
 
 - Generates `.planning/phases/XX-phase-name/XX-YY-PLAN.md`
 - Breaks phase into concrete, actionable tasks
-- Includes verification criteria and sdoc-arch-0006-uc-v1cess measures
+- Includes verification criteria and success measures
 - Multiple plans per phase supported (XX-01, XX-02, etc.)
 
 Usage: `/gsd-plan-phase 1`
@@ -227,7 +227,7 @@ Add new phase to end of current milestone.
 
 - Appends to ROADMAP.md
 - Uses next sequential number
-- Updates phase directory strdoc-arch-0006-uc-v1ture
+- Updates phase directory structure
 
 Usage: `/gsd-phase "Add admin dashboard"`
 
@@ -368,7 +368,7 @@ Usage: `/gsd-spike --quick "test if pdfjs extracts tables"`
 Rapidly sketch UI/design ideas using throwaway HTML mockups with multi-variant exploration.
 
 - Conversational mood/direction intake before building
-- Each sketch proddoc-arch-0006-uc-v1es 2-3 variants as tabbed HTML pages
+- Each sketch produces 2-3 variants as tabbed HTML pages
 - User compares variants, cherry-picks elements, iterates
 - Shared CSS theme system compounds across sketches
 - Saves to `.planning/sketches/` with MANIFEST.md tracking
@@ -394,7 +394,7 @@ Package sketch design findings into a persistent project skill.
 
 - Curates each sketch one-at-a-time (include/exclude/partial/revisit)
 - Groups findings by design area
-- Generates `./.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/skills/sketch-findings-[project]/` with design decisions, CSS patterns, HTML strdoc-arch-0006-uc-v1tures
+- Generates `./.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/skills/sketch-findings-[project]/` with design decisions, CSS patterns, HTML structures
 - Writes summary to `.planning/sketches/WRAP-UP-SUMMARY.md`
 - Adds auto-load routing line to project doc-agents-0001-agents-canon.md
 
@@ -403,10 +403,10 @@ Usage: `/gsd-sketch --wrap-up`
 ### Capturing Ideas, Notes, and Todos
 
 **`/gsd-capture [description]`**
-Capture an idea or task as a strdoc-arch-0006-uc-v1tured todo from current conversation.
+Capture an idea or task as a structured todo from current conversation.
 
 - Extracts context from conversation (or uses provided description)
-- Creates strdoc-arch-0006-uc-v1tured todo file in `.planning/todos/pending/`
+- Creates structured todo file in `.planning/todos/pending/`
 - Infers area from file paths for grouping
 - Checks for duplicates before creating
 - Updates STATE.md todo count
@@ -419,7 +419,7 @@ Zero-friction note capture — one command, instant save, no questions.
 
 - Saves timestamped note to `.planning/notes/` (or `/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/notes/` globally)
 - Three subcommands: append (default), list, promote
-- Promote converts a note into a strdoc-arch-0006-uc-v1tured todo
+- Promote converts a note into a structured todo
 - Works without a project (falls back to global scope)
 
 Usage: `/gsd-capture --note refactor the hook system`
@@ -481,9 +481,9 @@ Usage: `/gsd-ship 4` or `/gsd-ship 4 --draft`
 Cross-AI peer review — invoke external AI CLIs to independently review phase plans.
 
 - Detects available CLIs (claude, codex, coderabbit, agy)
-- Each CLI reviews plans independently with the same strdoc-arch-0006-uc-v1tured prompt
+- Each CLI reviews plans independently with the same structured prompt
 - CodeRabbit reviews the current git diff (not a prompt) — may take up to 5 minutes
-- Proddoc-arch-0006-uc-v1es REVIEWS.md with per-reviewer feedback and consensus summary
+- Produces REVIEWS.md with per-reviewer feedback and consensus summary
 - Feed reviews back into planning: `/gsd-plan-phase N --reviews`
 
 Usage: `/gsd-review --phase 3 --all`
@@ -525,7 +525,7 @@ Usage: `/gsd-capture --backlog "real-time notifications when events ship"`
 Cross-phase audit of all outstanding UAT and verification items.
 - Scans every phase for pending, skipped, blocked, and human_needed items
 - Cross-references against codebase to detect stale documentation
-- Proddoc-arch-0006-uc-v1es prioritized human test plan grouped by testability
+- Produces prioritized human test plan grouped by testability
 - Use before starting a new milestone to clear verification debt
 
 Usage: `/gsd-audit-uat`
@@ -588,7 +588,7 @@ Archive accumulated phase directories from completed milestones.
 - Identifies phases from completed milestones still in `.planning/phases/`
 - Shows dry-run summary before moving anything
 - Moves phase dirs to `.planning/milestones/v{X.Y}-phases/`
-- Use after multiple milestones to reddoc-arch-0006-uc-v1e `.planning/phases/` clutter
+- Use after multiple milestones to reduce `.planning/phases/` clutter
 
 Usage: `/gsd-cleanup`
 
@@ -631,7 +631,7 @@ The commands above cover the most common day-to-day flows. Every command listed 
 ### Discovery & Specification
 
 - **`/gsd-explore`** — Socratic ideation and idea routing. Think through ideas before committing to plans.
-- **`/gsd-spec-phase <phase> [--auto] [--text]`** — Clarify WHAT a phase delivers with ambiguity scoring; proddoc-arch-0006-uc-v1es a SPEC.md before discuss-phase.
+- **`/gsd-spec-phase <phase> [--auto] [--text]`** — Clarify WHAT a phase delivers with ambiguity scoring; produces a SPEC.md before discuss-phase.
 - **`/gsd-ai-integration-phase [phase]`** — Generate an AI-SPEC.md design contract for phases that involve building AI systems.
 - **`/gsd-ui-phase [phase]`** — Generate UI design contract (UI-SPEC.md) for frontend phases.
 - **`/gsd-import --from <filepath> | --from-gsd2`** — Ingest external plans with conflict detection, or reverse-migrate a GSD-2 (`.gsd/`) project back to GSD v1 (`.planning/`) format.
@@ -650,9 +650,9 @@ The commands above cover the most common day-to-day flows. Every command listed 
 - **`/gsd-secure-phase [phase]`** — Retroactively verify threat mitigations for a completed phase.
 - **`/gsd-validate-phase [phase]`** — Retroactively audit and fill Nyquist validation gaps for a completed phase.
 - **`/gsd-ui-review [phase]`** — Retroactive 6-pillar visual audit of implemented frontend code.
-- **`/gsd-eval-review [phase]`** — Audit an executed AI phase's evaluation coverage and proddoc-arch-0006-uc-v1e an EVAL-REVIEW.md remediation plan.
+- **`/gsd-eval-review [phase]`** — Audit an executed AI phase's evaluation coverage and produce an EVAL-REVIEW.md remediation plan.
 - **`/gsd-audit-fix --source <audit-uat> [--severity medium|high|all] [--max N] [--dry-run]`** — Autonomous audit-to-fix pipeline: find issues, classify, fix, test, commit.
-- **`/gsd-add-tests <phase> [additional instrdoc-arch-0006-uc-v1tions]`** — Generate tests for a completed phase based on UAT criteria and implementation.
+- **`/gsd-add-tests <phase> [additional instructions]`** — Generate tests for a completed phase based on UAT criteria and implementation.
 
 ### Diagnostics & Maintenance
 
@@ -694,7 +694,7 @@ These six skills exist primarily for the model to perform two-stage hierarchical
 - **`/gsd-quality`** — Quality-gate routing (code review, debug, audit, security, eval, ui).
 - **`/gsd-workflow`** — Phase-pipeline routing (discuss, plan, execute, verify, phase, progress).
 
-## Files & Strdoc-arch-0006-uc-v1ture
+## Files & Structure
 
 ```text
 .planning/

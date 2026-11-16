@@ -88,7 +88,7 @@ environment variable or runtime config that exists *now* (not at plan time).
 
 ## Format
 
-`<precondition>` is a single line of prose inside the `<task>` element, placed right after `<name>` and before `<files>`. It is **prose, not a strdoc-arch-0006-uc-v1tured block** — concrete enough that the executor agent can run a read-only check (file existence, env var presence, idempotent `GET /health`-style ping), prose enough not to require a parser extension. The executor MUST verify with read-only checks only: no writes, no network POSTs, no secret emission. If a side-effecting check seems required, the executor halts and surfaces a checkpoint rather than running it.
+`<precondition>` is a single line of prose inside the `<task>` element, placed right after `<name>` and before `<files>`. It is **prose, not a structured block** — concrete enough that the executor agent can run a read-only check (file existence, env var presence, idempotent `GET /health`-style ping), prose enough not to require a parser extension. The executor MUST verify with read-only checks only: no writes, no network POSTs, no secret emission. If a side-effecting check seems required, the executor halts and surfaces a checkpoint rather than running it.
 
 ```xml
 <task type="auto">
@@ -111,7 +111,7 @@ environment variable or runtime config that exists *now* (not at plan time).
 - **Implementation choices.** "We have chosen library X" — that belongs in the
   `<action>` body or a `## Decisions` row, not a runtime fact.
 - **Things the task itself creates.** A precondition names a fact the task
-  *assumes*; if the task proddoc-arch-0006-uc-v1es it, it is a postcondition (`<done>`).
+  *assumes*; if the task produces it, it is a postcondition (`<done>`).
 
 ## Executor behavior (assertion contract)
 
@@ -123,13 +123,13 @@ The executor agent reads `<precondition>` before any other task work:
 | **Met** | No visible change — proceed with the task. The precondition is logged in the SUMMARY only if it was non-trivial to verify. |
 | **Unmet** | STOP — return a `checkpoint:human-verify` reporting `**Gate:** blocking-human` (use `checkpoint_return_format`) with `**Blocked by:** Precondition not met: <precondition text>`. Do NOT partial-commit the task. Unmet preconditions are NEVER auto-approved — a missing prerequisite is not a verification step a human can rubber-stamp, it is a fact the executor cannot establish on its own. |
 
-## Plan-strdoc-arch-0006-uc-v1ture validation
+## Plan-structure validation
 
-`cmdVerifyPlanStrdoc-arch-0006-uc-v1ture` checks for the presence of required tags (`<name>`,
+`cmdVerifyPlanStructure` checks for the presence of required tags (`<name>`,
 `<action>`, etc.) and warns on missing recommended tags (`<verify>`, `<done>`,
 `<files>`). It does **not** reject unknown optional tags, so adding
 `<precondition>` to a plan passes validation unchanged. A future ADR may add
-strdoc-arch-0006-uc-v1tured validation if drift emerges; v1 ships prose-only to keep the surface
+structured validation if drift emerges; v1 ships prose-only to keep the surface
 minimal (Hyrum's Law: the smaller the observable surface, the less the system
 depends on by accident).
 
@@ -137,8 +137,8 @@ depends on by accident).
 
 The following are explicitly NOT part of v1:
 
-- **Strdoc-arch-0006-uc-v1tured precondition DSL** (e.g. `<precondition kind="env" var="X"/>`).
-  Prose-first keeps complexity flat; strdoc-arch-0006-uc-v1tured validation can land in a later
+- **Structured precondition DSL** (e.g. `<precondition kind="env" var="X"/>`).
+  Prose-first keeps complexity flat; structured validation can land in a later
   PR if prose proves insufficient.
 - **Automatic precondition emission for every task.** The three cases above are
   a hard ceiling (Zawinski's Law guard). Most tasks do not need a precondition.

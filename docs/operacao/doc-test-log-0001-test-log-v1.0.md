@@ -159,7 +159,7 @@ workflow:
 | **npm audit** | 0 Critical/High | 🟡 Pendente |
 | **TypeScript strict** | 0 errors | ✅ Configurado |
 
-### 3.2 Test Infrastrdoc-arch-0006-uc-v1ture
+### 3.2 Test Infrastructure
 
 | Componente | Versão | Status |
 |------------|--------|--------|

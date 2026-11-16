@@ -19,7 +19,7 @@ milestone = bracket integer; dots = phase-levels; one hyphen = plan; no 'Phase' 
 <!-- PHASE-ID-CARD:END -->
 
 The display form is `[PROJECT.MM] PP[.SS][-LL]`: the bracket carries the
-project and milestone, dots join phase levels, and the single hyphen introddoc-arch-0006-uc-v1es
+project and milestone, dots join phase levels, and the single hyphen introduces
 the optional plan. A phase directory encodes the same identity without brackets:
 `PROJECT.MM-PP[.SS]-slug/`.
 

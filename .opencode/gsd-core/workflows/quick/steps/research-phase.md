@@ -46,7 +46,7 @@ This is a quick task, not a full phase. Research should be concise and targeted:
 3. Integration points with existing codebase
 4. Any constraints or gotchas worth knowing before planning
 
-Do NOT proddoc-arch-0006-uc-v1e a full domain survey. Target 1-2 pages of actionable findings.
+Do NOT produce a full domain survey. Target 1-2 pages of actionable findings.
 </focus>
 
 <output>
@@ -67,4 +67,4 @@ After researcher returns:
 1. Verify research exists at `${QUICK_DIR}/${quick_id}-RESEARCH.md`
 2. Report: "Research complete: ${QUICK_DIR}/${quick_id}-RESEARCH.md"
 
-If research file not found, warn but continue: "Research agent did not proddoc-arch-0006-uc-v1e output — proceeding to planning without research."
+If research file not found, warn but continue: "Research agent did not produce output — proceeding to planning without research."

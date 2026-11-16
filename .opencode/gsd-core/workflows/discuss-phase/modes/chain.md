@@ -24,7 +24,7 @@ Apply response_language to all user-facing prose — narration between tool call
 
 2. **Sync chain flag with intent** — if user invoked manually (no `--auto`
    and no `--chain`), clear the ephemeral chain flag from any previous
-   interrupted `--auto` chain. This does NOT todoc-arch-0006-uc-v1h `workflow.auto_advance`
+   interrupted `--auto` chain. This does NOT touch `workflow.auto_advance`
    (the user's persistent settings preference):
    ```bash
 IFS= read -rd '' GSD_ARGS <<'GSD_ARGS_END_9e7c8502c65183f4f3ea587888010f02' || true
@@ -71,7 +71,7 @@ _GSD_SHIM_NAME="gsd-tools.cjs"; _GSD_RUNTIME_ROOT="${RUNTIME_DIR:-$(git rev-pars
 
 6. **Handle plan-phase return:**
 
-   - **PHASE COMPLETE** → Full chain sdoc-arch-0006-uc-v1ceeded. Display:
+   - **PHASE COMPLETE** → Full chain succeeded. Display:
      ```
 ### GSD ► PHASE ${PHASE} COMPLETE
 

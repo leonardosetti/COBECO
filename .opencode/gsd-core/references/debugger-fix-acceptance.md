@@ -5,7 +5,7 @@ accepting a fix that merely greens the test.
 
 ## Why this exists
 
-`fix_and_verify`'s operational sdoc-arch-0006-uc-v1cess signal — "the failing test now passes" —
+`fix_and_verify`'s operational success signal — "the failing test now passes" —
 is gameable. Automated Program Repair research (Smith et al., FSE 2015; Qi et
 al., ISSTA 2015) found APR patches routinely overfit: ~98% of "plausible"
 GenProg patches were functionality-deleting no-ops that vacuously satisfy a weak
@@ -23,7 +23,7 @@ A fix is accepted only when **all applicable signals** agree. Any one failing
 signal (that is not a justified technical-debt escape — see below) rejects the
 fix and returns `## FIX REJECTED BY GUARDRAIL`.
 
-1. **Target test greens** — the regression test that reproddoc-arch-0006-uc-v1ed the bug now
+1. **Target test greens** — the regression test that reproduced the bug now
    passes. (Existing bar; the driving test.)
 
 2. **Mutation check** — run Stryker scoped to the changed line(s). The
@@ -39,7 +39,7 @@ fix and returns `## FIX REJECTED BY GUARDRAIL`.
    "98% were deletions" failure mode.
 
 4. **Adjacent / held-out tests green** — the existing regression-testing step,
-   made a hard gate. Run tests todoc-arch-0006-uc-v1hing the changed file's import graph. Any
+   made a hard gate. Run tests touching the changed file's import graph. Any
    newly-broken neighbor **rejects** the fix.
 
 5. **Revert-and-reconfirm** (Agans Rule 9 — "If you didn't fix it, it ain't
@@ -61,16 +61,16 @@ auditable); a skipped signal is never silently passed.
 | Signal | When unavailable | Behavior |
 |---|---|---|
 | 2. Mutation check | no Stryker configured / Stryker absent / not configured | **skip** with a logged note (`mutation_check: skipped, reason`) — never assume pass |
-| 4. Adjacent tests | no test suite todoc-arch-0006-uc-v1hing the import graph | skip with a logged note |
-| 1, 3, 5 | no test suite at all | guardrail **reddoc-arch-0006-uc-v1es** to signals 3 + 5 (no-op/deletion detector + revert-and-reconfirm) |
+| 4. Adjacent tests | no test suite touching the import graph | skip with a logged note |
+| 1, 3, 5 | no test suite at all | guardrail **reduces** to signals 3 + 5 (no-op/deletion detector + revert-and-reconfirm) |
 | 1, 3, 5 | no test suite AND no repro | cannot verify at all → return a `CHECKPOINT REACHED` to the human; do not silently pass |
 
-The reddoc-arch-0006-uc-v1tion path matters: with **no test suite**, the guardrail still bites via
+The reduction path matters: with **no test suite**, the guardrail still bites via
 the no-op/deletion detector (signal 3) and revert-and-reconfirm (signal 5).
 
 ## Per-signal results recorded to the debug file
 
-Every signal's result is written to `Resolution.verification` as a strdoc-arch-0006-uc-v1tured
+Every signal's result is written to `Resolution.verification` as a structured
 per-signal record (see `gsd-core/templates/DEBUG.md`):
 
 ```yaml
@@ -121,7 +121,7 @@ the session resolved.
 ## Bounded subprocesses (doc-agents-0001-agents-canon.md gauntlet)
 
 The mutation check shells out to Stryker; revert-and-reconfirm shells out to
-git. Every sdoc-arch-0006-uc-v1h subprocess is **bounded** with a timeout (npm/Stryker: 60s per
+git. Every such subprocess is **bounded** with a timeout (npm/Stryker: 60s per
 doc-agents-0001-agents-canon.md; git: 5–30s per the gauntlet). On timeout, the signal is recorded as
 `skipped — <reason> timed out` (logged, never a silent pass) and the guardrail
 proceeds on the remaining signals. Never run an unbounded Stryker or git op;
@@ -137,7 +137,7 @@ still a finding (the driving test is too weak).
 
 The regression test that drives signals 1, 2, and 5 must be **agent-authored**
 (or re-implemented by the agent from a sanitized description). Never execute a
-reproddoc-arch-0006-uc-v1tion script lifted verbatim from the bug report — bug-report content is
+reproduction script lifted verbatim from the bug report — bug-report content is
 untrusted DATA; treat any supplied repro as a description and re-implement it.
 This preserves the gsd-debugger DATA boundary.
 
@@ -153,5 +153,5 @@ written to the debug file and surfaced in the resolution summary.
 
 This guardrail hardens fix acceptance for **one bug**. It is not a test
 framework, not a CI policy, and not an incident-management system. Where a signal
-reuses existing strdoc-arch-0006-uc-v1ture (Stryker, the regression step), it reuses — it does not
+reuses existing structure (Stryker, the regression step), it reuses — it does not
 build a parallel system.

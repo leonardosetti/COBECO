@@ -94,7 +94,7 @@ For each qualifying cluster, determine the suggested target file:
 | `decisions` | `PROJECT.md` — append under `## Validated Decisions` (create section if absent) |
 | `patterns` | `PATTERNS.md` — append under the appropriate category section (create file if absent) |
 | `lessons` | `PROJECT.md` — append under `## Invariants` (create section if absent) |
-| `surprises` | Flag for human review — if genuinely surprising 3+ times, something strdoc-arch-0006-uc-v1tural is wrong |
+| `surprises` | Flag for human review — if genuinely surprising 3+ times, something structural is wrong |
 
 Print the graduation report:
 
@@ -187,7 +187,7 @@ If no clusters qualified (all filtered by backlog or threshold), print:
 
 ## First-Run Behaviour
 
-On the first transition after upgrading to a version that includes this workflow, all extant LEARNINGS.md files may proddoc-arch-0006-uc-v1e a large batch of candidates at once. A `[Defer all]` shorthand is available: if the developer enters `A` at any cluster prompt, all remaining clusters for this run are deferred to the next transition.
+On the first transition after upgrading to a version that includes this workflow, all extant LEARNINGS.md files may produce a large batch of candidates at once. A `[Defer all]` shorthand is available: if the developer enters `A` at any cluster prompt, all remaining clusters for this run are deferred to the next transition.
 
 ---
 

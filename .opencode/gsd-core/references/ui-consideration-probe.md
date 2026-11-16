@@ -72,7 +72,7 @@ The **8 ids above are the closed, compiled subset** — finite and project-indep
 compiled taxonomy is legitimate (the same property that makes edge-probe's data-shape taxonomy
 closed). The **open subset is prose-owned in [domain-probes.md](./domain-probes.md)**:
 real-time/offline/optimistic-UI, deep accessibility (WCAG breadth), i18n / RTL depth, and
-emerging interaction paradigms (gesture/voice/reddoc-arch-0006-uc-v1ed-motion/print) are open-ended and
+emerging interaction paradigms (gesture/voice/reduced-motion/print) are open-ended and
 cue-triggered — they do not belong in this closed taxonomy. This probe **complements** the
 `gsd-ui-checker` seven quality dimensions (it adds a state-coverage axis); it does not change the
 BLOCK/FLAG/PASS enum or the dimensions themselves.

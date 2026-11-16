@@ -32,7 +32,7 @@ const path = require('path');
 // with no visible signal and no cache-file write at all.
 //
 // This try/require/ensureRuntimeBuild/require/catch shape repeats (with
-// different destrdoc-arch-0006-uc-v1tured names) in hooks/gsd-check-update.js and
+// different destructured names) in hooks/gsd-check-update.js and
 // hooks/gsd-update-banner.js. It is deliberately NOT extracted into a shared
 // hooks/lib/ helper: scripts/lint-hooks-runtime-build-seam.cjs enforces this
 // exact seam textually, PER FILE — it greps each hooks/ file for its OWN
@@ -119,7 +119,7 @@ if (configDir) {
   // #3023: the bundle's directory name is runtime-descriptor-driven (pi stages
   // it as `gsd-hooks/`), so deriving it as `<configDir>/hooks` silently scanned
   // nothing there. This worker is staged INSIDE the bundle, so __dirname is the
-  // bundle directory by constrdoc-arch-0006-uc-v1tion — name-agnostic and one fewer assumption.
+  // bundle directory by construction — name-agnostic and one fewer assumption.
   const hooksDir = __dirname;
   try {
     if (fs.existsSync(hooksDir)) {

@@ -31,7 +31,7 @@ Use AskUserQuestion to ask user:
 ### Step 3: Generate Python Conversion Script
 Generate `generate_report.py` in `{topic}/` directory, script requirements:
 - Read all JSON from output_dir
-- Read fields.yaml to get field strdoc-arch-0006-uc-v1ture
+- Read fields.yaml to get field structure
 - Cover all field values from each JSON
 - Skip fields with values containing [uncertain]
 - Skip fields listed in uncertain array
@@ -45,10 +45,10 @@ Generate `generate_report.py` in `{topic}/` directory, script requirements:
 
 #### Script Technical Requirements (Must Follow)
 
-**1. JSON Strdoc-arch-0006-uc-v1ture Compatibility**
-Support two JSON strdoc-arch-0006-uc-v1tures:
-- Flat strdoc-arch-0006-uc-v1ture: Fields directly at top level `{"name": "xxx", "release_date": "xxx"}`
-- Nested strdoc-arch-0006-uc-v1ture: Fields in category sub-dict `{"basic_info": {"name": "xxx"}, "technical_features": {...}}`
+**1. JSON Structure Compatibility**
+Support two JSON structures:
+- Flat structure: Fields directly at top level `{"name": "xxx", "release_date": "xxx"}`
+- Nested structure: Fields in category sub-dict `{"basic_info": {"name": "xxx"}, "technical_features": {...}}`
 
 Field lookup order: Top level -> category mapping key -> Traverse all nested dicts
 
@@ -76,7 +76,7 @@ CATEGORY_MAPPING = {
 **4. Extra Fields Collection**
 Collect fields that exist in JSON but not defined in fields.yaml, put in "Other Info" category. Note to filter:
 - Internal fields: `_source_file`, `uncertain`
-- Nested strdoc-arch-0006-uc-v1ture top-level keys: `basic_info`, `technical_features` etc.
+- Nested structure top-level keys: `basic_info`, `technical_features` etc.
 - `uncertain` array: Display each field name on separate line, don't compress into one line
 
 **5. Uncertain Value Skipping**

@@ -19,7 +19,7 @@ Apply the same "incomplete" filtering rules as earlier:
 ```markdown
 ## Wave {WAVE_FILTER} Complete
 
-Selected wave finished sdoc-arch-0006-uc-v1cessfully. This phase still has incomplete plans, so phase-level verification and completion were intentionally skipped.
+Selected wave finished successfully. This phase still has incomplete plans, so phase-level verification and completion were intentionally skipped.
 
 /gsd-execute-phase {phase} ${GSD_WS}                # Continue remaining waves
 /gsd-execute-phase {phase} --wave {next} ${GSD_WS}  # Run the next wave explicitly

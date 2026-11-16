@@ -1,6 +1,6 @@
 <purpose>
 Explore design directions through throwaway HTML mockups before committing to implementation.
-Each sketch proddoc-arch-0006-uc-v1es 2-3 variants for comparison. Saves artifacts to `.planning/sketches/`.
+Each sketch produces 2-3 variants for comparison. Saves artifacts to `.planning/sketches/`.
 Companion to `/gsd-sketch --wrap-up`.
 
 Supports two modes:
@@ -115,7 +115,7 @@ Before sketching anything, explore the design intent through conversation. Ask o
 **Questions to cover (adapt to what the user has already shared):**
 
 1. **Feel:** "What should this feel like? Give me adjectives, emotions, or a vibe."
-2. **References:** "What apps, sites, or proddoc-arch-0006-uc-v1ts have a similar feel to what you're imagining?"
+2. **References:** "What apps, sites, or products have a similar feel to what you're imagining?"
 3. **Core action:** "What's the single most important thing a user does here?"
 
 After each answer, briefly reflect what you heard and how it shapes your thinking.
@@ -150,7 +150,7 @@ Break the idea into 2-5 design questions. Present as a table:
 
 | Sketch | Design question | Approach | Risk |
 |--------|----------------|----------|------|
-| 001 | Does a two-panel layout feel right? | Sidebar + main, variants: fixed/collapsible/floating | **High** — sets page strdoc-arch-0006-uc-v1ture |
+| 001 | Does a two-panel layout feel right? | Sidebar + main, variants: fixed/collapsible/floating | **High** — sets page structure |
 | 002 | How should the form controls look? | Grouped cards, variants: stacked/inline/floating labels | Medium |
 
 Each sketch answers one specific visual question. Good sketches:
@@ -246,7 +246,7 @@ Each variant is a page/tab in the same HTML file. Include:
 ---
 sketch: NNN
 name: descriptive-name
-question: "What layout strdoc-arch-0006-uc-v1ture feels right for the dashboard?"
+question: "What layout structure feels right for the dashboard?"
 winner: null
 tags: [layout, dashboard]
 ---
@@ -343,7 +343,7 @@ After all sketches complete:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] `.planning/sketches/` created (auto-creates if needed, no project init required)
 - [ ] Design direction explored conversationally before any code (unless --quick)
 - [ ] Spike context loaded — real data shapes, requirements, and conventions inform mockups
@@ -355,4 +355,4 @@ After all sketches complete:
 - [ ] MANIFEST.md is current
 - [ ] Commits use `docs(sketch-NNN): [winner]` format
 - [ ] Summary presented with next-step routing
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

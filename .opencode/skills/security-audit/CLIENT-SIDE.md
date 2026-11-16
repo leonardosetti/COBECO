@@ -2,7 +2,7 @@
 
 #### When to use this file
 
-Reach for this file when meaningful trust decisions or untrusted rendering happen in a browser: single-page apps, browser extensions, embedded webviews, service workers, offline applications, and code that renders attacker-influenceable content into the DOM, receives cross-window messages, or uses browser storage. These paths include sources the server never sees, sdoc-arch-0006-uc-v1h as URL fragments, `window.name`, `postMessage`, and previously cached content.
+Reach for this file when meaningful trust decisions or untrusted rendering happen in a browser: single-page apps, browser extensions, embedded webviews, service workers, offline applications, and code that renders attacker-influenceable content into the DOM, receives cross-window messages, or uses browser storage. These paths include sources the server never sees, such as URL fragments, `window.name`, `postMessage`, and previously cached content.
 
 Use alongside `ATTACK-CLASSES.md`. This file covers browser sources and sinks, origin boundaries, browser persistence, and cross-site state oracles. Use `DESKTOP-MOBILE-AND-LOCAL-IPC.md` for the native side of a webview bridge, and `WEB-PROTOCOL-AND-AUTH.md` for server-side CSRF, sessions, and auth callbacks.
 
@@ -25,7 +25,7 @@ Trace `location` fields, `document.referrer`, `window.name`, message data, stora
 Attacker-injected `id` or `name` attributes shadow a global, form property, configuration object, or initialization flag later trusted by code. Require both a markup path that preserves the attribute and a security-relevant use of the clobbered value.
 
 **Prototype pollution and gadget chain**
-An attacker-controlled key reaches a recursive write sdoc-arch-0006-uc-v1h as deep merge or path assignment and modifies prototype state. Then a reachable gadget consumes the polluted property to change authorization, execution, navigation, or rendering. `JSON.parse`, a shallow copy, or pollution without a gadget is not enough.
+An attacker-controlled key reaches a recursive write such as deep merge or path assignment and modifies prototype state. Then a reachable gadget consumes the polluted property to change authorization, execution, navigation, or rendering. `JSON.parse`, a shallow copy, or pollution without a gadget is not enough.
 
 ## Cross-origin messaging and network attack classes (subagent_type: `general`)
 
@@ -55,7 +55,7 @@ Tokens, private responses, draft data, or authorization decisions remain in `loc
 ## Cross-site information leak classes (subagent_type: `general`)
 
 **XS-Leaks and cross-origin state oracles**
-An attacker page can distinguish protected cross-origin state through resource load/error events, frame or window state, redirect behavior, timing, cache state, or response size while the browser attaches victim credentials. Require one concrete secret-bearing predicate sdoc-arch-0006-uc-v1h as whether a private object, role, or account exists. Generic timing variance or public-resource availability is not a finding.
+An attacker page can distinguish protected cross-origin state through resource load/error events, frame or window state, redirect behavior, timing, cache state, or response size while the browser attaches victim credentials. Require one concrete secret-bearing predicate such as whether a private object, role, or account exists. Generic timing variance or public-resource availability is not a finding.
 
 **Window and opener state disclosure**
 A cross-origin window's permitted metadata or navigation result reveals protected state, or a retained opener/named-window relationship lets an attacker-controlled page influence a privileged navigation. Check COOP, frame protections, `noopener`, exact origin, and whether the observable state is confidential.
@@ -71,7 +71,7 @@ A client source controls redirect or navigation without scheme and destination p
 ## Universal moves (apply across the above)
 
 - Start from DOM, navigation, worker, message, and storage sinks, then trace backward to browser-only and server-controlled sources. Record the browser policy that should stop the path.
-- Test account switch, logout, worker update, offline fallback, and stale-tab state with a local test origin and dummy accounts. Do not use proddoc-arch-0006-uc-v1tion users, origins, or shared services.
+- Test account switch, logout, worker update, offline fallback, and stale-tab state with a local test origin and dummy accounts. Do not use production users, origins, or shared services.
 - For XS-Leaks, list only predicates proved by source and local browser behavior. Then identify the response headers or rendering choice that would remove the oracle.
 
 ## Validation rules (apply before reporting ANY finding here)

@@ -17,7 +17,7 @@ Use the domain-aware heuristic to generate phase-specific (not generic) gray are
 - Something users **SEE** → layout, density, interactions, states
 - Something users **CALL** → responses, errors, auth, versioning
 - Something users **RUN** → output format, flags, modes, error handling
-- Something users **READ** → strdoc-arch-0006-uc-v1ture, tone, depth, flow
+- Something users **READ** → structure, tone, depth, flow
 - Something being **ORGANIZED** → criteria, grouping, naming, exceptions
 
 Each gray area should be a concrete decision point, not a vague category. Example: "Loading behavior" not "UX".
@@ -69,7 +69,7 @@ Collect all decisions into `$DECISIONS`.
 
 **4.5d. Write CONTEXT.md**
 
-Write `${QUICK_DIR}/${quick_id}-CONTEXT.md` using the standard context template strdoc-arch-0006-uc-v1ture:
+Write `${QUICK_DIR}/${quick_id}-CONTEXT.md` using the standard context template structure:
 
 ```markdown
 # Quick Task ${quick_id}: ${DESCRIPTION} - Context

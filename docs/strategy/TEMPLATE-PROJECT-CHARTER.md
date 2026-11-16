@@ -4,7 +4,7 @@
 **Status:** Rascunho | Aprovado | Arquivado  
 **Data de Criação:** DD/MM/AAAA  
 **Data de Aprovação:** DD/MM/AAAA  
-**Autor:** <Nome> (Proddoc-arch-0006-uc-v1t Owner)  
+**Autor:** <Nome> (Product Owner)  
 **Aprovadores:** CCB (Change Control Board)
 
 ---
@@ -16,7 +16,7 @@
 | **Nome do Projeto** | <Nome> |
 | **Código / ID** | <Código único> |
 | **Patrocinador** | <Nome / Órgão> |
-| **Proddoc-arch-0006-uc-v1t Owner** | <Nome> |
+| **Product Owner** | <Nome> |
 | **Tech Lead** | <Nome> |
 | **Data de Início Prevista** | DD/MM/AAAA |
 | **Data de Término Prevista** | DD/MM/AAAA |
@@ -31,7 +31,7 @@
 <Descreva o problema de negócio ou oportunidade que o projeto resolve.>
 
 ### 2.2 Objetivos do Projeto (SMART)
-| # | Objetivo | Métrica de Sdoc-arch-0006-uc-v1esso |
+| # | Objetivo | Métrica de Sucesso |
 |---|----------|-------------------|
 | 1 | <Objetivo 1> | <KPI mensurável> |
 | 2 | <Objetivo 2> | <KPI mensurável> |
@@ -94,7 +94,7 @@
 
 | Nome | Papel | Interesse | Poder | Engajamento Necessário |
 |------|-------|-----------|-------|------------------------|
-| <Nome> | Proddoc-arch-0006-uc-v1t Owner | Alto | Alto | Liderar |
+| <Nome> | Product Owner | Alto | Alto | Liderar |
 | <Nome> | Tech Lead | Alto | Alto | Decidir técnico |
 | <Nome> | Orientador Acadêmico | Alto | Alto | Aprovar marcos |
 | <Nome> | Banca Avaliadora | Alto | Alto | Avaliar entrega final |
@@ -149,7 +149,7 @@
 
 ---
 
-## 10. Critérios de Sdoc-arch-0006-uc-v1esso do Projeto
+## 10. Critérios de Sucesso do Projeto
 
 | Critério | Meta | Como Medir |
 |----------|------|------------|

@@ -22,7 +22,7 @@ gsd_run query state.json 2>/dev/null || echo "{}"
 
 Also read:
 - `.planning/STATE.md` — current phase, progress, plan counts
-- `.planning/ROADMAP.md` — milestone strdoc-arch-0006-uc-v1ture and phase list
+- `.planning/ROADMAP.md` — milestone structure and phase list
 
 Extract:
 - `current_phase` — which phase is active
@@ -99,7 +99,7 @@ This catches the common failure mode where a session died mid-execution (hang, t
 
 Scan ALL phases in ROADMAP order (lowest-numbered to highest) for incomplete-execution state. Use `gsd_run query roadmap.analyze` to get the phase list, then for each phase number `N` query `gsd_run query find-phase <N>` JSON and inspect its `plans` and `summaries` arrays. A phase is **incomplete-execution** when `plans.length > summaries.length` (at least one PLAN.md has no matching SUMMARY.md).
 
-Stop at the first sdoc-arch-0006-uc-v1h phase. Record its phase number as `INCOMPLETE_PHASE`. This is the lowest-numbered phase that needs continued execution.
+Stop at the first such phase. Record its phase number as `INCOMPLETE_PHASE`. This is the lowest-numbered phase that needs continued execution.
 
 Illustrative bash:
 
@@ -113,7 +113,7 @@ if [ $? -ne 0 ] || [ -z "$ROADMAP_JSON" ]; then
   echo "  Proceeding to prior-phase completeness check — review project state carefully." >&2
   # Fall through to prior_phase_completeness rather than silently skipping
 elif [ "$ROADMAP_SCOPE" != "complete" ]; then
-  # #3184/#3165: roadmap.analyze sdoc-arch-0006-uc-v1ceeded and returned a well-formed document,
+  # #3184/#3165: roadmap.analyze succeeded and returned a well-formed document,
   # but its milestone window did not see all of its input, so `.phases[]` is a
   # NON-answer rather than a real empty. Looping it would run the invariant over
   # a phase list the scan could not populate and report "clean" — the silent
@@ -165,7 +165,7 @@ Detect three categories of incomplete work:
 
 If no incomplete prior work is found, continue to `determine_next_action` silently with no interruption.
 
-If incomplete prior work is found, show a strdoc-arch-0006-uc-v1tured completeness report:
+If incomplete prior work is found, show a structured completeness report:
 ```
 ⚠ Prior phase has incomplete work
 
@@ -192,7 +192,7 @@ Choice [S]:
 ```markdown
 ### Phase 999.{N}: Follow-up — Phase {src} incomplete plans (BACKLOG)
 
-**Goal:** Resolve plans that ran without proddoc-arch-0006-uc-v1ing summaries during Phase {src} execution
+**Goal:** Resolve plans that ran without producing summaries during Phase {src} execution
 **Source phase:** {src}
 **Deferred at:** {date} during /gsd-progress --next advancement to Phase {dest}
 **Plans:**
@@ -347,7 +347,7 @@ Resume with: `/gsd-progress --next --auto` once resolved.
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Project state correctly detected
 - [ ] Gates 1-3 (repo/state validity) run first — always, even on the resume path
 - [ ] Route 0 (resume_incomplete_phase) runs AFTER Gates 1-3 and BEFORE the prior-phase defer prompt — no double-decision in the default (no-flag) case
@@ -362,7 +362,7 @@ Resume with: `/gsd-progress --next --auto` once resolved.
 - [ ] Clear status shown before invoking
 - [ ] `--converge` routes Route 3 planning through `gsd-plan-review-convergence`
 - [ ] `--cross-ai` is accepted as an alias for `--converge`
-- [ ] `--converge` fails fast with enable instrdoc-arch-0006-uc-v1tions when `workflow.plan_review_convergence=false`
+- [ ] `--converge` fails fast with enable instructions when `workflow.plan_review_convergence=false`
 - [ ] `--converge` forwards reviewer selector flags and `--max-cycles N`
 - [ ] Default planning remains `gsd-plan-phase` when convergence is not requested
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

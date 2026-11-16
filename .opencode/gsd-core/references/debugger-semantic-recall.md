@@ -12,11 +12,11 @@ overlap, not semantic similarity."* Keyword overlap only fires on lexical
 coincidence — the highest-value recalls (same root cause, different wording)
 are exactly the ones it misses, and its value decays as the corpus grows.
 
-## The approach — reuse MemPalace, add no new infrastrdoc-arch-0006-uc-v1ture
+## The approach — reuse MemPalace, add no new infrastructure
 
 Layer semantic recall on top of the existing knowledge base by **reusing
 MemPalace** (the semantic-memory capability already in this environment) —
-**without adding new embedding or vector infrastrdoc-arch-0006-uc-v1ture** (Choose Boring /
+**without adding new embedding or vector infrastructure** (Choose Boring /
 Zawinski: spend no new "innovation token" on a bespoke vector store the
 debugger would own).
 
@@ -26,7 +26,7 @@ truth**; semantic recall is an additive layer over it, not a replacement.
 ## Write — index resolved sessions at archive
 
 At `archive_session`, after appending the entry to `knowledge-base.md` (the KB
-append + commit MUST sdoc-arch-0006-uc-v1ceed first — `knowledge-base.md` is the durable source
+append + commit MUST succeed first — `knowledge-base.md` is the durable source
 of truth; skip indexing on KB-write failure), **index the resolved session into
 MemPalace**.
 
@@ -34,7 +34,7 @@ MemPalace**.
 Prevention `recurrence_guard` — NOT the raw user-supplied `Symptoms`.** The
 Resolution is the post-investigation, agent-synthesized signal; indexing it
 (rather than raw symptoms) excludes attacker-controlled prose from the
-cross-session index and reddoc-arch-0006-uc-v1es secret/PII leakage. Even so, **redact
+cross-session index and reduces secret/PII leakage. Even so, **redact
 secret-shaped values** (API keys, bearer tokens, JWTs, passwords, credentials)
 from the summary before indexing — a bug report's error string can echo a
 secret, and MemPalace is a cross-session, cross-project store.

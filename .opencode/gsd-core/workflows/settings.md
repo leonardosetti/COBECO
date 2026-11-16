@@ -61,7 +61,7 @@ Parse current values (default to `true` if not present):
 - `git.branching_strategy` — branching approach (default: `"none"`)
 - `git.repo_tagging` — milestone tagging mode: `"single"` (one `v[X.Y]` tag, default) or `"per_repo"` (record a release map and tag each `planning.sub_repos` repository separately; set via `gsd_run query config-set git.repo_tagging per_repo`, #3628)
 - `workflow.use_worktrees` — whether parallel executor agents run in worktree isolation (honored when the runtime declares a `dispatch.isolation` primitive — `harness-worktree` or `orchestrator-worktree`; runtimes declaring `none` default it to `false` and fail closed on an explicit `true` — #1521, #2486, #2584)
-- `workflow.compact_content` — load token-minimized instrdoc-arch-0006-uc-v1tion variants where they exist, trading rarely-needed elaboration for a smaller always-loaded instrdoc-arch-0006-uc-v1tion window (default: false if absent; #4139)
+- `workflow.compact_content` — load token-minimized instruction variants where they exist, trading rarely-needed elaboration for a smaller always-loaded instruction window (default: false if absent; #4139)
 - `model_policy.provider` — provider slug for model policy (default: `null`; known values: anthropic, openai, google, qwen; set via /gsd-config --advanced)
 - `model_policy.budget` — budget level for model policy (default: `null`; known values: high, medium, low; set via /gsd-config --advanced)
 - `model_policy.high` — model ID for high-cost tier (default: `null`; set via /gsd-config --advanced)
@@ -256,7 +256,7 @@ question([
     header: "Drift Guard",
     multiSelect: false,
     options: [
-      { label: "Yes (Recommended)", description: "Resolve symbol references (decorators, classes, functions, CLI flags) against live source — catches halldoc-arch-0006-uc-v1inated names before execution. Authority controlled by plan_review.source_grounding_authority (default: grep)." },
+      { label: "Yes (Recommended)", description: "Resolve symbol references (decorators, classes, functions, CLI flags) against live source — catches hallucinated names before execution. Authority controlled by plan_review.source_grounding_authority (default: grep)." },
       { label: "No", description: "Skip symbol grounding. Plan review proceeds without source verification." }
     ]
   },
@@ -280,7 +280,7 @@ question([
   },
   // Conditional: include the following code_review_depth question ONLY when the user's
   // chosen code_review value is "Yes". If code_review is "No", omit this question from
-  // the question call and do not todoc-arch-0006-uc-v1h the existing workflow.code_review_depth value.
+  // the question call and do not touch the existing workflow.code_review_depth value.
   {
     question: "Code Review Depth? (default depth for /gsd-code-review — override per-run with --depth=)",
     header: "Review Depth",
@@ -385,12 +385,12 @@ question([
     ]
   },
   {
-    question: "Use token-minimized instrdoc-arch-0006-uc-v1tion content where available? (smaller context footprint)",
+    question: "Use token-minimized instruction content where available? (smaller context footprint)",
     header: "Compact Content",
     multiSelect: false,
     options: [
-      { label: "No (Recommended)", description: "Full instrdoc-arch-0006-uc-v1tion detail loaded every time." },
-      { label: "Yes", description: "Terser instrdoc-arch-0006-uc-v1tions where a compact variant exists; canonical detail loads only when actually needed." }
+      { label: "No (Recommended)", description: "Full instruction detail loaded every time." },
+      { label: "Yes", description: "Terser instructions where a compact variant exists; canonical detail loads only when actually needed." }
     ]
   },
   {
@@ -662,10 +662,10 @@ Quick commands:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Current config read
 - [ ] User presented with 25 settings (profile + workflow toggles + features + git branching + git tagging + ctx warnings + compact content), grouped into six sections: Planning, Execution, Docs & Output, Features, Model & Pipeline, Misc. `code_review_depth` is conditional on `code_review=on`. Model profile uses a two-question split (Q1: Adaptive / Standard tier / Inherit; Q2: Quality / Balanced / Budget — only when Standard tier chosen) to stay within the 4-option question cap while exposing all 5 valid profiles (#3784). Drift Guard (`plan_review.source_grounding`) is in the Planning section.
 - [ ] Config updated with model_profile, workflow, and git sections
 - [ ] User offered to save as global defaults (~/.gsd/defaults.json)
 - [ ] Changes confirmed to user
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

@@ -24,7 +24,7 @@
 
 > Researched by `gsd-domain-researcher`. Grounds the evaluation strategy in domain expert knowledge.
 
-**Industry Vertical:** <!-- healthcare | legal | finance | customer service | eddoc-arch-0006-uc-v1ation | developer tooling | e-commerce | etc. -->
+**Industry Vertical:** <!-- healthcare | legal | finance | customer service | education | developer tooling | e-commerce | etc. -->
 
 **User Population:** <!-- who uses this system and in what context -->
 
@@ -39,7 +39,7 @@
 
 ### Known Failure Modes in This Domain
 
-<!-- Domain-specific failure modes from research — not generic halldoc-arch-0006-uc-v1ination, but how it manifests here -->
+<!-- Domain-specific failure modes from research — not generic hallucination, but how it manifests here -->
 
 ### Regulatory / Compliance Context
 
@@ -49,7 +49,7 @@
 
 | Role | Responsibility |
 |------|---------------|
-| <!-- e.g., Senior practitioner --> | <!-- Dataset labeling / rubric calibration / proddoc-arch-0006-uc-v1tion sampling --> |
+| <!-- e.g., Senior practitioner --> | <!-- Dataset labeling / rubric calibration / production sampling --> |
 
 ---
 
@@ -60,7 +60,7 @@
 **Version:** <!-- Pin the version -->
 
 **Rationale:**
-<!-- Why this framework fits this system type, team context, and proddoc-arch-0006-uc-v1tion requirements -->
+<!-- Why this framework fits this system type, team context, and production requirements -->
 
 **Alternatives Considered:**
 
@@ -103,7 +103,7 @@
 2.
 3.
 
-### Recommended Project Strdoc-arch-0006-uc-v1ture
+### Recommended Project Structure
 ```
 project/
 ├── # Framework-specific folder layout
@@ -134,7 +134,7 @@ project/
 
 > Written by `gsd-ai-researcher`. Cross-cutting patterns every developer building AI systems needs — independent of framework choice.
 
-### Strdoc-arch-0006-uc-v1tured Outputs with Pydantic
+### Structured Outputs with Pydantic
 
 <!-- Framework-specific Pydantic integration pattern for this use case -->
 <!-- Include: output model definition, how the framework uses it, retry logic on validation failure -->
@@ -211,12 +211,12 @@ project/
 
 ---
 
-## 7. Proddoc-arch-0006-uc-v1tion Monitoring
+## 7. Production Monitoring
 
 **Tracing Tool:** <!-- e.g., Langfuse self-hosted -->
 
 **Key Metrics to Track:**
-<!-- 3-5 metrics that will be monitored in proddoc-arch-0006-uc-v1tion -->
+<!-- 3-5 metrics that will be monitored in production -->
 
 **Alert Thresholds:**
 <!-- When to page/alert -->
@@ -243,4 +243,4 @@ project/
 - [ ] Reference dataset spec written (size ≥ 10, composition + labeling defined)
 - [ ] CI/CD eval integration specified
 - [ ] Online guardrails defined
-- [ ] Proddoc-arch-0006-uc-v1tion monitoring configured (tracing tool + sampling strategy)
+- [ ] Production monitoring configured (tracing tool + sampling strategy)

@@ -27,8 +27,7 @@ class UsuarioRepository(ABC):
         ...
 
     @abstractmethod
-    async def buscar_por_id(self, usuario_id: int) -> Usuario | None:
-        ...
+    async def buscar_por_id(self, usuario_id: int) -> Usuario | None: ...
 
     @abstractmethod
     async def buscar_por_nome_usuario(self, nome_usuario: str) -> Usuario | None:
@@ -46,8 +45,7 @@ class UsuarioRepository(ABC):
         ...
 
     @abstractmethod
-    async def soft_delete(self, usuario_id: int) -> bool:
-        ...
+    async def soft_delete(self, usuario_id: int) -> bool: ...
 
 
 # ============================================================
@@ -60,12 +58,10 @@ class CategoriaRepository(ABC):
         ...
 
     @abstractmethod
-    async def buscar_por_id(self, categoria_id: int) -> Categoria | None:
-        ...
+    async def buscar_por_id(self, categoria_id: int) -> Categoria | None: ...
 
     @abstractmethod
-    async def buscar_por_ids(self, ids: list[int]) -> list[Categoria]:
-        ...
+    async def buscar_por_ids(self, ids: list[int]) -> list[Categoria]: ...
 
 
 # ============================================================
@@ -83,12 +79,10 @@ class FornecedorRepository(ABC):
         ...
 
     @abstractmethod
-    async def buscar_por_id(self, fornecedor_id: int) -> Fornecedor | None:
-        ...
+    async def buscar_por_id(self, fornecedor_id: int) -> Fornecedor | None: ...
 
     @abstractmethod
-    async def buscar_por_ids(self, ids: list[int]) -> list[Fornecedor]:
-        ...
+    async def buscar_por_ids(self, ids: list[int]) -> list[Fornecedor]: ...
 
     @abstractmethod
     async def calcular_disponibilidade(
@@ -108,12 +102,10 @@ class FornecedorRepository(ABC):
 # ============================================================
 class ProdutoRepository(ABC):
     @abstractmethod
-    async def buscar_por_id(self, produto_id: int) -> Produto | None:
-        ...
+    async def buscar_por_id(self, produto_id: int) -> Produto | None: ...
 
     @abstractmethod
-    async def buscar_por_ids(self, ids: list[int]) -> list[Produto]:
-        ...
+    async def buscar_por_ids(self, ids: list[int]) -> list[Produto]: ...
 
     @abstractmethod
     async def autocomplete(self, query: str, limit: int = 10) -> list[Produto]:
@@ -121,8 +113,7 @@ class ProdutoRepository(ABC):
         ...
 
     @abstractmethod
-    async def listar_ativos(self) -> list[Produto]:
-        ...
+    async def listar_ativos(self) -> list[Produto]: ...
 
 
 # ============================================================
@@ -135,8 +126,7 @@ class ListaRepository(ABC):
         ...
 
     @abstractmethod
-    async def buscar_por_id(self, lista_id: int, usuario_id: int) -> Lista | None:
-        ...
+    async def buscar_por_id(self, lista_id: int, usuario_id: int) -> Lista | None: ...
 
     @abstractmethod
     async def listar_por_usuario(
@@ -145,8 +135,8 @@ class ListaRepository(ABC):
         pagina: int = 1,
         por_pagina: int = 20,
         busca: str | None = None,
-    ) -> Sequence[Lista]:
-        """Lista paginada do usuário (RF09)"""
+    ) -> tuple[Sequence[Lista], int]:
+        """Lista paginada do usuário (RF09) — retorna (listas, total)"""
         ...
 
     @abstractmethod

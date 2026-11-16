@@ -164,7 +164,7 @@ if [ "$USE_WORKTREES" != "false" ]; then
 fi
 ```
 
-If the project uses git submodules, worktree isolation is unsafe **only when the quick task todoc-arch-0006-uc-v1hes a submodule path**. The previous behavior unconditionally disabled worktree isolation whenever `.gitmodules` existed, which penalised every quick task in a submodule project even when the task was nowhere near a submodule. Parse submodule paths from `.gitmodules` so the executor can act on actual submodule paths rather than the mere file's existence:
+If the project uses git submodules, worktree isolation is unsafe **only when the quick task touches a submodule path**. The previous behavior unconditionally disabled worktree isolation whenever `.gitmodules` existed, which penalised every quick task in a submodule project even when the task was nowhere near a submodule. Parse submodule paths from `.gitmodules` so the executor can act on actual submodule paths rather than the mere file's existence:
 
 ```bash
 # Parse submodule paths from .gitmodules once (empty if no .gitmodules).
@@ -233,7 +233,7 @@ else
 
   # Pin the new branch to origin/$DEFAULT_BRANCH so the start point is
   # deterministic regardless of which branch we are currently on (#2916).
-  # On sdoc-arch-0006-uc-v1cess HEAD is exactly at origin/$DEFAULT_BRANCH, so a post-creation
+  # On success HEAD is exactly at origin/$DEFAULT_BRANCH, so a post-creation
   # merge-base / "ahead-of" guard would be unreachable — the explicit base
   # argument here is the single source of correctness for #2916.
   # --no-track: with the default branch.autoSetupMerge=true, checkout -b from a
@@ -337,7 +337,7 @@ ${AGENT_SKILLS_PLANNER}
 - PATH FORM (#4767): every path in the plan BODY — `files`, `verify`, `<automated>`, task actions — is repo-root-relative, and every `<automated>` command assumes cwd at the checkout root. Only the `<required_reading>` inputs above are absolute (#2376). An absolute path copied from this context into `<automated>` pins the command to THIS checkout; a worktree-isolated executor then runs it against the main tree and it passes on unchanged code.
 - MUTABLE-SCOPE AUTHORITY (#3786): when concrete edit or verification scope depends on mutable external state (a merge index, PR/base diffs, the working tree), authorize scope ONLY from a live observation made at planning time — for conflict resolution that is the fresh merge index via `git diff --name-only --diff-filter=U` — or keep `files`/`verify` CONDITIONAL on that observation. Historical STATE.md entries, recovery notes, and cached PR/base diff paths may guide investigation only; they are never edit or verification authority, and a plan must not enumerate them as authorized files "pending replacement".
 ${RESEARCH_MODE ? '- Research findings are available — use them to inform library/pattern choices' : '- No research phase'}
-${VALIDATE_MODE ? '- Target ~40% context usage (strdoc-arch-0006-uc-v1tured for verification)' : '- Target ~30% context usage (simple, focused)'}
+${VALIDATE_MODE ? '- Target ~40% context usage (structured for verification)' : '- Target ~30% context usage (simple, focused)'}
 ${VALIDATE_MODE ? '- MUST generate `must_haves` in plan frontmatter (truths, artifacts, key_links)' : ''}
 ${VALIDATE_MODE ? '- Each task MUST have `files`, `action`, `verify`, `done` fields' : ''}
 </constraints>
@@ -431,7 +431,7 @@ Execute quick task ${quick_id}.
 
 ${ISOLATION === "harness-worktree" ? `
 <worktree_branch_check>
-ORCHESTRATOR build-time embed (NOT a sub-agent runtime step): before this dispatch, read \`gsd-core/references/worktree-branch-check.md\`, substitute \`{EXPECTED_BASE}\` with the base SHA captured above (${EXPECTED_BASE}), substitute \`{EXPECTED_BASE_ALTERNATE}\` with \`${QUICK_PLAN_PARENT}\` when it differs from \`${EXPECTED_BASE}\` (otherwise empty), and replace this note with that fragment's \`<worktree_branch_check>\` block so the dispatched prompt carries the runnable guard verbatim — do not pass this instrdoc-arch-0006-uc-v1tion through in its place.
+ORCHESTRATOR build-time embed (NOT a sub-agent runtime step): before this dispatch, read \`gsd-core/references/worktree-branch-check.md\`, substitute \`{EXPECTED_BASE}\` with the base SHA captured above (${EXPECTED_BASE}), substitute \`{EXPECTED_BASE_ALTERNATE}\` with \`${QUICK_PLAN_PARENT}\` when it differs from \`${EXPECTED_BASE}\` (otherwise empty), and replace this note with that fragment's \`<worktree_branch_check>\` block so the dispatched prompt carries the runnable guard verbatim — do not pass this instruction through in its place.
 </worktree_branch_check>
 
 FIRST ACTION after the worktree branch check: ensure the quick PLAN.md exists at a worktree-rooted relative path before any Read/Edit/Write path can be primed. If \`${QUICK_DIR}/${quick_id}-PLAN.md\` is absent, materialize it from the shared git object store:
@@ -474,7 +474,7 @@ You are running as a SEQUENTIAL executor agent on the main working tree (set SEQ
 ${DISCUSS_MODE ? '- ' + QUICK_DIR + '/' + quick_id + '-CONTEXT.md (User decisions — locked, do not revisit)' : ''}
 ${RESEARCH_MODE ? '- ' + QUICK_DIR + '/' + quick_id + '-RESEARCH.md (Research findings — use to inform implementation choices)' : ''}
 - ${STATE_PATH} (Project state)
-- ./doc-agents-0001-agents-canon.md or ./.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/doc-agents-0001-agents-canon.md (Project instrdoc-arch-0006-uc-v1tions, if exists)
+- ./doc-agents-0001-agents-canon.md or ./.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/doc-agents-0001-agents-canon.md (Project instructions, if exists)
 - .claude/skills/ or .agents/skills/ (Project skills, if either exists — list skills, read SKILL.md for each, follow relevant rules during implementation)
 </required_reading>
 
@@ -558,11 +558,11 @@ After executor returns:
 3. Extract commit hash from executor output
 4. Report completion status
 
-**Known Claude Code bug (classifyHandoffIfNeeded):** If executor reports "failed" with error `classifyHandoffIfNeeded is not defined`, this is a Claude Code runtime bug — not a real failure. Check if summary file exists and git log shows commits. If so, treat as sdoc-arch-0006-uc-v1cessful.
+**Known Claude Code bug (classifyHandoffIfNeeded):** If executor reports "failed" with error `classifyHandoffIfNeeded is not defined`, this is a Claude Code runtime bug — not a real failure. Check if summary file exists and git log shows commits. If so, treat as successful.
 
 If summary not found, error: "Executor failed to create ${quick_id}-SUMMARY.md"
 
-Note: For quick tasks proddoc-arch-0006-uc-v1ing multiple plans (rare), spawn executors in parallel waves per execute-phase patterns.
+Note: For quick tasks producing multiple plans (rare), spawn executors in parallel waves per execute-phase patterns.
 
 ---
 
@@ -575,7 +575,7 @@ Skip this step entirely if `$FULL_MODE` is false.
 EXECUTE_POST_HOOKS_JSON=$(gsd_run loop render-hooks execute:post --raw)
 ```
 
-**Generic step dispatch (#3606):** dispatch every `kind == "step"` hook from `EXECUTE_POST_HOOKS_JSON` per @gsd-core/references/loop-hook-dispatch.md (skip silently when none); each step is advisory and best-effort. The code-review specialization below is one sdoc-arch-0006-uc-v1h hook, not a replacement for the generic dispatch.
+**Generic step dispatch (#3606):** dispatch every `kind == "step"` hook from `EXECUTE_POST_HOOKS_JSON` per @gsd-core/references/loop-hook-dispatch.md (skip silently when none); each step is advisory and best-effort. The code-review specialization below is one such hook, not a replacement for the generic dispatch.
 
 Resolve active step hooks from `EXECUTE_POST_HOOKS_JSON` where `kind == "step"` and `ref.skill == "code-review"`.
 
@@ -617,7 +617,7 @@ Agent(
 
 > **ORCHESTRATOR RULE — CODEX RUNTIME**: After calling Agent() above, stop working on this task immediately. Do not read more files, edit code, or run tests related to this task while the subagent is active. Wait for the subagent to return its result. This prevents duplicate work, conflicting edits, and wasted context. Only resume when the subagent result is available.
 
-If review proddoc-arch-0006-uc-v1es findings, display advisory message. **Error handling:** Failures are non-blocking — catch and proceed.
+If review produces findings, display advisory message. **Error handling:** Failures are non-blocking — catch and proceed.
 
 ---
 
@@ -653,7 +653,7 @@ Insert after `### Blockers/Concerns` section:
 |---|-------------|------|--------|-----------|
 ```
 
-**Note:** If the table already exists in a legacy (pre-registry) column format, first run `gsd_run quick-tasks-migrate` — the maintainer-decided repair path (#3730) that rewrites the table onto the canonical schema, losslessly bdoc-arch-0006-uc-v1keting unmapped columns into Description. It is a silent no-op when the table is already canonical or the section is absent, so running it before the first append of every quick task migrates exactly once and never prompts otherwise. After migration, use the canonical column format below.
+**Note:** If the table already exists in a legacy (pre-registry) column format, first run `gsd_run quick-tasks-migrate` — the maintainer-decided repair path (#3730) that rewrites the table onto the canonical schema, losslessly bucketing unmapped columns into Description. It is a silent no-op when the table is already canonical or the section is absent, so running it before the first append of every quick task migrates exactly once and never prompts otherwise. After migration, use the canonical column format below.
 
 **7c. Append new row to table:**
 
@@ -764,7 +764,7 @@ Ready for next task: /gsd-quick ${GSD_WS}
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] ROADMAP.md validation passes
 - [ ] User provides task description
 - [ ] `--full`, `--validate`, `--discuss`, and `--research` flags parsed from arguments when present
@@ -780,4 +780,4 @@ Ready for next task: /gsd-quick ${GSD_WS}
 - [ ] (--validate) `${quick_id}-VERIFICATION.md` created by verifier
 - [ ] STATE.md updated with quick task row (Status column when --validate)
 - [ ] Artifacts committed
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

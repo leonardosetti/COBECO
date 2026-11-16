@@ -4,7 +4,7 @@ Reference for `agents/gsd-planner.md` — extended rules for multi-source covera
 
 ## Multi-Source Coverage Audit Format
 
-Before finalizing plans, proddoc-arch-0006-uc-v1e a **source audit** covering ALL four artifact types:
+Before finalizing plans, produce a **source audit** covering ALL four artifact types:
 
 ```
 SOURCE    | ID      | Feature/Requirement          | Plan  | Status    | Notes
@@ -20,7 +20,7 @@ CONTEXT   | D-04    | 15min access / 7day refresh  | 02    | COVERED   |
 
 ### Four Source Types
 
-1. **GOAL** — The `goal:` field from ROADMAP.md for this phase. The primary sdoc-arch-0006-uc-v1cess condition.
+1. **GOAL** — The `goal:` field from ROADMAP.md for this phase. The primary success condition.
 2. **REQ** — Every REQ-ID in `phase_req_ids`. Cross-reference REQUIREMENTS.md for descriptions.
 3. **RESEARCH** — Technical approaches, discovered constraints, and features identified in RESEARCH.md. Exclude items explicitly marked "out of scope" or "future work" by the researcher.
 4. **CONTEXT** — Every D-XX decision from CONTEXT.md `<decisions>` section.
@@ -61,7 +61,7 @@ If ALL rows are COVERED → return `## PLANNING COMPLETE` as normal.
 The planner's only legitimate reasons to split or flag a feature are **constraints**, not judgments about difficulty:
 
 **Valid (constraints):**
-- ✓ "This task todoc-arch-0006-uc-v1hes 9 files and would consume ~45% context — split into two tasks"
+- ✓ "This task touches 9 files and would consume ~45% context — split into two tasks"
 - ✓ "No API key or endpoint is defined in any source artifact — need developer input"
 - ✓ "This feature depends on the auth system built in Phase 03, which is not yet complete"
 

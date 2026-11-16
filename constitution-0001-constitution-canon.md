@@ -71,7 +71,7 @@ workflow:
 | Lint / Formato / Tipos | ruff + black + mypy | — | — |
 | CI/CD | GitHub Actions | — | — |
 
-1.4. Princípios constitdoc-arch-0006-uc-v1ionais inafastáveis:
+1.4. Princípios constitucionais inafastáveis:
 - **FOSS 100%**: nenhuma dependência paga ou proprietária sem Bypass de 3 pilares (Art. 4.5);
 - **LGPD primária**: dados sintéticos apenas; zero PII reais em seeds, fixtures, logs, backups ou artefatos;
 - **CPU-local**: execução local, zero cloud, zero CUDA;
@@ -284,7 +284,7 @@ Em caso de conflito, vence o documento de nível superior, na ordem:
 
 12.2. **Banco**: MySQL 8 InnoDB, charset `utf8mb4`, collation `utf8mb4_unicode_ci`, FKs com `ON DELETE CASCADE/RESTRICT`, soft delete (`deletado_em`) em `usuarios` e `listas`.
 
-12.3. **Backend**: Clean Architecture manual (`domain/usecases/adapters/infrastrdoc-arch-0006-uc-v1ture`); schemas Pydantic v2; JWT em `python-jose`; senhas em `passlib[bcrypt]` salt=12; rate limiting custom.
+12.3. **Backend**: Clean Architecture manual (`domain/usecases/adapters/infrastructure`); schemas Pydantic v2; JWT em `python-jose`; senhas em `passlib[bcrypt]` salt=12; rate limiting custom.
 
 12.4. **Frontend**: Vanilla JS + Tailwind + nginx; estado da lista em `sessionStorage` (lista efêmera); autocomplete com debounce 300ms; slider de disponibilidade 0–100%; tabela ordenada por preço ASC; destaque verde na melhor oferta; `@media print` para A4.
 
@@ -302,7 +302,7 @@ Em caso de conflito, vence o documento de nível superior, na ordem:
 
 ## Art. 13 — Estratégia e planejamento de artefatos
 
-13.1. **PRD (Proddoc-arch-0006-uc-v1t Requirements Document)**: define requisitos de negócio, objetivos do produto, público-alvo e métricas de sdoc-arch-0006-uc-v1esso. Guia principal de produto e engenharia. Template: `docs/strategy/PRD-<id>.md`.
+13.1. **PRD (Product Requirements Document)**: define requisitos de negócio, objetivos do produto, público-alvo e métricas de sucesso. Guia principal de produto e engenharia. Template: `docs/strategy/PRD-<id>.md`.
 
 13.2. **BRD (Business Requirements Document)**: necessidades de negócio de alto nível e retorno esperado. Usado para aprovação de orçamento. Template: `docs/strategy/BRD-<id>.md`.
 

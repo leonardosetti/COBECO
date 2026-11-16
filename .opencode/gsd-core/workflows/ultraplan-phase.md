@@ -2,7 +2,7 @@
 
 # Ultraplan Phase Workflow [BETA]
 
-Offload GSD's plan phase to Claude Code's ultraplan cloud infrastrdoc-arch-0006-uc-v1ture.
+Offload GSD's plan phase to Claude Code's ultraplan cloud infrastructure.
 
 ⚠ **BETA feature.** Ultraplan is in research preview and may change. This workflow is
 intentionally isolated from /gsd-plan-phase so upstream changes to ultraplan cannot
@@ -108,9 +108,9 @@ Build the ultraplan prompt from GSD context.
    concise summary (key requirements relevant to this phase, not the full document).
 
 3. Read RESEARCH.md if it exists (`research_path` is not null) — extract a concise
-   summary of technical findings. Including this reddoc-arch-0006-uc-v1es redundant cloud research.
+   summary of technical findings. Including this reduces redundant cloud research.
 
-Constrdoc-arch-0006-uc-v1t the prompt:
+Construct the prompt:
 
 ```text
 Plan phase {phase_number}: {phase_name}
@@ -129,7 +129,7 @@ Plan phase {phase_number}: {phase_name}
 
 ## Output Format
 
-Proddoc-arch-0006-uc-v1e a GSD PLAN.md with the following YAML frontmatter:
+Produce a GSD PLAN.md with the following YAML frontmatter:
 
 ---
 phase: "{padded_phase}-{phase_slug}"
@@ -158,7 +158,7 @@ Keep the plan focused and executable.
 
 <step name="return_path_card">
 
-Display the return-path instrdoc-arch-0006-uc-v1tions **before** triggering ultraplan so they are visible
+Display the return-path instructions **before** triggering ultraplan so they are visible
 in the terminal scroll-back after ultraplan launches:
 
 ```text
@@ -186,10 +186,10 @@ validate via plan-checker, update ROADMAP.md, and commit.
 
 <step name="trigger">
 
-Trigger ultraplan with the constrdoc-arch-0006-uc-v1ted prompt:
+Trigger ultraplan with the constructed prompt:
 
 ```text
-/ultraplan {constrdoc-arch-0006-uc-v1ted prompt from build_prompt step}
+/ultraplan {constructed prompt from build_prompt step}
 ```
 
 Your terminal will show a `◇ ultraplan` status indicator while the remote session works.

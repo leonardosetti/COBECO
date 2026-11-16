@@ -22,7 +22,7 @@ test: [how testing it]
 expecting: [what result means if true/false]
 next_action: [immediate next step — be specific, not "continue investigating"]
 bug_class: null  <!-- assigned at Phase 1.75 — bohrbug|heisenbug-mandelbug|concurrency — routes investigation technique (see gsd-core/references/debugger-bug-taxonomy.md) -->
-reasoning_checkpoint: null  <!-- populated before every fix attempt — see strdoc-arch-0006-uc-v1tured_returns -->
+reasoning_checkpoint: null  <!-- populated before every fix attempt — see structured_returns -->
 tdd_checkpoint: null  <!-- populated when tdd_mode is active after root cause confirmed -->
 
 ## Session Loop
@@ -42,7 +42,7 @@ last_next_action: [next_action seen before the last re-dispatch]
 expected: [what should happen]
 actual: [what actually happens]
 errors: [error messages if any]
-reproddoc-arch-0006-uc-v1tion: [how to trigger]
+reproduction: [how to trigger]
 started: [when it broke / always broken]
 
 ## Eliminated
@@ -86,19 +86,19 @@ files_changed: []
 - If the agent reads this after /clear, it knows exactly where to resume
 - Fields: hypothesis, test, expecting, next_action, reasoning_checkpoint, tdd_checkpoint
 - `next_action`: must be concrete and actionable — bad: "continue investigating"; good: "Add logging at line 47 of auth.js to observe token value before jwt.verify()"
-- `reasoning_checkpoint`: OVERWRITE before every fix_and_verify — seven-field strdoc-arch-0006-uc-v1tured reasoning record (hypothesis, confirming_evidence, falsification_test, fix_rationale, blind_spots, candidate_causes, and_gate) — see `gsd-debugger.md` Strdoc-arch-0006-uc-v1tured Reasoning Checkpoint
+- `reasoning_checkpoint`: OVERWRITE before every fix_and_verify — seven-field structured reasoning record (hypothesis, confirming_evidence, falsification_test, fix_rationale, blind_spots, candidate_causes, and_gate) — see `gsd-debugger.md` Structured Reasoning Checkpoint
 - `tdd_checkpoint`: OVERWRITE during TDD red/green phases — test file, name, status, failure output
 
 **Session Loop:**
 - Owned by the checkpoint loop that drives `gsd-debugger`; on Pi that loop is the top-level session, which holds no state in memory between turns (#5638)
-- OVERWRITE on each dispatch and each wait; the debugger never edits it and `## Current Focus` rewrites never todoc-arch-0006-uc-v1h it
+- OVERWRITE on each dispatch and each wait; the debugger never edits it and `## Current Focus` rewrites never touch it
 - Fields: goal, tdd_mode, tdd_phase, resume_count, awaiting, question, last_next_action
 
 **Symptoms:**
 - Written during initial gathering phase
 - IMMUTABLE after gathering complete
 - Reference point for what we're trying to fix
-- Fields: expected, actual, errors, reproddoc-arch-0006-uc-v1tion, started
+- Fields: expected, actual, errors, reproduction, started
 
 **Eliminated:**
 - APPEND only - never remove entries
@@ -180,7 +180,7 @@ The file IS the debugging brain. the agent should be able to resume perfectly fr
 Keep debug files focused:
 - Evidence entries: 1-2 lines each, just the facts
 - Eliminated: brief - hypothesis + why it failed
-- No narrative prose - strdoc-arch-0006-uc-v1tured data only
+- No narrative prose - structured data only
 
 If evidence grows very large (10+ entries), consider whether you're going in circles. Check Eliminated to ensure you're not re-treading.
 

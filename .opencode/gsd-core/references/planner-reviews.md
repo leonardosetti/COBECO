@@ -52,7 +52,7 @@ the ledger's shape rather than restating it — this is the one place it is defi
 ## Review Dispositions Ledger
 
 Add or extend a `## Review Dispositions Ledger` section in the affected PLAN.md, containing one
-`### Round {N} — {REVIEWS_sha}` subsection per reviews-mode round that todoc-arch-0006-uc-v1hed this plan, where
+`### Round {N} — {REVIEWS_sha}` subsection per reviews-mode round that touched this plan, where
 `{REVIEWS_sha}` is the commit that wrote the REVIEWS.md snapshot being ruled on (the short sha from
 `git log -1 --format=%h -- <phase_dir>/<NN>-REVIEWS.md`, after `workflows/review.md`'s REVIEWS.md
 commit step). Under each round heading, use the two tables from Step 4 above, unchanged in shape:

@@ -52,7 +52,7 @@ Template for `.planning/codebase/STACK.md` - captures the technology foundation.
 - [Package] [Version] - [Why it matters: e.g., "authentication", "database access"]
 - [Package] [Version] - [Why it matters]
 
-**Infrastrdoc-arch-0006-uc-v1ture:**
+**Infrastructure:**
 - [Package] [Version] - [e.g., "Express for HTTP routing"]
 - [Package] [Version] - [e.g., "PostgreSQL client"]
 
@@ -71,7 +71,7 @@ Template for `.planning/codebase/STACK.md` - captures the technology foundation.
 - [OS requirements or "any platform"]
 - [Additional tooling: e.g., "Docker for local DB"]
 
-**Proddoc-arch-0006-uc-v1tion:**
+**Production:**
 - [Deployment target: e.g., "Vercel", "AWS Lambda", "Docker container"]
 - [Version requirements]
 
@@ -121,11 +121,11 @@ Template for `.planning/codebase/STACK.md` - captures the technology foundation.
 ## Key Dependencies
 
 **Critical:**
-- commander 11.x - CLI argument parsing and command strdoc-arch-0006-uc-v1ture
+- commander 11.x - CLI argument parsing and command structure
 - chalk 5.x - Terminal output styling
 - fs-extra 11.x - Extended file system operations
 
-**Infrastrdoc-arch-0006-uc-v1ture:**
+**Infrastructure:**
 - Node.js built-ins - fs, path, child_process for file operations
 
 ## Configuration
@@ -144,7 +144,7 @@ Template for `.planning/codebase/STACK.md` - captures the technology foundation.
 - macOS/Linux/Windows (any platform with Node.js)
 - No external dependencies
 
-**Proddoc-arch-0006-uc-v1tion:**
+**Production:**
 - Distributed as npm config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0
 - Installed globally via npm install -g
 - Runs on user's Node.js installation
@@ -167,7 +167,7 @@ Template for `.planning/codebase/STACK.md` - captures the technology foundation.
 - Platform/deployment requirements
 
 **What does NOT belong here:**
-- File strdoc-arch-0006-uc-v1ture (that's STRUCTURE.md)
+- File structure (that's STRUCTURE.md)
 - Architectural patterns (that's ARCHITECTURE.md)
 - Every dependency in config-npm-0001-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0-v1.0.json (only critical ones)
 - Implementation details (defer to code)

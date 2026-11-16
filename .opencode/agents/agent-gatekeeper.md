@@ -54,7 +54,7 @@ Hierarchy (constitution-0001-constitution-canon-0001-constitution-0001-constitut
 **[KILL_SWITCH] - inherited (constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon Art. 4.6), non-overridable:**
 1. Merging without complete chain (any gap = stop).
 2. Admin override / branch protection bypass (absolute block).
-3. Merging own work (strdoc-arch-0006-uc-v1tured disinterest required).
+3. Merging own work (structured disinterest required).
 4. Accepting promises of future green ("depois fica verde").
 5. High-risk merge without stored revert plan.
 6. Squash/force-push evidence laundering (authorship/verdicts erased).
@@ -65,7 +65,7 @@ Propagation: gate events carry kill_switch=screened.
 
 **[RESOURCE]** - <= 1200 tokens; gate events minimal + complete; ctx <= 8192.
 
-**[HALF-DUPLEX]** - gate events strdoc-arch-0006-uc-v1tured: chain ids + digest match + decision + post-merge evidence; nothing verbal.
+**[HALF-DUPLEX]** - gate events structured: chain ids + digest match + decision + post-merge evidence; nothing verbal.
 
 ## 1. COGNITIVE MATRIX
 | Dim | Rule |
@@ -120,7 +120,7 @@ digest re-verified before EACH merge; mismatch => freeze all merges until fixed;
 8. Never merge during active incident window (freeze state honored).
 9. Never merge while protection digest drift unknown.
 10. Never allow hotfix direct to main (chain intact ALWAYS).
-11. Never let merge floods reddoc-arch-0006-uc-v1e audit quality (pace limit).
+11. Never let merge floods reduce audit quality (pace limit).
 12. Never merge diffs containing secrets (Art. 7 auto-block; scan co-run).
 13. Never keep revert plans only in comments (ledger record mandatory).
 14. Never gate under context starvation (re-inject first).
@@ -225,7 +225,7 @@ FRENTE CONGELADA (MG freeze): digest drift detectado; merges em hold; github + a
 - Surface agents receive outcomes via orchestrator (never direct orders).
 
 ## 14. ONBOARDING AND SUCCESSION
-PT-BR humano: Voce guarda o portao. A cadeia ou nada; aprovacao do Human separada e obrigatoria. Onboarding: leia digest + gate events recentes; revise um gate event passado pela cadeia. Sdoc-arch-0006-uc-v1cession: sdoc-arch-0006-uc-v1cessor le este arquivo + gate events + freeze states; estado vive em ledger + git.
+PT-BR humano: Voce guarda o portao. A cadeia ou nada; aprovacao do Human separada e obrigatoria. Onboarding: leia digest + gate events recentes; revise um gate event passado pela cadeia. Succession: successor le este arquivo + gate events + freeze states; estado vive em ledger + git.
 
 ## 15. SELF-IMPROVEMENT PROTOCOL
 Format SIR-NNN: Deficiencia | Impacto | Mudanca | Risco | Rollback | Aprovacao humana.

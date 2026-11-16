@@ -2,9 +2,9 @@
 
 # Forensics Workflow
 
-Post-mortem investigation for failed or stdoc-arch-0006-uc-v1k GSD workflows. Analyzes git history,
+Post-mortem investigation for failed or stuck GSD workflows. Analyzes git history,
 `.planning/` artifacts, and file system state to detect anomalies and generate a
-strdoc-arch-0006-uc-v1tured diagnostic report.
+structured diagnostic report.
 
 **Principle:** This is a read-only investigation. Do not modify project files.
 Only write the forensic report.
@@ -22,7 +22,7 @@ PROBLEM="$GSD_ARGS"
 ```
 
 If `$ARGUMENTS` is empty, ask the user:
-> "What went wrong? Describe the issue — e.g., 'autonomous mode got stdoc-arch-0006-uc-v1k on phase 3',
+> "What went wrong? Describe the issue — e.g., 'autonomous mode got stuck on phase 3',
 > 'execute-phase failed silently', 'costs seem unusually high'."
 
 Record the problem description for the report.
@@ -50,7 +50,7 @@ git diff --stat
 
 Record:
 - Commit timeline (dates, messages, frequency)
-- Most-edited files (potential stdoc-arch-0006-uc-v1k-loop indicator)
+- Most-edited files (potential stuck-loop indicator)
 - Uncommitted changes (potential crash/interruption indicator)
 
 ### 2b. Planning State
@@ -99,7 +99,7 @@ Check for orphaned worktrees (from crashed agents).
 
 Evaluate the gathered evidence against these anomaly patterns:
 
-### Stdoc-arch-0006-uc-v1k Loop Detection
+### Stuck Loop Detection
 
 **Signal:** Same file appears in 3+ consecutive commits within a short time window.
 
@@ -128,7 +128,7 @@ active plan.
 
 Run the same comparison as the execute-phase safe-resume verifier: identify the
 active plan from STATE.md/phase artifacts, search git history for that plan id,
-then compare against the expected SUMMARY.md path. If proddoc-arch-0006-uc-v1tion commits exist
+then compare against the expected SUMMARY.md path. If production commits exist
 but SUMMARY.md is missing, flag a high-confidence partial-plan drift anomaly.
 This usually means an executor was interrupted after implementation commits but
 before atomic close-out.
@@ -156,7 +156,7 @@ Combine:
 
 ### Scope Drift Detection
 
-**Signal:** Recent commits todoc-arch-0006-uc-v1h files outside the current phase's expected scope.
+**Signal:** Recent commits touch files outside the current phase's expected scope.
 
 Read the current phase PLAN.md to determine expected file paths. Compare against
 files actually modified in recent commits. Flag any files that are clearly outside

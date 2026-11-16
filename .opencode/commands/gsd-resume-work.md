@@ -14,7 +14,7 @@ Restore complete project context and resume work seamlessly from previous sessio
 
 Routes to the resume-project workflow which handles:
 
-- STATE.md loading (or reconstrdoc-arch-0006-uc-v1tion if missing)
+- STATE.md loading (or reconstruction if missing)
 - Checkpoint detection (.continue-here files)
 - Incomplete work detection (PLAN without SUMMARY)
 - Status presentation

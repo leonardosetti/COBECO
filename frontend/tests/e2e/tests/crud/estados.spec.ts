@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures/test-fixtures';
 import { createTestUser } from '../../utils/test-data';
 
-test.describe('Estados de UI - Loading, Empty, Error, Sdoc-arch-0006-uc-v1cess', () => {
+test.describe('Estados de UI - Loading, Empty, Error, Success', () => {
   test.describe('Estados de Loading', () => {
     test('deve mostrar spinner durante navegação', async ({ page, cadastroPage, loginPage }) => {
       await cadastroPage.goto();
@@ -256,25 +256,25 @@ test.describe('Estados de UI - Loading, Empty, Error, Sdoc-arch-0006-uc-v1cess',
     });
   });
 
-  test.describe('Estados de Sdoc-arch-0006-uc-v1esso', () => {
-    test('deve mostrar toast de sdoc-arch-0006-uc-v1esso no cadastro', async ({ page, cadastroPage }) => {
+  test.describe('Estados de Sucesso', () => {
+    test('deve mostrar toast de sucesso no cadastro', async ({ page, cadastroPage }) => {
       await cadastroPage.goto();
       await cadastroPage.cadastrar(createTestUser());
       
-      await expect(page.locator('.toast-sdoc-arch-0006-uc-v1cess, [role="alert"].sdoc-arch-0006-uc-v1cess, .toast:has-text("sdoc-arch-0006-uc-v1esso"), .toast:has-text("criada")')).toBeVisible({ timeout: 5000 });
+      await expect(page.locator('.toast-success, [role="alert"].success, .toast:has-text("sucesso"), .toast:has-text("criada")')).toBeVisible({ timeout: 5000 });
     });
 
-    test('deve mostrar toast de sdoc-arch-0006-uc-v1esso no login', async ({ page, cadastroPage, loginPage }) => {
+    test('deve mostrar toast de sucesso no login', async ({ page, cadastroPage, loginPage }) => {
       await cadastroPage.goto();
       await cadastroPage.cadastrar(createTestUser());
       
       await loginPage.goto();
       await loginPage.login('testuser', 'Senha@123');
       
-      await expect(page.locator('.toast-sdoc-arch-0006-uc-v1cess, [role="alert"].sdoc-arch-0006-uc-v1cess, .toast:has-text("sdoc-arch-0006-uc-v1esso"), .toast:has-text("Login")')).toBeVisible({ timeout: 5000 });
+      await expect(page.locator('.toast-success, [role="alert"].success, .toast:has-text("sucesso"), .toast:has-text("Login")')).toBeVisible({ timeout: 5000 });
     });
 
-    test('deve mostrar toast de sdoc-arch-0006-uc-v1esso ao salvar lista', async ({ authenticatedPage, listasPage }) => {
+    test('deve mostrar toast de sucesso ao salvar lista', async ({ authenticatedPage, listasPage }) => {
       await listasPage.gotoMinhasListas();
       await listasPage.gotoCriarLista();
       
@@ -293,20 +293,20 @@ test.describe('Estados de UI - Loading, Empty, Error, Sdoc-arch-0006-uc-v1cess',
       await listasPage.waitForToast('Lista salva');
     });
 
-    test('deve mostrar toast de sdoc-arch-0006-uc-v1esso ao atualizar perfil', async ({ authenticatedPage, perfilPage }) => {
+    test('deve mostrar toast de sucesso ao atualizar perfil', async ({ authenticatedPage, perfilPage }) => {
       await perfilPage.goto();
       await perfilPage.atualizarPerfil({ nome: 'Nome Atualizado' });
       
       await perfilPage.waitForToast('Perfil atualizado');
     });
 
-    test('deve mostrar toast de sdoc-arch-0006-uc-v1esso ao excluir lista', async ({ authenticatedPage, listasPage }) => {
+    test('deve mostrar toast de sucesso ao excluir lista', async ({ authenticatedPage, listasPage }) => {
       await listasPage.gotoMinhasListas();
       await listasPage.gotoCriarLista();
-      await listasPage.criarLista({ titulo: 'Lista Para Excluir Sdoc-arch-0006-uc-v1esso' });
+      await listasPage.criarLista({ titulo: 'Lista Para Excluir Sucesso' });
       await listasPage.waitForToast('Lista criada');
       
-      const listaId = await listasPage.getListaIdByTitulo('Lista Para Excluir Sdoc-arch-0006-uc-v1esso');
+      const listaId = await listasPage.getListaIdByTitulo('Lista Para Excluir Sucesso');
       expect(listaId).not.toBeNull();
       
       await listasPage.excluirLista(listaId!);
@@ -314,10 +314,10 @@ test.describe('Estados de UI - Loading, Empty, Error, Sdoc-arch-0006-uc-v1cess',
       await listasPage.waitForToast('Lista excluída');
     });
 
-    test('deve mostrar toast de sdoc-arch-0006-uc-v1esso ao exportar PDF', async ({ authenticatedPage, listasPage }) => {
+    test('deve mostrar toast de sucesso ao exportar PDF', async ({ authenticatedPage, listasPage }) => {
       await listasPage.gotoMinhasListas();
       await listasPage.gotoCriarLista();
-      await listasPage.criarLista({ titulo: 'Lista PDF Sdoc-arch-0006-uc-v1esso' });
+      await listasPage.criarLista({ titulo: 'Lista PDF Sucesso' });
       await listasPage.waitForToast('Lista criada');
       
       await listasPage.page.goto('/#/criar-lista');
@@ -336,7 +336,7 @@ test.describe('Estados de UI - Loading, Empty, Error, Sdoc-arch-0006-uc-v1cess',
       await listasPage.page.locator('#btn-salvar-lista').click();
       await listasPage.waitForToast('Lista salva');
       
-      const listaId = await listasPage.getListaIdByTitulo('Lista PDF Sdoc-arch-0006-uc-v1esso');
+      const listaId = await listasPage.getListaIdByTitulo('Lista PDF Sucesso');
       expect(listaId).not.toBeNull();
       
       const downloadPromise = listasPage.page.waitForEvent('download');

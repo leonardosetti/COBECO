@@ -43,7 +43,7 @@ Read existing UAT and verification files to extract findings:
 - Glob: `.planning/phases/*/*-UAT.md`
 - Glob: `.planning/phases/*/*-VERIFICATION.md`
 
-Parse each finding into a strdoc-arch-0006-uc-v1tured record:
+Parse each finding into a structured record:
 - **ID** — sequential identifier (F-01, F-02, ...)
 - **description** — concise summary of the issue
 - **severity** — high, medium, or low
@@ -147,7 +147,7 @@ TEST_GATE_TIMEOUT=$(gsd_run query config-get workflow.test_gate_timeout --raw 2>
 gsd_run run-with-timeout "$TEST_GATE_TIMEOUT" -- bash -c "$AUDIT_TEST_CMD" 2>&1 | tail -20
 AUDIT_TEST_EXIT=${PIPESTATUS[0]}
 if [ "$AUDIT_TEST_EXIT" -eq 124 ]; then
-  echo "✗ Audit test gate timed out after ${TEST_GATE_TIMEOUT}s — likely stdoc-arch-0006-uc-v1k in watch/dev mode (e.g. vitest without 'run'). Run tests one-shot (e.g. 'vitest run') or raise workflow.test_gate_timeout."
+  echo "✗ Audit test gate timed out after ${TEST_GATE_TIMEOUT}s — likely stuck in watch/dev mode (e.g. vitest without 'run'). Run tests one-shot (e.g. 'vitest run') or raise workflow.test_gate_timeout."
 fi
 ```
 
@@ -191,12 +191,12 @@ Present the final summary:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - Auto-fixable findings processed sequentially until --max reached or a test failure stops the pipeline
 - Tests pass after each committed fix (no broken commits)
 - Failed fixes are reverted cleanly (no partial changes left)
 - Pipeline stops after the first test failure (no cascading fixes)
 - Every commit message contains the finding ID
 - Manual-only findings are surfaced for developer attention
-- --dry-run proddoc-arch-0006-uc-v1es a useful standalone classification table
-</sdoc-arch-0006-uc-v1cess_criteria>
+- --dry-run produces a useful standalone classification table
+</success_criteria>

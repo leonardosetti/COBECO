@@ -40,7 +40,7 @@ workflow:
 **Pacote de 4 Documentos Analíticos Ortogonais**
 **Data:** 14 de Setembro de 2026
 **Status:** ✅ SSOT (Single Source of Truth)
-**Público-Alvo:** Equipe de Desenvolvimento, QA, Proddoc-arch-0006-uc-v1t Owner (Thais Cristina Casagrande), Stakeholders Acadêmicos
+**Público-Alvo:** Equipe de Desenvolvimento, QA, Product Owner (Thais Cristina Casagrande), Stakeholders Acadêmicos
 
 ---
 
@@ -150,7 +150,7 @@ workflow:
 **Happy Paths:**
 
 - HP1: Formulário completo → validação frontend → bcrypt → INSERT `usuarios` → 201 → redirect /login
-- HP2: Campos válidos → unicidade validada → toast "Conta criada com sdoc-arch-0006-uc-v1esso"
+- HP2: Campos válidos → unicidade validada → toast "Conta criada com sucesso"
 
 **Exceções:**
 | E1 | nome_usuario duplicado | "Credenciais inválidas" (genérico) |
@@ -1578,7 +1578,7 @@ COBECO/
 
 | Papel                                     | Responsabilidade                             |
 | ----------------------------------------- | -------------------------------------------- |
-| Proddoc-arch-0006-uc-v1t Owner (Thais Cristina Casagrande) | Aprovar escopo, validar entregas, demo final |
+| Product Owner (Thais Cristina Casagrande) | Aprovar escopo, validar entregas, demo final |
 | Tech Lead                                 | Code review, decisões técnicas, mentoring  |
 | Arquiteto de Software                     | ADRs, DER, UCD, OpenAPI                      |
 | Dev Frontend                              | HTML/CSS/JS, módulos ES6, UX                |
@@ -1650,7 +1650,7 @@ COBECO/
 
 | Papel                 | Nome                                | Data        | Status        |
 | --------------------- | ----------------------------------- | ----------- | ------------- |
-| Proddoc-arch-0006-uc-v1t Owner         | **THAIS CRISTINA CASAGRANDE** | ___/09/2026 | ⏳ Aguardando |
+| Product Owner         | **THAIS CRISTINA CASAGRANDE** | ___/09/2026 | ⏳ Aguardando |
 | Tech Lead             | _________________________           | ___/09/2026 | ⏳ Aguardando |
 | Arquiteto de Software | _________________________           | ___/09/2026 | ⏳ Aguardando |
 | Dev Frontend          | _________________________           | ___/09/2026 | ⏳ Aguardando |

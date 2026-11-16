@@ -14,10 +14,10 @@ stdio deadlocks with MCP servers — see Claude Code issue anthropics/claude-cod
    # Remove stale subagent task dirs (Claude Code never cleans these on crash)
    Remove-Item -Recurse -Force "$env:USERPROFILE\.claude\tasks\*" -ErrorAction SilentlyContinue
    ```
-4. **Reddoc-arch-0006-uc-v1e MCP server count:** Temporarily disable non-essential MCP servers in settings.json
+4. **Reduce MCP server count:** Temporarily disable non-essential MCP servers in settings.json
 5. **Retry:** Restart Claude Code and run `/gsd-plan-phase` again
 
-If freezes persist, try `--skip-research` to reddoc-arch-0006-uc-v1e the agent chain from 3 to 2 agents:
+If freezes persist, try `--skip-research` to reduce the agent chain from 3 to 2 agents:
 ```
 /gsd-plan-phase N --skip-research
 ```

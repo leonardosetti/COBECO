@@ -32,12 +32,12 @@ Find `*/outline.yaml` file in current working directory, read items list, execut
 - `{fields_path}`: absolute path to {topic}/fields.yaml
 - `{output_path}`: absolute path to {output_dir}/{item_name_slug}.json (slugify item_name: replace spaces with _, remove special chars)
 
-**Hard Constraint**: The following prompt must be strictly reproddoc-arch-0006-uc-v1ed, only replacing variables in {xxx}, do not modify strdoc-arch-0006-uc-v1ture or wording.
+**Hard Constraint**: The following prompt must be strictly reproduced, only replacing variables in {xxx}, do not modify structure or wording.
 
 **Prompt Template**:
 ```python
 prompt = f"""## Task
-Research {item_related_info}, output strdoc-arch-0006-uc-v1tured JSON to {output_path}
+Research {item_related_info}, output structured JSON to {output_path}
 
 ## Field Definitions
 Read {fields_path} to get all field definitions
@@ -62,8 +62,8 @@ Task is complete only after validation passes.
 ```
 ## Task
 Research name: GitHub Copilot
-category: International Proddoc-arch-0006-uc-v1t
-description: Developed by Microsoft/GitHub, first mainstream AI coding assistant, ~40% market share, output strdoc-arch-0006-uc-v1tured JSON to {project_dir}/results/GitHub_Copilot.json
+category: International Product
+description: Developed by Microsoft/GitHub, first mainstream AI coding assistant, ~40% market share, output structured JSON to {project_dir}/results/GitHub_Copilot.json
 
 ## Field Definitions
 Read {project_dir}/fields.yaml to get all field definitions

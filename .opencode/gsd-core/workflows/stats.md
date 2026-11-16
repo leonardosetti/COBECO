@@ -75,8 +75,8 @@ If `MVP_COUNT == 0`, the project has no MVP-mode phases — omit the line (no cl
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Statistics gathered from project state
 - [ ] Results formatted clearly
 - [ ] Displayed to user
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

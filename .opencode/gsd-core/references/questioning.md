@@ -20,7 +20,7 @@ By the end of questioning, you need enough clarity to write a PROJECT.md that do
 - **Requirements** needs: clear enough vision to scope v1 features
 - **Roadmap** needs: clear enough vision to decompose into phases, what "done" looks like
 - **plan-phase** needs: specific requirements to break into tasks, context for implementation choices
-- **execute-phase** needs: sdoc-arch-0006-uc-v1cess criteria to verify against, the "why" behind requirements
+- **execute-phase** needs: success criteria to verify against, the "why" behind requirements
 
 A vague PROJECT.md forces every downstream phase to guess. The cost compounds.
 
@@ -28,7 +28,7 @@ A vague PROJECT.md forces every downstream phase to guess. The cost compounds.
 
 <how_to_question>
 
-**Start open.** Let them dump their mental model. Don't interrupt with strdoc-arch-0006-uc-v1ture.
+**Start open.** Let them dump their mental model. Don't interrupt with structure.
 
 **Follow energy.** Whatever they emphasized, dig into that. What excited them? What problem sparked this?
 
@@ -60,7 +60,7 @@ Use these as inspiration, not a checklist. Pick what's relevant to the thread.
 - "When you say Z, do you mean A or B?"
 - "You mentioned X — tell me more about that"
 
-**Sdoc-arch-0006-uc-v1cess — how you'll know it's working:**
+**Success — how you'll know it's working:**
 - "How will you know this is working?"
 - "What does done look like?"
 
@@ -119,7 +119,7 @@ The same applies if YOU include a freeform-indicating option (like "Let me expla
 
 <context_checklist>
 
-Use this as a **background checklist**, not a conversation strdoc-arch-0006-uc-v1ture. Check these mentally as you go. If gaps remain, weave questions naturally.
+Use this as a **background checklist**, not a conversation structure. Check these mentally as you go. If gaps remain, weave questions naturally.
 
 - [ ] What they're building (concrete enough to explain to a stranger)
 - [ ] Why it needs to exist (the problem or desire driving it)
@@ -150,7 +150,7 @@ Loop until "Create PROJECT.md" selected.
 
 - **Checklist walking** — Going through domains regardless of what they said
 - **Canned questions** — "What's your core value?" "What's out of scope?" regardless of context
-- **Corporate speak** — "What are your sdoc-arch-0006-uc-v1cess criteria?" "Who are your stakeholders?"
+- **Corporate speak** — "What are your success criteria?" "Who are your stakeholders?"
 - **Interrogation** — Firing questions without building on answers
 - **Rushing** — Minimizing questions to get to "the work"
 - **Shallow acceptance** — Taking vague answers without probing

@@ -1,7 +1,7 @@
 @/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/response-language-directive.md
 
 <purpose>
-Create strdoc-arch-0006-uc-v1tured `.planning/HANDOFF.json` and `.continue-here.md` handoff files to preserve complete work state across sessions. The JSON provides machine-readable state for `/gsd-resume-work`; the markdown provides human-readable context.
+Create structured `.planning/HANDOFF.json` and `.continue-here.md` handoff files to preserve complete work state across sessions. The JSON provides machine-readable state for `/gsd-resume-work`; the markdown provides human-readable context.
 </purpose>
 
 <required_reading>
@@ -49,7 +49,7 @@ If phase is detected, proceed with phase handoff path. Otherwise use the first m
 2. **Work completed**: What got done this session
 3. **Work remaining**: What's left in current plan/phase
 4. **Decisions made**: Key decisions and rationale
-5. **Blockers/issues**: Anything stdoc-arch-0006-uc-v1k
+5. **Blockers/issues**: Anything stuck
 6. **Human actions pending**: Things that need manual intervention (MCP setup, API keys, approvals, manual testing)
 7. **Background processes**: Any running servers/watchers that were part of the workflow
 8. **Files modified**: What's changed but not committed
@@ -68,8 +68,8 @@ grep -l "To be filled\|placeholder\|TBD" .planning/phases/*/*.md 2>/dev/null || 
 Report any summaries with placeholder content as incomplete items.
 </step>
 
-<step name="write_strdoc-arch-0006-uc-v1tured">
-**Write strdoc-arch-0006-uc-v1tured handoff to `.planning/HANDOFF.json`:**
+<step name="write_structured">
+**Write structured handoff to `.planning/HANDOFF.json`:**
 
 ```bash
 _GSD_SHIM_NAME="gsd-tools.cjs"; _GSD_RUNTIME_ROOT="${RUNTIME_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"; GSD_TOOLS="${_GSD_RUNTIME_ROOT}/gsd-core/bin/${_GSD_SHIM_NAME}"; _gsd_at() { for _p; do if [ -f "$_p" ]; then GSD_TOOLS="$_p"; return 0; fi; done; return 1; }; _gsd_id_ok() { case "$("$1" runtime-identity --raw 2>/dev/null || true)" in '{"config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0Name":"@opengsd/gsd-core"'*'}') return 0;; *) return 1;; esac; }; _gsd_homes() { set -- "${CLAUDE_CONFIG_DIR:-/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0}" "${ANTIGRAVITY_CONFIG_DIR:-$HOME/.gemini/antigravity}" "$HOME/.gemini/antigravity-ide" "$HOME/.gemini/antigravity-cli" "${AUGMENT_CONFIG_DIR:-$HOME/.augment}" "${CLINE_CONFIG_DIR:-$HOME/.cline}" "${CODEBUDDY_CONFIG_DIR:-$HOME/.codebuddy}" "${CODEX_HOME:-$HOME/.codex}" "${COPILOT_CONFIG_DIR:-${COPILOT_HOME:-$HOME/.copilot}}" "${CURSOR_CONFIG_DIR:-$HOME/.cursor}" "${HERMES_HOME:-$HOME/.hermes}" "${KILO_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/kilo}" "${KIMI_CONFIG_DIR:-$HOME/.config/agents}" "$HOME/.agents" "${KIMI_CODE_HOME:-$HOME/.kimi-code}" "${OPENCODE_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0}" "${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}" "${QWEN_CONFIG_DIR:-$HOME/.qwen}" "${TRAE_CONFIG_DIR:-$HOME/.trae}" "${WINDSURF_CONFIG_DIR:-$HOME/.codeium/windsurf}" "${ZCODE_CONFIG_DIR:-$HOME/.zcode}" "${GROK_doc-agents-0001-agents-canon_HOME:-$HOME/.agents}"; for _h; do _gsd_at "$_h/gsd-core/bin/${_GSD_SHIM_NAME}" && return 0; done; return 1; }; if _gsd_at "${_GSD_RUNTIME_ROOT}/gsd-core/bin/${_GSD_SHIM_NAME}" "${_GSD_RUNTIME_ROOT}/.claude/gsd-core/bin/${_GSD_SHIM_NAME}" "${_GSD_RUNTIME_ROOT}/.codex/gsd-core/bin/${_GSD_SHIM_NAME}"; then gsd_run() { node "$GSD_TOOLS" "$@"; }; elif _gsd_homes; then gsd_run() { node "$GSD_TOOLS" "$@"; }; elif unset -f gsd_run; _G="$(command -v gsd_run)"; [ -n "$_G" ] && _gsd_id_ok "$_G"; then GSD_TOOLS="$_G"; gsd_run() { "$GSD_TOOLS" "$@"; }; else echo "ERROR: gsd-tools.cjs not found at $GSD_TOOLS and no identity-proving gsd_run is on PATH. Run: npx -y @opengsd/gsd-core@latest --claude --local" >&2; exit 1; fi; GSD_IDENTITY_STATUS=unverified; _gsd_id_ok gsd_run && GSD_IDENTITY_STATUS=ok; export GSD_IDENTITY_STATUS; [ "$GSD_IDENTITY_STATUS" = ok ] || echo "WARNING: \"$GSD_TOOLS\" did not prove it is @opengsd/gsd-core - it is either a different config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 or an @opengsd/gsd-core older than the runtime-identity verb. See docs/how-to/diagnose-a-foreign-gsd-tools.md" >&2; if [ -n "${CLAUDE_ENV_FILE:-}" ] && [ -n "${GSD_TOOLS:-}" ]; then printf "export PATH='%s':\"\$PATH\"\n" "${GSD_TOOLS%/*}" >> "$CLAUDE_ENV_FILE" 2>/dev/null || true; fi
@@ -145,7 +145,7 @@ last_updated: [timestamp from current-timestamp]
 > These are not suggestions. Each constraint below was discovered through failure.
 > Acknowledge each one explicitly before proceeding.
 
-- [ ] CONSTRAINT: [name] — [what it is] — [strdoc-arch-0006-uc-v1tural mitigation required]
+- [ ] CONSTRAINT: [name] — [what it is] — [structural mitigation required]
 
 **Do not proceed until all boxes are checked.**
 
@@ -155,7 +155,7 @@ _If no constraints have been identified yet, remove this section._
 
 | Pattern | Description | Severity | Prevention Mechanism |
 |---------|-------------|----------|---------------------|
-| [pattern name] | [what it is and how it manifested] | blocking | [strdoc-arch-0006-uc-v1tural step that prevents recurrence — not acknowledgment] |
+| [pattern name] | [what it is and how it manifested] | blocking | [structural step that prevents recurrence — not acknowledgment] |
 | [pattern name] | [what it is and how it manifested] | advisory | [guidance for avoiding it] |
 
 **Severity values:** `blocking` — resuming agent must pass understanding check before proceeding. `advisory` — important context, does not gate resumption.
@@ -197,10 +197,10 @@ Completed Tasks:
 1. `.planning/METHODOLOGY.md` (if it exists) — project analytical lenses; apply before any assumption analysis
 
 ## Critical Anti-Patterns (do NOT repeat these)
-<!-- Mistakes discovered this session that must be strdoc-arch-0006-uc-v1turally avoided -->
-- [ANTI-PATTERN]: [what it is] → [strdoc-arch-0006-uc-v1tural mitigation]
+<!-- Mistakes discovered this session that must be structurally avoided -->
+- [ANTI-PATTERN]: [what it is] → [structural mitigation]
 
-## Infrastrdoc-arch-0006-uc-v1ture State
+## Infrastructure State
 <!-- Running services, external state, environment specifics -->
 - [service/env]: [current state]
 
@@ -236,7 +236,7 @@ gsd_run query commit "docs(pause): [context-name] paused at [X]/[Y]" --files [ha
 <step name="confirm">
 ```
 ✓ Handoff created:
-  - .planning/HANDOFF.json (strdoc-arch-0006-uc-v1tured, machine-readable)
+  - .planning/HANDOFF.json (structured, machine-readable)
   - [handoff-path] (human-readable)
 
 Current state:
@@ -255,11 +255,11 @@ To resume: /gsd-resume-work
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Context detected (phase/spike/deliberation/research/default)
 - [ ] .continue-here.md created at correct path for detected context
-- [ ] Required Reading, Anti-Patterns, and Infrastrdoc-arch-0006-uc-v1ture State sections filled
+- [ ] Required Reading, Anti-Patterns, and Infrastructure State sections filled
 - [ ] Pre-Execution Critique section filled if pausing between design and execution
 - [ ] Committed handoff
 - [ ] User knows location and how to resume
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

@@ -85,7 +85,7 @@ function resolveRepoRoot(startDir) {
 const REPO_ROOT = resolveRepoRoot(__dirname);
 const HOOKS_DIR = path.join(REPO_ROOT, "hooks");
 const COMMANDS = path.join(REPO_ROOT, "commands", "gsd");
-const doc-agents-0001-agents-canon = path.join(REPO_ROOT, "agents");
+const AGENTS_DIR = path.join(REPO_ROOT, "agents");
 const SKILLS = path.join(REPO_ROOT, "skills");
 const GSD_CORE = path.join(REPO_ROOT, "gsd-core");
 
@@ -218,7 +218,7 @@ const warnedMissingHooks = new Set();
 // two guards that probe git (worktree path, workflow force-add) run up to
 // BLOCKING_GUARD_MAX_SEQUENTIAL_PROBES sequential probes of
 // BLOCKING_GUARD_PROBE_TIMEOUT_MS each (hooks/lib/git-probe.js, #5180), so
-// their bound is that proddoc-arch-0006-uc-v1t plus a margin for node start/kill/reap. Read
+// their bound is that product plus a margin for node start/kill/reap. Read
 // from the staged hooks/lib so it can never drift from the guards' own budget;
 // the fallback is used only when that lib is missing from a partial install,
 // and is sized for the same worst case.
@@ -250,7 +250,7 @@ function gitProbingGuardTimeoutMs() {
 // GSD_HOOK_RUNTIME wins, then a Node/Bun host's own executable, else `node` from PATH.
 let warnedMissingRuntime = false;
 function hookRuntime() {
-  const fromEnv = processconfig-env-0001-env-example-v1.0.GSD_HOOK_RUNTIME;
+  const fromEnv = process.env.GSD_HOOK_RUNTIME;
   if (typeof fromEnv === "string" && fromEnv.length > 0) return fromEnv;
   const base = path.basename(process.execPath).toLowerCase().replace(/\.exe$/, "");
   return base === "node" || base === "bun" ? process.execPath : "node";
@@ -307,7 +307,7 @@ function runHook(hookFile, payload, opts = {}) {
 /**
  * In-process check for whether context-usage warnings are disabled in project
  * config. Mirrors the exact semantics of the same check inside
- * hooks/gsd-context-monitor.js (introddoc-arch-0006-uc-v1ed by #1073): an explicit
+ * hooks/gsd-context-monitor.js (introduced by #1073): an explicit
  * `config.hooks.context_warnings === false` disables them; a missing or
  * unparseable .planning/config-planning-0001-planning-config-v1-planning-0001-planning-config-v1.0-planning-0001-planning-config-v1.0-planning-0001-planning-config-v1.0.json keeps them enabled (the default).
  *
@@ -406,7 +406,7 @@ function communityHooksEnabled(cwd) {
 
 function graphifyAutoUpdateEnabled(cwd) {
   const config = readProjectConfig(cwd);
-  return !!config && !processconfig-env-0001-env-example-v1.0.CI && !!config.graphify &&
+  return !!config && !process.env.CI && !!config.graphify &&
     config.graphify.enabled === true && config.graphify.auto_update === true;
 }
 
@@ -419,7 +419,7 @@ function runShellHook(hookFile, payload, opts = {}) {
   if (!fs.existsSync(hookPath)) return { stdout: "", exitCode: 0, timedOut: false };
   let result;
   try {
-    result = spawnSync(processconfig-env-0001-env-example-v1.0.GSD_HOOK_SHELL || "bash", [hookPath], {
+    result = spawnSync(process.env.GSD_HOOK_SHELL || "bash", [hookPath], {
       input: JSON.stringify(payload),
       encoding: "utf8",
       timeout: opts.timeout ?? 15000,
@@ -437,7 +437,7 @@ function runShellHook(hookFile, payload, opts = {}) {
   };
 }
 
-// The SessionStart orientation text, proddoc-arch-0006-uc-v1ed once per session and handed to the model with its next request.
+// The SessionStart orientation text, produced once per session and handed to the model with its next request.
 let pendingSessionContext = null;
 
 // Advisories (read-before-edit, injection findings, phase-boundary, context warnings) were logged to stderr
@@ -558,7 +558,7 @@ const GSD_MANAGED_DIRS = [
   path.join(GSD_CORE, "templates"),
   path.join(GSD_CORE, "contexts"),
   COMMANDS,
-  doc-agents-0001-agents-canon,
+  AGENTS_DIR,
   SKILLS,
 ];
 
@@ -656,7 +656,7 @@ const GsdCorePlugin = async ({ directory } = {}) => {
       // Agents (agents/*.md)
       config.agent = config.agent || {};
       const agents = loadDir(
-        doc-agents-0001-agents-canon,
+        AGENTS_DIR,
         (f) => f.slice(0, -3),
         (body, fm, name) => ({
           prompt: rewriteRefs(body.trim()),
@@ -681,10 +681,10 @@ const GsdCorePlugin = async ({ directory } = {}) => {
       }
     },
 
-    // ── shellconfig-env-0001-env-example-v1.0 ───────────────────────────────────────────────────────
-    "shellconfig-env-0001-env-example-v1.0": async (_input, output) => {
-      outputconfig-env-0001-env-example-v1.0 = outputconfig-env-0001-env-example-v1.0 || {};
-      outputconfig-env-0001-env-example-v1.0.GSD_DIR = GSD_CORE;
+    // ── shell ───────────────────────────────────────────────────────
+    "shell": async (_input, output) => {
+      output = output || {};
+      output.GSD_DIR = GSD_CORE;
     },
 
     // ── tool.execute.before — PreToolUse hooks ─────────────────────────
@@ -1016,7 +1016,7 @@ GsdCorePlugin._internals = {
 
 // >>> gsd:config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0-v2 (ADR-5331 D2; OpenCode 2.x entrypoint — the Kilo mirror omits this block)
 // OpenCode 2.x calls `setup(ctx)` with a `ctx` exposing `ctx.tool.hook(...)`; 1.x loads `server`
-// and never calls `setup` with sdoc-arch-0006-uc-v1h a ctx. `setup` therefore returns at once unless it is
+// and never calls `setup` with such a ctx. `setup` therefore returns at once unless it is
 // handed a 2.x ctx. The 1.x hook handlers are reused through thin adapters so both generations
 // run the same guards.
 function v2ResultText(result) {
@@ -1070,7 +1070,7 @@ async function setupV2(ctx) {
   }
   if (ctx.shell && typeof ctx.shell.hook === "function") {
     await ctx.shell.hook("create.before", async (e) => {
-      if (e && econfig-env-0001-env-example-v1.0 && typeof econfig-env-0001-env-example-v1.0 === "object") econfig-env-0001-env-example-v1.0.GSD_DIR = GSD_CORE;
+      if (e && e.output && typeof e.output === "object") e.output.GSD_DIR = GSD_CORE;
     });
   }
   let stop = null;

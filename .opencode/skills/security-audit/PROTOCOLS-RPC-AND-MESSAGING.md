@@ -41,7 +41,7 @@ workflow:
 
 Reach for this file when the target uses gRPC, GraphQL transports, Cap'n Proto, Thrift, Protobuf, custom binary protocols, streaming RPC, webhooks, brokers, queues, pub/sub, or event buses. It covers peer identity, logical message interpretation, routing, replay, ordering, and delivery semantics. Use `MEMORY-SAFETY-AND-BINARY.md` for parser memory safety, `WEB-PROTOCOL-AND-AUTH.md` for HTTP framing, and `RESOURCE-EXHAUSTION-AND-AVAILABILITY.md` for availability impact.
 
-Split large systems by proddoc-arch-0006-uc-v1er/consumer pair, external/internal peer role, synchronous RPC, streaming, and asynchronous message path.
+Split large systems by producer/consumer pair, external/internal peer role, synchronous RPC, streaming, and asynchronous message path.
 
 ## Core discipline (include in every agent prompt for this domain)
 
@@ -50,7 +50,7 @@ Split large systems by proddoc-arch-0006-uc-v1er/consumer pair, external/interna
 - Schema validation proves message shape, not provenance, resource authority, ordering, or safe values. Follow decoded fields to policy and side effects.
 - Broker guarantees and application guarantees differ. Write down retry, ordering, acknowledgement, deduplication, and transaction behavior before evaluating state changes.
 - Parser disagreement requires two concrete consumers, schema versions, or wire representations and one security-relevant divergent value.
-- Use `confirmed` for source-complete paths plus bounded local proddoc-arch-0006-uc-v1er/consumer tests. Use `needs_validation` for broker ACL, service-mesh identity, topic attachment, or compatibility behavior outside the repository.
+- Use `confirmed` for source-complete paths plus bounded local producer/consumer tests. Use `needs_validation` for broker ACL, service-mesh identity, topic attachment, or compatibility behavior outside the repository.
 ```
 
 ## Framing, schema, and interpretation attack classes (subagent_type: `general`)
@@ -81,13 +81,13 @@ Predictable, reused, or cross-tenant correlation IDs let a response, webhook, ca
 ## Broker and queue isolation attack classes (subagent_type: `general`)
 
 **Topic, routing-key, and subscription scope gaps**
-A publisher or subscriber can select another tenant's topic, wildcard, consumer group, partition, reply queue, or dead-letter route. Check broker-enforced ACLs where visible and application-side namespace constrdoc-arch-0006-uc-v1tion. Tenant text inside a payload is not isolation.
+A publisher or subscriber can select another tenant's topic, wildcard, consumer group, partition, reply queue, or dead-letter route. Check broker-enforced ACLs where visible and application-side namespace construction. Tenant text inside a payload is not isolation.
 
 **Dead-letter, retry, and diagnostic disclosure**
 Messages routed to dead-letter queues, error topics, tracing, or operator views contain secrets or cross-tenant payloads accessible to a lower-trust consumer. Review policy and redaction at the failure path, not just normal delivery.
 
-**Untrusted proddoc-arch-0006-uc-v1er treated as control plane**
-A message body can declare itself an admin event, provider callback, replication record, or migration instrdoc-arch-0006-uc-v1tion without an independently authenticated proddoc-arch-0006-uc-v1er and event type. Verify signatures and source/account/audience binding before privileged handling.
+**Untrusted producer treated as control plane**
+A message body can declare itself an admin event, provider callback, replication record, or migration instruction without an independently authenticated producer and event type. Verify signatures and source/account/audience binding before privileged handling.
 
 ## Replay, ordering, and transaction attack classes (subagent_type: `general`)
 
@@ -105,14 +105,14 @@ Several consumers jointly implement one authorization or business transition, bu
 
 ## Universal moves (apply across the above)
 
-- Draw proddoc-arch-0006-uc-v1er → broker/transport → gateway → consumer → storage for each message family. At each hop record authenticated peer, authoritative tenant/resource fields, validation, and side effect.
-- Feed the same small fixture to every in-repo schema version or language binding. Test duplicate, missing, unknown, boundary, replayed, and reordered messages without proddoc-arch-0006-uc-v1ing load.
+- Draw producer → broker/transport → gateway → consumer → storage for each message family. At each hop record authenticated peer, authoritative tenant/resource fields, validation, and side effect.
+- Feed the same small fixture to every in-repo schema version or language binding. Test duplicate, missing, unknown, boundary, replayed, and reordered messages without producing load.
 - Compare normal, retry, dead-letter, replay, migration, reflection, stream, and gateway-transcoded routes. Security policy must survive transport changes.
 
 ## Validation rules (apply before reporting ANY finding here)
 
-1. Name the realistic proddoc-arch-0006-uc-v1er or peer, accepted message, authenticated channel identity, affected principal/resource, and unauthorized mutation or disclosure.
+1. Name the realistic producer or peer, accepted message, authenticated channel identity, affected principal/resource, and unauthorized mutation or disclosure.
 2. For disagreement claims, cite both parsers/consumers and the divergent decoded value. Safe rejection by either side prevents confirmation.
-3. For replay/order claims, establish actual delivery guarantees and reproddoc-arch-0006-uc-v1e the invariant failure with a bounded local/in-memory transport.
+3. For replay/order claims, establish actual delivery guarantees and reproduce the invariant failure with a bounded local/in-memory transport.
 4. For authorization and isolation, verify all interceptor, broker ACL, gateway, and consumer layers visible in source. External attachments make the candidate `needs_validation`.
 5. Return `confirmed` only with the complete message lifecycle and observed meaningful result. Return `needs_validation` with the exact broker, service identity, route, or delivery fact required.

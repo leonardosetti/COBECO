@@ -8,16 +8,16 @@
 ## Core Concepts
 
 ### Why Evals Exist
-AI systems are non-deterministic. Input X does not reliably proddoc-arch-0006-uc-v1e output Y across runs, users, or edge cases. Evals are the continuous process of assessing whether your system's behavior meets expectations under real-world conditions — unit tests and integration tests alone are insufficient.
+AI systems are non-deterministic. Input X does not reliably produce output Y across runs, users, or edge cases. Evals are the continuous process of assessing whether your system's behavior meets expectations under real-world conditions — unit tests and integration tests alone are insufficient.
 
-### Model vs. Proddoc-arch-0006-uc-v1t Evaluation
+### Model vs. Product Evaluation
 - **Model evals** (MMLU, HumanEval, GSM8K) — measure general capability in standardized conditions. Use as initial filter only.
-- **Proddoc-arch-0006-uc-v1t evals** — measure behavior inside your specific system, with your data, your users, your domain rules. This is where 80% of eval effort belongs.
+- **Product evals** — measure behavior inside your specific system, with your data, your users, your domain rules. This is where 80% of eval effort belongs.
 
 ### The Three Components of Every Eval
 - **Input** — everything affecting the system: query, history, retrieved docs, system prompt, config
 - **Expected** — what good behavior looks like, defined through rubrics
-- **Actual** — what the system proddoc-arch-0006-uc-v1ed, including intermediate steps, tool calls, and reasoning traces
+- **Actual** — what the system produced, including intermediate steps, tool calls, and reasoning traces
 
 ### Three Measurement Approaches
 1. **Code-based metrics** — deterministic checks: JSON validation, required disclaimers, performance thresholds, classification flags. Fast, cheap, reliable. Use first.
@@ -36,16 +36,16 @@ Most effective systems combine all three.
 |-----------|-----------------|-----------------|
 | **Factual accuracy** | Correctness of claims against ground truth | RAG, knowledge bases, any factual assertions |
 | **Context faithfulness** | Response grounded in provided context vs. fabricated | RAG pipelines, document Q&A, retrieval-augmented systems |
-| **Halldoc-arch-0006-uc-v1ination detection** | Plausible but unsupported claims | All generative systems, high-stakes domains |
+| **Hallucination detection** | Plausible but unsupported claims | All generative systems, high-stakes domains |
 | **Escalation accuracy** | Correct identification of when human intervention needed | Customer service, healthcare, financial advisory |
 | **Policy compliance** | Adherence to business rules, legal requirements, disclaimers | Regulated industries, enterprise deployments |
 | **Tone/style appropriateness** | Match with brand voice, audience expectations, emotional context | Customer-facing systems, content generation |
-| **Output strdoc-arch-0006-uc-v1ture validity** | Schema compliance, required fields, format correctness | Strdoc-arch-0006-uc-v1tured extraction, API integrations, data pipelines |
+| **Output structure validity** | Schema compliance, required fields, format correctness | Structured extraction, API integrations, data pipelines |
 | **Task completion** | Whether the system accomplished the stated goal | Agentic workflows, multi-step tasks |
 | **Tool use correctness** | Correct selection and invocation of tools | Agent systems with tool calls |
 | **Safety** | Absence of harmful, biased, or inappropriate outputs | All user-facing systems |
 
-### Proddoc-arch-0006-uc-v1tion Monitoring
+### Production Monitoring
 
 | Dimension | Monitoring Approach |
 |-----------|---------------------|
@@ -75,16 +75,16 @@ A rubric must define:
 2. What scores 1, 3, and 5 on a 5-point scale (or pass/fail criteria)
 3. Domain-specific examples of acceptable vs. unacceptable behavior
 
-Without rubrics, LLM judges proddoc-arch-0006-uc-v1e noise rather than signal.
+Without rubrics, LLM judges produce noise rather than signal.
 
 ---
 
 ## Reference Dataset Guidelines
 
 - Start with **10-20 high-quality examples** — not 200 mediocre ones
-- Cover: critical sdoc-arch-0006-uc-v1cess scenarios, common user workflows, known edge cases, historical failure modes
+- Cover: critical success scenarios, common user workflows, known edge cases, historical failure modes
 - Have domain experts label the examples (not just engineers)
-- Expand based on what you learn in proddoc-arch-0006-uc-v1tion — don't build for hypothetical coverage
+- Expand based on what you learn in production — don't build for hypothetical coverage
 
 ---
 
@@ -93,7 +93,7 @@ Without rubrics, LLM judges proddoc-arch-0006-uc-v1e noise rather than signal.
 | Tool | Type | Best For | Key Strength |
 |------|------|----------|-------------|
 | **RAGAS** | Python library | RAG evaluation | Purpose-built metrics: faithfulness, answer relevance, context precision/recall |
-| **Langfuse** | Platform (open-source, self-hostable) | All system types | Strong tracing, prompt management, good for teams wanting infrastrdoc-arch-0006-uc-v1ture control |
+| **Langfuse** | Platform (open-source, self-hostable) | All system types | Strong tracing, prompt management, good for teams wanting infrastructure control |
 | **LangSmith** | Platform (commercial) | LangChain/LangGraph ecosystems | Tightest integration with LangChain; best if already in that ecosystem |
 | **Arize Phoenix** | Platform (open-source + hosted) | RAG + multi-agent tracing | Strong RAG eval + trace visualization; open-source with hosted option |
 | **Braintrust** | Platform (commercial) | Model-agnostic evaluation | Dataset and experiment management; good for comparing across frameworks |
@@ -106,9 +106,9 @@ Without rubrics, LLM judges proddoc-arch-0006-uc-v1e noise rather than signal.
 | RAG / Knowledge Q&A | RAGAS + Arize Phoenix or Braintrust |
 | Multi-agent systems | Langfuse + Arize Phoenix |
 | Conversational / single-model | Promptfoo + Braintrust |
-| Strdoc-arch-0006-uc-v1tured extraction | Promptfoo + code-based validators |
+| Structured extraction | Promptfoo + code-based validators |
 | LangChain/LangGraph projects | LangSmith (native integration) |
-| Proddoc-arch-0006-uc-v1tion monitoring (all types) | Langfuse, Arize Phoenix, or LangSmith |
+| Production monitoring (all types) | Langfuse, Arize Phoenix, or LangSmith |
 
 ---
 
@@ -133,12 +133,12 @@ Output: EVALS-SPEC section of AI-SPEC.md
 
 ### Verify Phase (Pre-Deployment Validation)
 - Run full reference dataset against all metrics
-- Conddoc-arch-0006-uc-v1t human review of edge cases and LLM judge disagreements
+- Conduct human review of edge cases and LLM judge disagreements
 - Calibrate LLM judges against human scores (target ≥ 0.7 correlation before trusting)
-- Define and configure proddoc-arch-0006-uc-v1tion guardrails
+- Define and configure production guardrails
 - Establish monitoring baseline
 
-### Monitor Phase (Proddoc-arch-0006-uc-v1tion Evaluation Loop)
+### Monitor Phase (Production Evaluation Loop)
 - Smart sampling — weight toward interactions with concerning signals (retries, unusual length, explicit escalations)
 - Online guardrails on every interaction
 - Offline flywheel on sampled batch
@@ -148,9 +148,9 @@ Output: EVALS-SPEC section of AI-SPEC.md
 
 ## Common Pitfalls
 
-1. **Assuming benchmarks predict proddoc-arch-0006-uc-v1t sdoc-arch-0006-uc-v1cess** — they don't; model evals are a filter, not a verdict
+1. **Assuming benchmarks predict product success** — they don't; model evals are a filter, not a verdict
 2. **Engineering evals in isolation** — domain experts must co-define rubrics; engineers alone miss critical nuances
 3. **Building comprehensive coverage on day one** — start small (10-20 examples), expand from real failure modes
 4. **Trusting uncalibrated LLM judges** — validate against human judgment before relying on them
-5. **Measuring everything** — only track metrics that drive decisions; "collect it all" proddoc-arch-0006-uc-v1es noise
+5. **Measuring everything** — only track metrics that drive decisions; "collect it all" produces noise
 6. **Treating evaluation as one-time setup** — user behavior evolves, requirements change, failure modes emerge; evaluation is continuous

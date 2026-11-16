@@ -1,6 +1,6 @@
 <purpose>
 Triage and review all open GitHub issues and PRs against project contribution templates.
-Proddoc-arch-0006-uc-v1es a strdoc-arch-0006-uc-v1tured report showing compliance status for each item, flags missing
+Produces a structured report showing compliance status for each item, flags missing
 required fields, identifies label gaps, and optionally takes action (label, comment, close).
 </purpose>
 
@@ -31,7 +31,7 @@ Verify prerequisites:
    ```bash
    which gh && gh auth status 2>&1
    ```
-   If not available: print setup instrdoc-arch-0006-uc-v1tions and exit.
+   If not available: print setup instructions and exit.
 
 2. **Detect repository:**
    If `--repo` flag provided, use that. Otherwise:
@@ -115,7 +115,7 @@ For each classified issue, review against its template requirements.
 - [ ] Node.js version provided
 - [ ] Description of what happened
 - [ ] Expected behavior described
-- [ ] Steps to reproddoc-arch-0006-uc-v1e provided
+- [ ] Steps to reproduce provided
 - [ ] Frequency selected
 - [ ] Severity/impact selected
 - [ ] PII checklist confirmed
@@ -241,7 +241,7 @@ the project auto-closes PRs without proper approval gates.
 </step>
 
 <step name="generate_report">
-Proddoc-arch-0006-uc-v1e a strdoc-arch-0006-uc-v1tured triage report:
+Produce a structured triage report:
 
 ```
 ===================================================================
@@ -382,12 +382,12 @@ After triage:
 - /gsd-inbox --label — Re-run with auto-labeling enabled
 </offer_next>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] All open issues fetched and classified by type
 - [ ] Each issue reviewed against its template requirements
 - [ ] All open PRs fetched and classified by type
 - [ ] Each PR reviewed against its template checklist
 - [ ] Issue-first gate violations identified
-- [ ] Strdoc-arch-0006-uc-v1tured report generated with scores and action items
+- [ ] Structured report generated with scores and action items
 - [ ] Auto-actions executed only when flagged and user-confirmed
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

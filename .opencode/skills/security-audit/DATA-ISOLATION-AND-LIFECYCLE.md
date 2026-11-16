@@ -48,7 +48,7 @@ Split large targets by primary storage, cache/search, object/blob storage, analy
 ```
 - A tenant or owner field on a record is not isolation. Find the query, key, path, policy, or row-level control that enforces it for each read and write path.
 - Trace derived copies. Sanitized primary data can become unsafe in search, cache, analytics, export, previews, logs, replicas, and backups with different ACL and retention rules.
-- Deletion and revocation are lifecycle contracts. Check current, historical, cached, indexed, exported, restored, and queued copies within the proddoc-arch-0006-uc-v1t's stated boundary.
+- Deletion and revocation are lifecycle contracts. Check current, historical, cached, indexed, exported, restored, and queued copies within the product's stated boundary.
 - Privacy or retention preference is not automatically a security vulnerability. Require an explicit data-access boundary or deletion/revocation guarantee and an unauthorized reader or later operation.
 - Use `confirmed` for complete source-visible lineage and bounded dummy-tenant tests. Use `needs_validation` when external storage policy, retention, CDN behavior, replica lag, or backup access is unavailable.
 ```
@@ -103,7 +103,7 @@ Membership removal, ACL update, consent withdrawal, secret revocation, or role d
 **Retention and queued-work overrun**
 Deletion completes in primary storage while queued processors, retries, exports, analytics, or generated artifacts recreate or retain the data beyond the promised boundary. Find idempotent deletion and tombstone propagation.
 
-**Restore reintroddoc-arch-0006-uc-v1es invalid state**
+**Restore reintroduces invalid state**
 Backup, undo, undelete, or replica recovery restores data, credentials, memberships, or permissions that current policy no longer allows. Re-authorize restored state and reapply lifecycle changes made after the snapshot.
 
 ## Universal moves (apply across the above)

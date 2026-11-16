@@ -6,7 +6,7 @@ spine defers to. Each `§` below is the full text the spine condenses at the poi
 names.
 
 (safe_resume_gate, checkpoint_handling, and auto_copy_learnings are stated verbatim in the
-spine itself — pre-existing strdoc-arch-0006-uc-v1tural drift guards in this repo's test suite pin their exact
+spine itself — pre-existing structural drift guards in this repo's test suite pin their exact
 wording and bash there, so nothing about them is deferred to this file.)
 
 ## § 1 — check_interactive_mode
@@ -81,7 +81,7 @@ CROSS_AI_TIMEOUT=$(gsd_run query config-get workflow.cross_ai_timeout --raw 2>/d
 
 **For each cross-AI plan (sequentially):**
 
-1. **Constrdoc-arch-0006-uc-v1t the task prompt** from the plan file:
+1. **Construct the task prompt** from the plan file:
    - Extract `<objective>` and `<tasks>` sections from the PLAN.md
    - Append PROJECT.md context (project name, description, tech stack)
    - Format as a self-contained execution prompt
@@ -89,7 +89,7 @@ CROSS_AI_TIMEOUT=$(gsd_run query config-get workflow.cross_ai_timeout --raw 2>/d
 2. **Check for dirty working tree before execution:**
    ```bash
    if ! git diff --quiet HEAD 2>/dev/null; then
-     echo "WARNING: dirty working tree detected — the external AI command may proddoc-arch-0006-uc-v1e uncommitted changes that conflict with existing modifications"
+     echo "WARNING: dirty working tree detected — the external AI command may produce uncommitted changes that conflict with existing modifications"
    fi
    ```
 
@@ -102,9 +102,9 @@ CROSS_AI_TIMEOUT=$(gsd_run query config-get workflow.cross_ai_timeout --raw 2>/d
 
 4. **Evaluate the result:**
 
-   **Sdoc-arch-0006-uc-v1cess (exit 0 + valid summary):**
+   **Success (exit 0 + valid summary):**
    - Read `$CANDIDATE_SUMMARY` and validate it contains meaningful content
-     (not empty, has at least a heading and description — a valid SUMMARY.md strdoc-arch-0006-uc-v1ture)
+     (not empty, has at least a heading and description — a valid SUMMARY.md structure)
    - Write it as the plan's SUMMARY.md file
    - Update STATE.md plan status to complete
    - Update ROADMAP.md progress
@@ -119,6 +119,6 @@ CROSS_AI_TIMEOUT=$(gsd_run query config-get workflow.cross_ai_timeout --raw 2>/d
      - **skip** — fall back to normal executor for this plan (re-add to execute_waves list)
      - **abort** — stop execution entirely, preserve state for resume
 
-5. **After all cross-AI plans processed:** Remove sdoc-arch-0006-uc-v1cessfully handled plans from the
+5. **After all cross-AI plans processed:** Remove successfully handled plans from the
    incomplete plan list so execute_waves skips them. Any skipped-to-fallback plans remain
    in the list for normal executor processing.

@@ -43,14 +43,14 @@ Unclear domain → infer from phase name/goal ("contract review" → legal, "sup
 <step name="research_domain">
 Run 2-3 targeted searches:
 - `"{domain} AI system evaluation criteria site:arxiv.org OR site:research.google"`
-- `"{domain} LLM failure modes proddoc-arch-0006-uc-v1tion"`
+- `"{domain} LLM failure modes production"`
 - `"{domain} AI compliance requirements {current_year}"`
 
-Extract: practitioner eval criteria (not generic "accuracy"), known failure modes from proddoc-arch-0006-uc-v1tion deployments, directly relevant regulations (HIPAA, GDPR, FCA, etc.), domain expert roles.
+Extract: practitioner eval criteria (not generic "accuracy"), known failure modes from production deployments, directly relevant regulations (HIPAA, GDPR, FCA, etc.), domain expert roles.
 </step>
 
 <step name="synthesize_rubric_ingredients">
-Proddoc-arch-0006-uc-v1e 3-5 domain-specific rubric building blocks:
+Produce 3-5 domain-specific rubric building blocks:
 
 ```
 Dimension: {name in domain language, not AI jargon}
@@ -71,8 +71,8 @@ Source: Legal professional standards — unsourced legal advice constitutes malp
 </step>
 
 <step name="identify_domain_experts">
-Specify who should be involved in evaluation: dataset labeling, rubric calibration, edge case review, proddoc-arch-0006-uc-v1tion sampling.
-No regulated domain → "domain expert" = proddoc-arch-0006-uc-v1t owner or senior team practitioner.
+Specify who should be involved in evaluation: dataset labeling, rubric calibration, edge case review, production sampling.
+No regulated domain → "domain expert" = product owner or senior team practitioner.
 </step>
 
 <step name="write_section_1b">
@@ -100,7 +100,7 @@ Update AI-SPEC.md at `ai_spec_path`. Add/update Section 1b:
 
 ### Known Failure Modes in This Domain
 
-{2-4 domain-specific failure modes — not generic halldoc-arch-0006-uc-v1ination}
+{2-4 domain-specific failure modes — not generic hallucination}
 
 ### Regulatory / Compliance Context
 
@@ -110,7 +110,7 @@ Update AI-SPEC.md at `ai_spec_path`. Add/update Section 1b:
 
 | Role | Responsibility in Eval |
 |------|----------------------|
-| {role} | Reference dataset labeling / rubric calibration / proddoc-arch-0006-uc-v1tion sampling |
+| {role} | Reference dataset labeling / rubric calibration / production sampling |
 
 ### Research Sources
 - {sources used}
@@ -127,7 +127,7 @@ Update AI-SPEC.md at `ai_spec_path`. Add/update Section 1b:
 - Never fabricate criteria — only research or well-established practitioner knowledge
 </quality_standards>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Domain signal extracted from phase artifacts
 - [ ] 2-3 targeted domain research queries run
 - [ ] 3-5 rubric ingredients written (Good/Bad/Stakes/Source format)
@@ -136,5 +136,5 @@ Update AI-SPEC.md at `ai_spec_path`. Add/update Section 1b:
 - [ ] Domain expert roles specified
 - [ ] Section 1b of AI-SPEC.md written and non-empty
 - [ ] Research sources listed
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>
 </output>

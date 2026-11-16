@@ -15,7 +15,7 @@ Template for `.planning/research/FEATURES.md` — feature landscape for the proj
 
 ### Table Stakes (Users Expect These)
 
-Features users assume exist. Missing these = proddoc-arch-0006-uc-v1t feels incomplete.
+Features users assume exist. Missing these = product feels incomplete.
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
@@ -25,7 +25,7 @@ Features users assume exist. Missing these = proddoc-arch-0006-uc-v1t feels inco
 
 ### Differentiators (Competitive Advantage)
 
-Features that set the proddoc-arch-0006-uc-v1t apart. Not required, but valuable.
+Features that set the product apart. Not required, but valuable.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
@@ -64,7 +64,7 @@ Features that seem good but create problems.
 
 ### Launch With (v1)
 
-Minimum viable proddoc-arch-0006-uc-v1t — what's needed to validate the concept.
+Minimum viable product — what's needed to validate the concept.
 
 - [ ] [Feature] — [why essential]
 - [ ] [Feature] — [why essential]
@@ -79,7 +79,7 @@ Features to add once core is working.
 
 ### Future Consideration (v2+)
 
-Features to defer until proddoc-arch-0006-uc-v1t-market fit is established.
+Features to defer until product-market fit is established.
 
 - [ ] [Feature] — [why defer]
 - [ ] [Feature] — [why defer]
@@ -106,7 +106,7 @@ Features to defer until proddoc-arch-0006-uc-v1t-market fit is established.
 
 ## Sources
 
-- [Competitor proddoc-arch-0006-uc-v1ts analyzed]
+- [Competitor products analyzed]
 - [User research or feedback sources]
 - [Industry standards referenced]
 

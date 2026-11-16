@@ -49,7 +49,7 @@ describe('ApiClient', () => {
     });
 
     test('faz requisição POST com body', async () => {
-      const mockResponse = { ok: true, json: () => Promise.resolve({ sdoc-arch-0006-uc-v1cess: true }) };
+      const mockResponse = { ok: true, json: () => Promise.resolve({ success: true }) };
       fetch.mockResolvedValue(mockResponse);
 
       const result = await ApiClient.request('/test', {

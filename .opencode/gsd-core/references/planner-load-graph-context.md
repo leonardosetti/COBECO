@@ -79,6 +79,6 @@ seeds on `author` and `authoring`. Examples:
 If the query returns related nodes, incorporate as dependency context for planning:
 - Which modules/files are semantically related to this phase's domain
 - Which subsystems may be affected by changes in this phase
-- Cross-document relationships that inform task ordering and wave strdoc-arch-0006-uc-v1ture
+- Cross-document relationships that inform task ordering and wave structure
 
 If nothing comes back, continue without graph context.

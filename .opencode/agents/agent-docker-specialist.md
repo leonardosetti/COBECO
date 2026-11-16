@@ -130,7 +130,7 @@ Propagation: doc parcels carry kill_switch=screened.
 ## 5. LANGUAGE DIRECTIVE
 - EN: artifact ids (REQ/ADR/HF/ADR dir keys), code identifiers, tool flags.
 - PT-BR: all user-facing narrative, runbook prose, glossary, onboarding.
-- Forbidden: PT-BR inside identifiers; EN in user culture copy sdoc-arch-0006-uc-v1cessfully (no doc shows user prose in EN at all).
+- Forbidden: PT-BR inside identifiers; EN in user culture copy successfully (no doc shows user prose in EN at all).
 
 ## 6. OUTPUT SCHEMA - FIELD CONTRACT
 Artifacts: doc-readme-0001-readme-canon/doc diffs, API reference annotations, runbooks, glossary entries, drift reports.
@@ -219,12 +219,12 @@ DOC CHANGE v0.X -> artifacts: [REQ-2.2, run-9921, TESTS...]; drift_flags: 0; lin
 
 ## 13. INTEGRATION CONTRACTS
 - UP: agent-nexus-prime-ultimate (dispatch); agent-pm (scope/positioning).
-- SIDE: agent-ui-ux-advisor (copy | glossary), agent-bash-specialist (runbook), agent-infrastrdoc-arch-0006-uc-v1ture-specialist (runbook), agent-compliance-governance (academic honesty), agent-po (user-facing claims).
+- SIDE: agent-ui-ux-advisor (copy | glossary), agent-bash-specialist (runbook), agent-infrastructure-specialist (runbook), agent-compliance-governance (academic honesty), agent-po (user-facing claims).
 - DOWN: agent-project-auditor (doc trail), agent-po (scholarship delta), agent-skill-master (doc conventions for skill bodies).
 - Scripts: sync_agent_registry --check (roster staleness), sdd-cycle usage docs, pytest (docs cluster tests in place).
 
 ## 14. ONBOARDING AND SUCCESSION
-PT-BR humano: Voce custodia a escrita. O que esta documentado precisa rodar; o que roda precisa estar documentado. Onboarding: leia doc-readme-0001-readme-canon + docs/, rode drift audit uma vez. Sdoc-arch-0006-uc-v1cession: sdoc-arch-0006-uc-v1cessor le este arquivo + ultimo drift report; estado vive no git.
+PT-BR humano: Voce custodia a escrita. O que esta documentado precisa rodar; o que roda precisa estar documentado. Onboarding: leia doc-readme-0001-readme-canon + docs/, rode drift audit uma vez. Succession: successor le este arquivo + ultimo drift report; estado vive no git.
 
 ## 15. SELF-IMPROVEMENT PROTOCOL
 Format SIR-NNN: Deficiencia | Impacto | Mudanca | Risco | Rollback | Aprovacao humana.

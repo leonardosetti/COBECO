@@ -40,7 +40,7 @@ workflow:
 **Versão:** 2.0 | **Data:** 14/11/2026 | **Status:** ✅ RATIFICADO  
 **Autor:** COBECO Team | **Aprovado por:** CCB (Change Control Board)  
 **Hash de Ratificação (Commit):** `33fbdc3` (`33fbdc3eae7efaf8ad17e194dd01756f3cf302a7`)  
-**Base Constitdoc-arch-0006-uc-v1ional:** `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md` v2.0 (Lei Suprema) | **SSOT:** req-func-0001-requisitos-funcionais-canon.md, req-use-case-0001-casos-de-uso-canon.md, doc-arch-0001-camada-de-dados-canon.md v3.2  
+**Base Constitucional:** `constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md` v2.0 (Lei Suprema) | **SSOT:** req-func-0001-requisitos-funcionais-canon.md, req-use-case-0001-casos-de-uso-canon.md, doc-arch-0001-camada-de-dados-canon.md v3.2  
 
 ---
 
@@ -713,8 +713,8 @@ graph TB
 |---------|---------------|---------------|--------------|--------------|
 | `db` | 3306 | — | `mysqladmin ping` | — |
 | `migrate` | — | — | Alembic exit code | `db:healthy` |
-| `seed` | — | — | MySQL import exit | `migrate:sdoc-arch-0006-uc-v1cess` |
-| `backend` | 8000 | — (expose) | `/health` | `seed:sdoc-arch-0006-uc-v1cess` |
+| `seed` | — | — | MySQL import exit | `migrate:success` |
+| `backend` | 8000 | — (expose) | `/health` | `seed:success` |
 | `frontend` | 80 | — (expose) | nginx status | `backend` |
 | `proxy` | 8380 | **8380** (host) | nginx status | `frontend`, `backend` |
 
@@ -789,7 +789,7 @@ sequenceDiagram
 
 ```mermaid
 graph TB
-    subgraph "E2E Tests (Playwright) - Podoc-arch-0006-uc-v1os, Críticos"
+    subgraph "E2E Tests (Playwright) - Poucos, Críticos"
         E2E1[Auth Flow: Cadastro → Login → Logout]
         E2E2[Lista: Criar → Salvar → Editar → Excluir]
         E2E3[Comparação: Categorias → Fornecedores → Calcular → PDF]
@@ -983,7 +983,7 @@ graph TB
 
 ### 16.1 Impacto por Dimensão
 
-| Dimensão | Antes (Sem Guia) | Depois (Com Guia v2.0) | Métrica de Sdoc-arch-0006-uc-v1esso |
+| Dimensão | Antes (Sem Guia) | Depois (Com Guia v2.0) | Métrica de Sucesso |
 |----------|------------------|------------------------|-------------------|
 | **Onboarding** | 2-3 semanas | 2-3 dias | Tempo para primeiro PR mergado |
 | **Consistência** | Baixa (estilos variados) | Alta (templates + lint + types) | Zero style/lint errors no CI |
@@ -1025,7 +1025,7 @@ graph TB
 
 | Papel | Nome | Assinatura Digital (GPG/GitHub) | Data |
 |-------|------|-------------------|------|
-| **Proddoc-arch-0006-uc-v1t Owner / CCB Chair / Tech Lead / Arquiteto / QA Lead / DevOps** | **Leonardo David Silva Setti** (`@leonardosetti`) | `gh-sig:owner:leonardosetti:14863508` | 14/11/2026 |
+| **Product Owner / CCB Chair / Tech Lead / Arquiteto / QA Lead / DevOps** | **Leonardo David Silva Setti** (`@leonardosetti`) | `gh-sig:owner:leonardosetti:14863508` | 14/11/2026 |
 
 > **Nota:** Ratificação por assinatura única do proprietário do repositório GitHub (`leonardosetti`), consolidando todos os papéis CCB conforme decisão de governança. Verificação via `gh api user --jq '.login'` confirma identidade.
 
@@ -1056,14 +1056,14 @@ git show 33fbdc3:docs/operacao/doc-arch-0008-guia-arquitetural-v2.0.md | sha256s
 | **RNF** | Requisito Não Funcional |
 | **UC** | Caso de Uso (Use Case) |
 | **ADR** | Architecture Decision Record |
-| **PRD** | Proddoc-arch-0006-uc-v1t Requirements Document |
+| **PRD** | Product Requirements Document |
 | **BRD** | Business Requirements Document |
 | **RFC** | Request for Comments |
 | **CR** | Change Request |
 | **DPIA** | Data Protection Impact Assessment |
 | **SLA/SLO/SLI** | Service Level Agreement/Objective/Indicator |
 | **WIP** | Work In Progress |
-| **MVP** | Minimum Viable Proddoc-arch-0006-uc-v1t |
+| **MVP** | Minimum Viable Product |
 | **LGPD** | Lei Geral de Proteção de Dados (Brasil) |
 | **ACID** | Atomicity, Consistency, Isolation, Durability |
 | **KISS** | Keep It Simple, Stupid |

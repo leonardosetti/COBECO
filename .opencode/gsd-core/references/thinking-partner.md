@@ -15,7 +15,7 @@ The thinking partner activates when developer responses contain specific signals
 - "pros and cons"
 - "not sure between" / "torn between"
 
-**Strdoc-arch-0006-uc-v1tural signals:**
+**Structural signals:**
 - Developer lists 2+ competing options
 - Developer asks "which is better" or "what would you recommend"
 - Developer reverses a previous decision ("actually, maybe we should...")
@@ -34,7 +34,7 @@ The thinking partner activates when developer responses contain specific signals
 
 **When:** During `discuss_areas` step, after a developer answer reveals competing priorities.
 
-**What:** Pause the normal question flow and offer a brief strdoc-arch-0006-uc-v1tured analysis:
+**What:** Pause the normal question flow and offer a brief structured analysis:
 ```
 I notice competing priorities here — {X} optimizes for {A} while {Y} optimizes for {B}.
 

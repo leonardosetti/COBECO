@@ -43,7 +43,7 @@ EXEC_CONCURRENCY=$(printf '%s' "$QB_EXEC_CONC_JSON" | node -e 'let s="";process.
    finished executing. A coordinator crash between this step returning
    (executor committed, `SUMMARY.md` written) and Step 7's merge leaves
    `BATCH.json` at `pending` with no STATE.md row yet (that row is written
-   only in Step 9) — so on `--resume`, sdoc-arch-0006-uc-v1h an item still comes back
+   only in Step 9) — so on `--resume`, such an item still comes back
    `eligible` here. Before computing `spawn-plan`, determine which eligible
    items already have `${item_dir}/${quick_id}-SUMMARY.md` on disk (same
    `item_dir` derivation via `generate-slug` every other step uses), then

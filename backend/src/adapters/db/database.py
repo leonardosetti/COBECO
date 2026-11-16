@@ -21,6 +21,7 @@ from src.config import settings
 # ============================================================
 class Base(DeclarativeBase):
     """Base para todos os modelos SQLAlchemy"""
+
     pass
 
 

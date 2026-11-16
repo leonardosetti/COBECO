@@ -229,7 +229,7 @@ Exit cleanly.
 DETAIL=$(gsd_run query roadmap.get-phase ${PHASE_NUM})
 ```
 
-Extract `phase_name`, `goal`, `sdoc-arch-0006-uc-v1cess_criteria` from each. Store for use in execute_phase and transition messages.
+Extract `phase_name`, `goal`, `success_criteria` from each. Store for use in execute_phase and transition messages.
 
 </step>
 
@@ -320,11 +320,11 @@ GSD_WS=$(echo " $GSD_ARGS" | sed -nE 's/.* --ws +([A-Za-z0-9][A-Za-z0-9._-]*).*/
 PHASE_STATE=$(gsd_run query init.phase-op ${GSD_WS:+--ws=${GSD_WS##* }} ${PHASE_NUM})
 ```
 
-Check `has_context`. If false → go to handle_blocker: "Discuss for phase ${PHASE_NUM} did not proddoc-arch-0006-uc-v1e CONTEXT.md."
+Check `has_context`. If false → go to handle_blocker: "Discuss for phase ${PHASE_NUM} did not produce CONTEXT.md."
 
 **3a.5. UI Design Contract (Frontend Phases)**
 
-> Full instrdoc-arch-0006-uc-v1tions are in `gsd-core/references/autonomous-ui-design-contract.md`. Read that file now and follow it exactly.
+> Full instructions are in `gsd-core/references/autonomous-ui-design-contract.md`. Read that file now and follow it exactly.
 
 **Inputs:** `PHASE_NUM`, `PHASE_DIR` from execute_phase. Resolves whether the phase needs a UI-SPEC.md generated before planning via active `plan:pre` step hooks. Always non-blocking — proceeds to 3b regardless of outcome.
 
@@ -374,7 +374,7 @@ If `PLAN_STRATEGY=local`, run the regular planner:
 Skill(skill="gsd-plan-phase", args="${PHASE_NUM}")
 ```
 
-Verify plan proddoc-arch-0006-uc-v1ed output — re-run `init phase-op` and check `has_plans`. If false → go to handle_blocker: "Plan phase ${PHASE_NUM} did not proddoc-arch-0006-uc-v1e any plans."
+Verify plan produced output — re-run `init phase-op` and check `has_plans`. If false → go to handle_blocker: "Plan phase ${PHASE_NUM} did not produce any plans."
 
 **3c. Execute**
 
@@ -489,7 +489,7 @@ On **"Run gap closure"**: one gap-closure attempt:
 Skill(skill="gsd-plan-phase", args="${PHASE_NUM} --gaps")
 ```
 
-Re-run `init phase-op ${PHASE_NUM}`; if `has_plans` is false, handle_blocker: "Gap closure planning for phase ${PHASE_NUM} did not proddoc-arch-0006-uc-v1e plans."
+Re-run `init phase-op ${PHASE_NUM}`; if `has_plans` is false, handle_blocker: "Gap closure planning for phase ${PHASE_NUM} did not produce plans."
 
 Re-execute:
 ```
@@ -553,7 +553,7 @@ Skill(skill="gsd-${ref.skill}", args="${PHASE_NUM}")
 
 (i.e. prepend `gsd-` to `ref.skill` — so `ui-review` → `gsd-ui-review`.)
 
-Display the review result summary and score from UI-REVIEW.md if proddoc-arch-0006-uc-v1ed. Continue to iterate step regardless of result — hooks at this point are advisory, not blocking.
+Display the review result summary and score from UI-REVIEW.md if produced. Continue to iterate step regardless of result — hooks at this point are advisory, not blocking.
 
 </step>
 
@@ -561,9 +561,9 @@ Display the review result summary and score from UI-REVIEW.md if proddoc-arch-00
 
 ## Smart Discuss
 
-> Full instrdoc-arch-0006-uc-v1tions are in `gsd-core/references/autonomous-smart-discuss.md`. Read that file now and follow it exactly.
+> Full instructions are in `gsd-core/references/autonomous-smart-discuss.md`. Read that file now and follow it exactly.
 
-Smart discuss is an autonomous-optimized variant of `gsd-discuss-phase`. It proposes grey area answers in batch tables — the user accepts or overrides per area — and writes an identical CONTEXT.md to what discuss-phase proddoc-arch-0006-uc-v1es.
+Smart discuss is an autonomous-optimized variant of `gsd-discuss-phase`. It proposes grey area answers in batch tables — the user accepts or overrides per area — and writes an identical CONTEXT.md to what discuss-phase produces.
 
 **Inputs:** `PHASE_NUM` from execute_phase.
 
@@ -669,7 +669,7 @@ AUDIT_STATUS=$(grep "^status:" "${AUDIT_FILE}" 2>/dev/null | head -1 | cut -d: -
 
 **If AUDIT_STATUS is empty** (no audit file or no status field):
 
-Go to handle_blocker: "Audit did not proddoc-arch-0006-uc-v1e results — audit file missing or malformed."
+Go to handle_blocker: "Audit did not produce results — audit file missing or malformed."
 
 **If `passed`:**
 
@@ -716,7 +716,7 @@ On **"Stop"**: Go to handle_blocker with "User stopped — tech debt to address.
 Skill(skill="gsd-complete-milestone", args="${milestone_version}")
 ```
 
-After complete-milestone returns, verify it proddoc-arch-0006-uc-v1ed output:
+After complete-milestone returns, verify it produced output:
 
 ```bash
 IFS= read -rd '' GSD_ARGS <<'GSD_ARGS_END_9e7c8502c65183f4f3ea587888010f02' || true
@@ -731,7 +731,7 @@ ARCHIVE_DIR=$(_gsd_field "$INIT_MANAGER" archive_dir)
 ls "${ARCHIVE_DIR}/v${milestone_version}-ROADMAP.md" 2>/dev/null || true
 ```
 
-If the archive file does not exist, go to handle_blocker: "Complete milestone did not proddoc-arch-0006-uc-v1e expected archive files."
+If the archive file does not exist, go to handle_blocker: "Complete milestone did not produce expected archive files."
 
 **5c. Cleanup**
 
@@ -790,7 +790,7 @@ When any phase operation fails or a blocker is detected, present 3 options via q
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] All incomplete phases executed in order (smart discuss → ui-phase → plan → execute → ui-review each)
 - [ ] Smart discuss proposes grey area answers in tables, user accepts or overrides per area
 - [ ] Progress banners displayed between phases
@@ -816,7 +816,7 @@ When any phase operation fails or a blocker is detected, present 3 options via q
 - [ ] Progress bar uses phase number / total milestone phases (not position among incomplete), with fallback display when phase numbers exceed total
 - [ ] Smart discuss documents relationship to discuss-phase with CTRL-03 note
 - [ ] Frontend phases get UI-SPEC generated before planning (step 3a.5) if not already present
-- [ ] Frontend phases get UI review audit after sdoc-arch-0006-uc-v1cessful execution (step 3d.5) if UI-SPEC exists
+- [ ] Frontend phases get UI review audit after successful execution (step 3d.5) if UI-SPEC exists
 - [ ] UI phase and UI review respect workflow.ui_phase and workflow.ui_review config toggles
 - [ ] UI review is advisory (non-blocking) — phase proceeds to iterate regardless of score
 - [ ] `--only N` restricts execution to exactly one phase
@@ -842,4 +842,4 @@ When any phase operation fails or a blocker is detected, present 3 options via q
 - [ ] `--converge` overrides `workflow.plan_review_convergence=false` for the run — the dispatch carries `--override-gate`, which the convergence workflow's §1.5 gate honors (#4600)
 - [ ] `--converge` forwards reviewer selector flags and `--max-cycles N`
 - [ ] Default autonomous planning remains `gsd-plan-phase` when convergence is not requested
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

@@ -156,14 +156,14 @@ if git -C "$CONFIG_DIR" rev-parse --git-dir >/dev/null 2>&1; then
   HAS_GIT=true
 fi
 ```
-When `HAS_GIT=true`, use the `pristine_hashes` recorded in `backup-meta.json` to locate the correct baseline commit. For each file, iterate commits that todoc-arch-0006-uc-v1hed it and find the one whose blob SHA-256 matches the recorded pristine hash:
+When `HAS_GIT=true`, use the `pristine_hashes` recorded in `backup-meta.json` to locate the correct baseline commit. For each file, iterate commits that touched it and find the one whose blob SHA-256 matches the recorded pristine hash:
 ```bash
 # Get the expected pristine SHA-256 from backup-meta.json
 PRISTINE_HASH=$(jq -r ".pristine_hashes[\"${file_path}\"] // empty" "$PATCHES_DIR/backup-meta.json")
 
 BASELINE_COMMIT=""
 if [ -n "$PRISTINE_HASH" ]; then
-  # Walk commits that todoc-arch-0006-uc-v1hed this file, pick the one matching the pristine hash
+  # Walk commits that touched this file, pick the one matching the pristine hash
   while IFS= read -r commit_hash; do
     blob_hash=$(git -C "$CONFIG_DIR" show "${commit_hash}:${file_path}" 2>/dev/null | sha256sum | cut -d' ' -f1)
     if [ "$blob_hash" = "$PRISTINE_HASH" ]; then
@@ -220,7 +220,7 @@ whether the user's added lines (diff of the backup against the hash-validated pr
 baseline) are ALREADY present verbatim in the newly installed version — i.e. upstream
 adopted the customization. That is the only ground on which the `Incorporated` status
 below is valid. Never conclude `Incorporated` from a signature line, a heading, or general
-resemblance: the classifier excludes strdoc-arch-0006-uc-v1tural/trivial lines and requires every
+resemblance: the classifier excludes structural/trivial lines and requires every
 significant user-added line to be present, because a false `Incorporated` silently retires
 a live customization.
 
@@ -251,10 +251,10 @@ INCORPORATED_FILES="$(echo "$CLASSIFY_OUTPUT" | node -e "const d=JSON.parse(requ
 - Report the per-file status `Incorporated` — "Already in upstream v{version}" — in the
   Step 3 summary and the Step 7 report.
 - No Hunk Verification Table rows are required for these files (nothing was merged); the
-  classifier's strdoc-arch-0006-uc-v1tured output is the evidence. If EVERY backed-up file is Incorporated,
+  classifier's structured output is the evidence. If EVERY backed-up file is Incorporated,
   still emit the table with a header row and a single note line naming the incorporated
   files, so the Step 5b absent-table halt is not tripped. Step 5a passes these files
-  without special-casing — every user-added line is present in the untodoc-arch-0006-uc-v1hed install.
+  without special-casing — every user-added line is present in the untouched install.
 - This is what ends the re-graft cycle: because the installed file stays identical to what
   the release ships, the next update's hash comparison no longer flags it as modified, and
   the file drops out of `gsd-local-patches/` on the next cycle.
@@ -263,7 +263,7 @@ Files NOT in `INCORPORATED_FILES` — reported `needs_merge` (with the lines sti
 from the new version) or `unknown` (no confirmable pristine baseline) — take the normal
 merge paths below, unchanged. If the classifier cannot run at all (e.g. `GSD_HOME`
 unset), fall back to merging every file as before; never report `Incorporated` without the
-classifier's strdoc-arch-0006-uc-v1tured confirmation.
+classifier's structured confirmation.
 
 ### Step 4 interactive review (#4435) — only when `INTERACTIVE_MODE` is not `off`
 
@@ -307,7 +307,7 @@ plain-text numbered list the user answers by number) that shows:
   `already_upstream` (the shipped file already has it), `partially_upstream` (only some of it is
   there), `region_changed_upstream` (upstream also changed this spot, for example by rewording it),
   `anchor_orphaned` (the lines it sat between are gone), `baseline_unconfirmed` (no verified
-  pre-update copy, so read the whole file), `diff_too_large` (the file changed too mdoc-arch-0006-uc-v1h to split it
+  pre-update copy, so read the whole file), `diff_too_large` (the file changed too much to split it
   into separate edits)
 - Options: **Keep** (graft it), **Retire** (drop it; keep upstream's text), **Rewrite** (the user
   supplies replacement text, which is applied instead)
@@ -365,7 +365,7 @@ For each file:
 a. Read both versions completely
 b. Identify ALL differences, then classify each as:
    - **Mechanical drift** — path substitutions (e.g. `/Users/xxx/.claude/` → `/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/`), variable additions (`${GSD_WS}`, `${AGENT_SKILLS_*}`), error handling additions (`|| true`)
-   - **User customization** — added steps/sections, removed sections, reordered content, changed behavior, added frontmatter fields, modified instrdoc-arch-0006-uc-v1tions
+   - **User customization** — added steps/sections, removed sections, reordered content, changed behavior, added frontmatter fields, modified instructions
 
 c. **If ANY differences remain after filtering out mechanical drift → those are user customizations. Merge them.**
 d. **If ALL differences appear to be mechanical drift → still flag as CONFLICT.** The installer's hash check already proved this file was modified. Ask the user: "This file appears to only have path/variable differences. Were there intentional customizations?" Do NOT silently skip.
@@ -374,7 +374,7 @@ d. **If ALL differences appear to be mechanical drift → still flag as CONFLICT
 
 When the config directory is a git repo but the pristine install commit can't be found, use commit history to identify user changes:
 ```bash
-# Find non-update commits that todoc-arch-0006-uc-v1hed this file
+# Find non-update commits that touched this file
 git -C "$CONFIG_DIR" log --oneline --no-merges -- "{file_path}" | grep -v "gsd:update\|gsd-update\|GSD update\|gsd-install"
 ```
 Each matching commit represents an intentional user modification. Use the commit messages and diffs to understand what was changed and why.
@@ -393,7 +393,7 @@ After writing each merged file, verify that user modifications survived the merg
      - Missing hunk near line {N}: "{first_line_preview}..." ({line_count} lines)
      - Backup available: {patches_dir}/{file_path}
    ```
-4. **Proddoc-arch-0006-uc-v1e a Hunk Verification Table** — one row per hunk per file. This table is **mandatory output** and must be proddoc-arch-0006-uc-v1ed before Step 5 can proceed. Format:
+4. **Produce a Hunk Verification Table** — one row per hunk per file. This table is **mandatory output** and must be produced before Step 5 can proceed. Format:
 
    | file | hunk_id | signature_line | line_count | verified |
    |------|---------|----------------|------------|----------|
@@ -420,7 +420,7 @@ Two layered gates. Both must pass before proceeding to cleanup.
 
 ### 5a: Deterministic verifier (binding gate, #2969)
 
-Run the deterministic verifier script. Do NOT rely solely on the free-text `verified: yes/no` Hunk Verification Table from Step 4 — bug #2969 traced repeated false-positive `verified: yes` reports to that table being filled in without an actual content-presence check. The script performs the check strdoc-arch-0006-uc-v1turally and exits non-zero on any miss.
+Run the deterministic verifier script. Do NOT rely solely on the free-text `verified: yes/no` Hunk Verification Table from Step 4 — bug #2969 traced repeated false-positive `verified: yes` reports to that table being filled in without an actual content-presence check. The script performs the check structurally and exits non-zero on any miss.
 
 Run the verifier as a child process (the gsd-tools binary directory is not required — the script ships under `gsd-core/bin/` in the source repo and is installed to `${GSD_HOME}/gsd-core/bin/`):
 
@@ -443,7 +443,7 @@ if [ "$INTERACTIVE_MODE" != "off" ] && [ -s "$DECISIONS_FILE" ]; then
 fi
 VERIFY_ARGS+=(--json)
 
-# Capture stdout (the strdoc-arch-0006-uc-v1tured JSON report) separately from stderr so that
+# Capture stdout (the structured JSON report) separately from stderr so that
 # Node warnings, deprecation notices, or stack traces do not corrupt the
 # JSON parse downstream. Stderr is preserved on the controlling terminal
 # for operator visibility.
@@ -561,12 +561,12 @@ re-run Step 5a without it. List each confirmed entry in the Step 7 report.
 
 ### 5b: Hunk Verification Table review (advisory gate, #1999)
 
-The Hunk Verification Table proddoc-arch-0006-uc-v1ed in Step 4 must also be reviewed before proceeding. This is advisory after the script gate but is preserved as a defense-in-depth check — if the script ever has a bug or the pristine baseline is unavailable, the table-based gate still catches obvious regressions.
+The Hunk Verification Table produced in Step 4 must also be reviewed before proceeding. This is advisory after the script gate but is preserved as a defense-in-depth check — if the script ever has a bug or the pristine baseline is unavailable, the table-based gate still catches obvious regressions.
 
-**If the Hunk Verification Table is absent** (Step 4 silently proddoc-arch-0006-uc-v1ed nothing), STOP and report:
+**If the Hunk Verification Table is absent** (Step 4 silently produced nothing), STOP and report:
 
 ```
-ERROR: Hunk Verification Table is missing — Step 4 did not proddoc-arch-0006-uc-v1e it.
+ERROR: Hunk Verification Table is missing — Step 4 did not produce it.
 The deterministic verifier (5a) may still have passed, but a missing table
 means post-merge verification was not fully completed. Rerun
 /gsd-update --reapply to retry with full verification.
@@ -590,7 +590,7 @@ Review the merged file manually, then either:
 
 Do not proceed to cleanup until both gates (5a and 5b) pass.
 
-**Why both gates?** 5a (the script) is the binding gate — it does the actual substring check strdoc-arch-0006-uc-v1turally and cannot be shortcut by the LLM. 5b (the table review) is the advisory gate — it provides a redundant safety net via the Step 4 prose summary, ensuring that even a script regression or absent pristine baseline cannot silently allow a `verified: no` row to slip past, nor can a missing table go unnoticed. Layered gates favour false-positive halts (recoverable) over silent sdoc-arch-0006-uc-v1cesses on lost content (unrecoverable).
+**Why both gates?** 5a (the script) is the binding gate — it does the actual substring check structurally and cannot be shortcut by the LLM. 5b (the table review) is the advisory gate — it provides a redundant safety net via the Step 4 prose summary, ensuring that even a script regression or absent pristine baseline cannot silently allow a `verified: no` row to slip past, nor can a missing table go unnoticed. Layered gates favour false-positive halts (recoverable) over silent successes on lost content (unrecoverable).
 
 ## Step 6: Cleanup option
 
@@ -616,7 +616,7 @@ Ask user:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] All backed-up patches processed — zero files left unhandled
 - [ ] No file classified as "no custom content" or "SKIP" — every backed-up file is definitionally modified
 - [ ] Three-way merge used when pristine baseline available (git history or gsd-pristine/)
@@ -626,4 +626,4 @@ Ask user:
 - [ ] With `--interactive`, every presented hunk was decided by the user (never by the agent), retired/rewritten hunks were passed to the Step 5a gate through the hash-bound decisions file, and each retirement is listed in the report
 - [ ] Status reported for each file with summary of what was preserved
 - [ ] Post-merge verification checks each file for dropped hunks and warns if content appears missing
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

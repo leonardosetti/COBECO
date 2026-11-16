@@ -123,7 +123,7 @@ test.describe('Autenticação - Login/Logout/Recuperação (UC01-RF01, UC02-RF02
         await loginPage.page.click('button[type="submit"]');
         
         const confirmToast = await loginPage.getToastMessage();
-        expect(confirmToast?.toLowerCase()).toMatch(/senha alterada|sdoc-arch-0006-uc-v1esso/);
+        expect(confirmToast?.toLowerCase()).toMatch(/senha alterada|sucesso/);
       }
     });
 

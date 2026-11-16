@@ -72,7 +72,7 @@ File not found: {FILEPATH}
 
 Load project context for conflict detection:
 
-1. Read `.planning/ROADMAP.md` — extract phase strdoc-arch-0006-uc-v1ture, phase numbers, dependencies
+1. Read `.planning/ROADMAP.md` — extract phase structure, phase numbers, dependencies
 2. Read `.planning/PROJECT.md` — extract project constraints, tech stack, scope boundaries.
    **If PROJECT.md does not exist:** skip constraint checks that rely on it and display:
    ```
@@ -128,7 +128,7 @@ Run conflict checks against the loaded project context. The report format, sever
 ### INFO checks (informational, no action needed):
 
 - Plan uses a library not currently in the project tech stack → [INFO]
-- Plan adds a new phase to the ROADMAP.md strdoc-arch-0006-uc-v1ture → [INFO]
+- Plan adds a new phase to the ROADMAP.md structure → [INFO]
 
 Render the full Conflict Detection Report using the format in `gsd-core/references/doc-conflict-engine.md`.
 
@@ -221,13 +221,13 @@ CHECKER_MODEL=$(gsd_run query resolve-model gsd-plan-checker --raw)
 Agent({
   subagent_type: "gsd-plan-checker",
   model: "{CHECKER_MODEL}",
-  prompt: "Validate: ${phase_dir}/{plan}-PLAN.md — check frontmatter completeness, task strdoc-arch-0006-uc-v1ture, and GSD conventions. Report any issues."
+  prompt: "Validate: ${phase_dir}/{plan}-PLAN.md — check frontmatter completeness, task structure, and GSD conventions. Report any issues."
 })
 ```
 
 > **ORCHESTRATOR RULE — CODEX RUNTIME**: After calling Agent() above, stop working on this task immediately. Do not read more files, edit code, or run tests related to this task while the subagent is active. Wait for the subagent to return its result. This prevents duplicate work, conflicting edits, and wasted context. Only resume when the subagent result is available.
 
-Handle the checker return by severity, never by the sentinel alone: count BLOCKER + WARNING entries in the YAML issues block; an entry whose severity is missing or unrecognized counts as a BLOCKER (fail closed). A `## VERIFICATION PASSED` return that lists an entry whose severity is BLOCKER or WARNING, in the YAML issues block or listed in prose (a mention sdoc-arch-0006-uc-v1h as "no warnings" or a zero count is not an entry) is counted as `## ISSUES FOUND`, the prose entries counted as BLOCKER/WARNING entries (#5578). If the return is `## VERIFICATION PASSED` with no sdoc-arch-0006-uc-v1h entry, or the count is zero — every entry is explicitly INFO — display `ℹ advisory — {dimension}: {description}` per INFO entry and treat the plan as imported; INFO is advisory and never blocks an import (#3724). Otherwise:
+Handle the checker return by severity, never by the sentinel alone: count BLOCKER + WARNING entries in the YAML issues block; an entry whose severity is missing or unrecognized counts as a BLOCKER (fail closed). A `## VERIFICATION PASSED` return that lists an entry whose severity is BLOCKER or WARNING, in the YAML issues block or listed in prose (a mention such as "no warnings" or a zero count is not an entry) is counted as `## ISSUES FOUND`, the prose entries counted as BLOCKER/WARNING entries (#5578). If the return is `## VERIFICATION PASSED` with no such entry, or the count is zero — every entry is explicitly INFO — display `ℹ advisory — {dimension}: {description}` per INFO entry and treat the plan as imported; INFO is advisory and never blocks an import (#3724). Otherwise:
 - Display the blocking issues to the user
 - Ask the user to resolve issues before the plan is considered imported
 - Do not delete the written file — the user can fix and re-validate manually

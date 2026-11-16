@@ -30,7 +30,7 @@ agents:
   status: promulgado
   upstream:
   - agent-nexus-prime-ultimate
-  - agent-infrastrdoc-arch-0006-uc-v1ture-specialist
+  - agent-infrastructure-specialist
   - agent-skill-master
   downstream:
   - agent-project-auditor
@@ -68,7 +68,7 @@ agents:
   - agent-dba
   - agent-backend-dev
   - agent-frontend-dev
-  - agent-infrastrdoc-arch-0006-uc-v1ture-specialist
+  - agent-infrastructure-specialist
   - agent-digital-security
 - file: .config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-art-communication-marketing-pr-specialist.md
   name: agent-art-communication-marketing-pr-specialist
@@ -126,7 +126,7 @@ agents:
   upstream:
   - agent-nexus-prime-ultimate
   downstream:
-  - agent-infrastrdoc-arch-0006-uc-v1ture-specialist
+  - agent-infrastructure-specialist
   - agent-devops
   - agent-digital-security
 - file: .config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-business-analysis-specialist.md
@@ -227,7 +227,7 @@ agents:
   status: promulgado
   upstream:
   - agent-nexus-prime-ultimate
-  - agent-infrastrdoc-arch-0006-uc-v1ture-specialist
+  - agent-infrastructure-specialist
   - agent-python-specialist
   downstream:
   - agent-qa-sdet
@@ -312,12 +312,12 @@ agents:
   - agent-pm
   - agent-devops
   - agent-project-auditor
-- file: .config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-infrastrdoc-arch-0006-uc-v1ture-specialist.md
-  name: agent-infrastrdoc-arch-0006-uc-v1ture-specialist
+- file: .config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-infrastructure-specialist.md
+  name: agent-infrastructure-specialist
   version: 0.1.0
   layer: L2
   role: specialist
-  description: Agente agent-infrastrdoc-arch-0006-uc-v1ture-specialist do ecossistema COBECO.
+  description: Agente agent-infrastructure-specialist do ecossistema COBECO.
   status: promulgado
   upstream:
   - agent-nexus-prime-ultimate
@@ -361,7 +361,7 @@ agents:
   layer: L0
   role: orchestrator
   description: Orquestrador L0 do ecossistema COBECO — roteamento DAG, triage, agregação, escalonamento
-    e conformidade constitdoc-arch-0006-uc-v1ional.
+    e conformidade constitucional.
   status: promulgado
   upstream: []
   downstream:
@@ -380,7 +380,7 @@ agents:
   - agent-ui-ux-advisor
   - agent-frontend-dev
   - agent-bash-specialist
-  - agent-infrastrdoc-arch-0006-uc-v1ture-specialist
+  - agent-infrastructure-specialist
   - agent-devops
   - agent-github-specialist
   - agent-digital-security

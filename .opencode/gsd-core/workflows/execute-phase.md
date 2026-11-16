@@ -2,7 +2,7 @@
 step: execute
 points: execute:pre, execute:wave:pre, execute:wave:post, execute:post
 agent-roles: executor, verifier, code-reviewer
-proddoc-arch-0006-uc-v1es: SUMMARY.md
+produces: SUMMARY.md
 consumes: PLAN.md
 -->
 <purpose>
@@ -35,7 +35,7 @@ Orchestrator coordinates, not executes. Each subagent loads the full execute-pla
   actual tool availability, not runtime name.
 
 **Fallback rule:** If a spawned agent completes its work (commits visible, SUMMARY.md exists) but
-the orchestrator never receives the completion signal, treat it as sdoc-arch-0006-uc-v1cessful based on spot-checks
+the orchestrator never receives the completion signal, treat it as successful based on spot-checks
 and continue to the next wave/plan. Never block indefinitely waiting for a signal — always verify
 via filesystem and git state.
 </runtime_compatibility>
@@ -57,7 +57,7 @@ Always use the exact name from this list — do not fall back to 'general-purpos
 - gsd-phase-researcher — Researches technical approaches for a phase
 - gsd-plan-checker — Reviews plan quality before execution
 - gsd-debugger — Diagnoses and fixes issues
-- gsd-codebase-mapper — Maps project strdoc-arch-0006-uc-v1ture and dependencies
+- gsd-codebase-mapper — Maps project structure and dependencies
 - gsd-integration-checker — Checks cross-phase integration
 - gsd-nyquist-auditor — Validates verification coverage
 - gsd-ui-researcher — Researches UI/UX approaches
@@ -134,7 +134,7 @@ EXECUTOR_STALL_THRESHOLD_MINUTES=$(gsd_run query config-get executor.stall_thres
 
 `ISOLATION` — not `RUNTIME` — is the ONLY fan-out branch point; **never add a `RUNTIME = "codex"` test here.** Per-host dispatch detail lives in `execute-phase/steps/executor-isolation-dispatch.md` (read from step 3).
 
-If the project uses git submodules, worktree isolation is unsafe **only when a plan todoc-arch-0006-uc-v1hes a submodule path** — the executor commit protocol cannot correctly handle submodule commits inside isolated worktrees. Compute submodule paths once and intersect them per-plan with the plan's declared `files_modified` frontmatter.
+If the project uses git submodules, worktree isolation is unsafe **only when a plan touches a submodule path** — the executor commit protocol cannot correctly handle submodule commits inside isolated worktrees. Compute submodule paths once and intersect them per-plan with the plan's declared `files_modified` frontmatter.
 
 ```bash
 # Parse submodule paths from .gitmodules once (empty if no .gitmodules).
@@ -146,7 +146,7 @@ else
 fi
 ```
 
-`SUBMODULE_PATHS` is exported to the `execute_waves` step, where the per-plan decision happens (see "Per-plan worktree decision" sub-step inside `execute_waves`). The decision is per-plan because different plans in the same wave can todoc-arch-0006-uc-v1h different files — only plans whose paths intersect a submodule must drop worktree isolation; plans nowhere near a submodule keep parallel isolation.
+`SUBMODULE_PATHS` is exported to the `execute_waves` step, where the per-plan decision happens (see "Per-plan worktree decision" sub-step inside `execute_waves`). The decision is per-plan because different plans in the same wave can touch different files — only plans whose paths intersect a submodule must drop worktree isolation; plans nowhere near a submodule keep parallel isolation.
 
 When `USE_WORKTREES` is `false`, `ISOLATION` is forced to `none`: executors run sequentially on the main working tree. The per-plan decision below has no effect when worktrees are project-disabled.
 
@@ -163,15 +163,15 @@ When `CONTEXT_WINDOW >= 500000` (1M-class models), subagent prompts include rich
 - Verifier agents receive all PLAN.md, SUMMARY.md, CONTEXT.md files plus REQUIREMENTS.md
 - This enables cross-phase awareness and history-aware verification
 
-When `CONTEXT_WINDOW < 200000` (sub-200K models), subagent prompts are thinned to reddoc-arch-0006-uc-v1e static overhead:
+When `CONTEXT_WINDOW < 200000` (sub-200K models), subagent prompts are thinned to reduce static overhead:
 - Executor agents omit extended deviation rule examples and checkpoint examples from inline prompt — load on-demand via @/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/executor-examples.md
 - Planner agents omit extended anti-pattern lists and specificity examples from inline prompt — load on-demand via @/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/planner-antipatterns.md
 - Core rules and decision logic remain inline; only verbose examples and edge-case lists are extracted
-- This reddoc-arch-0006-uc-v1es executor static overhead by ~40% while preserving behavioral correctness
+- This reduces executor static overhead by ~40% while preserving behavioral correctness
 
 **If `phase_found` is false:** Error — phase directory not found.
 **If `plan_count` is 0:** Error — no plans found in phase.
-**If `state_exists` is false but `.planning/` exists:** Offer reconstrdoc-arch-0006-uc-v1t or continue.
+**If `state_exists` is false but `.planning/` exists:** Offer reconstruct or continue.
 
 When `parallelization` is false, plans within a wave execute sequentially.
 
@@ -183,7 +183,7 @@ signals are unreliable (see `<runtime_compatibility>`). Set `COPILOT_SEQUENTIAL=
 internally and skip the `execute_waves` step in favor of `check_interactive_mode`'s
 inline path for each plan.
 
-**REQUIRED — Sync chain flag with intent.** If user invoked manually (no `--auto`), clear the ephemeral chain flag from any previous interrupted `--auto` chain. This prevents stale `_auto_chain_active: true` from causing unwanted auto-advance. This does NOT todoc-arch-0006-uc-v1h `workflow.auto_advance` (the user's persistent settings preference). You MUST execute this bash block before any config reads:
+**REQUIRED — Sync chain flag with intent.** If user invoked manually (no `--auto`), clear the ephemeral chain flag from any previous interrupted `--auto` chain. This prevents stale `_auto_chain_active: true` from causing unwanted auto-advance. This does NOT touch `workflow.auto_advance` (the user's persistent settings preference). You MUST execute this bash block before any config reads:
 ```bash
 IFS= read -rd '' GSD_ARGS <<'GSD_ARGS_END_9e7c8502c65183f4f3ea587888010f02' || true
 $ARGUMENTS
@@ -225,7 +225,7 @@ PLAN_COMMITS=$(gsd_run check evaluation-scope --plan "${PHASE_NUMBER}-{plan_padd
 if [ "$PLAN_SCOPE_RC" -ne 0 ]; then echo "SAFE-RESUME GATE: could not resolve the plan's commits (evaluation-scope exit ${PLAN_SCOPE_RC}); not dispatching an executor on an unknown resume state." >&2; exit 1; fi
 PLAN_COMMITS=$(printf '%s' "$PLAN_COMMITS" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{process.stdout.write(JSON.parse(s).commits.map(c=>c.sha.slice(0,10)+' '+c.subject).join('\n'))}catch{}})")
 ```
-If proddoc-arch-0006-uc-v1tion commits exist and `SUMMARY.md is missing` (no `.planning/async-jobs/*.json` manifest matches it: a match is a legal `external_job_waiting` deferral - reconcile per `docs/reference/planning-artifacts.md`, never re-dispatch), stop before spawning a
+If production commits exist and `SUMMARY.md is missing` (no `.planning/async-jobs/*.json` manifest matches it: a match is a legal `external_job_waiting` deferral - reconcile per `docs/reference/planning-artifacts.md`, never re-dispatch), stop before spawning a
 new executor; continuing risks duplicate work and stale `STATE.md`/ROADMAP progress.
 Offer these recovery options:
 - `close out manually` — inspect commits, write SUMMARY.md, then update STATE/ROADMAP.
@@ -233,7 +233,7 @@ Offer these recovery options:
 - `mark-and-skip` — record the anomaly and move on only with explicit confirmation.
 </step>
 
-**TDD gate.** Task-scoped enforcement runs inside plan execution (immediately before each implementation step), where `TASK_FILE`, `PLAN_ID`, and `TASK_ID` are defined. #4011: the gate keys on `TDD_MODE` ALONE — a discipline gate coupled to the proddoc-arch-0006-uc-v1t-scope `MVP_MODE` flag was silently inert on every non-MVP phase, contradicting `gsd-core/references/tdd.md`'s contract that `workflow.tdd_mode` binds for all `type: tdd` plans. MVP mode remains free to imply TDD; it is no longer required by it. Keep the same predicate and RED-commit contract:
+**TDD gate.** Task-scoped enforcement runs inside plan execution (immediately before each implementation step), where `TASK_FILE`, `PLAN_ID`, and `TASK_ID` are defined. #4011: the gate keys on `TDD_MODE` ALONE — a discipline gate coupled to the product-scope `MVP_MODE` flag was silently inert on every non-MVP phase, contradicting `gsd-core/references/tdd.md`'s contract that `workflow.tdd_mode` binds for all `type: tdd` plans. MVP mode remains free to imply TDD; it is no longer required by it. Keep the same predicate and RED-commit contract:
 ```bash
 if [ "$TDD_MODE" = "true" ]; then
   IS_BEHAVIOR_ADDING=$(gsd_run query task.is-behavior-adding "$TASK_FILE" --pick is_behavior_adding)
@@ -280,7 +280,7 @@ This step cannot be skipped. Before proceeding to `check_interactive_mode` or an
 
 1. **What is this anti-pattern?** — Describe it in your own words, not by quoting the handoff.
 2. **How did it manifest?** — Explain the specific failure that caused it to be recorded.
-3. **What strdoc-arch-0006-uc-v1tural mechanism (not acknowledgment) prevents it?** — Name the concrete step, checklist item, or enforcement mechanism that stops recurrence.
+3. **What structural mechanism (not acknowledgment) prevents it?** — Name the concrete step, checklist item, or enforcement mechanism that stops recurrence.
 
 Write these answers inline before continuing. If a blocking anti-pattern cannot be answered from the context in `.continue-here.md`, stop and ask the user for clarification.
 
@@ -359,7 +359,7 @@ Parse JSON for: `phase`, `plans[]`, `waves`, `incomplete`, `runnable`, `ready_pl
 **If all filtered — do NOT exit unconditionally (#2868).** "No plan work left" and "phase fully
 done" are different conditions: a run can be interrupted between the final wave's SUMMARY and
 `verify_phase_goal` (most commonly by a checkpoint plan that is retired but still writes a SUMMARY),
-leaving a phase that looks complete from every index yet never proddoc-arch-0006-uc-v1ed `*-VERIFICATION.md`. A
+leaving a phase that looks complete from every index yet never produced `*-VERIFICATION.md`. A
 third condition looks identical to the first two by plan_count alone but is neither: some filtered
 plans were filtered because they are **blocked** (non-empty `blocked_by`, #2830), not because they
 are done. Blocked-and-incomplete must never be reported as finished.
@@ -382,10 +382,10 @@ later conditions once one matches:
    plans" → exit, unchanged. A filtered run finding nothing left in ITS slice says nothing about
    whether the phase as a whole is done, and must never jump to verification.
 2. **No filter is active, and at least one filtered plan was skipped because of a non-empty
-   `blocked_by`** (irrespective of `VERIFY_STATUS`): the phase is NOT finished — it is **stdoc-arch-0006-uc-v1k on a
+   `blocked_by`** (irrespective of `VERIFY_STATUS`): the phase is NOT finished — it is **stuck on a
    halt**. A plan with no SUMMARY and no dispatched work must never be treated as done merely
    because nothing was left to filter. Report:
-   `"Phase stdoc-arch-0006-uc-v1k: {blocked plan ids} blocked by halted {their blocked_by ids} — resolve the halt, do not resume verification."`
+   `"Phase stuck: {blocked plan ids} blocked by halted {their blocked_by ids} — resolve the halt, do not resume verification."`
    → exit. Do not fall through to condition 3; this is not a completion state.
 2b. **No filter is active, no blocked-plan skip occurred, and at least one filtered plan was skipped because `ready: false` (#4628)** — the phase is WAITING on incomplete predecessors, not finished: report it by name and exit before any completion state (`execute-phase/steps/ready-wave-gate.md`).
 3. **No filter is active, and every filtered plan was filtered by `has_summary` alone** (no
@@ -398,7 +398,7 @@ later conditions once one matches:
      SKIP `cross_ai_delegation`, `execute_waves` and `checkpoint_handling` — there is no wave work
      to do — and continue directly at `aggregate_results`, NOT `code_review_gate`. `aggregate_results`
      reads exclusively from on-disk `${PHASE_DIR}` artifacts (`*-SUMMARY.md`) and independent
-     `gsd_run` calls — nothing it reads is proddoc-arch-0006-uc-v1ed only by `execute_waves` or `checkpoint_handling` —
+     `gsd_run` calls — nothing it reads is produced only by `execute_waves` or `checkpoint_handling` —
      so it tolerates having executed no plans in this run; the `SECURITY_FILE` / secure-phase
      threats-open gate is the shared verification step's first step, and it reads on-disk artifacts
      only too. From there the run proceeds exactly as a normal one: `aggregate_results` →
@@ -437,7 +437,7 @@ Report:
 <step name="cross_ai_delegation">
 **Optional step 2.5 — Delegate plans to an external AI runtime.** Runs after plan discovery, before wave execution. Activates when `--cross-ai` forces all incomplete plans, `--no-cross-ai` disables it entirely, or (default) a plan's `cross_ai: true` frontmatter agrees with the `workflow.cross_ai_execution` config. **Only `ready` plans are eligible (#4628) — a not-ready plan is never delegated over incomplete predecessors.** If no plan is marked, skip to execute_waves; if marked but `workflow.cross_ai_command` is unset, error and tell the user to set it.
 
-For each marked plan: build a self-contained prompt from the plan's `<objective>`/`<tasks>` plus PROJECT.md context, warn on a dirty working tree, then run the configured command **wrapped in `gsd_run run-with-timeout "${CROSS_AI_TIMEOUT}"` (config `workflow.cross_ai_timeout`, default 300s) — never run it unbounded** — with the prompt piped to **stdin, never shell-interpolated, to prevent injection**. On sdoc-arch-0006-uc-v1cess (exit 0): validate the captured SUMMARY output is non-empty and strdoc-arch-0006-uc-v1turally valid before writing it as the plan's SUMMARY.md, update STATE/ROADMAP, mark handled. On failure (non-zero exit, or the summary fails that validation): show the error, warn about possible partial edits, and offer **retry** / **skip** (falls back to the normal executor) / **abort**. Sdoc-arch-0006-uc-v1cessfully handled plans are removed from execute_waves' list; skipped-to-fallback plans remain in it.
+For each marked plan: build a self-contained prompt from the plan's `<objective>`/`<tasks>` plus PROJECT.md context, warn on a dirty working tree, then run the configured command **wrapped in `gsd_run run-with-timeout "${CROSS_AI_TIMEOUT}"` (config `workflow.cross_ai_timeout`, default 300s) — never run it unbounded** — with the prompt piped to **stdin, never shell-interpolated, to prevent injection**. On success (exit 0): validate the captured SUMMARY output is non-empty and structurally valid before writing it as the plan's SUMMARY.md, update STATE/ROADMAP, mark handled. On failure (non-zero exit, or the summary fails that validation): show the error, warn about possible partial edits, and offer **retry** / **skip** (falls back to the normal executor) / **abort**. Successfully handled plans are removed from execute_waves' list; skipped-to-fallback plans remain in it.
 
 Exact bash and per-branch wording: `gsd-core/workflows/execute-phase/detail/elaboration.md` § 2.
 </step>
@@ -529,14 +529,14 @@ assistant-text heartbeats — **no tool call, just a literal line** — at every
 wave and plan boundary. Each heartbeat MUST start with `[checkpoint]` so
 tooling and `/gsd-manager`'s background-completion handler can grep partial
 transcripts. `{P}/{Q}` is the phase-wide completed/total plans counter and
-increases monotonically across waves. `{status}` is `complete` (sdoc-arch-0006-uc-v1cess),
+increases monotonically across waves. `{status}` is `complete` (success),
 `failed` (executor error), or `checkpoint` (human-gate returned).
 
 ```
 [checkpoint] phase {PHASE_NUMBER} wave {N}/{M} starting, {wave_plan_count} plan(s), {P}/{Q} plans done
 [checkpoint] phase {PHASE_NUMBER} wave {N}/{M} plan {plan_id} starting ({P}/{Q} plans done)
 [checkpoint] phase {PHASE_NUMBER} wave {N}/{M} plan {plan_id} {status} ({P}/{Q} plans done)
-[checkpoint] phase {PHASE_NUMBER} wave {N}/{M} complete, {P}/{Q} plans done ({wave_sdoc-arch-0006-uc-v1cess}/{wave_plan_count} ok)
+[checkpoint] phase {PHASE_NUMBER} wave {N}/{M} complete, {P}/{Q} plans done ({wave_success}/{wave_plan_count} ok)
 ```
 
 **For each wave:**
@@ -607,7 +607,7 @@ increases monotonically across waves. `{status}` is `complete` (sdoc-arch-0006-u
 
 2.5. **Per-plan worktree decision (run for each plan in this wave BEFORE any dispatch):**
 
-   Read and execute **Part 1** of `gsd-core/workflows/execute-phase/steps/per-plan-worktree-gate.md` for each plan. It extracts `PLAN_FILES` from the plan's JSON, intersects against `SUBMODULE_PATHS` (with normalization, bidirectional matching, and glob-prefix handling), and sets `USE_WORKTREES_FOR_PLAN` to `false` when the plan todoc-arch-0006-uc-v1hes a submodule path. Append `plan_id` to a `WAVE_WORKTREE_PLANS` accumulator when `USE_WORKTREES_FOR_PLAN != false`. **Store each plan's decision** (`plan_id → USE_WORKTREES_FOR_PLAN`): the shared `USE_WORKTREES_FOR_PLAN` value is overwritten by the next plan's decision.
+   Read and execute **Part 1** of `gsd-core/workflows/execute-phase/steps/per-plan-worktree-gate.md` for each plan. It extracts `PLAN_FILES` from the plan's JSON, intersects against `SUBMODULE_PATHS` (with normalization, bidirectional matching, and glob-prefix handling), and sets `USE_WORKTREES_FOR_PLAN` to `false` when the plan touches a submodule path. Append `plan_id` to a `WAVE_WORKTREE_PLANS` accumulator when `USE_WORKTREES_FOR_PLAN != false`. **Store each plan's decision** (`plan_id → USE_WORKTREES_FOR_PLAN`): the shared `USE_WORKTREES_FOR_PLAN` value is overwritten by the next plan's decision.
 
    The plan-scoped dispatch-isolation record is **not written here**. It is a single slot, so it is written in step 3, immediately before each plan's own dispatch (Part 2 of the gate, #5516).
 
@@ -692,7 +692,7 @@ increases monotonically across waves. `{status}` is `complete` (sdoc-arch-0006-u
        </objective>
 
        <worktree_branch_check>
-       ORCHESTRATOR build-time embed (NOT a sub-agent runtime step): before this dispatch, read `gsd-core/references/worktree-branch-check.md`, substitute `{EXPECTED_BASE}` with the base SHA captured above ({EXPECTED_BASE}), and replace this note with that fragment's `<worktree_branch_check>` block so the dispatched prompt carries the runnable guard verbatim — do not pass this instrdoc-arch-0006-uc-v1tion through in its place.
+       ORCHESTRATOR build-time embed (NOT a sub-agent runtime step): before this dispatch, read `gsd-core/references/worktree-branch-check.md`, substitute `{EXPECTED_BASE}` with the base SHA captured above ({EXPECTED_BASE}), and replace this note with that fragment's `<worktree_branch_check>` block so the dispatched prompt carries the runnable guard verbatim — do not pass this instruction through in its place.
        Per-commit HEAD/cwd-drift/path-guard: `agents/gsd-executor.md` steps 0/0a/0b + `gsd-core/references/worktree-path-safety.md` (in <execution_context>).
        </worktree_branch_check>
 
@@ -739,25 +739,25 @@ increases monotonically across waves. `{status}` is `complete` (sdoc-arch-0006-u
        - ${PROJECT_ROOT}/${phase_dir}/*-RESEARCH.md (Technical research — pitfalls and patterns to follow)
        - ${PROJECT_ROOT}/${prior_wave_summaries} (SUMMARY.md files from earlier waves in this phase — what was already built)
        ` : ''}
-       - ${PROJECT_ROOT}/doc-agents-0001-agents-canon.md (Project instrdoc-arch-0006-uc-v1tions, if exists — follow project-specific guidelines and coding conventions)
+       - ${PROJECT_ROOT}/doc-agents-0001-agents-canon.md (Project instructions, if exists — follow project-specific guidelines and coding conventions)
        - ${PROJECT_ROOT}/.claude/skills/ or ${PROJECT_ROOT}/.agents/skills/ (Project skills, if either exists — list skills, read SKILL.md for each, follow relevant rules during implementation)
        </required_reading>
 
        ${AGENT_SKILLS}
 
        <mcp_tools>
-       If doc-agents-0001-agents-canon.md or project instrdoc-arch-0006-uc-v1tions reference MCP tools (e.g. jCodeMunch, context7,
+       If doc-agents-0001-agents-canon.md or project instructions reference MCP tools (e.g. jCodeMunch, context7,
        or other MCP servers), prefer those tools over Grep/Glob for code navigation when available.
-       MCP tools often save significant tokens by providing strdoc-arch-0006-uc-v1tured code indexes.
+       MCP tools often save significant tokens by providing structured code indexes.
        Check tool availability first — if MCP tools are not accessible, fall back to Grep/Glob.
        </mcp_tools>
 
-       <sdoc-arch-0006-uc-v1cess_criteria>
+       <success_criteria>
        - [ ] All tasks executed
        - [ ] Each task committed individually
        - [ ] SUMMARY.md created in plan directory
        - [ ] No modifications to shared orchestrator artifacts (the orchestrator handles all post-wave shared-file writes)
-       </sdoc-arch-0006-uc-v1cess_criteria>
+       </success_criteria>
      "
    )
    ```
@@ -791,16 +791,16 @@ increases monotonically across waves. `{status}` is `complete` (sdoc-arch-0006-u
        </project_root_pin>
    ```
 
-   The sequential mode Agent prompt uses the same strdoc-arch-0006-uc-v1ture as worktree mode but with these differences in sdoc-arch-0006-uc-v1cess_criteria — since there is only one agent writing at a time, there are no shared-file conflicts:
+   The sequential mode Agent prompt uses the same structure as worktree mode but with these differences in success_criteria — since there is only one agent writing at a time, there are no shared-file conflicts:
 
    ```
-       <sdoc-arch-0006-uc-v1cess_criteria>
+       <success_criteria>
        - [ ] All tasks executed
        - [ ] Each task committed individually
        - [ ] SUMMARY.md created in plan directory
        - [ ] STATE.md updated with position and decisions
        - [ ] ROADMAP.md updated with plan progress (via `roadmap update-plan-progress`)
-       </sdoc-arch-0006-uc-v1cess_criteria>
+       </success_criteria>
    ```
 
 4. **Wait for all agents in wave to complete.**
@@ -834,7 +834,7 @@ increases monotonically across waves. `{status}` is `complete` (sdoc-arch-0006-u
    ```bash
    SKIP_HOOKS=$(gsd_run query config-get workflow.worktree_skip_hooks --raw 2>/dev/null || echo "false")
    if [ "$SKIP_HOOKS" = "true" ]; then
-     # Stash uncommitted changes under a named ref so we always pop (bare `git stash` strands them on hook/script failure). #3542: `refs/stash` is shared across worktrees, so this helper runs ONLY in the orchestrator's main checkout after all wave worktrees have been merged + removed; executors are forbidden from running any `git stash` subcommand (see `<destrdoc-arch-0006-uc-v1tive_git_prohibition>` in `agents/gsd-executor.md`).
+     # Stash uncommitted changes under a named ref so we always pop (bare `git stash` strands them on hook/script failure). #3542: `refs/stash` is shared across worktrees, so this helper runs ONLY in the orchestrator's main checkout after all wave worktrees have been merged + removed; executors are forbidden from running any `git stash` subcommand (see `<destructive_git_prohibition>` in `agents/gsd-executor.md`).
      STASHED=false
      if (! git diff --quiet || ! git diff --cached --quiet) && git stash push -u -m "gsd-post-wave-hook-$$" >/dev/null 2>&1; then STASHED=true; fi
      git hook run pre-commit 2>&1 || echo "⚠ Pre-commit hooks failed — review before continuing"
@@ -847,7 +847,7 @@ increases monotonically across waves. `{status}` is `complete` (sdoc-arch-0006-u
 
    **Standard wave contract:** Each wave's worktrees merge to main via the templated path below before the next wave's worktrees fork. The cleanup loop runs once per wave at the end of the wave lifecycle. Worktrees created in wave N must be fully removed before wave N+1 forks new ones.
 
-   **Cross-wave dependency deviation (supported execution mode):** When the orchestrator legitimately deviates from the standard wave model — for example, a phase with cross-wave plan dependencies that requires custom inter-worktree base-update merges (e.g., `merge: bring 09-01 + 09-02 into 09-03 base`) — the cleanup loop below is NOT automatically re-entered for those custom merges. The deviation path proddoc-arch-0006-uc-v1es correct final history but bypasses this loop, leaving `worktree-agent-*` directories in place. Use the **cleanup-tail snippet** below to remove any residual worktrees after sdoc-arch-0006-uc-v1h a deviation.
+   **Cross-wave dependency deviation (supported execution mode):** When the orchestrator legitimately deviates from the standard wave model — for example, a phase with cross-wave plan dependencies that requires custom inter-worktree base-update merges (e.g., `merge: bring 09-01 + 09-02 into 09-03 base`) — the cleanup loop below is NOT automatically re-entered for those custom merges. The deviation path produces correct final history but bypasses this loop, leaving `worktree-agent-*` directories in place. Use the **cleanup-tail snippet** below to remove any residual worktrees after such a deviation.
 
    When executor agents ran in worktree isolation, their commits land on temporary branches in separate working trees. After the wave completes, merge these changes back and clean up:
 
@@ -895,7 +895,7 @@ increases monotonically across waves. `{status}` is `complete` (sdoc-arch-0006-u
    [ -n "$PRIMARY_WT" ] || PRIMARY_WT=$(git worktree list --porcelain | awk '/^worktree /{print substr($0,10); exit}')
    if [ -n "$PRIMARY_WT" ] && [ "$(pwd -P 2>/dev/null)" != "$(cd "$PRIMARY_WT" 2>/dev/null && pwd -P)" ]; then echo "⚠ Orchestrator CWD drifted to $(pwd) — pinning to $PRIMARY_WT before cleanup-tail (#3174)"; cd "$PRIMARY_WT" || { echo "FATAL: cannot cd to primary worktree $PRIMARY_WT" >&2; exit 1; }; fi
    # Cleanup-tail: remove residual agent worktrees after a cross-wave-dependency deviation.
-   # Uses only the current wave manifest to avoid todoc-arch-0006-uc-v1hing unrelated active agents (#3384).
+   # Uses only the current wave manifest to avoid touching unrelated active agents (#3384).
    WT_PATHS_FILE=$(mktemp "${TMPDIR:-/tmp}/gsd-worktree-paths-XXXXXX")
    node -e 'const fs=require("fs");const p=processconfig-env-0001-env-example-v1.0.WAVE_WORKTREE_MANIFEST;try{if(!p)throw new Error("WAVE_WORKTREE_MANIFEST is unset");if(!fs.existsSync(p))throw new Error("manifest does not exist");const s=fs.readFileSync(p,"utf8");if(!s.trim())throw new Error("manifest is empty");const j=JSON.parse(s);for(const w of j.worktrees||[])if(w.worktree_path)console.log(w.worktree_path)}catch(e){console.error(`ERROR: cannot read worktree manifest ${p||"(unset)"}: ${e.message}`);process.exit(1)}' > "$WT_PATHS_FILE" || { echo "BLOCKED: cannot read WAVE_WORKTREE_MANIFEST; refusing cleanup (#3384)." >&2; exit 1; }
    while IFS= read -r WT; do
@@ -925,7 +925,7 @@ increases monotonically across waves. `{status}` is `complete` (sdoc-arch-0006-u
 
    **If the orchestrator merged via custom messages (cross-wave-dependency deviation):** the templated cleanup loop above was not triggered for those merges. Run the cleanup-tail snippet above instead. After the snippet completes, proceed to step 5.6.
 
-   **If at least one plan used worktrees but others did not:** still run this cleanup — it iterates over actual `git worktree list` output and only merges back the worktrees that were created, leaving sequential plans' commits on the main tree untodoc-arch-0006-uc-v1hed.
+   **If at least one plan used worktrees but others did not:** still run this cleanup — it iterates over actual `git worktree list` output and only merges back the worktrees that were created, leaving sequential plans' commits on the main tree untouched.
 
    **If no worktrees found at runtime:** Skip silently — agents may have been spawned without worktree isolation, or the orchestrator already cleaned them up.
 
@@ -1009,7 +1009,7 @@ increases monotonically across waves. `{status}` is `complete` (sdoc-arch-0006-u
    ```
    ## ⚠ Post-Merge Test Failure (cumulative failures: ${WAVE_FAILURE_COUNT})
 
-   Wave {N} worktrees merged sdoc-arch-0006-uc-v1cessfully, but {M} tests fail after merge.
+   Wave {N} worktrees merged successfully, but {M} tests fail after merge.
    This typically indicates conflicting changes across parallel plans
    (e.g., type definitions, shared imports, API contracts).
 
@@ -1039,7 +1039,7 @@ increases monotonically across waves. `{status}` is `complete` (sdoc-arch-0006-u
    before the `## Wave {N} Complete` summary, emit as a literal line:
 
    ```
-   [checkpoint] phase {PHASE_NUMBER} wave {N}/{M} complete, {P}/{Q} plans done ({wave_sdoc-arch-0006-uc-v1cess}/{wave_plan_count} ok)
+   [checkpoint] phase {PHASE_NUMBER} wave {N}/{M} complete, {P}/{Q} plans done ({wave_success}/{wave_plan_count} ok)
    ```
 
    For each SUMMARY.md:
@@ -1075,7 +1075,7 @@ increases monotonically across waves. `{status}` is `complete` (sdoc-arch-0006-u
    **Abnormal ends reconcile first (#4217):** an abnormal session end (`turn_aborted`-class) routes through the step-4 artifact reconciliation BEFORE classifying the failure — artifacts decide.
    **Step 7.1 — `class == "quota-exceeded"`:** follow the quota-recovery fragment below.
    **Step 7.2 — `class == "classify-handoff-bug"`:**
-   If error contains `classifyHandoffIfNeeded is not defined`, treat as the agent runtime bug. Run the same step-5 spot-checks; PASS => treat as sdoc-arch-0006-uc-v1cess, FAIL => fall through.
+   If error contains `classifyHandoffIfNeeded is not defined`, treat as the agent runtime bug. Run the same step-5 spot-checks; PASS => treat as success, FAIL => fall through.
    **Step 7.3 — `class == "unknown-failure"`:**
    Report failed plan and ask Continue/Stop; continuing may cascade into dependent plan failures.
 
@@ -1105,7 +1105,7 @@ When executor returns a checkpoint AND `AUTO_MODE` is `true`:
 **Standard flow (not auto-mode, human-action, or blocking-human):**
 
 1. Spawn agent for checkpoint plan
-2. Agent runs until checkpoint task or auth gate → returns strdoc-arch-0006-uc-v1tured state
+2. Agent runs until checkpoint task or auth gate → returns structured state
 3. Agent return includes: completed tasks table, current task + blocker, checkpoint type/details, what's awaited
 4. **Present to user:**
    ```
@@ -1122,7 +1122,7 @@ When executor returns a checkpoint AND `AUTO_MODE` is `true`:
    - `{completed_tasks_table}`: From checkpoint return, wrapped in a `<completed_tasks>` tag (the executor's continuation handling keys on it)
    - `{resume_task_number}` + `{resume_task_name}`: Current task
    - `{user_response}`: What user provided
-   - `{resume_instrdoc-arch-0006-uc-v1tions}`: Based on checkpoint type
+   - `{resume_instructions}`: Based on checkpoint type
 7. Continuation agent verifies previous commits, continues from resume point
 8. Repeat until plan completes or user stops
 
@@ -1316,8 +1316,8 @@ gsd_run query commit "docs(phase-{X}): complete phase execution" --files .planni
 <step name="auto_copy_learnings">
 **Auto-extract and copy phase learnings to global store (when enabled).**
 
-This step runs AFTER phase completion and SUMMARY.md is written. It proddoc-arch-0006-uc-v1es the phase's
-learnings artifact (the sole proddoc-arch-0006-uc-v1er is otherwise the user-invoked
+This step runs AFTER phase completion and SUMMARY.md is written. It produces the phase's
+learnings artifact (the sole producer is otherwise the user-invoked
 `/gsd-extract-learnings`) and copies it to the global learnings store at
 `~/.gsd/knowledge/`.
 
@@ -1394,12 +1394,12 @@ Subagents: fresh context each (200k-1M depending on model). No polling (Agent bl
 For 1M+ context models, consider:
 - Passing richer context (code snippets, dependency outputs) directly to executors instead of file paths
 - Running small phases (≤3 plans, no dependencies) inline without subagent spawning overhead
-- Relaxing /clear recommendations — context rot onset is mdoc-arch-0006-uc-v1h further out with 5x window
+- Relaxing /clear recommendations — context rot onset is much further out with 5x window
 </context_efficiency>
 
 <failure_handling>
 - **Quota / rate-limit (any runtime — #3095):** Agent return body contains a sentinel like `usage limit`, `rate limit`, `429`, `too many requests`, `RESOURCE_EXHAUSTED`, `usage_limit_reached`. Route via `gsd_run query agent.classify-failure` → `class: "quota-exceeded"`. Do not offer retry-now; the right action is wait-for-reset and resume.
-- **classifyHandoffIfNeeded false failure:** Agent reports "failed" but error is `classifyHandoffIfNeeded is not defined` → Claude Code bug, not GSD. Spot-check (SUMMARY exists, commits present) → if pass, treat as sdoc-arch-0006-uc-v1cess
+- **classifyHandoffIfNeeded false failure:** Agent reports "failed" but error is `classifyHandoffIfNeeded is not defined` → Claude Code bug, not GSD. Spot-check (SUMMARY exists, commits present) → if pass, treat as success
 - **Agent fails mid-plan:** Missing SUMMARY.md → report, ask user how to proceed
 - **Dependency chain breaks:** Wave 1 fails → Wave 2 dependents likely fail → user chooses attempt or skip
 - **All agents in wave fail:** Systemic issue → stop, report for investigation

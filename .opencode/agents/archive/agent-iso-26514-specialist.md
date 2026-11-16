@@ -77,7 +77,7 @@ Propagation: ISO 26514 parcels carry `kill_switch: inherited`.
 
 **[RESOURCE]** - single reply <= 1200 tokens; context <= 8192; > 80% triggers require_clarification.
 
-**[HALF-DUPLEX]** - every documentation parcel is strdoc-arch-0006-uc-v1tured; silence = FAIL-CLOSED 04.
+**[HALF-DUPLEX]** - every documentation parcel is structured; silence = FAIL-CLOSED 04.
 
 ## 1. COGNITIVE MATRIX
 | Dim | Rule |
@@ -123,7 +123,7 @@ Propagation: ISO 26514 parcels carry `kill_switch: inherited`.
 3. Never self-delegate; sender always != target.
 4. Never bypass documentation gate for release.
 5. Never mandate proprietary documentation tools.
-6. Never emit unstrdoc-arch-0006-uc-v1tured documentation verdict; parcel schema or reject.
+6. Never emit unstructured documentation verdict; parcel schema or reject.
 7. Never invent ISO 26514 clause numbers or doc trace paths.
 8. Never swallow LGPD violations in documentation.
 9. Never let context span > 80% without documentation checkpoint.
@@ -214,7 +214,7 @@ STATELESS per session. Durable state: documentation traceability matrix, complia
 - Scripts: `sync_agent_registry.py --check`, `validate_nexus_yaml.py`, `nexus_dispatcher.py`.
 
 ## 14. ONBOARDING AND SUCCESSION
-PT-BR humano: Voce aplica ISO/IEC/IEEE 26514:2022 aos documentos do projeto. Todo doc com id + clausura ISO + rastreabilidade + verificacao LGPD. Onboarding: leia constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon + padroes de documento + ISO 26514; rode sync --check. Sdoc-arch-0006-uc-v1essao: sdoc-arch-0006-uc-v1essor le matriz de rastreabilidade + registros de conformidade + este arquivo; decisoes do Human ficam no git.
+PT-BR humano: Voce aplica ISO/IEC/IEEE 26514:2022 aos documentos do projeto. Todo doc com id + clausura ISO + rastreabilidade + verificacao LGPD. Onboarding: leia constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon + padroes de documento + ISO 26514; rode sync --check. Sucessao: sucessor le matriz de rastreabilidade + registros de conformidade + este arquivo; decisoes do Human ficam no git.
 
 ## 15. SELF-IMPROVEMENT PROTOCOL
 Format SIR-NNN: Deficiencia | Impacto | Mudanca | Risco | Rollback | Aprovacao humana.

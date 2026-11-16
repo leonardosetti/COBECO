@@ -6,7 +6,7 @@
 #
 # Writes its own PID into LOCK_FILE on start, removes LOCK_FILE on exit (any cause),
 # runs `graphify update .` from the project root (cwd inherited from caller), copies
-# the proddoc-arch-0006-uc-v1ed graphify-out/* into .planning/graphs/, and rewrites STATUS_FILE to
+# the produced graphify-out/* into .planning/graphs/, and rewrites STATUS_FILE to
 # reflect the final status ("ok" if graphify exited 0, "failed" otherwise).
 #
 # Designed to be invoked via `setsid ... &` so it is reparented away from the hook
@@ -27,7 +27,7 @@ trap 'rm -f "$LOCK_FILE"' EXIT
 "$GRAPHIFY_BIN" update . >/dev/null 2>&1
 EXIT_CODE=$?
 
-# Copy outputs only on sdoc-arch-0006-uc-v1cess — failure path preserves the prior valid graph.
+# Copy outputs only on success — failure path preserves the prior valid graph.
 if [ "$EXIT_CODE" -eq 0 ] && [ -f graphify-out/graph.json ]; then
   cp graphify-out/graph.json .planning/graphs/graph.json
   cp graphify-out/graph.html .planning/graphs/graph.html 2>/dev/null || true

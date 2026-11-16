@@ -13,7 +13,7 @@
 - {Key deliverable 3}
 
 ### What Worked
-- {Efficiency win or sdoc-arch-0006-uc-v1cessful pattern}
+- {Efficiency win or successful pattern}
 - {What went smoothly}
 
 ### What Was Inefficient

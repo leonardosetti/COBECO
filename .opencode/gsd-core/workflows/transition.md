@@ -152,7 +152,7 @@ Wait for confirmation before proceeding.
 
 **If plans incomplete:**
 
-**SAFETY RAIL.** Skipping incomplete plans is destrdoc-arch-0006-uc-v1tive — ALWAYS prompt regardless of mode.
+**SAFETY RAIL.** Skipping incomplete plans is destructive — ALWAYS prompt regardless of mode.
 
 Present:
 
@@ -162,7 +162,7 @@ Phase [X] has incomplete plans:
 - {phase}-02-SUMMARY.md ✗ Missing
 - {phase}-03-SUMMARY.md ✗ Missing
 
-⚠️ Safety rail: Skipping plans requires confirmation (destrdoc-arch-0006-uc-v1tive action)
+⚠️ Safety rail: Skipping plans requires confirmation (destructive action)
 
 Options:
 1. Continue current phase (execute remaining plans)
@@ -242,7 +242,7 @@ if [ -e "${_SUMMARIES[0]}" ]; then cat "${_SUMMARIES[@]}"; fi
    - Add to Key Decisions table with outcome if known
 
 5. **"What This Is" still accurate?**
-   - If the proddoc-arch-0006-uc-v1t has meaningfully changed, update the description
+   - If the product has meaningfully changed, update the description
    - Keep it current and accurate
 
 **Update PROJECT.md:**
@@ -295,7 +295,7 @@ After (Phase 2 shipped JWT auth, discovered rate limiting needed):
 - [ ] Invalidated requirements moved to Out of Scope with reason
 - [ ] Emerged requirements added to Active
 - [ ] New decisions logged with rationale
-- [ ] "What This Is" updated if proddoc-arch-0006-uc-v1t changed
+- [ ] "What This Is" updated if product changed
 - [ ] "Last updated" footer reflects this transition
 
 </step>
@@ -312,7 +312,7 @@ Scan LEARNINGS.md files from recent phases for recurring patterns and surface pr
 
 This step is fully delegated to `graduation.md`. It handles guard checks (feature flag, window size, threshold), clustering, backlog filtering, HITL prompting, promotion writes, and STATE.md updates.
 
-**This step is always non-blocking:** graduation candidates are surfaced for the developer's decision; no action is required to continue the transition. If the graduation scan proddoc-arch-0006-uc-v1es no qualifying clusters, it prints a single `[graduation: no qualifying clusters]` line and returns.
+**This step is always non-blocking:** graduation candidates are surfaced for the developer's decision; no action is required to continue the transition. If the graduation scan produces no qualifying clusters, it prints a single `[graduation: no qualifying clusters]` line and returns.
 
 **Step complete when:**
 
@@ -697,7 +697,7 @@ Respect user judgment — they know if work matters.
 
 </partial_completion>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 
 Transition is complete when:
 
@@ -709,4 +709,4 @@ Transition is complete when:
 - [ ] Progress table updated
 - [ ] User knows next steps
 
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

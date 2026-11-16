@@ -3,7 +3,7 @@ Apply response_language to all user-facing prose — narration between tool call
 # --power mode — bulk question generation, async answering
 
 > **Lazy-loaded.** Read this file from `workflows/discuss-phase.md` when
-> `--power` is present in `$ARGUMENTS`. The full step-by-step instrdoc-arch-0006-uc-v1tions
+> `--power` is present in `$ARGUMENTS`. The full step-by-step instructions
 > live in the existing `discuss-phase-power.md` workflow file (kept stable
 > at its original path so installed `@`-references continue to resolve).
 

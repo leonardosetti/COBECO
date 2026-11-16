@@ -60,13 +60,13 @@ para **invalidar minha sessão e impedir acesso não autorizado**.
 
 ## 2. Critérios de Aceite — Gherkin
 
-### Cenário 1: Logout bem-sdoc-arch-0006-uc-v1edido
+### Cenário 1: Logout bem-sucedido
 ```gherkin
 Dado que estou autenticado (tenho access_token válido e refresh_token cookie)
 Quando faço POST /v1/auth/logout
 Então o sistema invalida o refresh_token no backend (blacklist ou deleção)
 E remove o cookie refresh_token (max-age=0, SameSite=Strict)
-E retorna 200 {"message": "Logout realizado com sdoc-arch-0006-uc-v1esso"}
+E retorna 200 {"message": "Logout realizado com sucesso"}
 E meu access_token em memória no frontend é limpo
 E sou redirecionado para a página de login
 ```
@@ -86,7 +86,7 @@ E redireciona para login
 
 | # | Critério | Tipo | Auto? | Teste | Status |
 |---|----------|------|-------|-------|--------|
-| AC-01 | POST /v1/auth/logout → 200, cookie removido, refresh invalidado | Funcional | Sim | `test_logout_sdoc-arch-0006-uc-v1esso.py` | ✅ |
+| AC-01 | POST /v1/auth/logout → 200, cookie removido, refresh invalidado | Funcional | Sim | `test_logout_sucesso.py` | ✅ |
 | AC-02 | Idempotente: logout sem token válido → 200 | Funcional | Sim | `test_logout_sem_token.py` | ✅ |
 | AC-03 | Frontend limpa access_token memória + redirect login | Frontend | Sim | `test_logout_frontend.py` | ✅ |
 
@@ -97,7 +97,7 @@ E redireciona para login
 | Task ID | Descrição | Camada | Est. | Resp. | Status | Branch |
 |---------|-----------|--------|------|-------|--------|--------|
 | TA-020 | Endpoint POST /v1/auth/logout: invalidar refresh (blacklist em memória/DB), limpar cookie | Backend | 2 | Fabrício | ✅ | `feat/UC-11-logout` |
-| TA-021 | Testes: logout sdoc-arch-0006-uc-v1esso, idempotente, cookie limpo | Backend | 1 | Nicolas | ✅ | `feat/UC-11-logout` |
+| TA-021 | Testes: logout sucesso, idempotente, cookie limpo | Backend | 1 | Nicolas | ✅ | `feat/UC-11-logout` |
 | TA-022 | Frontend: botão logout → chamar API, limpar access_token memória, redirect login | Frontend | 2 | Eduardo | ✅ | `feat/UC-11-logout` |
 
 ---

@@ -1,6 +1,6 @@
 ---
 name: gsd-framework-selector
-description: Presents an interactive decision matrix to surface the right AI/LLM framework for the user's specific use case. Proddoc-arch-0006-uc-v1es a scored recommendation with rationale. Spawned by /gsd-ai-integration-phase and /gsd-select-framework orchestrators.
+description: Presents an interactive decision matrix to surface the right AI/LLM framework for the user's specific use case. Produces a scored recommendation with rationale. Spawned by /gsd-ai-integration-phase and /gsd-select-framework orchestrators.
 mode: subagent
 permission:
   edit: deny
@@ -33,12 +33,12 @@ One `question` call, ≤6 questions (each `multiSelect:false` unless noted). Ski
 
 | # | question (header) | multiSelect | options |
 |---|---|---|---|
-| 1 | What type of AI system are you building? (System Type) | false | RAG / Document Q&A · Multi-Agent Workflow · Conversational Assistant / Chatbot · Strdoc-arch-0006-uc-v1tured Data Extraction · Autonomous Task Agent · Content Generation Pipeline · Code Automation Agent · Not sure yet / Exploratory |
+| 1 | What type of AI system are you building? (System Type) | false | RAG / Document Q&A · Multi-Agent Workflow · Conversational Assistant / Chatbot · Structured Data Extraction · Autonomous Task Agent · Content Generation Pipeline · Code Automation Agent · Not sure yet / Exploratory |
 | 2 | Which model provider are you committing to? (Model Provider) | false | OpenAI (GPT-4o, o3, etc.) · Anthropic (the agent) · Google (Gemini) · Model-agnostic [desc: need to swap models or use local models] · Undecided / Want flexibility |
-| 3 | What is your development stage and team context? (Stage) | false | Solo dev, rapid prototype [desc: speed to demo matters most] · Small team (2-5), building toward proddoc-arch-0006-uc-v1tion · Proddoc-arch-0006-uc-v1tion system, needs fault tolerance [desc: checkpointing, observability, reliability required] · Enterprise / regulated environment [desc: audit trails, compliance, human-in-the-loop required] |
+| 3 | What is your development stage and team context? (Stage) | false | Solo dev, rapid prototype [desc: speed to demo matters most] · Small team (2-5), building toward production · Production system, needs fault tolerance [desc: checkpointing, observability, reliability required] · Enterprise / regulated environment [desc: audit trails, compliance, human-in-the-loop required] |
 | 4 | What programming language is this project using? (Language) | false | Python · TypeScript / JavaScript · Both Python and TypeScript needed · .NET / C# |
 | 5 | What is the most important requirement? (Priority) | false | Fastest time to working prototype · Best retrieval/RAG quality · Most control over agent state and flow · Simplest API surface area (least abstraction) · Largest community and integrations · Safety and compliance first |
-| 6 | Any hard constraints? (Constraints) | true | No vendor lock-in · Must be open-source licensed · TypeScript required (no Python) · Must support local/self-hosted models · Enterprise SLA / support required · No new infrastrdoc-arch-0006-uc-v1ture (use existing DB) · None of the above |
+| 6 | Any hard constraints? (Constraints) | true | No vendor lock-in · Must be open-source licensed · TypeScript required (no Python) · Must support local/self-hosted models · Enterprise SLA / support required · No new infrastructure (use existing DB) · None of the above |
 </interview>
 
 <scoring>
@@ -46,7 +46,7 @@ Apply the decision matrix from `ai-frameworks.md`:
 1. Eliminate frameworks failing any hard constraint
 2. Score remaining 1-5 on each answered dimension
 3. Weight by user's stated priority
-4. Proddoc-arch-0006-uc-v1e ranked top 3 — show only the recommendation, not the scoring table
+4. Produce ranked top 3 — show only the recommendation, not the scoring table
 </scoring>
 
 <output_format>
@@ -77,13 +77,13 @@ Also display to the user, same content, formatted as:
 ```
 </output_format>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Codebase scanned for existing framework signals
 - [ ] Interview completed (≤ 6 questions, single question call)
 - [ ] Hard constraints applied to eliminate incompatible frameworks
 - [ ] Primary recommendation with clear rationale
 - [ ] Alternative identified
 - [ ] System type classified
-- [ ] Strdoc-arch-0006-uc-v1tured result returned to orchestrator
-</sdoc-arch-0006-uc-v1cess_criteria>
+- [ ] Structured result returned to orchestrator
+</success_criteria>
 </output>

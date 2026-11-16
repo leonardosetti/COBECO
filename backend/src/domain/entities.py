@@ -14,9 +14,10 @@ from enum import Enum
 @dataclass(frozen=True)
 class Email:
     """Value Object para Email com validação"""
+
     valor: str
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if "@" not in self.valor or "." not in self.valor.split("@")[-1]:
             raise ValueError("Email inválido")
         object.__setattr__(self, "valor", self.valor.lower().strip())
@@ -25,9 +26,10 @@ class Email:
 @dataclass(frozen=True)
 class CNPJ:
     """Value Object para CNPJ formatado"""
+
     valor: str
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         # Remove formatação para validação
         limpo = "".join(c for c in self.valor if c.isdigit())
         if len(limpo) != 14:
@@ -38,6 +40,7 @@ class CNPJ:
 @dataclass(frozen=True)
 class SenhaHash:
     """Value Object para senha hasheada (bcrypt)"""
+
     valor: str
 
 
@@ -55,9 +58,11 @@ class UnidadeMedida(str, Enum):
 # Entidades de Domínio
 # ============================================================
 
+
 @dataclass
 class Usuario:
     """Entidade Usuário — Tabela: usuarios"""
+
     id: int | None = None
     nome_usuario: str = ""
     email: Email = field(default_factory=lambda: Email(""))
@@ -70,7 +75,7 @@ class Usuario:
     deletado_em: datetime | None = None
 
     # Regras de negócio
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not 3 <= len(self.nome_usuario) <= 30:
             raise ValueError("nome_usuario deve ter 3-30 caracteres")
         if not self.nome_usuario.isalnum():
@@ -89,11 +94,12 @@ class Usuario:
 @dataclass
 class Categoria:
     """Entidade Categoria — Tabela: categorias (categorias MACRO de fornecedores)"""
+
     id: int | None = None
     nome: str = ""
     descricao: str | None = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not self.nome.strip():
             raise ValueError("nome da categoria é obrigatório")
 
@@ -101,6 +107,7 @@ class Categoria:
 @dataclass
 class Fornecedor:
     """Entidade Fornecedor — Tabela: fornecedores"""
+
     id: int | None = None
     nome: str = ""
     cnpj: CNPJ = field(default_factory=lambda: CNPJ(""))
@@ -108,7 +115,7 @@ class Fornecedor:
     criado_em: datetime = field(default_factory=datetime.now)
     categorias: list["Categoria"] = field(default_factory=list)  # N:N via fornecedores_categorias
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not self.nome.strip():
             raise ValueError("nome do fornecedor é obrigatório")
 
@@ -116,13 +123,14 @@ class Fornecedor:
 @dataclass
 class Produto:
     """Entidade Produto — Tabela: produtos (agnóstico à categoria)"""
+
     id: int | None = None
     nome: str = ""
     unidade: UnidadeMedida = UnidadeMedida.UN
     ativo: bool = True
     criado_em: datetime = field(default_factory=datetime.now)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not self.nome.strip():
             raise ValueError("nome do produto é obrigatório")
 
@@ -130,13 +138,14 @@ class Produto:
 @dataclass
 class FornecedorProduto:
     """Entidade de Relacionamento — Tabela: fornecedores_produtos (preços e estoque)"""
+
     fornecedor_id: int
     produto_id: int
     preco: Decimal
     estoque: int = 0
     ativo: bool = True
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.preco < 0:
             raise ValueError("preco não pode ser negativo")
         if self.estoque < 0:
@@ -146,6 +155,7 @@ class FornecedorProduto:
 @dataclass
 class Lista:
     """Entidade Lista — Tabela: listas"""
+
     id: int | None = None
     usuario_id: int = 0
     nome: str = ""
@@ -154,7 +164,7 @@ class Lista:
     deletado_em: datetime | None = None
     itens: list["ItemLista"] = field(default_factory=list)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not 1 <= len(self.nome) <= 100:
             raise ValueError("nome da lista deve ter 1-100 caracteres")
 
@@ -171,13 +181,14 @@ class Lista:
 @dataclass
 class ItemLista:
     """Entidade ItemLista — Tabela: itens_lista"""
+
     id: int | None = None
     lista_id: int = 0
     produto_id: int = 0
     quantidade: int = 1
     criado_em: datetime = field(default_factory=datetime.now)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not 1 <= self.quantidade <= 9999:
             raise ValueError("quantidade deve ser entre 1 e 9999")
 
@@ -186,9 +197,11 @@ class ItemLista:
 # Entidades para Comparação (RF15, RF16)
 # ============================================================
 
+
 @dataclass
 class ItemComparacao:
     """Item na tabela flat de comparação"""
+
     produto_id: int
     produto_nome: str
     unidade: str
@@ -201,6 +214,7 @@ class ItemComparacao:
 @dataclass
 class FornecedorComparacao:
     """Fornecedor na tabela flat de comparação"""
+
     fornecedor_id: int
     fornecedor_nome: str
     itens_disponiveis: int = 0
@@ -213,6 +227,7 @@ class FornecedorComparacao:
 @dataclass
 class OrcamentoComparacao:
     """Resultado completo da comparação (RF15, RF16)"""
+
     lista_id: int
     lista_nome: str
     fornecedores: list[FornecedorComparacao] = field(default_factory=list)
@@ -230,9 +245,11 @@ class OrcamentoComparacao:
 # Entidade: Sessao (Refresh Tokens / Session Management)
 # ============================================================
 
+
 @dataclass
 class Sessao:
     """Entidade Sessao — Tabela: sessoes (refresh tokens)"""
+
     id: int | None = None
     usuario_id: int = 0
     refresh_token_hash: str = ""

@@ -20,13 +20,13 @@ failing test, none traceable to a requirement/decision/prior gap, reverting a
 completed, all-green gap-closure round and recommending another `--gaps`
 cycle — with no bound on how many times that could repeat.
 
-Truths, artifacts, and key links (Steps 3-6) can **never** proddoc-arch-0006-uc-v1e this
+Truths, artifacts, and key links (Steps 3-6) can **never** produce this
 failure mode: Step 0 re-verification mode reuses the must-haves extracted in
 Step 2 verbatim ("Skip to Step 3") rather than re-establishing them, so
 whatever a truth/artifact/link *is* was fixed before this re-verification
 round started. Only Step 7's blanket per-file scan is unbounded by that
 must-haves contract — which is exactly the mechanism the issue's diagnosis
-names. This gate therefore todoc-arch-0006-uc-v1hes Step 7 only.
+names. This gate therefore touches Step 7 only.
 
 ## Definitions
 
@@ -61,11 +61,11 @@ which case it is in-contract and blocks unconditionally, evidence or not:
    ```
 
    A non-empty result means the file changed since the prior pass — the
-   gap-closure round could plausibly have introddoc-arch-0006-uc-v1ed this finding, so it's
+   gap-closure round could plausibly have introduced this finding, so it's
    self-evidencing as a regression and blocks. **Fail closed**: if git
    history is unavailable, ambiguous, or the timestamp can't be parsed,
    treat the file as modified (blocks). The imprecision this trades away
-   (a big file with one unrelated hunk todoc-arch-0006-uc-v1hed treats every pattern in it as
+   (a big file with one unrelated hunk touched treats every pattern in it as
    "new") only ever makes *more* things block, never fewer — consistent with
    `<adversarial_stance>`.
 
@@ -81,10 +81,10 @@ blocking. One of:
 - A **named test that FAILS when actually run** (red). Run exactly one test,
   the same discipline Step 7b already uses for behavioral spot-checks —
   never the full suite. Record the exact command and the failing output.
-- **Another concrete, reproddoc-arch-0006-uc-v1ible artifact** — a command + output that
-  demonstrates the defect (a crash, a probe failure, a reproddoc-arch-0006-uc-v1ible bad
+- **Another concrete, reproducible artifact** — a command + output that
+  demonstrates the defect (a crash, a probe failure, a reproducible bad
   response). An assertion, opinion, or architectural preference with no test
-  and no reproddoc-arch-0006-uc-v1ible command output is not evidence, however well-reasoned.
+  and no reproducible command output is not evidence, however well-reasoned.
 
 ## The gate
 
@@ -101,7 +101,7 @@ blocking. One of:
 This changes nothing else: a carried-forward gap or a regression still
 blocks with or without a pre-existing requirement to point at, and every
 non-Step-7 trigger (FAILED truth, MISSING/STUB artifact, NOT_WIRED link) is
-untodoc-arch-0006-uc-v1hed, since those can never be new-scope in the first place.
+untouched, since those can never be new-scope in the first place.
 
 ## What this deliberately does NOT implement
 
@@ -110,7 +110,7 @@ it is untraceable to a requirement/decision/prior-gap (conditions A and B),
 regardless of evidence. The maintainer approved **condition C only** —
 evidence, not contract-traceability, is the bar. A finding with no
 pre-existing requirement to point at but with a real failing test still
-blocks. Do not implement A/B: that would demote a genuine, reproddoc-arch-0006-uc-v1ible
+blocks. Do not implement A/B: that would demote a genuine, reproducible
 defect to advisory purely for being newly discovered, which is exactly the
 deferral this project's no-defer rule forbids. This gate narrows *when a
 blocker needs proof*, not *what counts as in scope*.
@@ -151,7 +151,7 @@ re-verification begins.
   under sustained load." Not in the prior `gaps:` list. The flagged file was
   last modified 3 weeks before this verification pass (before the
   gap-closure plans even started) — not a regression. No test run, no
-  reproddoc-arch-0006-uc-v1ible command demonstrating a failure. → **advisory**, does not
+  reproducible command demonstrating a failure. → **advisory**, does not
   block, does not revert the 4 closed gaps.
 - Finding: `TBD: handle the timeout case` left in a file the gap-closure plan
   edited this pass. → self-evidencing debt marker, unaffected by this gate,

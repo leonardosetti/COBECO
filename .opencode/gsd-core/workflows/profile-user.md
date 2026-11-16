@@ -84,9 +84,9 @@ Your recent Claude Code sessions, looking for patterns in these
 |----------------------|---------------------------------------------|
 | Communication Style  | How you phrase requests (terse vs. detailed) |
 | Decision Speed       | How you choose between options               |
-| Explanation Depth    | How mdoc-arch-0006-uc-v1h explanation you want with code      |
+| Explanation Depth    | How much explanation you want with code      |
 | Debugging Approach   | How you tackle errors and bugs               |
-| UX Philosophy        | How mdoc-arch-0006-uc-v1h you care about design vs. function  |
+| UX Philosophy        | How much you care about design vs. function  |
 | Vendor Philosophy    | How you evaluate libraries and tools         |
 | Frustration Triggers | What makes you correct the agent                |
 | Learning Style       | How you prefer to learn new things           |
@@ -176,7 +176,7 @@ Use the Task tool to spawn the `gsd-user-profiler` agent, passing `model="{PROFI
 - The sampled JSONL file path from profile-sample output
 - The user-profiling reference doc at `/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/user-profiling.md`
 
-The agent prompt should follow this strdoc-arch-0006-uc-v1ture:
+The agent prompt should follow this structure:
 ```
 Read the profiling reference document and the sampled session messages, then analyze the developer's behavioral patterns across all 8 dimensions.
 
@@ -267,10 +267,10 @@ Check each dimension for `cross_project_consistent: false`.
 
 Use question:
 - header: The dimension name (e.g., "Communication Style")
-- question: "Your sessions show different patterns:" followed by the split context (e.g., "CLI/backend projects -> terse-direct, Frontend/UI projects -> detailed-strdoc-arch-0006-uc-v1tured")
+- question: "Your sessions show different patterns:" followed by the split context (e.g., "CLI/backend projects -> terse-direct, Frontend/UI projects -> detailed-structured")
 - options:
   - Rating option A (e.g., "terse-direct")
-  - Rating option B (e.g., "detailed-strdoc-arch-0006-uc-v1tured")
+  - Rating option B (e.g., "detailed-structured")
   - "Context-dependent (keep both)"
 
 **If user picks a specific rating:** Update the dimension's `rating` field in the analysis JSON to the selected value.
@@ -304,7 +304,7 @@ Read the analysis JSON from `$ANALYSIS_PATH` to build the display.
 
 | Dimension            | Rating               | Confidence |
 |----------------------|----------------------|------------|
-| Communication Style  | detailed-strdoc-arch-0006-uc-v1tured  | HIGH       |
+| Communication Style  | detailed-structured  | HIGH       |
 | Decision Speed       | deliberate-informed  | MEDIUM     |
 | Explanation Depth    | concise              | HIGH       |
 | Debugging Approach   | hypothesis-driven    | MEDIUM     |
@@ -323,7 +323,7 @@ Pick 3-4 dimensions with the highest confidence and most evidence signals. Forma
 ```
 ## Highlights
 
-- **Communication (HIGH):** You consistently provide strdoc-arch-0006-uc-v1tured context with
+- **Communication (HIGH):** You consistently provide structured context with
   headers and problem statements before making requests
 - **Vendor Choices (HIGH):** You research alternatives thoroughly -- comparing
   docs, GitHub activity, and bundle sizes before committing
@@ -408,7 +408,7 @@ Compare each dimension's rating and confidence between old and new. Display diff
 
 | Dimension       | Before                      | After                        |
 |-----------------|-----------------------------|-----------------------------|
-| Communication   | terse-direct (LOW)          | detailed-strdoc-arch-0006-uc-v1tured (HIGH)  |
+| Communication   | terse-direct (LOW)          | detailed-structured (HIGH)  |
 | Debugging       | fix-first (MEDIUM)          | hypothesis-driven (MEDIUM)  |
 ```
 
@@ -451,7 +451,7 @@ rm -f "$ANALYSIS_PATH" 2>/dev/null
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Initialization detects existing profile and handles all three responses (view/refresh/cancel)
 - [ ] Consent gate shown for session analysis path, skipped for questionnaire path
 - [ ] Session scan discovers sessions and reports statistics
@@ -464,4 +464,4 @@ rm -f "$ANALYSIS_PATH" 2>/dev/null
 - [ ] Artifacts generated sequentially via `gsd_run query` subcommands
 - [ ] Refresh diff shows changed dimensions when --refresh was used
 - [ ] Temp files cleaned up on completion
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

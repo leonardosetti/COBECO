@@ -81,7 +81,7 @@ Track which phases have which artifacts.
 
 ## Step 4: Gather Git Statistics
 
-Try each method in order until one sdoc-arch-0006-uc-v1ceeds:
+Try each method in order until one succeeds:
 
 **Method 1 — Tagged milestone** (check first):
 ```bash
@@ -173,7 +173,7 @@ Present as a bulleted list of decisions with brief rationale:
 
 {Entry points for new contributors:}
 - **Run the project:** {from PROJECT.md or SUMMARY.md}
-- **Key directories:** {from codebase strdoc-arch-0006-uc-v1ture}
+- **Key directories:** {from codebase structure}
 - **Tests:** {test command from PROJECT.md or doc-agents-0001-agents-canon.md}
 - **Where to look first:** {main entry points, core modules}
 

@@ -160,7 +160,7 @@ Investigate issue: {slug}
 expected: {expected}
 actual: {actual}
 errors: {errors}
-reproddoc-arch-0006-uc-v1tion: {reproddoc-arch-0006-uc-v1tion}
+reproduction: {reproduction}
 timeline: {timeline}
 </symptoms>
 
@@ -215,7 +215,7 @@ Template placeholders:
 - `{expected}`: From UAT test
 - `{actual}`: Verbatim user description from reason field
 - `{errors}`: Any error messages from UAT (or "None reported")
-- `{reproddoc-arch-0006-uc-v1tion}`: "Test {test_num} in UAT"
+- `{reproduction}`: "Test {test_num} in UAT"
 - `{timeline}`: "Discovered during UAT"
 - `{slug}`: Generated from truth
 </step>
@@ -331,11 +331,11 @@ Agents only diagnose—plan-phase --gaps handles fixes (no fix application).
 - Fall back to plan-phase --gaps without root causes (less precise)
 </failure_handling>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Gaps parsed from UAT.md
 - [ ] Debug agents spawned in parallel
 - [ ] Root causes collected from all agents
 - [ ] UAT.md gaps updated with artifacts and missing
 - [ ] Debug sessions saved to ${DEBUG_DIR}/
 - [ ] Hand off to verify-work for automatic planning
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

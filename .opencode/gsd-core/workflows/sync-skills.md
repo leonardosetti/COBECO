@@ -13,7 +13,7 @@ Sync managed `gsd-*` skill directories from one canonical runtime's skills root 
 | Flag | Required | Default | Description |
 |------|----------|---------|-------------|
 | `--from <runtime>` | Yes | *(none)* | Source runtime — the canonical runtime to copy from |
-| `--to <runtime\|all>` | Yes | *(none)* | Destination runtime or `all` supported runtimes. **Must equal `--from`** — cross-runtime sync is refused (#3025: skill content/layout is runtime-specific and proddoc-arch-0006-uc-v1ed by the installer's per-runtime converters; use the installer for a different runtime). |
+| `--to <runtime\|all>` | Yes | *(none)* | Destination runtime or `all` supported runtimes. **Must equal `--from`** — cross-runtime sync is refused (#3025: skill content/layout is runtime-specific and produced by the installer's per-runtime converters; use the installer for a different runtime). |
 | `--dry-run` | No | *on by default* | Preview changes without writing anything |
 | `--apply` | No | *off* | Execute the diff (overrides dry-run) |
 
@@ -81,10 +81,10 @@ done
 Skill content and directory layout are runtime-specific. The installer applies per-runtime
 converters, adapter headers, brand swaps, and layout rules at install time, and one runtime
 (`grok`) resolves to ANOTHER runtime's skills root. A verbatim copy from one runtime's
-skills root therefore proddoc-arch-0006-uc-v1es content the installer would never have written for the destination,
+skills root therefore produces content the installer would never have written for the destination,
 and can damage a runtime the user never named. Every cross-runtime pair is unsafe (content and/or
 layout and/or aliasing); only identity (`--from` == `--to`) is safe. Refuse cross-runtime and point
-the user at the installer — the only path that proddoc-arch-0006-uc-v1es correctly converted skills.
+the user at the installer — the only path that produces correctly converted skills.
 
 ```bash
 # #3025: refuse cross-runtime skill sync before any resolution or copy.
@@ -94,7 +94,7 @@ for DEST in "${TO_RUNTIMES[@]}"; do
 error: cross-runtime skill sync is not supported (--from $FROM_RUNTIME --to $DEST).
        Skill content and directory layout are runtime-specific: the installer applies
        per-runtime converters, adapter headers, brand swaps, and layout rules that a
-       verbatim copy cannot reproddoc-arch-0006-uc-v1e, and some runtimes share another runtime's skills
+       verbatim copy cannot reproduce, and some runtimes share another runtime's skills
        root — so a cross-runtime sync can damage a runtime you did not name.
        To install correctly-converted skills for the '$DEST' runtime, run the GSD
        installer for that runtime (not sync):
@@ -131,7 +131,7 @@ for DEST_RUNTIME in "${TO_RUNTIMES[@]}"; do
 done
 ```
 
-This loop validates every destination in `TO_RUNTIMES` up front — a bad runtime id anywhere in a multi-destination `--to` aborts here, before Step 3 or Step 5 todoc-arch-0006-uc-v1h anything. The resolved value itself is not retained: each of Steps 3 and 5 re-resolves `DEST_ROOT` for the specific `$DEST_RUNTIME` it is currently processing (see those steps), so `$DEST_ROOT` is always unambiguously scoped to one destination and never threaded through a shared array.
+This loop validates every destination in `TO_RUNTIMES` up front — a bad runtime id anywhere in a multi-destination `--to` aborts here, before Step 3 or Step 5 touch anything. The resolved value itself is not retained: each of Steps 3 and 5 re-resolves `DEST_ROOT` for the specific `$DEST_RUNTIME` it is currently processing (see those steps), so `$DEST_ROOT` is always unambiguously scoped to one destination and never threaded through a shared array.
 
 **Guard:** If the source skills root does not exist, print:
 ```
@@ -159,7 +159,7 @@ For each destination runtime:
 
 ```bash
 # Bind the destination root for this iteration's destination runtime. Already
-# validated to resolve sdoc-arch-0006-uc-v1cessfully in Step 2's eager-validation loop;
+# validated to resolve successfully in Step 2's eager-validation loop;
 # re-resolving here (rather than reading back a shared array) keeps this
 # value unambiguously scoped to the destination currently being processed.
 DEST_ROOT=$(gsd_run query skills-root "$DEST_RUNTIME" --raw)
@@ -181,7 +181,7 @@ DST_SKILLS=$(ls -1 "$DEST_ROOT" 2>/dev/null | grep '^gsd-')
 # SKIP    — in both; content identical (already up to date)
 ```
 
-**Non-GSD preservation:** Only `gsd-*` entries are ever created, updated, or removed. Entries in the destination that do not start with `gsd-` are never todoc-arch-0006-uc-v1hed.
+**Non-GSD preservation:** Only `gsd-*` entries are ever created, updated, or removed. Entries in the destination that do not start with `gsd-` are never touched.
 
 ---
 
@@ -224,7 +224,7 @@ For each destination with changes:
 
 ```bash
 # Bind DEST_ROOT for this iteration's destination (see Step 3's identical
-# re-resolution note — Step 2 already validated this resolves sdoc-arch-0006-uc-v1cessfully).
+# re-resolution note — Step 2 already validated this resolves successfully).
 DEST_ROOT=$(gsd_run query skills-root "$DEST_RUNTIME" --raw)
 
 [[ "$SRC_SKILLS_ROOT" == /* ]] || { echo "error: SRC_SKILLS_ROOT is empty or not absolute: '$SRC_SKILLS_ROOT'" >&2; exit 1; }
@@ -269,7 +269,7 @@ Sync complete: <N> skills synced to <M> runtime(s).
 
 ## Safety Rules
 
-1. **Only `gsd-*` directories** are created, updated, or removed. Any directory not starting with `gsd-` in a destination root is untodoc-arch-0006-uc-v1hed.
+1. **Only `gsd-*` directories** are created, updated, or removed. Any directory not starting with `gsd-` in a destination root is untouched.
 2. **Dry-run is the default.** `--apply` must be passed explicitly to write anything.
 3. **Source root must exist.** Never create the source root; it must have been created by a prior `gsd-update` or installer run.
 4. **No cross-runtime content transformation.** Sync copies files verbatim. It does not apply runtime-specific content transformations (those happen at install time). If a runtime requires transformed content (e.g. Augment's format differs), the developer should run the installer for that runtime instead of using sync.
@@ -279,5 +279,5 @@ Sync complete: <N> skills synced to <M> runtime(s).
 ## Limitations
 
 - Sync copies files verbatim and does not apply runtime-specific content transformations. **Cross-runtime sync is refused** (#3025): skill content and layout are runtime-specific, and some runtimes alias another runtime's skills root, so a verbatim cross-runtime copy corrupts the destination (and can damage a runtime you did not name). Only identity sync (`--from` == `--to`) is supported. To install skills for a different runtime, run the GSD installer for that runtime (`npx -y @opengsd/gsd-core@latest --global --<runtime>`).
-- Cross-project skills (`.agents/skills/`) are out of scope — this command only todoc-arch-0006-uc-v1hes global runtime skills roots.
+- Cross-project skills (`.agents/skills/`) are out of scope — this command only touches global runtime skills roots.
 - Bidirectional sync is not supported. Choose one canonical source with `--from`.

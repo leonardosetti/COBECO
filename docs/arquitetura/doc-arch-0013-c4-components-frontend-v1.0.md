@@ -61,9 +61,9 @@ C4Component
         Component(listas_module, "Listas Module", "JS Module", "Dashboard, Nova Lista, Editar Lista: CRUD UI, integração Autocomplete, sessionStorage ↔ API, modais confirmação")
         Component(autocomplete_module, "Autocomplete Module", "JS Module", "Componente reutilizável: input + dropdown, debounce 300ms, normalização NFD+lowerCase, fetch /v1/produtos/busca, seleção → callback com produto_id")
         Component(comparacao_module, "Comparação Module", "JS Module", "Pré-filtro (CategoriasChecklist, FornecedoresChecklist, SliderDisponibilidade), CalculaOrcamento (POST /v1/orcamento + loading), Resultados (TabelaResultados expansível)")
-        Component(export_module, "Export Module", "JS Module", "Botão Exportar PDF → POST /v1/export/pdf (blob download), filename data, toast sdoc-arch-0006-uc-v1esso/erro")
+        Component(export_module, "Export Module", "JS Module", "Botão Exportar PDF → POST /v1/export/pdf (blob download), filename data, toast sucesso/erro")
         Component(perfil_module, "Perfil Module", "JS Module", "Visualizar Perfil (read-only cards), Editar Perfil (3 forms: Email, Nome, Senha — cada um com senha_atual), validação, toast, redirect login se refresh invalidado")
-        Component(ui_components, "UI Components", "JS Module", "Biblioteca componentes reutilizáveis: Toast (sdoc-arch-0006-uc-v1esso/erro/info, auto-dismiss 3s), Skeleton (loading tabelas/cards), Modal (confirmação, promoção lista, excluir), LoadingOverlay, Badge (% disponibilidade)")
+        Component(ui_components, "UI Components", "JS Module", "Biblioteca componentes reutilizáveis: Toast (sucesso/erro/info, auto-dismiss 3s), Skeleton (loading tabelas/cards), Modal (confirmação, promoção lista, excluir), LoadingOverlay, Badge (% disponibilidade)")
         Component(api_client, "API Client", "JS Module", "Fetch wrapper centralizado: baseURL /v1/, interceptors (Authorization Bearer access_token, refresh automático 401), error handling padronizado, retry idempotente")
         Component(utils, "Utils", "JS Module", "Funções puras: normalizar(str) NFD+lowerCase, formatCurrency(BRL), formatDate(PT-BR), debounce(fn, ms), generateId(), validateEmail(), validateRequired()")
     }
@@ -88,7 +88,7 @@ C4Component
 
     Rel(auth_module, api_client, "POST /v1/auth/login, /register, /logout, /recover, /reset-password")
     Rel(auth_module, state_store, "Salva access_token memória, user_data, limpa no logout")
-    Rel(auth_module, ui_components, "Toast sdoc-arch-0006-uc-v1esso/erro, LoadingOverlay")
+    Rel(auth_module, ui_components, "Toast sucesso/erro, LoadingOverlay")
 
     Rel(listas_module, api_client, "GET/POST/PUT/DELETE /v1/listas, /v1/listas/{id}/itens, /v1/produtos/busca")
     Rel(listas_module, autocomplete_module, "Usa componente na Nova Lista e Editar Lista")
@@ -235,7 +235,7 @@ const api = {
 
 | Componente | Arquivo | Props/API | Uso |
 |------------|---------|-----------|-----|
-| **Toast** | `components/ui/toast.js` | `show(message, type: 'sdoc-arch-0006-uc-v1cess'|'error'|'info', duration=3000)` | Global — `ui.toast.sdoc-arch-0006-uc-v1cess('Salvo!')` |
+| **Toast** | `components/ui/toast.js` | `show(message, type: 'success'|'error'|'info', duration=3000)` | Global — `ui.toast.success('Salvo!')` |
 | **Skeleton** | `components/ui/skeleton.js` | `render(container, rows=5, cols=4)` | Tabelas/listas loading |
 | **Modal** | `components/ui/modal.js` | `open({title, body, confirmText, onConfirm, cancelText, onCancel})` | Confirmações, promoção, exclusão |
 | **LoadingOverlay** | `components/ui/loading.js` | `show()/hide()` | Full-screen spinner |

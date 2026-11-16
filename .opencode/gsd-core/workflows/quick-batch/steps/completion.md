@@ -1,6 +1,6 @@
 **Step 9: Completion**
 
-For every item that merged sdoc-arch-0006-uc-v1cessfully in Step 7 AND (NOT `$VALIDATE_MODE`,
+For every item that merged successfully in Step 7 AND (NOT `$VALIDATE_MODE`,
 OR Step 8 routed it to `complete`): call `completeQuickItem` via its CLI verb
 — this is the ONLY writer of a "Quick Tasks Completed" STATE.md row and the
 item's `complete` status; both happen inside ONE lock transaction, exactly
@@ -25,7 +25,7 @@ failed, row 32) — are left exactly as their respective routing step set
 them. No STATE row, no `complete` status, worktree preserved where
 applicable.
 
-**Final commit.** Stage every artifact proddoc-arch-0006-uc-v1ed this run (PLAN.md, SUMMARY.md,
+**Final commit.** Stage every artifact produced this run (PLAN.md, SUMMARY.md,
 `--research` RESEARCH.md, `--validate` VERIFICATION.md, per item, plus
 `.planning/STATE.md`) and commit:
 `$BATCH_ARTIFACT_FILES` is a bash ARRAY (not a plain string — a plain

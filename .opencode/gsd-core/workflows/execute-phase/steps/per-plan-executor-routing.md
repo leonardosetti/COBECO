@@ -107,7 +107,7 @@ to a human, in every mode (#3210): the missing prerequisite is a fact only a
 human can establish, not a verification step to rubber-stamp.
 
 When composing the `Agent()` prompt, do NOT add text refusing or overriding
-auto-approval for a `blocking` gate. Orchestrator-composed instrdoc-arch-0006-uc-v1tions that contradict the
+auto-approval for a `blocking` gate. Orchestrator-composed instructions that contradict the
 executor's protocol win the executor's attention, stall autonomous runs at the
 checkpoint, and defeat `_auto_chain_active`/auto-advance for the common case.
 Executor-side gate semantics are already complete; compose nothing about gates
