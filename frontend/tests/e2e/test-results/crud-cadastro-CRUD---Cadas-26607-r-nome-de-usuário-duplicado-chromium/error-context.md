@@ -40,14 +40,14 @@ Received has value: undefined
         - generic [ref=e18]:
           - generic [ref=e19]:
             - generic [ref=e20]: Nome de usuário *
-            - textbox "Nome de usuário *" [ref=e21]: testuser_1794636392272
+            - textbox "Nome de usuário *" [ref=e21]: testuser_1794843477487
             - paragraph [ref=e22]: 3-30 caracteres, apenas letras e números
           - generic [ref=e23]:
             - generic [ref=e24]: Email *
-            - textbox "Email *" [ref=e25]: test_1794636392272@example.com
+            - textbox "Email *" [ref=e25]: test_1794843477487@example.com
           - generic [ref=e26]:
             - generic [ref=e27]: Nome completo *
-            - textbox "Nome completo *" [ref=e28]: Test User 1794636392272
+            - textbox "Nome completo *" [ref=e28]: Test User 1794843477487
           - generic [ref=e29]:
             - generic [ref=e30]: Senha *
             - textbox "Senha *" [ref=e31]: Senha@123

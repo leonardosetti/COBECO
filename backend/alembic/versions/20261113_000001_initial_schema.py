@@ -165,6 +165,32 @@ def upgrade() -> None:
     op.create_index('ix_lista_usuario_criado', 'listas', ['usuario_id', 'criado_em'])
 
     # ============================================================
+    # Tabela: sessoes (Refresh Tokens / Session Management)
+    # ============================================================
+    op.create_table(
+        'sessoes',
+        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('usuario_id', sa.Integer(), nullable=False),
+        sa.Column('refresh_token_hash', sa.String(255), nullable=False),
+        sa.Column('user_agent', sa.Text(), nullable=True),
+        sa.Column('ip', sa.String(45), nullable=True),
+        sa.Column('criado_em', sa.DateTime(), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
+        sa.Column('expira_em', sa.DateTime(), nullable=False),
+        sa.Column('revogada_em', sa.DateTime(), nullable=True),
+        sa.ForeignKeyConstraint(
+            ['usuario_id'], ['usuarios.id'],
+            name='fk_sessoes_usuario', ondelete='CASCADE'
+        ),
+        sa.PrimaryKeyConstraint('id', name='pk_sessoes'),
+        sa.UniqueConstraint('refresh_token_hash', name='uq_sessoes_refresh_token_hash'),
+        mysql_charset='utf8mb4',
+        mysql_collate='utf8mb4_unicode_ci',
+        mysql_engine='InnoDB',
+    )
+    op.create_index('ix_sessoes_usuario_expira', 'sessoes', ['usuario_id', 'expira_em'])
+    op.create_index('ix_sessoes_token_hash', 'sessoes', ['refresh_token_hash'])
+
+    # ============================================================
     # Tabela: itens_lista (Itens de cada lista)
     # ============================================================
     op.create_table(
@@ -195,6 +221,7 @@ def downgrade() -> None:
     # Drop na ordem inversa (respeita FKs)
     op.drop_table('itens_lista')
     op.drop_table('listas')
+    op.drop_table('sessoes')
     op.drop_table('usuarios')
     op.drop_table('fornecedores_produtos')
     op.drop_table('produtos')

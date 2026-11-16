@@ -308,6 +308,21 @@ class ApiClient {
       return r.blob();
     });
   }
+
+  static exportarPDFComparacao(data) {
+    return fetch(`${API_BASE}/export/pdf/comparacao`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.getToken()}`,
+      },
+      credentials: 'include',
+      body: JSON.stringify(data),
+    }).then(r => {
+      if (!r.ok) throw new Error('Erro ao gerar PDF da comparação');
+      return r.blob();
+    });
+  }
 }
 
 // ============================================================
@@ -709,18 +724,73 @@ const Views = {
   // Comparar (Pré-filtro + Seleção + Resultado)
   async comparar() {
     try {
-      const [categorias, fornecedores] = await Promise.all([
+      const [categorias, fornecedores, listas] = await Promise.all([
         ApiClient.listarCategorias(),
         ApiClient.listarFornecedores(),
+        State.user ? ApiClient.listarListas({ pagina: 1, por_pagina: 50 }) : Promise.resolve({ items: [] }),
       ]);
+
+      const listasUsuario = listas.items || [];
 
       return `
         <div class="max-w-6xl mx-auto">
-          <!-- Passo 1: Selecionar Categorias -->
-          <section class="card mb-6" id="step-categorias">
+          <!-- Passo 0: Selecionar Lista -->
+          <section class="card mb-6" id="step-lista">
             <div class="card-header">
               <h2 class="text-xl font-semibold flex items-center gap-2">
-                <span class="badge badge-primary">1</span> Selecionar Categorias
+                <span class="badge badge-primary">1</span> Selecionar Lista para Comparar
+              </h2>
+            </div>
+            <div class="card-body">
+              <p class="text-gray-600 mb-4">Escolha uma lista salva ou use a lista efêmera atual.</p>
+
+              ${State.ephemeralList && State.ephemeralList.itens && State.ephemeralList.itens.length > 0 ? `
+                <label class="flex items-center gap-3 p-3 border border-primary-200 rounded-lg bg-primary-50 cursor-pointer transition mb-3">
+                  <input type="radio" name="lista-selecionada" value="efemera" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                  <div class="flex-1">
+                    <div class="font-medium text-primary-700">📋 Lista Efêmera Atual</div>
+                    <div class="text-sm text-gray-600">${State.ephemeralList.itens.length} item(s) • ${State.ephemeralList.nome || 'Sem nome'}</div>
+                  </div>
+                </label>
+              ` : ''}
+
+              ${listasUsuario.length > 0 ? `
+                <div class="border-t pt-4 mt-4">
+                  <h4 class="font-medium text-gray-700 mb-3">Minhas Listas Salvas</div>
+                  <div class="space-y-2 max-h-60 overflow-y-auto">
+                    ${listasUsuario.map(l => `
+                      <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
+                        <input type="radio" name="lista-selecionada" value="${l.id}" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                        <div class="flex-1">
+                          <div class="font-medium">${l.nome}</div>
+                          <div class="text-xs text-gray-500">${l.total_itens} item(s) • ${formatDate(l.criado_em)}</div>
+                        </div>
+                      </label>
+                    `).join('')}
+                  </div>
+                </div>
+              ` : ''}
+
+              ${!State.ephemeralList && listasUsuario.length === 0 ? `
+                <div class="text-center py-8 text-gray-500">
+                  <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                  <p class="text-lg">Nenhuma lista disponível</p>
+                  <p class="text-sm mt-1">Crie uma lista primeiro</p>
+                  <a href="#/criar-lista" class="btn btn-primary mt-4 inline-block" data-link>Criar Lista</a>
+                </div>
+              ` : ''}
+
+              <div class="mt-4 flex justify-between">
+                <button id="btn-proximo-categorias" class="btn btn-primary" disabled>Próximo: Categorias →</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Passo 1: Selecionar Categorias -->
+          <section class="card mb-6 hidden" id="step-categorias">
+            <div class="card-header">
+              <h2 class="text-xl font-semibold flex items-center gap-2">
+                <span class="badge badge-primary">2</span> Selecionar Categorias
               </h2>
             </div>
             <div class="card-body">
@@ -733,7 +803,8 @@ const Views = {
                   </label>
                 `).join('')}
               </div>
-              <div class="mt-4 flex justify-end">
+              <div class="mt-4 flex justify-between">
+                <button id="btn-voltar-lista" class="btn btn-secondary">← Voltar</button>
                 <button id="btn-proximo-fornecedores" class="btn btn-primary" disabled>Próximo: Fornecedores →</button>
               </div>
             </div>
@@ -743,7 +814,7 @@ const Views = {
           <section class="card mb-6 hidden" id="step-fornecedores">
             <div class="card-header">
               <h2 class="text-xl font-semibold flex items-center gap-2">
-                <span class="badge badge-primary">2</span> Selecionar Fornecedores
+                <span class="badge badge-primary">3</span> Selecionar Fornecedores
               </h2>
             </div>
             <div class="card-body">
@@ -1625,9 +1696,60 @@ const ComparacaoViews = {
     const stepCat = $('#step-categorias');
     const stepForn = $('#step-fornecedores');
     const stepRes = $('#step-resultado');
+    const stepLista = $('#step-lista');
 
     let categoriasSelecionadas = [];
     let fornecedoresSelecionados = [];
+    let listaSelecionada = null;
+    let produtoIdsSelecionados = [];
+
+    // Step 0: Selecionar Lista (novo passo)
+    const listaRadios = $$('input[name="lista-selecionada"]');
+    const btnProxLista = $('#btn-proximo-categorias');
+
+    listaRadios.forEach(radio => {
+      radio.onchange = () => {
+        btnProxLista.disabled = false;
+      };
+    });
+
+    btnProxLista.onclick = async () => {
+      const selectedRadio = document.querySelector('input[name="lista-selecionada"]:checked');
+      if (!selectedRadio) {
+        showToast('Selecione uma lista', 'error');
+        return;
+      }
+
+      const listaId = selectedRadio.value;
+      if (listaId === 'efemera') {
+        // Lista efêmera do sessionStorage
+        const efemera = State.ephemeralList;
+        if (!efemera || !efemera.itens || efemera.itens.length === 0) {
+          showToast('Lista efêmera vazia', 'error');
+          return;
+        }
+        listaSelecionada = { id: 0, nome: efemera.nome || 'Lista Efêmera' };
+        produtoIdsSelecionados = efemera.itens.map(i => i.produto_id);
+      } else {
+        // Lista salva - busca no backend
+        try {
+          const lista = await ApiClient.buscarLista(parseInt(listaId));
+          listaSelecionada = { id: lista.id, nome: lista.nome };
+          produtoIdsSelecionados = lista.itens.map(i => i.produto_id);
+        } catch (e) {
+          showToast('Erro ao carregar lista: ' + e.message, 'error');
+          return;
+        }
+      }
+
+      if (produtoIdsSelecionados.length === 0) {
+        showToast('A lista selecionada não tem itens', 'error');
+        return;
+      }
+
+      stepLista.classList.add('hidden');
+      stepCat.classList.remove('hidden');
+    };
 
     // Step 1: Categorias
     catCheckboxes.forEach(cb => {
@@ -1637,7 +1759,7 @@ const ComparacaoViews = {
       };
     });
 
-    btnProxForn.onclick = () => {
+    btnProxForn.onclick = async () => {
       // Filtra fornecedores por categorias
       fornCheckboxes.forEach(cb => {
         const cats = JSON.parse(cb.dataset.categorias || '[]');
@@ -1647,7 +1769,7 @@ const ComparacaoViews = {
       });
       stepCat.classList.add('hidden');
       stepForn.classList.remove('hidden');
-      updateDisponibilidade();
+      await updateDisponibilidade();
     };
 
     btnVoltarCat.onclick = () => {
@@ -1655,24 +1777,37 @@ const ComparacaoViews = {
       stepCat.classList.remove('hidden');
     };
 
+    // Voltar da lista para categorias
+    const btnVoltarLista = $('#btn-voltar-lista');
+    if (btnVoltarLista) {
+      btnVoltarLista.onclick = () => {
+        stepCat.classList.add('hidden');
+        stepLista.classList.remove('hidden');
+      };
+    }
+
     // Slider disponibilidade
-    slider.oninput = () => {
+    slider.oninput = async () => {
       valorDisp.textContent = slider.value + '%';
-      updateDisponibilidade();
+      await updateDisponibilidade();
     };
 
-    function updateDisponibilidade() {
+    async function updateDisponibilidade() {
       const minDisp = parseFloat(slider.value);
-      let count = 0;
-      fornCheckboxes.forEach(cb => {
-        if (cb.closest('label').style.display !== 'none') {
-          const badge = document.getElementById(`disp-${cb.value}`);
-          // TODO: buscar disponibilidade real via API
-          // Por enquanto, simula
-          const simulated = Math.random() * 100;
-          badge.textContent = simulated.toFixed(1) + '%';
-          badge.className = 'badge ' + (simulated >= minDisp ? 'badge-success' : 'badge-warning');
-          if (simulated < minDisp) {
+      const visibleCheckboxes = fornCheckboxes.filter(cb => cb.closest('label').style.display !== 'none');
+
+      // Buscar disponibilidade real para todos os fornecedores visíveis em paralelo
+      const disponibilidadePromises = visibleCheckboxes.map(async (cb) => {
+        const badge = document.getElementById(`disp-${cb.value}`);
+        if (!badge) return;
+
+        try {
+          const data = await ApiClient.calcularDisponibilidade(parseInt(cb.value), produtoIdsSelecionados);
+          const disponibilidade = data.percentual_disponibilidade;
+          badge.textContent = disponibilidade.toFixed(1) + '%';
+          badge.className = 'badge ' + (disponibilidade >= minDisp ? 'badge-success' : 'badge-warning');
+
+          if (disponibilidade < minDisp) {
             cb.checked = false;
             cb.disabled = true;
             cb.closest('label').classList.add('opacity-50');
@@ -1680,8 +1815,14 @@ const ComparacaoViews = {
             cb.disabled = false;
             cb.closest('label').classList.remove('opacity-50');
           }
+        } catch (e) {
+          badge.textContent = 'Erro';
+          badge.className = 'badge badge-danger';
+          cb.disabled = true;
         }
       });
+
+      await Promise.all(disponibilidadePromises);
       updateCalcButton();
     }
 
@@ -1700,14 +1841,9 @@ const ComparacaoViews = {
       btnCalc.disabled = true;
       btnCalc.innerHTML = '<span class="spinner"></span> Calculando...';
 
-      // Pega IDs dos produtos da lista efêmera ou salva
-      // Por simplicidade, usa uma lista mockada
-      // TODO: integrar com lista real do usuário
-      const produtoIds = [1, 2, 3, 11, 21]; // Mock
-
       try {
         const result = await ApiClient.calcularOrcamento({
-          lista_id: 0, // TODO: lista real
+          lista_id: listaSelecionada?.id || 0,
           fornecedor_ids: fornecedoresSelecionados,
           disponibilidade_minima: parseFloat(slider.value),
         });
@@ -1725,15 +1861,21 @@ const ComparacaoViews = {
     // Nova comparação
     btnNova.onclick = () => {
       stepRes.classList.add('hidden');
-      stepCat.classList.remove('hidden');
+      stepCat.classList.add('hidden');
+      stepForn.classList.add('hidden');
+      stepLista.classList.remove('hidden');
       catCheckboxes.forEach(cb => cb.checked = false);
       fornCheckboxes.forEach(cb => { cb.checked = false; cb.disabled = false; cb.closest('label').style.display = 'flex'; cb.closest('label').classList.remove('opacity-50'); });
       slider.value = 0;
       valorDisp.textContent = '0%';
       categoriasSelecionadas = [];
       fornecedoresSelecionados = [];
+      listaSelecionada = null;
+      produtoIdsSelecionados = [];
       btnProxForn.disabled = true;
       btnCalc.disabled = true;
+      btnProxLista.disabled = true;
+      listaRadios.forEach(r => r.checked = false);
     };
   },
 };
@@ -1836,14 +1978,40 @@ function renderResultado(data) {
 
   $('#btn-imprimir')?.addEventListener('click', () => window.print());
   $('#btn-exportar-pdf-resultado')?.addEventListener('click', async () => {
-    // TODO: implementar exportação do resultado da comparação
-    showToast('Exportação de comparação em desenvolvimento', 'info');
+    const btn = document.getElementById('btn-exportar-pdf-resultado');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Gerando...';
+
+    try {
+      // Pega os dados necessários para exportar
+      const listaId = listaSelecionada?.id || 0;
+      const fornecedorIds = fornecedoresSelecionados;
+      const disponibilidadeMinima = parseFloat(slider.value);
+
+      const blob = await ApiClient.exportarPDFComparacao({
+        lista_id: listaId,
+        fornecedor_ids: fornecedorIds,
+        disponibilidade_minima: disponibilidadeMinima,
+      });
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `comparacao_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('PDF da comparação baixado!', 'success');
+    } catch (e) {
+      showToast('Erro ao gerar PDF: ' + e.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Exportar PDF';
+    }
   });
 }
 
 // ============================================================
 // ROUTER — Navegação SPA
-// ============================================================
 const routes = {
   '/': Views.home,
   '/login': Views.login,
@@ -1966,10 +2134,16 @@ const router = {
 // ============================================================
 // INIT
 // ============================================================
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
   State.init();
   router.init();
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
 // Expose for debugging
 window.COBECO = { State, ApiClient, Views, router };

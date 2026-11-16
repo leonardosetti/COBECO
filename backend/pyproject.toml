@@ -40,6 +40,11 @@ dev = [
 requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+namespaces = false
+
 [tool.ruff]
 target-version = "py311"
 line-length = 100
@@ -58,7 +63,7 @@ ignore = [
     "I001", "F401", "F811", "F841", "N818",
     "ERA001", "W293", "W291", "W292",
     "ERA001", "W293", "W291", "W292",
-    "PLC0415", "ARG005", "ASYNC240", "PLW0603",
+    "PLC0415", "ARG005", "PLW0603",
 ]
 fixable = ["ALL"]
 unfixable = ["TID252", "NPY002"]

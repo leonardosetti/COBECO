@@ -5,8 +5,10 @@ import hashlib
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Any, Optional
 
+from src.domain.entities import Usuario
+
 if TYPE_CHECKING:
-    from src.domain.entities import Usuario
+    pass
 
 import bcrypt
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
@@ -552,6 +554,48 @@ async def logout(
 
     response.delete_cookie(key="refresh_token", path="/", httponly=True, samesite="strict")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post(
+    "/refresh",
+    response_model=TokenResponse,
+    summary="UC10/RF02 - Refresh Access Token",
+)
+async def refresh_token(
+    response: Response,
+    refresh_token: str | None = Cookie(None),
+    sessao_repo: SessaoRepository = Depends(get_sessao_repo),
+    repo: UsuarioRepository = Depends(get_usuario_repo),
+):
+    """Renova access token usando refresh token (cookie httpOnly)"""
+    if not refresh_token:
+        raise HTTPException(status_code=401, detail="Refresh token não fornecido")
+
+    # Verifica refresh token no banco
+    refresh_hash = hash_refresh_token(refresh_token)
+    sessao = await sessao_repo.buscar_por_token_hash(refresh_hash)
+    if not sessao or not sessao.esta_ativa():
+        response.delete_cookie(key="refresh_token", path="/", httponly=True, samesite="strict")
+        raise HTTPException(status_code=401, detail="Refresh token inválido ou expirado")
+
+    # Busca usuário
+    usuario = await repo.buscar_por_id(sessao.usuario_id)
+    if not usuario or not usuario.esta_ativo():
+        await sessao_repo.revogar(sessao.id)
+        response.delete_cookie(key="refresh_token", path="/", httponly=True, samesite="strict")
+        raise HTTPException(status_code=401, detail="Usuário não encontrado")
+
+    # Gera novo access token (15min) - mantém mesmo refresh token (sliding expiry opcional)
+    access_token = criar_token(
+        sub=str(usuario.id),
+        expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
+    )
+
+    return TokenResponse(
+        access_token=access_token,
+        refresh_token=refresh_token,  # Reutiliza o mesmo refresh token
+        expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+    )
 
 
 @router.post(

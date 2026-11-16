@@ -195,6 +195,15 @@ class ExportacaoRepository(ABC):
         """
         ...
 
+    @abstractmethod
+    async def gerar_pdf_comparacao(self, orcamento) -> bytes:
+        """
+        Gera PDF do resultado da comparação
+        - Server-side com ReportLab
+        - Formato A4 com tabela comparativa
+        """
+        ...
+
 
 # ============================================================
 # Sessao Repository (RF02 - Refresh Tokens)
