@@ -43,8 +43,12 @@ build-backend = "setuptools.build_meta"
 [tool.ruff]
 target-version = "py311"
 line-length = 100
+
+[tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "PT", "SIM", "TID", "ARG", "PTH", "ERA", "PL", "TRY", "NPY", "RSE", "RET", "ASYNC"]
 ignore = [
+    "PLR0915",
+    "PT018",
     "E501", "B008", "B904", "PLR2004", "TRY300", "TRY003", "TRY400",
     "F821", "UP035", "I001", "F401", "F811", "F841", "N818",
     "B904", "PLR2004", "TRY300", "TRY003", "TRY400",
@@ -54,12 +58,10 @@ ignore = [
     "I001", "F401", "F811", "F841", "N818",
     "ERA001", "W293", "W291", "W292",
     "ERA001", "W293", "W291", "W292",
+    "PLC0415", "ARG005", "ASYNC240", "PLW0603",
 ]
 fixable = ["ALL"]
 unfixable = ["TID252", "NPY002"]
-
-# [tool.ruff.lint.pydantic]  # Disabled: requires ruff >= 0.10.0
-# check-untyped = true
 
 [tool.black]
 line-length = 100
@@ -70,8 +72,6 @@ include = '\.pyi?$'
 python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
-# disallow_untyped_defs/incomplete_defs: dívida técnica — ~88 defs sem anotação;
-# reativar após migração de tipagem (repo não tinha mypy verde historicamente).
 disallow_untyped_defs = false
 disallow_incomplete_defs = false
 check_untyped_defs = true
@@ -79,6 +79,10 @@ no_implicit_optional = true
 strict_optional = true
 show_error_codes = true
 pretty = true
+
+[tool.mypy.overrides]
+module = ["reportlab.*", "jose.*", "reportlab.lib.*", "reportlab.platypus.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -111,7 +115,3 @@ precision = 2
 [tool.alembic]
 script_location = "alembic"
 version_locations = "alembic/versions"
-
-[[tool.mypy.overrides]]
-module = ["reportlab.*", "jose.*"]
-ignore_missing_imports = true

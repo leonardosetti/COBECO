@@ -5,7 +5,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from decimal import Decimal
-from enum import Enum
+from enum import StrEnum
 
 
 # ============================================================
@@ -47,7 +47,7 @@ class SenhaHash:
 # ============================================================
 # Enums
 # ============================================================
-class UnidadeMedida(str, Enum):
+class UnidadeMedida(StrEnum):
     UN = "un"
     KG = "kg"
     L = "L"

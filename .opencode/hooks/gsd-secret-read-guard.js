@@ -876,7 +876,7 @@ function operandNamesSecret(text) {
 
 const ASSIGNMENT_RE = /^[A-Za-z_][A-Za-z0-9_]*=/;
 
-// `-c`, or a combined short flag ending in `c` (`-lc`, `-ec`, `-edoc-arch-0006-uc-v1`): mode c.
+// `-c`, or a combined short flag ending in `c` (`-lc`, `-ec`, `-eu`): mode c.
 const DASH_C_RE = /^-[A-Za-z]*c$/;
 
 const GROUPING_SEPS = new Set(['(', ')', '{', '}']);

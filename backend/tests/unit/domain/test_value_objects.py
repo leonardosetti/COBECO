@@ -90,7 +90,7 @@ class TestUnidadeMedida:
 
     def test_unidade_medida_e_str(self):
         # UnidadeMedida is a StrEnum, so str() returns the enum member name
-        assert str(UnidadeMedida.UN) == "UnidadeMedida.UN"
+        assert str(UnidadeMedida.UN) == "un"
         assert UnidadeMedida.UN.value == "un"
         assert isinstance(UnidadeMedida.KG, str)
 

@@ -22,7 +22,7 @@ from datetime import UTC
 # ============================================================
 # Fixtures
 # ============================================================
-@pytest.fixture(scope="function")
+@pytest.fixture
 async def test_app():
     """App FastAPI para testes de integração"""
     # Cria engine e session factory específicos para testes (no event loop do teste)

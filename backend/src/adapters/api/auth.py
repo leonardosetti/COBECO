@@ -3,7 +3,7 @@
 
 import hashlib
 from datetime import UTC, datetime, timedelta
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 if TYPE_CHECKING:
     from src.domain.entities import Usuario

@@ -109,7 +109,7 @@ class ComparacaoRepositoryImpl(ComparacaoRepository):
         )
         fornecedores = list(fornecedores_result.scalars().all())
         if len(fornecedores) < 2:
-            raise FornecedoresInsuficientes()
+            raise FornecedoresInsuficientes
 
         # 4. Para cada fornecedor, busca preços
         fornecedores_comparacao = []
