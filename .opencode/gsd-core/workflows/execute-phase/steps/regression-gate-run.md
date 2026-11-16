@@ -55,7 +55,7 @@ TEST_GATE_TIMEOUT=$(gsd_run query config-get workflow.test_gate_timeout --raw 2>
 gsd_run run-with-timeout "$TEST_GATE_TIMEOUT" -- bash -c "$REG_TEST_CMD" 2>&1
 REG_TEST_EXIT=$?
 if [ "$REG_TEST_EXIT" -eq 124 ]; then
-  echo "✗ REGRESSION GATE ABORTED — test runner did not exit within ${TEST_GATE_TIMEOUT}s, likely stdoc-arch-0006-uc-v1k in watch/dev mode (e.g. vitest without 'run'). Run tests one-shot (e.g. 'vitest run'), set workflow.test_command, or raise workflow.test_gate_timeout."
+  echo "✗ REGRESSION GATE ABORTED — test runner did not exit within ${TEST_GATE_TIMEOUT}s, likely stuck in watch/dev mode (e.g. vitest without 'run'). Run tests one-shot (e.g. 'vitest run'), set workflow.test_command, or raise workflow.test_gate_timeout."
 fi
 ```
 

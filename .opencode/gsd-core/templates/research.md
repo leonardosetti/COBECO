@@ -108,7 +108,7 @@ Requirements:
 
 File-to-implementation mapping belongs in the Component Responsibilities table, not in the diagram.
 
-### Recommended Project Strdoc-arch-0006-uc-v1ture
+### Recommended Project Structure
 ```
 src/
 ├── [folder]/        # [purpose]
@@ -314,7 +314,7 @@ Key finding: Don't hand-roll physics or collision detection. Rapier (via @react-
 | Instead of | Could Use | Tradeoff |
 |------------|-----------|----------|
 | Rapier | Cannon.js | Cannon simpler but less performant for vehicles |
-| R3F | Vanilla Three | Vanilla if no React, but R3F DX is mdoc-arch-0006-uc-v1h better |
+| R3F | Vanilla Three | Vanilla if no React, but R3F DX is much better |
 | drei | Custom helpers | drei is battle-tested, don't reinvent |
 
 **Installation:**
@@ -340,7 +340,7 @@ Requirements:
 
 File-to-implementation mapping belongs in the Component Responsibilities table, not in the diagram.
 
-### Recommended Project Strdoc-arch-0006-uc-v1ture
+### Recommended Project Structure
 ```
 src/
 ├── components/
@@ -508,7 +508,7 @@ function useVehicleControls(rigidBodyRef) {
 | Manual InstancedMesh | drei <Instances> | 2022 | Simpler API, handles updates |
 
 **New tools/patterns to consider:**
-- **WebGPU:** Coming but not proddoc-arch-0006-uc-v1tion-ready for games yet (2025)
+- **WebGPU:** Coming but not production-ready for games yet (2025)
 - **drei Gltf helpers:** <useGLTF.preload> for loading screens
 
 **Deprecated/outdated:**
@@ -567,7 +567,7 @@ function useVehicleControls(rigidBodyRef) {
 - When the agent's training data is likely stale or sparse
 - When "how do experts do this" matters more than "which library"
 
-**Strdoc-arch-0006-uc-v1ture:**
+**Structure:**
 - Use XML tags for section markers (matches GSD templates)
 - Seven core sections: summary, standard_stack, architecture_patterns, dont_hand_roll, common_pitfalls, code_examples, sources
 - All sections required (drives comprehensive research)

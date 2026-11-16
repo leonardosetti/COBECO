@@ -51,7 +51,7 @@ async def lista_com_itens(client, auth_user):
         ],
     }
     response = await client.post("/v1/listas", json=lista_data, headers=auth_user)
-    assert response.status_code == 21
+    assert response.status_code == 201
     return response.json()
 
 
@@ -62,7 +62,7 @@ class TestComparacaoIntegration:
     async def test_comparacao_flat_ordenacao_preco_asc(self, client, auth_user, lista_com_itens):
         """RF15 - Tabela flat comparativa ordenada por preço total ASC"""
         lista_id = lista_com_itens["id"]
-        
+
         # Busca fornecedores ativos
         forn_resp = await client.get("/v1/fornecedores", headers=auth_user)
         fornecedores = forn_resp.json()
@@ -120,10 +120,12 @@ class TestComparacaoIntegration:
                 assert "disponivel" in item
 
     @pytest.mark.asyncio
-    async def test_comparacao_slider_disponibilidade_filtra_fornecedores(self, client, auth_user, lista_com_itens):
+    async def test_comparacao_slider_disponibilidade_filtra_fornecedores(
+        self, client, auth_user, lista_com_itens
+    ):
         """RF16 - Slider de disponibilidade filtra fornecedores"""
         lista_id = lista_com_itens["id"]
-        
+
         forn_resp = await client.get("/v1/fornecedores", headers=auth_user)
         fornecedores = forn_resp.json()
         forn_ids = [f["id"] for f in fornecedores[:5]]
@@ -131,19 +133,27 @@ class TestComparacaoIntegration:
         # Disponibilidade mínima 0% (todos)
         response_0 = await client.post(
             "/comparacao",
-            json={"lista_id": lista_id, "fornecedor_ids": forn_ids, "disponibilidade_minima": 0.0},
+            json={
+                "lista_id": lista_id,
+                "fornecedor_ids": forn_ids,
+                "disponibilidade_minima": 0.0,
+            },
             headers=auth_user,
         )
         data_0 = response_0.json()
         count_0 = len(data_0["fornecedores"])
 
         # Disponibilidade mínima 100% (apenas quem tem todos os itens)
-        response_10 = await client.post(
+        response_100 = await client.post(
             "/comparacao",
-            json={"lista_id": lista_id, "fornecedor_ids": forn_ids, "disponibilidade_minima": 100.0},
+            json={
+                "lista_id": lista_id,
+                "fornecedor_ids": forn_ids,
+                "disponibilidade_minima": 100.0,
+            },
             headers=auth_user,
         )
-        data_10 = response_100.json()
+        data_100 = response_100.json()
         count_10 = len(data_100["fornecedores"])
 
         # 100% deve retornar menos ou igual fornecedores
@@ -161,10 +171,14 @@ class TestComparacaoIntegration:
 
         response = await client.post(
             "/comparacao",
-            json={"lista_id": 99999, "fornecedor_ids": forn_ids, "disponibilidade_minima": 0.0},
+            json={
+                "lista_id": 99999,
+                "fornecedor_ids": forn_ids,
+                "disponibilidade_minima": 0.0,
+            },
             headers=auth_user,
         )
-        assert response.status_code == 44
+        assert response.status_code == 404
 
     @pytest.mark.asyncio
     async def test_comparacao_lista_sem_itens(self, client, auth_user):
@@ -175,13 +189,17 @@ class TestComparacaoIntegration:
             headers=auth_user,
         )
         # Deve falhar na criação (validação)
-        assert lista_resp.status_code == 40
+        assert lista_resp.status_code == 400
 
     @pytest.mark.asyncio
     async def test_comparacao_sem_fornecedores(self, client, auth_user, lista_com_itens):
         response = await client.post(
             "/comparacao",
-            json={"lista_id": lista_com_itens["id"], "fornecedor_ids": [], "disponibilidade_minima": 0.0},
+            json={
+                "lista_id": lista_com_itens["id"],
+                "fornecedor_ids": [],
+                "disponibilidade_minima": 0.0,
+            },
             headers=auth_user,
         )
         assert response.status_code == 200
@@ -193,7 +211,11 @@ class TestComparacaoIntegration:
     async def test_comparacao_fornecedor_inexistente(self, client, auth_user, lista_com_itens):
         response = await client.post(
             "/comparacao",
-            json={"lista_id": lista_com_itens["id"], "fornecedor_ids": [99999], "disponibilidade_minima": 0.0},
+            json={
+                "lista_id": lista_com_itens["id"],
+                "fornecedor_ids": [99999],
+                "disponibilidade_minima": 0.0,
+            },
             headers=auth_user,
         )
         # Deve ignorar fornecedores inexistentes ou retornar vazio
@@ -213,7 +235,11 @@ class TestComparacaoFlatEstrutura:
 
         response = await client.post(
             "/comparacao",
-            json={"lista_id": lista_id, "fornecedor_ids": forn_ids, "disponibilidade_minima": 0.0},
+            json={
+                "lista_id": lista_id,
+                "fornecedor_ids": forn_ids,
+                "disponibilidade_minima": 0.0,
+            },
             headers=auth_user,
         )
         data = response.json()
@@ -231,14 +257,20 @@ class TestComparacaoFlatEstrutura:
                 assert isinstance(item["disponivel"], bool)
 
     @pytest.mark.asyncio
-    async def test_fornecedor_comparacao_campos_obrigatorios(self, client, auth_user, lista_com_itens):
+    async def test_fornecedor_comparacao_campos_obrigatorios(
+        self, client, auth_user, lista_com_itens
+    ):
         lista_id = lista_com_itens["id"]
         forn_resp = await client.get("/v1/fornecedores", headers=auth_user)
         forn_ids = [f["id"] for f in forn_resp.json()[:3]]
 
         response = await client.post(
             "/comparacao",
-            json={"lista_id": lista_id, "fornecedor_ids": forn_ids, "disponibilidade_minima": 0.0},
+            json={
+                "lista_id": lista_id,
+                "fornecedor_ids": forn_ids,
+                "disponibilidade_minima": 0.0,
+            },
             headers=auth_user,
         )
         data = response.json()

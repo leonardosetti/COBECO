@@ -98,7 +98,7 @@ C4Component
         Component(rule_pdf, "PDF Rules", "Domain Services", "Template Lista/Comparação, DejaVuSans, keepTogether, header repeat, <5s")
         Component(rule_perfil, "Perfil Rules", "Domain Services", "Senha_atual obrigatória, email unique, nova_senha≠atual≥8, invalidação refresh")
 
-        %% Infrastrdoc-arch-0006-uc-v1ture Adapters
+        %% Infrastructure Adapters
         Component(adapter_usuario_repo, "UsuarioRepository", "SQLAlchemy 2.0 Async", "CRUD Usuario, find_by_email, find_by_nome_usuario, find_by_id")
         Component(adapter_lista_repo, "ListaRepository", "SQLAlchemy 2.0 Async", "CRUD Lista, find_by_usuario_paginado, soft_delete, update_itens_replace_all")
         Component(adapter_produto_repo, "ProdutoRepository", "SQLAlchemy 2.0 Async", "Busca normalizada (ILIKE + normalizar), find_by_categoria")
@@ -108,7 +108,7 @@ C4Component
         Component(adapter_auth, "AuthAdapter", "python-jose + passlib", "JWT HS256 encode/decode, bcrypt hash/verify (salt=12), cookie httpOnly SameSite=Strict")
         Component(adapter_cache, "CacheAdapter", "In-memory dict + TTL", "Cache 5min para /v1/orcamento (key=SHA256(payload)), invalidação em preco_atualizado")
 
-        %% Infrastrdoc-arch-0006-uc-v1ture (Config, Migrations, Seed)
+        %% Infrastructure (Config, Migrations, Seed)
         Component(infra_config, "Config", "Pydantic Settings", "config-env-0001-env-example-v1.0 → Settings (DB_URL, SECRET_KEY, JWT_ALGORITHM, ACCESS_EXP, REFRESH_EXP, RECOVERY_MODE)")
         Component(infra_migrations, "Migrations", "Alembic", "Versionamento schema, upgrade/downgrade, autogenerate")
         Component(infra_seed, "Seed", "Script Python", "Popula 11 cat, 10 forn, 50 prod, ~300 precos <10s, bulk_insert, determinístico")
@@ -205,7 +205,7 @@ C4Component
 | **1. Interface Adapters (Routers)** | 6 Routers + Health | Recebem HTTP, validam input (Pydantic), chamam UseCases, retornam HTTP | **Nunca** contêm regra de negócio. Apenas serialização/deserialização. |
 | **2. Use Cases (Application)** | 20+ Classes | Orquestram fluxo: validam input, chamam Domain Rules, chamam Adapters, gerenciam transações | **Coração da aplicação**. Uma classe por fluxo de usuário (UC). Transações aqui. |
 | **3. Domain (Entities + Rules)** | 10 Entities + 5 Rule Services | Regras de negócio puras, invariantes, validações independentes de framework | **Zero dependência** de FastAPI, SQLAlchemy, Pydantic. Apenas Python stdlib + dataclasses. |
-| **4. Infrastrdoc-arch-0006-uc-v1ture Adapters** | 8 Adapters | Implementam interfaces do Domain: Repositories (SQLAlchemy), PDF (ReportLab), Auth (python-jose), Cache | **Detalhes de implementação**. Podem ser trocados sem afetar Domain/UseCases. |
+| **4. Infrastructure Adapters** | 8 Adapters | Implementam interfaces do Domain: Repositories (SQLAlchemy), PDF (ReportLab), Auth (python-jose), Cache | **Detalhes de implementação**. Podem ser trocados sem afetar Domain/UseCases. |
 
 ---
 
@@ -218,7 +218,7 @@ C4Component
 | **Transaction Boundary** | Transações **apenas** em UseCases (BEGIN/COMMIT/ROLLBACK explícito). |
 | **Parameterized Queries** | SQLAlchemy ORM + async — **zero** SQL raw / f-strings. |
 | **PT-BR Naming** | Entidades, campos, tabelas, variáveis, erros — tudo em português. |
-| **Testability** | UseCases recebem Adapters por injeção (constrdoc-arch-0006-uc-v1tor) — mockável em testes. |
+| **Testability** | UseCases recebem Adapters por injeção (constructor) — mockável em testes. |
 | **No Framework Leak** | Domain não importa FastAPI, Pydantic, SQLAlchemy. Apenas `dataclasses`, `datetime`, `decimal`. |
 
 ---
@@ -253,7 +253,7 @@ C4Component
 | ADR | Decisão | Componente Afetado |
 |-----|---------|-------------------|
 | ADR-001 | Stack: FastAPI, SQLAlchemy 2.0, MySQL, ReportLab | Todos |
-| ADR-002 | Clean Architecture 4 camadas (manual) | Estrutura de pastas `domain/`, `usecases/`, `adapters/`, `infrastrdoc-arch-0006-uc-v1ture/`, `api/` |
+| ADR-002 | Clean Architecture 4 camadas (manual) | Estrutura de pastas `domain/`, `usecases/`, `adapters/`, `infrastructure/`, `api/` |
 | ADR-003 | JWT Access (15min, memória) + Refresh (7d, cookie httpOnly) | `AuthAdapter`, `AuthUseCases`, `AuthRouter` |
 | ADR-004 | PDF Server-side ReportLab | `PDFAdapter`, `ExportarPDFUseCase`, `ExportRouter` |
 | ADR-005 | Seed Determinístico + MySQL InnoDB | `infra_seed`, `Migrations`, `MySQL Container` |

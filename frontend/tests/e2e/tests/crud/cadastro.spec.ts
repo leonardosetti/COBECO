@@ -16,7 +16,7 @@ test.describe('CRUD - Cadastro de Usuário (UC01/RF01)', () => {
       
       // Toast pode ter aparecido antes do redirect
       if (toast) {
-        expect(toast.toLowerCase()).toMatch(/conta criada|sdoc-arch-0006-uc-v1esso|redirecion/);
+        expect(toast.toLowerCase()).toMatch(/conta criada|sucesso|redirecion/);
       }
     });
 

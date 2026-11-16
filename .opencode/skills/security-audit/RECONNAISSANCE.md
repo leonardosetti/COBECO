@@ -4,13 +4,13 @@
 
 The parent initializes `run-metadata.json`, applies the strict pre-reconnaissance budget gate in `SKILL.md`, then creates agent scratch roots and the shared ledger before hunting. If the gate fails, record the incomplete status in metadata and launch no reconnaissance agent. Reconnaissance reads the target and locally available build/configuration state only. It does not contact deployed endpoints, external identity providers, registries, brokers, cloud APIs, or other shared services.
 
-Launch several `research` agents in parallel. They return strdoc-arch-0006-uc-v1tured facts to the parent and do not write files.
+Launch several `research` agents in parallel. They return structured facts to the parent and do not write files.
 
-**Agent 1a: Proddoc-arch-0006-uc-v1t, stack, and local operation**
+**Agent 1a: Product, stack, and local operation**
 
 ```text
 Read the target at <target>. Do not use network access. Return:
-1. Proddoc-arch-0006-uc-v1t type, users, operators, and ordinary trust-sensitive actions.
+1. Product type, users, operators, and ordinary trust-sensitive actions.
 2. Languages, frameworks, build system, runtimes, and locally visible deployment models.
 3. Repository-relative entry points and subsystem boundaries.
 4. Exact build and test commands that could run offline with local dependencies, their expected write locations, and the target-controlled inputs they process. Do not run them during reconnaissance.
@@ -74,7 +74,7 @@ State paths and source refs used in `run-metadata.json`. Summarize only the cove
 
 The parent synthesizes `<output-dir>/architecture.md`, with a hard cap of about 1,000 words. Include:
 
-1. Proddoc-arch-0006-uc-v1t, principals, normal authority, and protected resources.
+1. Product, principals, normal authority, and protected resources.
 2. The comparable-software baseline from Agent 1a, when one is source-grounded: what security trade-offs the comparable accepts. Use it to calibrate effort and severity, never to dismiss a demonstrated finding; if the comparable shares a defect pattern that has mattered in practice, that strengthens the finding. Omit this line when no meaningful comparable exists.
 3. Tech stack, source-visible deployment paths, and offline build/test limits.
 4. Entry surfaces and the important source-to-sink or lifecycle paths.
@@ -136,7 +136,7 @@ When `lifecycle` is material, add both `canonical_refs.lifecycle` and a human `l
 
 The parent may add bookkeeping fields but keeps the semantic fields above stable. In `prior_status`, `new` marks a surface first seen in this run when compatible prior ledgers exist; `none` marks a unit seeded when no compatible prior ledger is available. Prior `deferred`, `blocked`, `out_of_scope`, and changed-source units initialize as current `planned` work when now in scope. A prior same-source covered unit remains visible in the current ledger; assign changed source, important lifecycle paths, and exact conflicts first, then use the coverage critic to decide whether it needs another pass.
 
-`attempts` is an append-only archive for evidence-bearing assignments that a coverage critic reopens. Before reassignment, append the prior unit's exact `wave`, `status`, `agent_id`, `reviewed_paths`, `local_checks`, `result_fingerprints`, and `unresolved`, plus the critic's source-backed `reassignment_reason`. Only `blocked`, `covered`, and `candidate` states can be archived. Archived attempts retain the same state and evidence invariants as live units, use strictly increasing waves below the current wave, and retain their proddoc-arch-0006-uc-v1ing owners and artifacts. The next assignment increments `wave`, uses a fresh owner, and starts with empty live evidence. If the profile or budget prevents another assignment, increment `wave` and use live `deferred` state with null owner, empty evidence, and the stop reason. Never copy an archived owner's checks or artifacts into the live state. A later live terminal state contains only the new attempt's evidence; the archive remains unchanged.
+`attempts` is an append-only archive for evidence-bearing assignments that a coverage critic reopens. Before reassignment, append the prior unit's exact `wave`, `status`, `agent_id`, `reviewed_paths`, `local_checks`, `result_fingerprints`, and `unresolved`, plus the critic's source-backed `reassignment_reason`. Only `blocked`, `covered`, and `candidate` states can be archived. Archived attempts retain the same state and evidence invariants as live units, use strictly increasing waves below the current wave, and retain their producing owners and artifacts. The next assignment increments `wave`, uses a fresh owner, and starts with empty live evidence. If the profile or budget prevents another assignment, increment `wave` and use live `deferred` state with null owner, empty evidence, and the stop reason. Never copy an archived owner's checks or artifacts into the live state. A later live terminal state contains only the new attempt's evidence; the archive remains unchanged.
 
 Enforce this state table exactly:
 
@@ -151,6 +151,6 @@ Enforce this state table exactly:
 
 Canonical agent IDs match `^[a-z0-9][a-z0-9_-]{0,63}$` and are not Windows device names. Lowercase is mandatory, so one ledger cannot contain case-fold aliases. The unit `agent_id` records the assignment owner. Every check records its own `agent_id` and nonempty `reviewed_paths`; the unit-level `reviewed_paths` is exactly their union. A source-only check uses `artifact: null`. A local check requires a regular file promoted only by trusted parent-side code under exactly `agents/<check.agent_id>/artifacts/`. This lets hunter and verifier checks coexist in one unit. Scratch paths, output-root files, symlinks, special files, and another check owner's artifacts are not evidence.
 
-The ledger is the coverage claim. An architecture summary, agent count, or generic "auth reviewed" sentence is not coverage evidence. Phase 2 closes units only from the paths and checks in a hunter's strdoc-arch-0006-uc-v1tured result.
+The ledger is the coverage claim. An architecture summary, agent count, or generic "auth reviewed" sentence is not coverage evidence. Phase 2 closes units only from the paths and checks in a hunter's structured result.
 
 Run `node <skill-dir>/validate-coverage-ledger.cjs <output-dir>/coverage-ledger.json` after seeding, after every parent update, and before Phase 6. The validator rejects input beyond 5 MiB, 64 nesting levels, 10,000 units, 1,000 entries in a nested collection, or 500,000 traversed values, and caps reported validation errors at 100. In practice the 5 MiB byte limit holds roughly 2,000-5,000 realistic units, so it binds before the 10,000-unit cap. Fix every error before assigning work or making a coverage claim.

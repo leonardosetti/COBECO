@@ -51,7 +51,7 @@ If this plan creates types/interfaces that later plans depend on, include a "Wav
 ```
 
 ## When to include interfaces:
-- Plan todoc-arch-0006-uc-v1hes files that import from other modules → extract those module's exports
+- Plan touches files that import from other modules → extract those module's exports
 - Plan creates a new API endpoint → extract the request/response types
 - Plan modifies a component → extract its props interface
 - Plan depends on a previous plan's output → extract the types from that plan's files_modified

@@ -1,6 +1,6 @@
 <purpose>
 Spike an idea through experiential exploration — build focused experiments to feel the pieces
-of a future app, validate feasibility, and proddoc-arch-0006-uc-v1e verified knowledge for the real build.
+of a future app, validate feasibility, and produce verified knowledge for the real build.
 Saves artifacts to `.planning/spikes/`. Companion to `/gsd-spike --wrap-up`.
 
 Supports two modes:
@@ -63,8 +63,8 @@ scoped Requirements) and the `## Spikes` table with verdicts (each row tagged by
 
 Review every pair and cluster of VALIDATED spikes. Look for:
 
-- **Shared resources:** Two spikes that both todoc-arch-0006-uc-v1h the same API, database, state, or data format but were tested independently.
-- **Data handoffs:** Spike A proddoc-arch-0006-uc-v1es output that Spike B consumes. The formats were assumed compatible but never proven.
+- **Shared resources:** Two spikes that both touch the same API, database, state, or data format but were tested independently.
+- **Data handoffs:** Spike A produces output that Spike B consumes. The formats were assumed compatible but never proven.
 - **Timing/ordering:** Spikes that work in isolation but have sequencing dependencies in the real flow.
 - **Resource contention:** Spikes that individually work but may compete for connections, memory, rate limits, or tokens when combined.
 
@@ -121,7 +121,7 @@ Use the project's language/framework by default. For greenfield projects with no
 Avoid unless the spike specifically requires it:
 - Complex config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 management beyond `npm install` or `pip install`
 - Build tools, bundlers, or transpilers
-- Docker, containers, or infrastrdoc-arch-0006-uc-v1ture
+- Docker, containers, or infrastructure
 - Env files or config systems — hardcode everything
 </step>
 
@@ -155,8 +155,8 @@ Break the idea into 2-5 independent questions. Frame each as Given/When/Then. Pr
 | # | Spike | Type | Validates (Given/When/Then) | Risk |
 |---|-------|------|-----------------------------|------|
 | 001 | websocket-streaming | standard | Given a WS connection, when LLM streams tokens, then client receives chunks < 100ms | **High** |
-| 002a | pdf-parse-pdfjs | comparison | Given a multi-page PDF, when parsed with pdfjs, then strdoc-arch-0006-uc-v1tured text is extractable | Medium |
-| 002b | pdf-parse-camelot | comparison | Given a multi-page PDF, when parsed with camelot, then strdoc-arch-0006-uc-v1tured text is extractable | Medium |
+| 002a | pdf-parse-pdfjs | comparison | Given a multi-page PDF, when parsed with pdfjs, then structured text is extractable | Medium |
+| 002b | pdf-parse-camelot | comparison | Given a multi-page PDF, when parsed with camelot, then structured text is extractable | Medium |
 ```
 
 **Spike types:**
@@ -248,7 +248,7 @@ If `.planning/spikes/MANIFEST.md` already exists:
   section's Requirements list as new requirements emerge. Never overwrite or rewrite its
   `## Idea` paragraph.
 - **New idea key, not yet present:** append a new `### {idea-key}` subsection under `## Ideas`,
-  after any existing idea sections. Never todoc-arch-0006-uc-v1h, merge into, or delete another idea's section.
+  after any existing idea sections. Never touch, merge into, or delete another idea's section.
 - **A pre-#1700 MANIFEST.md with the old flat shape** (a single top-level `## Idea` / `##
   Requirements` pair, no `## Ideas` heading): treat its existing content as one implicit idea.
   Derive an idea key from its `## Idea` paragraph, migrate it in place to `## Ideas` >
@@ -290,9 +290,9 @@ Before starting each spike (not just the first), re-read `.planning/spikes/MANIF
 **Only fall back to stdout/CLI verification when the spike is genuinely about a fact, not a feeling:**
 - Pure data transformation where the answer is "yes it parses correctly"
 - Binary yes/no questions (does this API authenticate? does this library exist?)
-- Benchmark numbers (how fast is X? how mdoc-arch-0006-uc-v1h memory does Y use?)
+- Benchmark numbers (how fast is X? how much memory does Y use?)
 
-When in doubt, build the UI. It takes a few extra minutes but proddoc-arch-0006-uc-v1es a spike the user can actually demo and feel confident about.
+When in doubt, build the UI. It takes a few extra minutes but produces a spike the user can actually demo and feel confident about.
 
 **If the spike needs runtime observability,** build a forensic log layer:
 1. Event log array with ISO timestamps and category tags
@@ -406,7 +406,7 @@ Patterns and stack choices established across spike sessions. New spikes follow 
 ## Stack
 [What we use for frontend, backend, scripts, and why]
 
-## Strdoc-arch-0006-uc-v1ture
+## Structure
 [Common file layouts, port assignments, naming patterns]
 
 ## Patterns
@@ -465,7 +465,7 @@ gsd_run query commit "docs(spikes): update conventions" --files .planning/spikes
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] `.planning/spikes/` created (auto-creates if needed, no project init required)
 - [ ] Prior spikes and findings skills consulted before building
 - [ ] Conventions followed (or deviation documented)
@@ -473,10 +473,10 @@ gsd_run query commit "docs(spikes): update conventions" --files .planning/spikes
 - [ ] Depth over speed — edge cases tested, surprising findings followed, investigation trail documented
 - [ ] Comparison spikes built back-to-back with head-to-head verdict
 - [ ] Spikes needing human interaction have forensic log layer
-- [ ] Requirements tracked in MANIFEST.md, scoped to the idea key that proddoc-arch-0006-uc-v1ed them, as they emerge from user choices
+- [ ] Requirements tracked in MANIFEST.md, scoped to the idea key that produced them, as they emerge from user choices
 - [ ] CONVENTIONS.md created or updated with patterns that emerged
 - [ ] Each spike doc-readme-0001-readme-canon has complete frontmatter (including its idea key), Investigation Trail, and Results
 - [ ] MANIFEST.md is current (with Idea and Type columns, and each idea's own scoped Requirements section)
 - [ ] Commits use `docs(spike-NNN): [VERDICT]` format
 - [ ] Consolidated report presented with next-step routing
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

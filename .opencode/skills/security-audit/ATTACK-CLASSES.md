@@ -16,7 +16,7 @@ Use `confirmed` only when source evidence and bounded validation establish the f
 >
 > **Supply-chain and release targets** (dependency resolution, generated inputs, CI, release/signing/promotion, updates, plugins, or extensions): use [SUPPLY-CHAIN-AND-RELEASE.md](SUPPLY-CHAIN-AND-RELEASE.md).
 >
-> **Cloud and deployment targets** (IAM, infrastrdoc-arch-0006-uc-v1ture as code, containers/Kubernetes, service mesh, serverless/edge, ingress, provider events, or runtime configuration): use [CLOUD-AND-DEPLOYMENT.md](CLOUD-AND-DEPLOYMENT.md).
+> **Cloud and deployment targets** (IAM, infrastructure as code, containers/Kubernetes, service mesh, serverless/edge, ingress, provider events, or runtime configuration): use [CLOUD-AND-DEPLOYMENT.md](CLOUD-AND-DEPLOYMENT.md).
 >
 > **Protocol, RPC, and messaging targets** (gRPC, GraphQL transports, Protobuf/Cap'n Proto/Thrift, custom protocols, queues, brokers, pub/sub, webhooks, or streaming RPC): use [PROTOCOLS-RPC-AND-MESSAGING.md](PROTOCOLS-RPC-AND-MESSAGING.md).
 >
@@ -30,8 +30,8 @@ Use `confirmed` only when source evidence and bounded validation establish the f
 Trace untrusted input from entry point to dangerous sink. What counts as a "dangerous sink" depends on the application:
 - Web apps: SQL queries, HTML output, shell commands, template engines, file paths, HTTP redirects, deserialization
 - Libraries: any function that processes caller-supplied data without validation — buffer operations, parsers, format strings
-- CLI tools: shell command constrdoc-arch-0006-uc-v1tion, file path handling, environment variable interpolation
-- Services: query constrdoc-arch-0006-uc-v1tion, message serialization, log injection, LDAP/XPATH queries
+- CLI tools: shell command construction, file path handling, environment variable interpolation
+- Services: query construction, message serialization, log injection, LDAP/XPATH queries
 - Client-side (browser/JS): DOM XSS, prototype pollution, `postMessage`/origin trust, and other browser-side classes — covered by the [CLIENT-SIDE.md](CLIENT-SIDE.md) companion blocks when selected
 
 Do not stop at the obvious direct paths. Look for indirect injection: data stored safely, then retrieved and used in a dangerous context by different code. Look for injection through field names, keys, headers, and metadata — not just values. Look for injection into secondary systems (logs, caches, search indexes, analytics).
@@ -64,7 +64,7 @@ For complex access models, split into separate agents for auth bypass vs authori
 **Business logic** (subagent_type: `general`)
 Hunt logic errors by hand: standard scanners cannot find them, and they yield high-impact findings. For each major workflow:
 - **State machine violations**: Can you skip steps? Go backwards? Reach an invalid state? What happens if you replay a completed flow? What about partial failure — if step 2 of 3 fails, is step 1 rolled back?
-- **Race conditions with business impact**: Concurrent operations that proddoc-arch-0006-uc-v1e invalid states (double-spend, double-approve, lost updates). Focus on operations that check-then-act non-atomically.
+- **Race conditions with business impact**: Concurrent operations that produce invalid states (double-spend, double-approve, lost updates). Focus on operations that check-then-act non-atomically.
 - **Numeric/quantity manipulation**: Negative values, zero values, overflow, precision loss, type coercion between string and number.
 - **Access boundary violations**: Not "does the permission check exist" but "is it the right check for the business rule?" Can input to one operation bypass a restriction enforced on a different operation for the same effect?
 - **Implicit trust assumptions**: Data from storage, config, other components, or plugins assumed safe because "we validated it on the way in." What if a different code path wrote it?
@@ -83,7 +83,7 @@ Legitimate features used for unintended purposes. Look for bugs in the design, n
 **Chained vulnerabilities and trust boundaries** (subagent_type: `general`)
 Individually allowed or contained behavior can become a vulnerability when another component or lifecycle step relies on a stronger guarantee:
 - **Multi-step boundary failures**: Map what a low-privilege principal may read, write, invoke, and retain, then connect only concrete outputs to later trust decisions. Confirm each prerequisite and do not assume a downstream effect.
-- **Cross-component trust gaps**: Component A validates input and passes it to component B. Compare the exact guarantee A proddoc-arch-0006-uc-v1es with what B assumes, including truncation, type coercion, normalization, tenant scope, and plugin/extension access.
+- **Cross-component trust gaps**: Component A validates input and passes it to component B. Compare the exact guarantee A produces with what B assumes, including truncation, type coercion, normalization, tenant scope, and plugin/extension access.
 - **Second-order use**: Data safe when stored may become dangerous in a later context. A field name becomes a JSON path, a slug becomes a file path, escaped text enters raw rendering, or a stored string becomes a URL, regex, template, or policy expression.
 - **Scope and capability growth**: Token, API-key, plugin, OAuth, MCP, or AI capabilities become broader after delegation, refresh, caching, role change, or composition. Name the concrete operation the resulting principal should not have.
 - **Timing and ordering**: Review setup, migration, soft-delete, revoke/cache expiry, check/use, and validate/consume windows. Confirm stale state is accepted before reporting.
@@ -112,8 +112,8 @@ Pursue anomalies inside your assigned scope until the invariant is settled. If s
 Other agents hunt subtle bugs. This agent checks the basic exposures that are easy to overlook because everyone assumes someone else already checked them:
 - Are there any hardcoded passwords, API keys, tokens, or secrets in the source? (grep for `password`, `secret`, `apikey`, `token`, `Bearer`, `-----BEGIN`, common default passwords)
 - Are there any TODO/FIXME/HACK/XXX comments that reference security? (`TODO: add auth`, `FIXME: validate input`, `HACK: skip permission check`)
-- Is debug mode / dev mode properly gated? Can it be enabled in proddoc-arch-0006-uc-v1tion via environment variable, query parameter, or header?
-- Are there test/example/seed credentials that work in proddoc-arch-0006-uc-v1tion?
+- Is debug mode / dev mode properly gated? Can it be enabled in production via environment variable, query parameter, or header?
+- Are there test/example/seed credentials that work in production?
 - Is there a `/debug`, `/admin`, `/test`, `/status`, `/health`, `/metrics`, `/env`, `/config-env-0001-env-example-v1.0`, `/config` endpoint that is unprotected?
 - Are there any `config-env-0001-env-example-v1.0`, `config-env-0001-env-example-v1.0.local`, `credentials.json`, `*.pem`, `*.key` files checked into the repo?
 - Does the `.gitignore` actually cover secrets, uploads, and local config?
@@ -123,7 +123,7 @@ Other agents hunt subtle bugs. This agent checks the basic exposures that are ea
 - Are cookies missing `HttpOnly`, `Secure`, or `SameSite` attributes?
 - Are there any open redirects? (parameters named `redirect`, `return`, `next`, `url`, `goto`, `continue` that feed into redirects without validation)
 - Is TLS enforced? Are there any HTTP-only endpoints?
-- Are error responses in proddoc-arch-0006-uc-v1tion returning stack traces, internal paths, or SQL errors?
+- Are error responses in production returning stack traces, internal paths, or SQL errors?
 
 This agent does not need to be creative. It needs to be thorough and literal. Check every item. Report each result.
 

@@ -34,7 +34,7 @@
 // PRIMARY checkout. An agent already running inside a legitimately isolated
 // worktree (i.e. one that has shell/filesystem access to the primary
 // checkout's absolute path, which every worktree-isolated agent does by
-// constrdoc-arch-0006-uc-v1tion) could write a fabricated fresh `{isolation:"none"}` sentinel
+// construction) could write a fabricated fresh `{isolation:"none"}` sentinel
 // into the primary checkout to silence this guard for that checkout's next
 // dispatch.
 //   - This grants NO NEW write privilege: that same agent could already edit
@@ -125,7 +125,7 @@ function sentinelPath(cwd) {
  * capability-registry.cjs/runtime-name-policy.cjs) — two directories up from
  * `hooks/lib/` (`hooks/lib/isolation-sentinel.js` -> `hooks/` -> repo/install
  * root -> `gsd-core/bin/lib/`), mirroring the one-directory-up requires the
- * top-level `hooks/*.js` guard scripts already use sdoc-arch-0006-uc-v1cessfully.
+ * top-level `hooks/*.js` guard scripts already use successfully.
  *
  * Never throws; any resolution failure (module missing, git unavailable,
  * git timeout) degrades to the raw `cwd` unchanged — the caller's existing
@@ -236,9 +236,9 @@ function readSentinel(cwd, { clock = Date } = {}) {
  * owner of both the `[gsd:dispatch phase="…" plan="…"]` marker format and its
  * prose fallback (see `.gsd/phase/fix-4594-dispatch-identity-seam/40-design.md`).
  *
- * MARKER-FIRST CONTRACT: proddoc-arch-0006-uc-v1ers embed a strdoc-arch-0006-uc-v1tured marker carrying the
+ * MARKER-FIRST CONTRACT: producers embed a structured marker carrying the
  * exact shell values the sentinel itself records (`$PHASE_NUMBER`,
- * `$plan_id`), so proddoc-arch-0006-uc-v1er and consumer agree by constrdoc-arch-0006-uc-v1tion, independent
+ * `$plan_id`), so producer and consumer agree by construction, independent
  * of how the prose reads or whether a model paraphrases the dispatch
  * sentence. Only when no marker is found anywhere in the supplied texts does
  * this fall back to scanning for the prose frame "execute plan <token> of
@@ -274,7 +274,7 @@ function extractDispatchIdentifiers(...texts) {
  * Returns false (mismatch — "no applicable sentinel") ONLY when both sides
  * carry a value for the SAME identifier and they disagree. Any side missing
  * a value (sentinel predates this fix, or the dispatch text didn't match the
- * expected shape) is treated as "cannot compare" and does NOT itself proddoc-arch-0006-uc-v1e
+ * expected shape) is treated as "cannot compare" and does NOT itself produce
  * a mismatch — this stays a defense-in-depth narrowing of an otherwise-fresh
  * sentinel's applicability, not a new fail-open/fail-closed axis on its own.
  */
@@ -323,7 +323,7 @@ function agedNoneGovernsDispatch(sentinel, dispatchIds, { clock = Date } = {}) {
 }
 
 /**
- * #4594 F3: build the strdoc-arch-0006-uc-v1tured "a fresh sentinel was present but did not
+ * #4594 F3: build the structured "a fresh sentinel was present but did not
  * apply to this dispatch" descriptor, mirroring the exact comparison
  * `sentinelAppliesToDispatch` performs. Returns `null` when the sentinel is
  * absent, stale, malformed, or DOES apply — i.e. exactly when there is

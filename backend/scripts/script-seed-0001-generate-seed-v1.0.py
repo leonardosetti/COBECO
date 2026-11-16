@@ -6,12 +6,26 @@ import argparse
 import sys
 from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import TypeVar
+from typing import Any, TypeVar
 
-try:
-    from scripts.seed_data import Profile, SeedDataset, build_dataset
-except ModuleNotFoundError:
-    from seed_data import Profile, SeedDataset, build_dataset
+# Nome do arquivo é P1 hifenizado (não importável como módulo): carga por caminho.
+import importlib.util as _ilu
+
+
+def _carregar_seed_data() -> Any:
+    caminho = Path(__file__).resolve().parent / "script-seed-0002-seed-data-v1.0.py"
+    spec = _ilu.spec_from_file_location("seed_data", caminho)
+    assert spec is not None and spec.loader is not None
+    modulo = _ilu.module_from_spec(spec)
+    sys.modules[spec.name] = modulo  # dataclasses.resolve precisa do módulo em sys.modules
+    spec.loader.exec_module(modulo)
+    return modulo
+
+
+_seed_data = _carregar_seed_data()
+Profile = _seed_data.Profile
+SeedDataset = _seed_data.SeedDataset
+build_dataset = _seed_data.build_dataset
 
 Row = tuple[str, ...]
 T = TypeVar("T")
@@ -133,8 +147,8 @@ def render_sql(dataset: SeedDataset) -> str:
             "produtos",
             ("id", "nome", "unidade", "ativo"),
             tuple(
-                (str(proddoc-arch-0006-uc-v1t.id), _sql_string(proddoc-arch-0006-uc-v1t.name), _sql_string(proddoc-arch-0006-uc-v1t.unit), "TRUE")
-                for proddoc-arch-0006-uc-v1t in dataset.proddoc-arch-0006-uc-v1ts
+                (str(product.id), _sql_string(product.name), _sql_string(product.unit), "TRUE")
+                for product in dataset.products
             ),
         )
     )
@@ -147,7 +161,7 @@ def render_sql(dataset: SeedDataset) -> str:
             tuple(
                 (
                     str(offer.supplier_id),
-                    str(offer.proddoc-arch-0006-uc-v1t_id),
+                    str(offer.product_id),
                     format(offer.price, ".2f"),
                     str(offer.stock),
                     "TRUE",

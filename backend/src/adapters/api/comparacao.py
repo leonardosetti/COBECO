@@ -104,7 +104,7 @@ class ComparacaoRepositoryImpl(ComparacaoRepository):
         fornecedores_result = await self.session.execute(
             select(FornecedorModel).where(
                 FornecedorModel.id.in_(fornecedor_ids),
-                FornecedorModel.ativo == True,
+                FornecedorModel.ativo,
             )
         )
         fornecedores = list(fornecedores_result.scalars().all())
@@ -120,7 +120,7 @@ class ComparacaoRepositoryImpl(ComparacaoRepository):
                 select(FornecedorProdutoModel).where(
                     FornecedorProdutoModel.fornecedor_id == fornecedor.id,
                     FornecedorProdutoModel.produto_id.in_(produto_ids),
-                    FornecedorProdutoModel.ativo == True,
+                    FornecedorProdutoModel.ativo,
                     FornecedorProdutoModel.estoque > 0,
                 )
             )
@@ -151,15 +151,17 @@ class ComparacaoRepositoryImpl(ComparacaoRepository):
                 if preco_item:
                     preco_total += preco_item
 
-                itens_comparacao.append(ItemComparacaoResponse(
-                    produto_id=item_lista.produto_id,
-                    produto_nome=produto.nome if produto else "Desconhecido",
-                    unidade=produto.unidade if produto else "un",
-                    quantidade=item_lista.quantidade,
-                    preco_unitario=float(preco_unit) if preco_unit else None,
-                    preco_total=float(preco_item) if preco_item else None,
-                    disponivel=disponivel,
-                ))
+                itens_comparacao.append(
+                    ItemComparacaoResponse(
+                        produto_id=item_lista.produto_id,
+                        produto_nome=produto.nome if produto else "Desconhecido",
+                        unidade=produto.unidade if produto else "un",
+                        quantidade=item_lista.quantidade,
+                        preco_unitario=float(preco_unit) if preco_unit else None,
+                        preco_total=float(preco_item) if preco_item else None,
+                        disponivel=disponivel,
+                    )
+                )
 
             percentual = (itens_disponiveis / len(itens_lista) * 100) if itens_lista else 0
 
@@ -167,16 +169,18 @@ class ComparacaoRepositoryImpl(ComparacaoRepository):
             if percentual < disponibilidade_minima:
                 continue
 
-            fornecedores_comparacao.append(FornecedorComparacaoResponse(
-                fornecedor_id=fornecedor.id,
-                fornecedor_nome=fornecedor.nome,
-                itens_disponiveis=itens_disponiveis,
-                itens_ausentes=itens_ausentes,
-                preco_total=float(preco_total),
-                percentual_disponibilidade=round(percentual, 1),
-                eh_melhor=False,  # Será definido após ordenação
-                itens=itens_comparacao,
-            ))
+            fornecedores_comparacao.append(
+                FornecedorComparacaoResponse(
+                    fornecedor_id=fornecedor.id,
+                    fornecedor_nome=fornecedor.nome,
+                    itens_disponiveis=itens_disponiveis,
+                    itens_ausentes=itens_ausentes,
+                    preco_total=float(preco_total),
+                    percentual_disponibilidade=round(percentual, 1),
+                    eh_melhor=False,  # Será definido após ordenação
+                    itens=itens_comparacao,
+                )
+            )
 
         # 5. Ordena por preço total ASC (RF15)
         fornecedores_comparacao.sort(key=lambda f: f.preco_total)
@@ -204,13 +208,15 @@ class ComparacaoRepositoryImpl(ComparacaoRepository):
             select(FornecedorProdutoModel).where(
                 FornecedorProdutoModel.fornecedor_id.in_(fornecedor_ids),
                 FornecedorProdutoModel.produto_id.in_(produto_ids),
-                FornecedorProdutoModel.ativo == True,
+                FornecedorProdutoModel.ativo,
             )
         )
         return list(result.scalars().all())
 
 
-def get_comparacao_repo(session: AsyncSession = Depends(get_db)) -> ComparacaoRepository:
+def get_comparacao_repo(
+    session: AsyncSession = Depends(get_db),
+) -> ComparacaoRepository:
     return ComparacaoRepositoryImpl(session)
 
 
@@ -224,16 +230,18 @@ def get_comparacao_repo(session: AsyncSession = Depends(get_db)) -> ComparacaoRe
 )
 async def calcular_orcamento(
     request: CalcularOrcamentoRequest,
-    current_user = Depends(get_current_user),
+    current_user=Depends(get_current_user),
     repo: ComparacaoRepository = Depends(get_comparacao_repo),
 ):
     usecase = CalcularOrcamentoUseCase(repo)
     try:
-        result = await usecase.executar(ComparacaoInput(
-            lista_id=request.lista_id,
-            fornecedor_ids=request.fornecedor_ids,
-            disponibilidade_minima=request.disponibilidade_minima,
-        ))
+        result = await usecase.executar(
+            ComparacaoInput(
+                lista_id=request.lista_id,
+                fornecedor_ids=request.fornecedor_ids,
+                disponibilidade_minima=request.disponibilidade_minima,
+            )
+        )
     except FornecedoresInsuficientes:
         raise HTTPException(status_code=400, detail="Selecione pelo menos 2 fornecedores")
     except HTTPException:
@@ -253,16 +261,18 @@ async def visualizar_resultados(
     lista_id: int,
     fornecedores: str = Query(..., description="IDs de fornecedores separados por vírgula"),
     disponibilidade_minima: float = Query(0.0, ge=0.0, le=100.0),
-    current_user = Depends(get_current_user),
+    current_user=Depends(get_current_user),
     repo: ComparacaoRepository = Depends(get_comparacao_repo),
 ):
     fornecedor_ids = [int(f) for f in fornecedores.split(",")]
 
     usecase = CalcularOrcamentoUseCase(repo)
-    result = await usecase.executar(ComparacaoInput(
-        lista_id=lista_id,
-        fornecedor_ids=fornecedor_ids,
-        disponibilidade_minima=disponibilidade_minima,
-    ))
+    result = await usecase.executar(
+        ComparacaoInput(
+            lista_id=lista_id,
+            fornecedor_ids=fornecedor_ids,
+            disponibilidade_minima=disponibilidade_minima,
+        )
+    )
 
     return result

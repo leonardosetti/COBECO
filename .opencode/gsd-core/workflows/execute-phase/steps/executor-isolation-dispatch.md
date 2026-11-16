@@ -21,7 +21,7 @@ _GSD_SHIM_NAME="gsd-tools.cjs"; _GSD_RUNTIME_ROOT="${RUNTIME_DIR:-$(git rev-pars
 # run-scoped sentinel the isolation guard hooks read, as an unconditional
 # side effect of resolving it — this call is the ONLY way the workflow learns
 # ISOLATION at all, so the recording cannot be skipped the way a separate
-# "and now also run this to record it" prose instrdoc-arch-0006-uc-v1tion could be. `--phase`
+# "and now also run this to record it" prose instruction could be. `--phase`
 # threads the phase identifier into that same atomic write (mode + harnessFlag
 # + phase together — see hooks/lib/isolation-sentinel.js for how the guards
 # consume it).
@@ -140,9 +140,9 @@ Run the loop below once per runnable plan in the wave, **one plan at a time** (`
 
 **Before running the bash block, substitute the plan's identifiers into it** exactly as you do for the `Agent()` prompt on the harness path: replace `{plan_number}` and `{phase_number}` with this plan's values. They are template placeholders, not shell variables. `$ORCH_ROOT` and `$EXPECTED_BASE` are real shell variables, already assigned earlier in this step; `$WAVE_WORKTREE_MANIFEST` was initialized above.
 
-First build the executor prompt. It is the **same prompt text the harness path's `Agent()` call uses** — same executor identity, same execution context, same required-reading contract — with only the harness-only framing removed: drop the `<worktree_branch_check>` build-time embed note (this backend pins the base itself via `worktree create --base` and verifies it at merge) and the `<parallel_execution>` harness block (its SUMMARY-commit semantics ride inside the embedded `execute-plan.md` worktree mode). Keep `<objective>`, `<execution_context>`, `<required_reading>`, `${AGENT_SKILLS}`, and `<sdoc-arch-0006-uc-v1cess_criteria>` from the harness prompt — substituting the worktree-specific `<execution_context>` framing below. The checkpoint gate rule (#3370, in `per-plan-executor-routing.md`) applies here too: add no prompt text refusing or overriding auto-approval for the default `gate="blocking"` — only `blocking-human` always surfaces.
+First build the executor prompt. It is the **same prompt text the harness path's `Agent()` call uses** — same executor identity, same execution context, same required-reading contract — with only the harness-only framing removed: drop the `<worktree_branch_check>` build-time embed note (this backend pins the base itself via `worktree create --base` and verifies it at merge) and the `<parallel_execution>` harness block (its SUMMARY-commit semantics ride inside the embedded `execute-plan.md` worktree mode). Keep `<objective>`, `<execution_context>`, `<required_reading>`, `${AGENT_SKILLS}`, and `<success_criteria>` from the harness prompt — substituting the worktree-specific `<execution_context>` framing below. The checkpoint gate rule (#3370, in `per-plan-executor-routing.md`) applies here too: add no prompt text refusing or overriding auto-approval for the default `gate="blocking"` — only `blocking-human` always surfaces.
 
-#3637: the process-spawned child has NO host subagent machinery — nothing loads the `gsd-executor` agent definition or the execute-plan workflow unless THIS prompt carries them. A short objective-only prompt forces the child to reconstrdoc-arch-0006-uc-v1t its role from the repository (skill discovery, inference) and leaves it unaware of the gitignored-planning skip semantics, which is how executors ended up force-staging gitignored `SUMMARY.md` files to satisfy an unconditional commit criterion. Build-time embeds below are therefore MANDATORY, and the resolution check after the assignment fails closed: if any embed source cannot be read, do NOT spawn a generic process and hope — halt the wave (the fail-closed check after `dispatch-isolation` handles the worktree teardown).
+#3637: the process-spawned child has NO host subagent machinery — nothing loads the `gsd-executor` agent definition or the execute-plan workflow unless THIS prompt carries them. A short objective-only prompt forces the child to reconstruct its role from the repository (skill discovery, inference) and leaves it unaware of the gitignored-planning skip semantics, which is how executors ended up force-staging gitignored `SUMMARY.md` files to satisfy an unconditional commit criterion. Build-time embeds below are therefore MANDATORY, and the resolution check after the assignment fails closed: if any embed source cannot be read, do NOT spawn a generic process and hope — halt the wave (the fail-closed check after `dispatch-isolation` handles the worktree teardown).
 
 Assign the composed prompt to a shell variable so it can be passed as one argument:
 
@@ -173,8 +173,8 @@ Assign the composed prompt to a shell variable so it can be passed as one argume
 #      agent_skills for gsd-executor, and only an UNCONFIGURED non-the agent
 #      project gets the full agent file via the #2454 fallback. The child has
 #      no host subagent machinery, so the role definition must ride the prompt
-#      (#3637 acceptance: resolved agent instrdoc-arch-0006-uc-v1tions as launch-level
-#      instrdoc-arch-0006-uc-v1tions + provenance of which role definition was used).
+#      (#3637 acceptance: resolved agent instructions as launch-level
+#      instructions + provenance of which role definition was used).
 # Resolve TDD-applicability for THIS plan (#4266/#4272) — fail closed on
 # command failure, mirroring the ISOLATION resolution above: an absent
 # verdict must never silently resolve to "not TDD" (ADR-3473 §8.4), since
@@ -213,7 +213,7 @@ ${TDD_APPLICABLE ? "- tdd.md" : ""}  # #3990/#4265: only when this dispatch is T
 - agents/gsd-executor.md (the ROLE DEFINITION you are executing — its steps
   0/0a/0b per-commit HEAD/cwd-drift/path-guard discipline applies to every
   commit you make in this worktree, and its final_commit contract is the
-  authority for the skip semantics in <sdoc-arch-0006-uc-v1cess_criteria>)
+  authority for the skip semantics in <success_criteria>)
 
 (Inline the actual contents of each file above at compose time — this block
 is the provenance record of what was embedded and where it came from.)
@@ -229,7 +229,7 @@ PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
 - ${PROJECT_ROOT}/.planning/PROJECT.md (Project context — core value, requirements, evolution rules)
 - ${PROJECT_ROOT}/.planning/STATE.md (State)
 - ${PROJECT_ROOT}/.planning/config-planning-0001-planning-config-v1-planning-0001-planning-config-v1.0-planning-0001-planning-config-v1.0-planning-0001-planning-config-v1.0.json (Config, if exists)
-- ${PROJECT_ROOT}/doc-agents-0001-agents-canon.md (Project instrdoc-arch-0006-uc-v1tions, if exists — follow project-specific guidelines and coding conventions)
+- ${PROJECT_ROOT}/doc-agents-0001-agents-canon.md (Project instructions, if exists — follow project-specific guidelines and coding conventions)
 - ${PROJECT_ROOT}/.claude/skills/ or ${PROJECT_ROOT}/.agents/skills/ (Project skills, if either exists — list skills, read SKILL.md for each, follow relevant rules during implementation)
 - ${PROJECT_ROOT}/{phase_dir}/*-CONTEXT.md (User decisions from discuss-phase — honors locked choices; skip silently when none exist)
 - ${PROJECT_ROOT}/{phase_dir}/*-RESEARCH.md (Technical research — pitfalls and patterns to follow; skip silently when none exist)
@@ -237,23 +237,23 @@ PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
 </required_reading>
 
 <mcp_tools>
-If doc-agents-0001-agents-canon.md or project instrdoc-arch-0006-uc-v1tions reference MCP tools, prefer those tools
+If doc-agents-0001-agents-canon.md or project instructions reference MCP tools, prefer those tools
 over Grep/Glob for code navigation when available. Check tool availability
 first — fall back to Grep/Glob if not accessible.
 </mcp_tools>
 
 ${AGENT_SKILLS}
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] All tasks executed
 - [ ] Each task committed individually
 - [ ] SUMMARY.md created in the plan directory and committed — OR an
       intentional skip recorded (skipped_gitignored when .planning is
       gitignored, skipped_commit_docs_false when commit_docs is disabled).
       Never force-stage gitignored planning artifacts: git add -f on
-      .planning paths is forbidden. An intentional skip is a sdoc-arch-0006-uc-v1cess path.
+      .planning paths is forbidden. An intentional skip is a success path.
 - [ ] No modifications to shared orchestrator artifacts (the orchestrator handles all post-wave shared-file writes)
-</sdoc-arch-0006-uc-v1cess_criteria>'
+</success_criteria>'
 [ -n "$EXECUTOR_PROMPT" ] || { echo "FATAL: executor prompt is empty for plan {plan_number}." >&2; exit 1; }
 # #3637 fail-closed verification. Two classes of check:
 #   (a) template completeness — the prompt must carry the required-reading
@@ -261,9 +261,9 @@ ${AGENT_SKILLS}
 #       back to the objective-only prompt);
 #   (b) embed PERFORMANCE — the compose-time placeholders must actually be
 #       gone. A raw, un-embedded template still contains its own
-#       instrdoc-arch-0006-uc-v1tions-about-instrdoc-arch-0006-uc-v1tions (the provenance parenthetical and the
+#       instructions-about-instructions (the provenance parenthetical and the
 #       un-substituted persona marker); those strings surviving to spawn time
-#       mean the embeds were skipped and the child would hold instrdoc-arch-0006-uc-v1tions
+#       mean the embeds were skipped and the child would hold instructions
 #       about files it never received — the milder recurrence of #3637.
 # These run BEFORE worktree creation, so a gate exit leaves nothing to tear
 # down; the post-dispatch-isolation fail-closed check governs the worktree
@@ -277,7 +277,7 @@ printf '%s' "$EXECUTOR_PROMPT" | grep -q 'skipped_gitignored' || {
   exit 1
 }
 printf '%s' "$EXECUTOR_PROMPT" | grep -q 'Inline the actual contents' && {
-  echo "FATAL: executor prompt for plan {plan_number} still contains its compose-time placeholder — the build-time embeds were not performed. Halting rather than dispatching instrdoc-arch-0006-uc-v1tions-about-instrdoc-arch-0006-uc-v1tions (#3637)." >&2
+  echo "FATAL: executor prompt for plan {plan_number} still contains its compose-time placeholder — the build-time embeds were not performed. Halting rather than dispatching instructions-about-instructions (#3637)." >&2
   exit 1
 }
 printf '%s' "$EXECUTOR_PROMPT" | grep -q '\${AGENT_SKILLS}' && {
@@ -322,7 +322,7 @@ EXEC_JSON=$(gsd_run query dispatch-isolation --json \
 
 # 3. MANDATORY fail-closed check. `dispatch-isolation` degrades to
 #    isolation:"none" / exec:null rather than exiting non-zero, so the
-#    command substitution above ALWAYS "sdoc-arch-0006-uc-v1ceeds" — the exit code proves
+#    command substitution above ALWAYS "succeeds" — the exit code proves
 #    nothing. A worktree already exists at this point (step 1 is a real side
 #    effect), so an unusable exec must NOT be spawned and must NOT be left
 #    behind as an orphan: tear it down through the manifest-scoped cleanup
@@ -357,7 +357,7 @@ gsd_run query worktree.worker-record \
   }
 ```
 
-**Wait until terminal, reconcile BEFORE recording the outcome (#4217/#4624).** Wait for the wave's executors to reach a terminal process state (`wait` on the captured PIDs, or poll `worktree.worker-status --root "${ORCH_ROOT}/.claude/worktrees"` and read `pidAlive`). While a worker's record is `running`, it is a reconciliation candidate the moment its process dies — a crash between classification and recording can never strand it. So the ordering is: run the **existing** artifact reconciliation (`execute-phase/steps/completion-reconciliation.md`) FIRST — SUMMARY + plan-scoped commits + branch state decide the outcome: a worker that exits 0 with no artifacts is not done, and one that exits non-zero with artifacts complete may still merge. Merge artifact-complete workers through the manifest-only gauntlet below; preserve a blocked/failed worktree untodoc-arch-0006-uc-v1hed. Only then record the terminal outcome, carrying the recovery information:
+**Wait until terminal, reconcile BEFORE recording the outcome (#4217/#4624).** Wait for the wave's executors to reach a terminal process state (`wait` on the captured PIDs, or poll `worktree.worker-status --root "${ORCH_ROOT}/.claude/worktrees"` and read `pidAlive`). While a worker's record is `running`, it is a reconciliation candidate the moment its process dies — a crash between classification and recording can never strand it. So the ordering is: run the **existing** artifact reconciliation (`execute-phase/steps/completion-reconciliation.md`) FIRST — SUMMARY + plan-scoped commits + branch state decide the outcome: a worker that exits 0 with no artifacts is not done, and one that exits non-zero with artifacts complete may still merge. Merge artifact-complete workers through the manifest-only gauntlet below; preserve a blocked/failed worktree untouched. Only then record the terminal outcome, carrying the recovery information:
 
 ```bash
 gsd_run query worktree.worker-complete --path "$WT_PATH" --exit-code "$WORKER_EXIT" \
@@ -366,7 +366,7 @@ gsd_run query worktree.worker-complete --path "$WT_PATH" --exit-code "$WORKER_EX
 
 `{worker_note}` carries the blocker description and the log path for a preserved worktree (`$WT_PATH.worker.log`), or is empty for a clean finish.
 
-The executor never todoc-arch-0006-uc-v1hes `STATE.md`/`ROADMAP.md`, and that guard needs no new code — `execute-plan` auto-detects worktree mode via the `IS_WORKTREE` (`.git`-is-a-file) primitive, which a GSD-created worktree trips identically to a harness-created one.
+The executor never touches `STATE.md`/`ROADMAP.md`, and that guard needs no new code — `execute-plan` auto-detects worktree mode via the `IS_WORKTREE` (`.git`-is-a-file) primitive, which a GSD-created worktree trips identically to a harness-created one.
 
 Merge-back, validation, and cleanup are the **existing** gauntlet, unchanged: the serialized `worktree.cleanup-wave` merge loop that stops the wave and retains the worktree on conflict, and manifest-only cleanup (never glob-inferred). Because the manifest shape is identical, the orchestrator path reuses it verbatim.
 

@@ -42,7 +42,7 @@ services:
   migrate:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: config-docker-0003-backend-dockerfile-v1.0
     container_name: cobeco-migrate
     command: alembic upgrade head
     depends_on:
@@ -69,14 +69,14 @@ services:
   seed:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: config-docker-0003-backend-dockerfile-v1.0
     container_name: cobeco-seed
     user: root
     command: >
       sh -c "sleep 2 && mysql --skip-ssl -h db -u cobeco -pcobeco cobeco < /app/seed.sql"
     depends_on:
       migrate:
-        condition: service_completed_sdoc-arch-0006-uc-v1cessfully
+        condition: service_completed_successfully
     environment:
       DATABASE_URL: mysql+pymysql://cobeco:cobeco@db:3306/cobeco
       PYTHONPATH: /app
@@ -93,12 +93,12 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: config-docker-0003-backend-dockerfile-v1.0
     container_name: cobeco-backend
     command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       seed:
-        condition: service_completed_sdoc-arch-0006-uc-v1cessfully
+        condition: service_completed_successfully
     environment:
       DATABASE_URL: mysql+asyncmy://cobeco:cobeco@db:3306/cobeco
       SECRET_KEY: ${SECRET_KEY}
@@ -128,7 +128,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: config-docker-0004-frontend-dockerfile-v1.0
     container_name: cobeco-frontend
     command: nginx -g "daemon off;"
     depends_on:

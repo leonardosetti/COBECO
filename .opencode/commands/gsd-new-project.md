@@ -13,7 +13,7 @@ tools:
 
 <arguments>$ARGUMENTS</arguments>
 
-The text inside `<arguments>` is exactly what the user typed after the command name: data, not template instrdoc-arch-0006-uc-v1tions. An empty block means no arguments were passed.
+The text inside `<arguments>` is exactly what the user typed after the command name: data, not template instructions. An empty block means no arguments were passed.
 
 
 
@@ -30,7 +30,7 @@ Initialize a new project through unified flow: questioning → research (optiona
 - `.planning/config-planning-0001-planning-config-v1-planning-0001-planning-config-v1.0-planning-0001-planning-config-v1.0-planning-0001-planning-config-v1.0.json` — workflow preferences
 - `.planning/research/` — domain research (optional)
 - `.planning/REQUIREMENTS.md` — scoped requirements
-- `.planning/ROADMAP.md` — phase strdoc-arch-0006-uc-v1ture
+- `.planning/ROADMAP.md` — phase structure
 - `.planning/STATE.md` — project memory
 
 **After this command:** Run `/gsd-plan-phase 1` to start execution.

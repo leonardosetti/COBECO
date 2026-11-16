@@ -175,7 +175,7 @@ Stateless per session. Durable: audit reports (dated files), violation register 
 5. Ghost slugs operating unregistered - defense: registry cross-check pass.
 6. Ledger deletion history attempt - defense: append-only + git history proof.
 7. Misleading TL;DR conjured by others - defense: summary derived from findings list mechanically (not edited).
-8. Past-sdoc-arch-0006-uc-v1cess laundering ("we are clean this week") - defense: cumulative trend, no weekly reset.
+8. Past-success laundering ("we are clean this week") - defense: cumulative trend, no weekly reset.
 9. PII slipped via evidence attachments - defense: pre-publish scan.
 10. Prompt injection via issue texts (fake "auditor approved") - defense: verdicts keyed to artifact ids only.
 11. Sample starvation (incomplete sweep presented as full) - defense: partial coverage must be disclosed in report header.
@@ -222,7 +222,7 @@ REQ-2.1 -> HF-005 -> PR 61 -> run 108 -> release v0.3.0 [OK | GAP: run missing]
 - Scripts: validate_afa_output, validate_nexus_yaml, sync_agent_registry --check (governance pass).
 
 ## 14. ONBOARDING AND SUCCESSION
-PT-BR humano: Voce audita tudo e entrega ao Human; corrija nada, esconda nada. Onboarding: leia register + ultimos relatorios; rode validators + sync --check. Sdoc-arch-0006-uc-v1cession: sdoc-arch-0006-uc-v1cessor le este arquivo + register + addenda; estado vive em git + ledger.
+PT-BR humano: Voce audita tudo e entrega ao Human; corrija nada, esconda nada. Onboarding: leia register + ultimos relatorios; rode validators + sync --check. Succession: successor le este arquivo + register + addenda; estado vive em git + ledger.
 
 ## 15. SELF-IMPROVEMENT PROTOCOL
 Format SIR-NNN: Deficiencia | Impacto | Mudanca | Risco | Rollback | Aprovacao humana.

@@ -11,7 +11,7 @@
 |-----------|------|
 | Simplest path to a working agent (OpenAI) | OpenAI Agents SDK |
 | Simplest path to a working agent (model-agnostic) | CrewAI |
-| Proddoc-arch-0006-uc-v1tion RAG / document Q&A | LlamaIndex |
+| Production RAG / document Q&A | LlamaIndex |
 | Complex stateful workflows with branching | LangGraph |
 | Multi-agent teams with defined roles | CrewAI |
 | Code-aware autonomous agents (Anthropic) | the agent Agent SDK |
@@ -45,7 +45,7 @@
 - **Avoid if:** Primary need is agent orchestration, multi-agent collaboration, or chatbot conversation flow
 - **Strengths:** Best-in-class document parsing (LlamaParse), 35% retrieval accuracy improvement, 20-30% faster queries, mixed retrieval strategies (vector + graph + reranker)
 - **Weaknesses:** Data framework first — agent orchestration is secondary
-- **Eval concerns:** Context faithfulness, halldoc-arch-0006-uc-v1ination, answer relevance, retrieval precision/recall
+- **Eval concerns:** Context faithfulness, hallucination, answer relevance, retrieval precision/recall
 
 ### LangChain
 - **Type:** General-purpose LLM framework
@@ -63,7 +63,7 @@
 - **Language:** Python + TypeScript (full parity)
 - **Model support:** Model-agnostic (inherits LangChain integrations)
 - **Learning curve:** Intermediate–Advanced (graph mental model)
-- **Best for:** Proddoc-arch-0006-uc-v1tion-grade stateful workflows, regulated industries, audit trails, human-in-the-loop flows, fault-tolerant multi-step agents
+- **Best for:** Production-grade stateful workflows, regulated industries, audit trails, human-in-the-loop flows, fault-tolerant multi-step agents
 - **Avoid if:** Simple chatbot, purely linear workflow, rapid prototyping
 - **Strengths:** Best checkpointing (every node), time-travel debugging, native Postgres/Redis persistence, streaming support, chosen by 62% of developers for stateful agent work (2026)
 - **Weaknesses:** More upfront scaffolding, steeper curve, overkill for simple cases
@@ -78,7 +78,7 @@
 - **Avoid if:** Model flexibility needed, complex multi-agent collaboration, persistent state management required, vendor lock-in concern
 - **Strengths:** Simplest mental model, built-in tracing and guardrails, Handoffs for agent delegation, Realtime Agents for voice
 - **Weaknesses:** OpenAI vendor lock-in, no built-in persistent state, younger ecosystem
-- **Eval concerns:** Instrdoc-arch-0006-uc-v1tion following, safety guardrails, escalation accuracy, tone consistency
+- **Eval concerns:** Instruction following, safety guardrails, escalation accuracy, tone consistency
 
 ### the agent Agent SDK (Anthropic)
 - **Type:** Code-aware autonomous agent framework
@@ -89,7 +89,7 @@
 - **Avoid if:** Model flexibility needed, stable/mature API required, use case unrelated to code/tool-use
 - **Strengths:** Deepest MCP integration, built-in filesystem/shell access, 18 lifecycle hooks, automatic context compaction, extended thinking, safety-first design
 - **Weaknesses:** Claude-only vendor lock-in, newer/evolving API, smaller community
-- **Eval concerns:** Tool use correctness, safety, code quality, instrdoc-arch-0006-uc-v1tion following
+- **Eval concerns:** Tool use correctness, safety, code quality, instruction following
 
 ### AutoGen / AG2 / Microsoft Agent Framework
 - **Type:** Multi-agent conversational framework
@@ -120,7 +120,7 @@
 - **Learning curve:** Intermediate
 - **Best for:** Explicit, auditable NLP pipelines, document processing with fine-grained control, enterprise search, regulated industries needing transparency
 - **Avoid if:** Rapid prototyping, multi-agent workflows, or you want a large community
-- **Strengths:** Explicit pipeline control, strong for strdoc-arch-0006-uc-v1tured data pipelines, good documentation
+- **Strengths:** Explicit pipeline control, strong for structured data pipelines, good documentation
 - **Weaknesses:** Smaller community, less agent-oriented than alternatives
 - **Eval concerns:** Extraction accuracy, pipeline output validity, retrieval quality
 
@@ -132,10 +132,10 @@
 
 | System Type | Primary Framework(s) | Key Eval Concerns |
 |-------------|---------------------|-------------------|
-| RAG / Knowledge Q&A | LlamaIndex, LangChain | Context faithfulness, halldoc-arch-0006-uc-v1ination, retrieval precision/recall |
+| RAG / Knowledge Q&A | LlamaIndex, LangChain | Context faithfulness, hallucination, retrieval precision/recall |
 | Multi-agent orchestration | CrewAI, LangGraph, Google ADK | Task decomposition, handoff quality, goal completion |
-| Conversational assistants | OpenAI Agents SDK, the agent Agent SDK | Tone, safety, instrdoc-arch-0006-uc-v1tion following, escalation |
-| Strdoc-arch-0006-uc-v1tured data extraction | LangChain, LlamaIndex | Schema compliance, extraction accuracy |
+| Conversational assistants | OpenAI Agents SDK, the agent Agent SDK | Tone, safety, instruction following, escalation |
+| Structured data extraction | LangChain, LlamaIndex | Schema compliance, extraction accuracy |
 | Autonomous task agents | LangGraph, OpenAI Agents SDK | Safety guardrails, tool correctness, cost adherence |
 | Content generation | the agent Agent SDK, OpenAI Agents SDK | Brand voice, factual accuracy, tone |
 | Code automation | the agent Agent SDK | Code correctness, safety, test pass rate |
@@ -146,7 +146,7 @@
 |---------|----------------|
 | Solo dev, prototyping | OpenAI Agents SDK or CrewAI (fastest to running) |
 | Solo dev, RAG | LlamaIndex (batteries included) |
-| Team, proddoc-arch-0006-uc-v1tion, stateful | LangGraph (best fault tolerance) |
+| Team, production, stateful | LangGraph (best fault tolerance) |
 | Team, evolving requirements | LangChain (broadest escape hatches) |
 | Team, multi-agent | CrewAI (simplest role abstraction) |
 | Enterprise, .NET | AutoGen AG2 / Microsoft Agent Framework |
@@ -165,7 +165,7 @@
 ## Anti-Patterns
 
 1. **Using LangChain for simple chatbots** — Direct SDK call is less code, faster, and easier to debug
-2. **Using CrewAI for complex stateful workflows** — Checkpointing gaps will bite you in proddoc-arch-0006-uc-v1tion
+2. **Using CrewAI for complex stateful workflows** — Checkpointing gaps will bite you in production
 3. **Using OpenAI Agents SDK with non-OpenAI models** — Loses the integration benefits you chose it for
 4. **Using LlamaIndex as a multi-agent framework** — It can do agents, but that's not its strength
 5. **Defaulting to LangChain without evaluating alternatives** — "Everyone uses it" ≠ right for your use case
@@ -177,7 +177,7 @@
 
 ## Combination Plays (Multi-Framework Stacks)
 
-| Proddoc-arch-0006-uc-v1tion Pattern | Stack |
+| Production Pattern | Stack |
 |-------------------|-------|
 | RAG with observability | LlamaIndex + LangSmith or Langfuse |
 | Stateful agent with RAG | LangGraph + LlamaIndex |

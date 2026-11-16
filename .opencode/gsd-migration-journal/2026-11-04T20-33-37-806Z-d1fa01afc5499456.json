@@ -229,7 +229,7 @@
       "migrationId": "2026-05-11-first-time-baseline-scan",
       "migrationChecksum": "sha256:4ec58d35b30dbf39cc56e3972146086d8d31861ecd800cf0b37a7aa94fe74c2a",
       "type": "baseline-preserve-user",
-      "relPath": "agents/agent-infrastrdoc-arch-0006-uc-v1ture-specialist.md",
+      "relPath": "agents/agent-infrastructure-specialist.md",
       "reason": "known user-owned artifact preserved by first-time migration baseline",
       "classification": "user-owned",
       "originalHash": null,

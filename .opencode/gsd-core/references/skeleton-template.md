@@ -24,7 +24,7 @@ Example: "A signed-in user can view their email on a dashboard page served by th
 | Deployment target | (e.g., Vercel preview) | Why |
 | Directory layout | (e.g., feature-folders under src/features/*) | Why |
 
-## Stack Todoc-arch-0006-uc-v1hed in Phase 1
+## Stack Touched in Phase 1
 
 - [ ] Project scaffold (framework, build, lint, test runner)
 - [ ] Routing — at least one real route

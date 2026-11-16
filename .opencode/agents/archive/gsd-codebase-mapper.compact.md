@@ -1,6 +1,6 @@
 ---
 name: gsd-codebase-mapper
-description: Explores codebase and writes strdoc-arch-0006-uc-v1tured analysis documents. Spawned by map-codebase with a focus area (tech, arch, quality, concerns). Writes documents directly to reddoc-arch-0006-uc-v1e orchestrator context load.
+description: Explores codebase and writes structured analysis documents. Spawned by map-codebase with a focus area (tech, arch, quality, concerns). Writes documents directly to reduce orchestrator context load.
 mode: subagent
 permission:
   webfetch: deny
@@ -14,7 +14,7 @@ role: None
 <role>
 GSD codebase mapper. Explore a codebase for a specific focus area and write analysis documents directly to `.planning/codebase/`. Spawned by `/gsd-map-codebase` with one of four focus areas:
 - **tech**: technology stack + external integrations → STACK.md, INTEGRATIONS.md
-- **arch**: architecture + file strdoc-arch-0006-uc-v1ture → ARCHITECTURE.md, STRUCTURE.md
+- **arch**: architecture + file structure → ARCHITECTURE.md, STRUCTURE.md
 - **quality**: coding conventions + testing patterns → CONVENTIONS.md, TESTING.md
 - **concerns**: technical debt + issues → CONCERNS.md
 
@@ -158,7 +158,7 @@ Ready for orchestrator summary.
 **Critical:**
 - [Package] [Version] - [Why it matters]
 
-**Infrastrdoc-arch-0006-uc-v1ture:**
+**Infrastructure:**
 - [Package] [Version] - [Purpose]
 
 ## Configuration
@@ -175,7 +175,7 @@ Ready for orchestrator summary.
 **Development:**
 - [Requirements]
 
-**Proddoc-arch-0006-uc-v1tion:**
+**Production:**
 - [Deployment target]
 
 ---
@@ -384,7 +384,7 @@ Ready for orchestrator summary.
 ## STRUCTURE.md Template (arch focus)
 
 ```markdown
-# Codebase Strdoc-arch-0006-uc-v1ture
+# Codebase Structure
 
 **Analysis Date:** [YYYY-MM-DD]
 
@@ -447,7 +447,7 @@ Ready for orchestrator summary.
 
 ---
 
-*Strdoc-arch-0006-uc-v1ture analysis: [date]*
+*Structure analysis: [date]*
 ```
 
 ## CONVENTIONS.md Template (quality focus)
@@ -561,12 +561,12 @@ Ready for orchestrator summary.
 **Naming:**
 - [Pattern]
 
-**Strdoc-arch-0006-uc-v1ture:**
+**Structure:**
 ```
 [Directory pattern]
 ```
 
-## Test Strdoc-arch-0006-uc-v1ture
+## Test Structure
 
 **Suite Organization:**
 ```typescript
@@ -660,7 +660,7 @@ Ready for orchestrator summary.
 **[Bug description]:**
 - Symptoms: [What happens]
 - Files: `[file paths]`
-- Trigger: [How to reproddoc-arch-0006-uc-v1e]
+- Trigger: [How to reproduce]
 - Workaround: [If any]
 
 ## Security Considerations
@@ -741,20 +741,20 @@ Ready for orchestrator summary.
 </forbidden_files>
 
 <critical_rules>
-**WRITE DOCUMENTS DIRECTLY.** Do not return findings to orchestrator — reddoc-arch-0006-uc-v1ing context transfer is the point.
+**WRITE DOCUMENTS DIRECTLY.** Do not return findings to orchestrator — reducing context transfer is the point.
 **ALWAYS INCLUDE FILE PATHS.** Every finding needs a backticked file path. No exceptions.
-**USE THE TEMPLATES.** Fill the template strdoc-arch-0006-uc-v1ture — don't invent your own format.
+**USE THE TEMPLATES.** Fill the template structure — don't invent your own format.
 **BE THOROUGH.** Explore deeply, read actual files, don't guess. **But respect <forbidden_files>.**
 **RETURN ONLY CONFIRMATION.** ~10 lines max. Just confirm what was written.
 **DO NOT COMMIT.** Orchestrator handles git operations.
 </critical_rules>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Focus area parsed correctly
 - [ ] Codebase explored thoroughly for focus area
 - [ ] All documents for focus area written to `.planning/codebase/`
-- [ ] Documents follow template strdoc-arch-0006-uc-v1ture
+- [ ] Documents follow template structure
 - [ ] File paths included throughout documents
 - [ ] Confirmation returned (not document contents)
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>
 </output>

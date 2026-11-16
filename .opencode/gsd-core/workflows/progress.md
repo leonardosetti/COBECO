@@ -54,7 +54,7 @@ Exit. (The payload's `init_incomplete` is computed with the between-milestones a
 If `init_incomplete` is false and `planning_exists` is false and `project_exists` is false (no `.planning/` directory at all):
 
 ```
-No planning strdoc-arch-0006-uc-v1ture found.
+No planning structure found.
 
 Run /gsd-new-project to start a new project.
 ```
@@ -71,7 +71,7 @@ If missing both ROADMAP.md and PROJECT.md: suggest `/gsd-new-project`.
 </step>
 
 <step name="load">
-**Use strdoc-arch-0006-uc-v1tured extraction from `gsd_run query`:**
+**Use structured extraction from `gsd_run query`:**
 
 Instead of reading full files, use targeted tools to get only the data needed for the report:
 - `ROADMAP=$(gsd_run query roadmap.analyze)`
@@ -87,7 +87,7 @@ This minimizes orchestrator context usage.
 ROADMAP=$(gsd_run query roadmap.analyze)
 ```
 
-This returns strdoc-arch-0006-uc-v1tured JSON with:
+This returns structured JSON with:
 - All phases with disk status (complete/partial/planned/empty/no_directory)
 - Goal and dependencies per phase
 - Plan and summary counts per phase
@@ -209,8 +209,8 @@ else
     # #3218: $PHASE_DATA is a `.phases[]` entry from `roadmap.analyze`, which
     # emits `plan_count`/`summary_count` SCALARS (src/roadmap.cts) — it has
     # never emitted `.plans`/`.summaries` ARRAYS. Reading those absent keys
-    # (even with a `// []` fallback) always proddoc-arch-0006-uc-v1ed 0, permanently disabling
-    # this resume-incomplete-phase check. Read the scalars the proddoc-arch-0006-uc-v1er
+    # (even with a `// []` fallback) always produced 0, permanently disabling
+    # this resume-incomplete-phase check. Read the scalars the producer
     # actually emits.
     PLAN_COUNT=$(echo "$PHASE_DATA" | jq '.plan_count // 0')
     SUMMARY_COUNT=$(echo "$PHASE_DATA" | jq '.summary_count // 0')
@@ -293,7 +293,7 @@ Track: `outstanding_debt` — `CURRENT_DEBT`, the non-archived (current-mileston
 
 Archived debt stays VISIBLE — an item archived still-open is still open (the archived set can include an unrun security-boundary test). Render it as its own labeled line; never fold it into the current-milestone total and never filter it away.
 
-`summary.parse_gap_files` counts EVERY file with `parse_gap: true`, archived or not — deliberately cross-population, unlike `outstanding_debt` (which #3782 scopes to non-archived results). An outstanding item does not stop mattering because its phase belongs to an already-archived milestone: a deferred human-UAT scenario or a `skipped` live-stack test is exactly what gets archived still-open, so an archived parse gap is exactly as mdoc-arch-0006-uc-v1h unread outstanding work as an archived `result: pending` row — it surfaces through `parse_gap_files` and the unparsed row below, keeping the whole cross-population picture visible.
+`summary.parse_gap_files` counts EVERY file with `parse_gap: true`, archived or not — deliberately cross-population, unlike `outstanding_debt` (which #3782 scopes to non-archived results). An outstanding item does not stop mattering because its phase belongs to an already-archived milestone: a deferred human-UAT scenario or a `skipped` live-stack test is exactly what gets archived still-open, so an archived parse gap is exactly as much unread outstanding work as an archived `result: pending` row — it surfaces through `parse_gap_files` and the unparsed row below, keeping the whole cross-population picture visible.
 
 **If outstanding_debt > 0 OR archived_debt > 0 OR parse_gap_files > 0:** Add a warning section to the progress report output (in the `report` step), placed between "## What's Next" and the route suggestion:
 
@@ -315,7 +315,7 @@ The unparsed row comes from `results` entries with `parse_gap: true` (`summary.p
 
 **Step 1.7: Check verification status for the current phase**
 
-A phase whose verification is anything but `passed` is NOT complete, even when every PLAN.md has a matching SUMMARY.md. The count-based status (`roadmap.analyze`) only sees plans/summaries, so without this check sdoc-arch-0006-uc-v1h a phase is reported complete and routing skips straight to the next phase. When the phase appears count-complete (`summaries = plans AND plans > 0`), consult the verification report (the same `verification.status` gate `ship` and `execute-phase` use, from #651), on the phase directory the locator resolved (a workstream project does not keep its phases under `.planning/phases/`):
+A phase whose verification is anything but `passed` is NOT complete, even when every PLAN.md has a matching SUMMARY.md. The count-based status (`roadmap.analyze`) only sees plans/summaries, so without this check such a phase is reported complete and routing skips straight to the next phase. When the phase appears count-complete (`summaries = plans AND plans > 0`), consult the verification report (the same `verification.status` gate `ship` and `execute-phase` use, from #651), on the phase directory the locator resolved (a workstream project does not keep its phases under `.planning/phases/`):
 
 ```bash
 PHASE_DIR=$(gsd_run query find-phase "${CURRENT_PHASE}" --pick directory)
@@ -699,7 +699,7 @@ If `section_manifest` is `null` or `"forensic-audit"` is in its `included` list:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 
 - [ ] Rich context provided (recent work, decisions, issues)
 - [ ] Current position clear with visual progress
@@ -707,4 +707,4 @@ If `section_manifest` is `null` or `"forensic-audit"` is in its `included` list:
 - [ ] Smart routing: /gsd-execute-phase if plans exist, /gsd-plan-phase if not
 - [ ] User confirms before any action
 - [ ] Seamless handoff to appropriate gsd command
-      </sdoc-arch-0006-uc-v1cess_criteria>
+      </success_criteria>

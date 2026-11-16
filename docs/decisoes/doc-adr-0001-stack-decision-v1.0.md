@@ -91,7 +91,7 @@ Nenhuma das duas estava implementada em código — o repositório continha apen
 - Equipe de 5 integrantes, prazo de 30 dias → menor complexidade operacional
 - Stack 100% FOSS, zero dependências pagas
 
-### 3. Princípios Constitdoc-arch-0006-uc-v1ionais
+### 3. Princípios Constitucionais
 - **Art. 3.1 (KISS)**: "escopo enxuto, dados mockados via seed, UI desktop-first" → Vanilla JS atende melhor
 - **Art. 3.7 (YAGNI)**: "nenhuma abstração para depois" → React + NestJS adiciona abstrações desnecessárias
 - **Art. 1.2**: "FOSS 100%, LGPD primária, CPU-local" → Ambas atendem, mas board-roadmap-0001-roadmap-canon é mais simples
@@ -111,10 +111,10 @@ Nenhuma das duas estava implementada em código — o repositório continha apen
 - ✅ PDF server-side nativo com ReportLab (RF17)
 - ✅ MySQL InnoDB nativo (RNF03, RNF12)
 - ✅ Adequado ao prazo de 30 dias e equipe acadêmica
-- ✅ Clean Architecture manual bem definida (domain/usecases/adapters/infrastrdoc-arch-0006-uc-v1ture)
+- ✅ Clean Architecture manual bem definida (domain/usecases/adapters/infrastructure)
 
 ### Negativas (Mitigadas)
-- ⚠️ Clean Architecture não é nativa do FastAPI (vs NestJS) → **Mitigação**: Estrutura `domain/usecases/adapters/infrastrdoc-arch-0006-uc-v1ture` imposta por convenção e code review
+- ⚠️ Clean Architecture não é nativa do FastAPI (vs NestJS) → **Mitigação**: Estrutura `domain/usecases/adapters/infrastructure` imposta por convenção e code review
 - ⚠️ Menos tooling automático que NestJS → **Mitigação**: SQLAlchemy + Pydantic + ruff + mypy cobrem gaps
 - ⚠️ Frontend sem React ecosystem → **Mitigação**: MVP desktop-first, Vanilla JS + Tailwind suficiente
 
@@ -133,7 +133,7 @@ Nenhuma das duas estava implementada em código — o repositório continha apen
 
 | Papel | Nome | Assinatura | Data |
 |-------|------|------------|------|
-| **CCB Chair / Proddoc-arch-0006-uc-v1t Owner** | [Nome] | _______________ | 13/11/2026 |
+| **CCB Chair / Product Owner** | [Nome] | _______________ | 13/11/2026 |
 | **Tech Lead** | [Nome] | _______________ | 13/11/2026 |
 | **Arquiteto de Software** | [Nome] | _______________ | 13/11/2026 |
 | **Desenvolvedor Backend** | [Nome] | _______________ | 13/11/2026 |

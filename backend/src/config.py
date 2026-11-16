@@ -95,6 +95,7 @@ class Settings(BaseSettings):
     def validate_secret_key(cls, v: str) -> str:
         if not v or v == "gere_com_openssl_rand_hex_32":
             import secrets
+
             return secrets.token_hex(32)
         return v
 

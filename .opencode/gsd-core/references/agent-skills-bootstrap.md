@@ -4,7 +4,7 @@
 > skills in its mandatory init step, so a project's `.planning/config-planning-0001-planning-config-v1-planning-0001-planning-config-v1.0-planning-0001-planning-config-v1.0-planning-0001-planning-config-v1.0.json`
 > `agent_skills.<agent-type>` mapping reaches the agent that actually does the work —
 > even when the orchestrator did not run bash init (e.g. a runtime whose `Skill()`
-> delegation does not reliably execute the delegated workflow's bash, sdoc-arch-0006-uc-v1h as Cursor;
+> delegation does not reliably execute the delegated workflow's bash, such as Cursor;
 > see open-gsd/gsd-core#1600 / #1601). This is the durable counterpart to the
 > orchestrator-side injection documented under
 > [Agent Skills Injection](../../docs/CONFIGURATION.md#agent-skills-injection).

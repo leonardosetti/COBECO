@@ -40,7 +40,7 @@ where:
 - `totalFailed` = total number of failing tests in the suite
 
 The score is in `[0, 1]`. An element executed by every failing test and no
-passing test scores `1.0` (maximum suspiciousness). An element todoc-arch-0006-uc-v1hed only by
+passing test scores `1.0` (maximum suspiciousness). An element touched only by
 passing tests scores `0`. Ochiai is empirically stronger than Tarantula across
 the SBFL literature; **Tarantula** is the documented fallback formula
 (`tarantula(s) = (failed(s)/totalFailed) / ((failed(s)/totalFailed) + (passed(s)/totalPassed))`)
@@ -84,7 +84,7 @@ auditable).
 ## Bug-class gating (pairs with Phase 2B bug-taxonomy routing)
 
 SBFL is the go-to pre-filter for **deterministic failures (Bohrbugs)** — bugs
-that reproddoc-arch-0006-uc-v1e reliably. It is explicitly **not trusted** on
+that reproduce reliably. It is explicitly **not trusted** on
 **Heisenbug/Mandelbug** spectra (timing, races, environment-dependent failures):
 a flaky suite pollutes the spectrum (a "failing" test that sometimes passes
 poisons `failed(s)`), so the ranking becomes noise. When the failure is
@@ -100,7 +100,7 @@ This is a deterministic pre-filter that reuses the project's existing
 test/coverage runner — it adds **no new coverage framework** and no new
 subsystem. It narrows the LLM's search space; it does not replace hypothesis
 formation, fix-and-verify, or the knowledge base. Coverage acquisition is the
-agent's adaptive job (use whatever coverage the project proddoc-arch-0006-uc-v1es); the formula
+agent's adaptive job (use whatever coverage the project produces); the formula
 above is the canonical ranking.
 
 **Bound the coverage run** (doc-agents-0001-agents-canon.md gauntlet — unbounded subprocess): a

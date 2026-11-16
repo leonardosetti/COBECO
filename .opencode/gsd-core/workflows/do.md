@@ -133,7 +133,7 @@ After invoking the command, stop. The dispatched command handles everything from
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Input validated (not empty)
 - [ ] Intent matched to exactly one GSD command
 - [ ] Ambiguity resolved via user question (if needed)
@@ -142,4 +142,4 @@ After invoking the command, stop. The dispatched command handles everything from
 - [ ] Route confirmed by the user before dispatch (REQ-DO-03), with TEXT_MODE equivalent
 - [ ] Command invoked with only the arguments it accepts (argument-hint aware; freeform text only where the command takes a freeform description)
 - [ ] No work done directly — dispatcher only
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

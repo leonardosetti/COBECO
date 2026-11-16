@@ -7,6 +7,8 @@
 config-env-0001-env-example-v1.0
 config-env-0001-env-example-v1.0.local
 config-env-0001-env-example-v1.0.*.local
+.env
+.env.*
 *.pem
 *.key
 *.crt

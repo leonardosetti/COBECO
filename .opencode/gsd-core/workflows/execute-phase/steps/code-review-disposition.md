@@ -50,7 +50,7 @@ and REVIEW.md has a single writer, `gsd-code-reviewer`, which this step is not.
 # numbers being added.
 # VALIDATE THE WHOLE VALUE, then format -- and on failure build NO path at all.
 # Carrying an unusable value verbatim was the first draft and it was worse than the bug it
-# replaced: PHASE_NUMBER is interpolated into a file path, so `../../etc/passwd` proddoc-arch-0006-uc-v1ed
+# replaced: PHASE_NUMBER is interpolated into a file path, so `../../etc/passwd` produced
 # `${PHASE_DIR}/../../etc/passwd-REVIEW.md`, where the old `printf "%02d"` had at least
 # mangled it to `00`. `code-review-fix.md`'s PADDED_PHASE validator already checks `^[0-9]+[A-Z]?(\.[0-9]+)*$` against its
 # own PADDED_PHASE -- the padded form, not the raw PHASE_NUMBER this step is handed -- while
@@ -138,7 +138,7 @@ else
 fi
 # REFUSE BEFORE BUILDING ANY PATH. An unusable input yields an empty PADDED above, and the
 # earlier placement -- after the assignments -- meant a rejected value still had
-# `${_pd}/-REVIEW.md` assembled and stat'ed before the refusal fired. Nothing is constrdoc-arch-0006-uc-v1ted
+# `${_pd}/-REVIEW.md` assembled and stat'ed before the refusal fired. Nothing is constructed
 # from a value we have already rejected.
 if [ -z "$PADDED" ]; then
   echo "Code review reporting skipped (unusable phase number or directory: '${PHASE_NUMBER:-}')"
@@ -209,7 +209,7 @@ REVIEW_TOTAL=$(echo "$REVIEW_FINDINGS_FM" | LC_ALL=C grep -E -m1 "^[[:space:]]*t
 # another -- the same silent suppression as the `clean:junk` truncation, reachable only on some
 # machines. Pinned to C the class is exactly {space, tab, NL, VT, FF, CR}, which is what the mirror
 # in tests/code-review-pipeline-regression.test.cjs spells out literally, so the two agree by
-# constrdoc-arch-0006-uc-v1tion rather than by coincidence of locale.
+# construction rather than by coincidence of locale.
 # The breakdown is reportable only when ALL FOUR counts are numbers. Deciding on REVIEW_TOTAL
 # alone would still emit `6 findings —  critical` for a review carrying a total and nothing else.
 REVIEW_COUNTS_OK=1
@@ -298,7 +298,7 @@ EVERYTHING BELOW RUNS INSIDE main() AND LEAVES BY return, NEVER an explicit exit
 prints its one-line verdict and then ends; with an explicit exit directly after console.log,
 the exit can pre-empt the write when stdout is a pipe or socket (Node documents those writes
 as asynchronous on POSIX), and the caller then sees an exit 0 with NO verdict line. A
-hardening against that documented hazard, not a reproddoc-arch-0006-uc-v1ed defect: the 'unchanged' branch was
+hardening against that documented hazard, not a reproduced defect: the 'unchanged' branch was
 the only one that exited explicitly, and the empty stdout that first pointed at it turned out to
 be a reviewing sandbox's own. A function that returns lets the event loop drain stdout before
 the process ends. Same exit status either way.
@@ -318,7 +318,7 @@ NAMED RESIDUAL, not silently accepted: this is a check-then-write, so a symlink 
 between the lstat and the write still wins. Node exposes no portable O_NOFOLLOW write, and
 an attacker who can write into the phase directory mid-run already has what the check would
 protect. It narrows a real accident; it is not a security boundary, and the docs do not
-claim one. A hard link likewise passes isFile() by constrdoc-arch-0006-uc-v1tion.
+claim one. A hard link likewise passes isFile() by construction.
 
 **Before `let fence = null;`**
 
@@ -362,7 +362,7 @@ reported, which is exactly why the total one read as covered.
 
 Prior rows: keep the disposition AND its source cell — the source is where a human writes
 the reason a finding was deferred, and rewriting it would discard the very thing the
-'set deferred by hand, with the reason' instrdoc-arch-0006-uc-v1tion asks for. The Source cell is the LAST
+'set deferred by hand, with the reason' instruction asks for. The Source cell is the LAST
 column, so it is captured through to the end of the line, less an optional trailing pipe:
 a bare | inside it is prose, not a column break. The previous capture admitted a pipe only
 when escaped, and the whole-line match then FAILED on a bare one -- a human who wrote
@@ -393,8 +393,8 @@ disposition column takes).
 
 The disposition column is an ENUM, not 'any lowercase token'. ADR-227 requires a trust
 boundary to validate semantic SHAPE, not merely type, and to coerce a failure to the
-contract's safe default -- and this ledger is a trust boundary by constrdoc-arch-0006-uc-v1tion, because
-the rendered instrdoc-arch-0006-uc-v1tion tells a human to hand-edit it. Under the old ([a-z]+) capture a
+contract's safe default -- and this ledger is a trust boundary by construction, because
+the rendered instruction tells a human to hand-edit it. Under the old ([a-z]+) capture a
 single transposed character ('opne') was stored as a decision: it is not 'open', so it
 beat the default, was excluded from the open: headline count, and was carried forward
 forever. One typo and the ledger reported a phase fully triaged.
@@ -412,10 +412,10 @@ Strip the carried marker before storing: it is rendered from the carried flag, s
 leaving it on the stored value would re-append it every run — the cell grows without
 bound AND the file changes on every run, defeating the unchanged-run check below.
 Strip AT MOST ONE trailing marker, unconditionally. Storing the cell verbatim looked
-like the way to stop the strip eating human text, and it introddoc-arch-0006-uc-v1ed a worse defect:
+like the way to stop the strip eating human text, and it introduced a worse defect:
 once the generated marker is stored it can never leave, so a carried finding that
 REAPPEARS in a later review still renders 'not in the current review' -- a ledger that
-is now factually wrong about its own contents. The residual ambiguity is irreddoc-arch-0006-uc-v1ible
+is now factually wrong about its own contents. The residual ambiguity is irreducible
 (a reason ending in exactly that phrase is indistinguishable from the marker) and it
 costs nothing real: on a carried row the render puts the phrase straight back, and on a
 current row the phrase was self-contradictory to begin with. The unbounded quantifier is
@@ -427,7 +427,7 @@ TITLE COMPARISON, and its FALSE-POSITIVE mode, which was previously unacknowledg
 The strict instinct is right -- ids are reused across re-reviews, so a stale REVIEW-FIX.md
 must not mark a brand-new CR-01 as already fixed -- but gsd-code-fixer.md writes
 '### {finding_id}: {title}' under no contract that the title is copied byte-for-byte from
-REVIEW.md. A fixer that REFLOWS a long title proddoc-arch-0006-uc-v1ed a spurious stale note, left a
+REVIEW.md. A fixer that REFLOWS a long title produced a spurious stale note, left a
 genuinely-fixed row 'open', and told the reader the fix report named a different finding.
 Runs of whitespace are collapsed because re-spacing carries no information. The BOUND, stated
 because it is easy to over-read this: a title WRAPPED across lines is NOT reconciled. A '###'
@@ -437,7 +437,7 @@ Not widened -- absorbing whatever follows a heading into the title would swallow
 prose and make this very check meaningless. Case changes and truncation stay strict too --
 they are the shapes a genuinely different finding actually takes, and widening to them would
 trade this false positive for the silent false NEGATIVE the strict match exists to prevent.
-Residual, stated: a fixer that re-cases or truncates still proddoc-arch-0006-uc-v1es a spurious note. That is
+Residual, stated: a fixer that re-cases or truncates still produces a spurious note. That is
 the safe direction (a visible note, not a silent wrong 'fixed'), and the note's wording below
 no longer asserts which of the two it is.
 
@@ -457,7 +457,7 @@ then the severity this ledger RECORDED (an earlier reviewer's statement, persist
 id PREFIX (an inference). A recorded value is inherited only while the id still names the
 SAME finding -- the identity rule the disposition already obeys -- so a reused id starts from
 its own review's section or its prefix, never from the finding it replaced. A carried row is
-absent from the current review, so sameFinding() is true for it by constrdoc-arch-0006-uc-v1tion and its
+absent from the current review, so sameFinding() is true for it by construction and its
 recorded severity is what it keeps. Defined here, below the identity check, because it
 depends on it.
 
@@ -470,7 +470,7 @@ with the reconciliation gap that left EVERY row untriaged, a re-review silently 
 whole ledger. The --auto loop rewrites REVIEW.md on every iteration, so it does not retain it
 either: run 1 records CR-01 open, the re-review renumbers it to CR-02, and run 2's ledger
 contains neither. That is #3829's complaint verbatim -- 'no trace of what happened to them' --
-reproddoc-arch-0006-uc-v1ed by the artifact built to prevent it, and 'nothing was decided about it' is exactly
+reproduced by the artifact built to prevent it, and 'nothing was decided about it' is exactly
 the state #3829 says must leave a trace.
 The carried marker is what keeps this honest rather than merely additive: the row does not
 claim the finding is live, it records that it was seen and never triaged. Stated cost, since
@@ -497,7 +497,7 @@ match -- a fifth prefix, a missing ': ' separator, a '#### ' heading -- contribu
 note and no diagnostic, and the ledger then declared 'open: 3 of 3' over a set strictly
 smaller than the console line reported one paragraph earlier. Two findings recorded nowhere,
 and neither artifact said so.
-The earlier argument for the closed alternation -- that an unlisted prefix proddoc-arch-0006-uc-v1es no row
+The earlier argument for the closed alternation -- that an unlisted prefix produces no row
 rather than a MIS-CLASSIFIED one -- is the wrong trade under this repo's own fail-safe rule:
 a dropped finding is demoted below every finding that parsed, and an unparseable finding is
 precisely the one a human most needs to see. Surfaced, not thrown, exactly as the stale
@@ -508,7 +508,7 @@ report exists, so a run with a fix report and no parseable finding reaches THIS 
 rows.length 0. Both exits now decline to fire while a shortfall is outstanding, and the
 result is a zero-row ledger carrying an unparsed key -- an honest record that the review
 declared findings and none of them were understood, which is strictly better than the file
-not existing. A genuinely clean review is untodoc-arch-0006-uc-v1hed either way: a declared total of 0 is not
+not existing. A genuinely clean review is untouched either way: a declared total of 0 is not
 greater than order.length, so unparsed is 0 and both returns still fire.
 
 **Before `const escapePipes = (t) => t.replace(/\\.|\|/g, (m) => (m === '|' ? '\\|' : m));`**
@@ -531,7 +531,7 @@ lost update is a real window, not a theoretical one. Same shape as #3780 (WINDOW
 append under parallel executors), which #4681 closed with a cross-process lock in
 src/broken-windows.cts. NOT taken here: this is a shell-embedded script with no build
 dependency on the compiled tree, and adopting the lock module is its own change. Residual,
-stated in docs/features/code-review-pipeline.md; not reproddoc-arch-0006-uc-v1ed as a lost update.
+stated in docs/features/code-review-pipeline.md; not reproduced as a lost update.
 
 ```bash
 # Each fenced block runs in a FRESH shell, so block 1's PADDED/REVIEW_FILE/DISPOSITION_FILE are NOT
@@ -568,7 +568,7 @@ stated in docs/features/code-review-pipeline.md; not reproddoc-arch-0006-uc-v1ed
 # numbers being added.
 # VALIDATE THE WHOLE VALUE, then format -- and on failure build NO path at all.
 # Carrying an unusable value verbatim was the first draft and it was worse than the bug it
-# replaced: PHASE_NUMBER is interpolated into a file path, so `../../etc/passwd` proddoc-arch-0006-uc-v1ed
+# replaced: PHASE_NUMBER is interpolated into a file path, so `../../etc/passwd` produced
 # `${PHASE_DIR}/../../etc/passwd-REVIEW.md`, where the old `printf "%02d"` had at least
 # mangled it to `00`. `code-review-fix.md`'s PADDED_PHASE validator already checks `^[0-9]+[A-Z]?(\.[0-9]+)*$` against its
 # own PADDED_PHASE -- the padded form, not the raw PHASE_NUMBER this step is handed -- while
@@ -656,7 +656,7 @@ else
 fi
 # REFUSE BEFORE BUILDING ANY PATH. An unusable input yields an empty PADDED above, and the
 # earlier placement -- after the assignments -- meant a rejected value still had
-# `${_pd}/-REVIEW.md` assembled and stat'ed before the refusal fired. Nothing is constrdoc-arch-0006-uc-v1ted
+# `${_pd}/-REVIEW.md` assembled and stat'ed before the refusal fired. Nothing is constructed
 # from a value we have already rejected.
 if [ -z "$PADDED" ]; then
   echo "Code review disposition skipped (unusable phase number or directory: '${PHASE_NUMBER:-}')"
@@ -667,7 +667,7 @@ DISPOSITION_FILE="${_pd}/${PADDED}-REVIEW-DISPOSITION.md"
 # The condition stated above this block is re-derived HERE rather than left to the reader. Block 1
 # computes REVIEW_STATUS and emits nothing, and its shell is gone, so nothing downstream can act on
 # it: a prose-only gate on a value no later block can see is not a gate. Without this, a clean
-# re-review rewrites an existing ledger it was never meant to todoc-arch-0006-uc-v1h.
+# re-review rewrites an existing ledger it was never meant to touch.
 REVIEW_STATUS=""
 REVIEW_TOTAL=""
 REVIEW_READ=0   # block 1's distinction, re-derived here: read-but-unparseable is not absent
@@ -677,7 +677,7 @@ if [ -f "$REVIEW_FILE" ] && [ -r "$REVIEW_FILE" ]; then
   REVIEW_STATUS=$(echo "$_FM" | LC_ALL=C grep -m1 "^status:" | cut -d: -f2- | LC_ALL=C sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//' || true)
   # The frontmatter total is carried into the script so the two parsers in this step can be
   # RECONCILED. The counts come from the frontmatter; the rows come from `### <ID>:` heading
-  # matches against a closed CR|BL|WR|IN alternation. They are two independent numbers proddoc-arch-0006-uc-v1ed
+  # matches against a closed CR|BL|WR|IN alternation. They are two independent numbers produced
   # one paragraph apart, and nothing compared them: a finding the heading parser cannot match
   # contributed no row, no note and no diagnostic, and the ledger then asserted `open: 3 of 3`
   # over a set strictly smaller than the console line had just reported. Anchored inside the
@@ -839,7 +839,7 @@ FIX_REPORT_FILE="${FIX_REPORT_FILE}" node -e "
   // An ABSENT review still has a ledger to reconcile: the step's own guard proceeds when
   // one exists, and throwing here would send that run to the trailing non-blocking fallback
   // with the
-  // ledger untodoc-arch-0006-uc-v1hed -- the freeze the reconciliation path exists to prevent.
+  // ledger untouched -- the freeze the reconciliation path exists to prevent.
   const reviewText = fs.existsSync(processconfig-env-0001-env-example-v1.0.REVIEW_FILE) ? fs.readFileSync(processconfig-env-0001-env-example-v1.0.REVIEW_FILE, 'utf-8') : '';
   const SECTION_SEV = [[/^##\s+Critical Issues\s*\$/, 'critical'], [/^##\s+Warnings\s*\$/, 'warning'], [/^##\s+Info\s*\$/, 'info']];
   let curSection = null;
@@ -996,7 +996,7 @@ FIX_REPORT_FILE="${FIX_REPORT_FILE}" node -e "
     // unchanged-run check below is unaffected on every review that parses cleanly.
     .concat(unparsed ? ['unparsed: ' + unparsed] : []).join('\n');
   // Rewrite only on a real change. The timestamp is the one field that always differs, so
-  // stamping unconditionally would dirty the tree and proddoc-arch-0006-uc-v1e a docs commit on every phase
+  // stamping unconditionally would dirty the tree and produce a docs commit on every phase
   // re-run with nothing to report.
   const render = (stamp) => head + '\nrecorded: ' + stamp + '\n---\n\n' + body;
   const stripTs = (t) => t.replace(/^recorded:.*\$/m, 'recorded:');

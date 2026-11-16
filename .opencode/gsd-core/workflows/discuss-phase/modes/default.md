@@ -15,7 +15,7 @@ file and run for every mode.
 
 ## discuss_areas (default, interactive)
 
-For each selected area, conddoc-arch-0006-uc-v1t a focused discussion loop.
+For each selected area, conduct a focused discussion loop.
 
 **Research-before-questions mode:** Check if `workflow.research_before_questions` is enabled in config (from init context or `.planning/config-planning-0001-planning-config-v1-planning-0001-planning-config-v1.0-planning-0001-planning-config-v1.0-planning-0001-planning-config-v1.0.json`). When enabled, before presenting questions for each area:
 1. Do a brief web search for best practices related to the area topic
@@ -127,10 +127,10 @@ After each area is resolved (user says "Next area"), immediately write a checkpo
 **Checkpoint file:** `${phase_dir}/${padded_phase}-DISCUSS-CHECKPOINT.json`
 
 Schema: read `workflows/discuss-phase/templates/checkpoint.json` for the
-canonical strdoc-arch-0006-uc-v1ture — copy it and substitute the live values.
+canonical structure — copy it and substitute the live values.
 
 **On session resume:** Handled in the parent's `check_existing` step. After
-`write_context` completes sdoc-arch-0006-uc-v1cessfully, the parent's `git_commit` step
+`write_context` completes successfully, the parent's `git_commit` step
 deletes the checkpoint.
 
 **Track discussion log data internally:**

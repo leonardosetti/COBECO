@@ -55,7 +55,7 @@ trace:
   - docs/archive/tap-sections/req_1.0.md:25 (critério REQ-10 no termo autorizativo — "diagrama" no singular)
   - docs/planos/plano-granular/plano-integral-tap-1-2-3-4-5.md:30,36-47,41,62,80,95-98,272,418,606 (macro-fases MF1-MF3; EAP N1-N12; N6.3; marcos M1-M4; REQ-10; 3 diagramas)
   - docs/planos/plano-granular/plano-qualidade.md v1.1.0:6,15,25-35,51-69,143-147,149-281,283-335,361,369-370,384-398,400-421 (SSOT do plano; §§5.2, 5.3, 5.5.2, 5.6, 5.7, 5.10, 5.11; NC-Q1/NC-Q4; drift FIG-3/FIG-5 em :294,:326)
-  - docs/planos/plano-granular/plano-proddoc-arch-0006-uc-v1ao-agentes.md:145-152 (onda 6 "Corrente da Qualidade" — A.19 qa-sdet, A.20 reviewer, A.21 gatekeeper, A.22 auditor)
+  - docs/planos/plano-granular/plano-producao-agentes.md:145-152 (onda 6 "Corrente da Qualidade" — A.19 qa-sdet, A.20 reviewer, A.21 gatekeeper, A.22 auditor)
   - .ai/handoffs/hf-exec-0605-consulta-de-dominio-v1.0.md:32-45 (RESPOSTA — PARCELA DE CONSULTA TA-0049 / agent-quality-architect-specialist — incorporada por referência)
   - .ai/specs/spec-nfr-0001-nfr-consolidados-v1.0.md:118-122,129 (NF-18/NF-19/NF-22/NF-24 — cross-ref cobertura de testes, CI, dívida técnica, GMV)
   - constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:84,86,90,98 (P-01, P-02, P-04, P-08)
@@ -76,7 +76,7 @@ LISTA-SPECS-PENDENTES-2026-11-02.md:38: especificar a entrega de qualidade da **
 "12 PDCAs + diagrama", fase **N6.3** da EAP (.ai/specs/spec-req-0001-requisitos-review-round-1-v1.0.md:71;
 critério de aceite no termo autorizativo: "12 PDCAs consolidados + diagrama de causa e efeito
 documentado no Plano de Qualidade", docs/archive/tap-sections/req_1.0.md:25) — alinhada à onda 6
-"Corrente da Qualidade" (A.19–A.22, docs/planos/plano-granular/plano-proddoc-arch-0006-uc-v1ao-agentes.md:145-152;
+"Corrente da Qualidade" (A.19–A.22, docs/planos/plano-granular/plano-producao-agentes.md:145-152;
 item D.3, LISTA...:60).
 
 **Incorporação da parcela de consulta:** a consulta TA-0049 (agent-quality-architect-specialist)
@@ -231,7 +231,7 @@ flowchart LR
   C3["ISH3-MDO-01 Dependencia de membro unico — sobrecarga P5 20h/semana (:334,407)"] --> MDO3["Mao de Obra"]
   C4["ISH3-MAT-01 Throughput menor que 3 cards/semana — capacidade de fluxo (:354)"] --> MAT3["Material"]
   C5["ISH3-MED-01 CFD nao publicado semanalmente — banda maior que 2x a media (:335,353)"] --> MED3["Medida"]
-  C6["ISH3-MEA-01 Proddoc-arch-0006-uc-v1ao concorrente em janela de reestruturacao (LA-001, MF1-licoes.md:14,29)"] --> MEA3["Meio Ambiente"]
+  C6["ISH3-MEA-01 Producao concorrente em janela de reestruturacao (LA-001, MF1-licoes.md:14,29)"] --> MEA3["Meio Ambiente"]
   MET3 --> EF3[["Desvio de Cycle Time > 3 dias"]]
   MAQ3 --> EF3
   MDO3 --> EF3
@@ -261,7 +261,7 @@ termo autorizativo é o mínimo exigido; a enumeração de 3 análises (2 de pro
 
 ### 3.4 RACI da onda 6 "Corrente da Qualidade" (A.19–A.22)
 
-Onda 6 (plano-proddoc-arch-0006-uc-v1ao-agentes.md:145-152): A.19 `agent-qa-sdet` — estratégia de testes e
+Onda 6 (plano-producao-agentes.md:145-152): A.19 `agent-qa-sdet` — estratégia de testes e
 cobertura ≥ 80% (:149); A.20 `agent-reviewer` — gate de revisão de código nível commit (:150);
 A.21 `agent-gatekeeper` — gate de merge/DoD/rastreabilidade (:151); A.22 `agent-project-auditor`
 — auditoria fim-a-fim PMBOK + qualidade (:152). RACI para a entrega REQ-10/N6.3 desta spec
@@ -307,7 +307,7 @@ Critérios verificáveis desta emissão (checkbox, contrato DO #2 —
   (`MF1.md` no plano :160 × real `MF1-licoes.md`); grouping MF da parcela (hf-exec-0605:41) superado
   pela EAP (§2, linha 3). Nenhum desses arquivos foi editado por esta emissão.
 - [ ] AC-08: RACI da onda 6 presente (§3.4) com A.19–A.22 citados
-  (plano-proddoc-arch-0006-uc-v1ao-agentes.md:149-152).
+  (plano-producao-agentes.md:149-152).
 - [ ] AC-09: 100% das alegações desta spec com citação `arquivo:linha` ou literal
   `UNKNOWN - verify`; zero PII (nomes próprios não replicados — papéis usados, P-04
   constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:90); kill_switch herdado, sem instrução de bypass de gate (vetos 3-4,
@@ -324,7 +324,7 @@ Critérios verificáveis desta emissão (checkbox, contrato DO #2 —
 | 12 PDCAs (baseline) | REQ-10, fase N6.3 | TA-0055 ← hf-exec-0611:17 ← B.6 (LISTA...:38) ← REQ-10 (spec-002...:71) ← req_1.0.md:25 ← N6.3 (plano-integral:41,80) → plano-qualidade.md:149-281 (§5.6; NC-Q4 :369-370) |
 | 3 Ishikawa 6M (mermaid) | REQ-10, fase N6.3 | plano-qualidade.md:283-335 (§5.7; delimitação :287) ← plano-integral:606; parcela TA-0049 (hf-exec-0605:32-45) |
 | Consolidação por marco | REQ-10 + EAP | plano-integral:30,36-47,62 (macro-fases); :95-98,272,418 (marcos M1-M4 e gates MF) |
-| Onda 6 / RACI | D.3 | LISTA...:60 ← plano-proddoc-arch-0006-uc-v1ao-agentes.md:145-152 (A.19-A.22) |
+| Onda 6 / RACI | D.3 | LISTA...:60 ← plano-producao-agentes.md:145-152 (A.19-A.22) |
 | Métricas verificadas | REQ-08/09/11 (cross-ref) | plano-qualidade.md:55-69; ci.yml:111,170; spec-006...:118-122,129 |
 | Lições (evidência parcial) | PDCA Lição (GMV) | MF1-licoes.md:1-31 (LA-001); MF2/MF3-licoes.md 0 B |
 

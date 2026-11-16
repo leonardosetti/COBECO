@@ -130,7 +130,7 @@ question(
 
 **After selection:**
 - Selected seeds become additional context for requirement definition in step 9. Store them in an accumulator (e.g. `$SELECTED_SEEDS`) so step 9 can reference the ideas and their "Why This Matters" sections when defining requirements.
-- Unselected seeds remain untodoc-arch-0006-uc-v1hed in `.planning/seeds/` — never delete or modify seed files during this workflow.
+- Unselected seeds remain untouched in `.planning/seeds/` — never delete or modify seed files during this workflow.
 
 ## 3. Determine Milestone Version
 
@@ -174,7 +174,7 @@ PROJECT.md is shared across workstreams (`gsd-core/references/workstream-flag.md
 
 If `section_manifest` (from `INIT_EARLY`) is `null` or `"project-md-milestone-write"` is in its `included` list: read and execute `gsd-core/workflows/new-milestone/steps/project-md-milestone-write.md`. Otherwise (a workstream is active) skip — do not read the file; Part B below still runs regardless of `GSD_WS`.
 
-**Part B — Evolution strdoc-arch-0006-uc-v1tural repair (always runs, regardless of `GSD_WS`).** `## Evolution` is a shared, idempotent strdoc-arch-0006-uc-v1tural section, not workstream state — a pre-Evolution project must be backfilled whether or not a workstream is active, so this part is NOT covered by Part A's skip. Ensure the `## Evolution` section exists in PROJECT.md. If missing (projects created before this feature), add it before the footer:
+**Part B — Evolution structural repair (always runs, regardless of `GSD_WS`).** `## Evolution` is a shared, idempotent structural section, not workstream state — a pre-Evolution project must be backfilled whether or not a workstream is active, so this part is NOT covered by Part A's skip. Ensure the `## Evolution` section exists in PROJECT.md. If missing (projects created before this feature), add it before the footer:
 
 ```markdown
 ## Evolution
@@ -283,7 +283,7 @@ fi
 
 When `commit_docs` is false, the archive move and phase removals are deliberately left unstaged here — not a bug — since Step 6's commit is skipped too.
 
-Stage PROJECT.md in both modes. Step 4's Part A guard — not this commit — is what protects the shared `## Current Milestone` heading (#2308): when a workstream is active Part A never writes it, so the only change PROJECT.md can carry here is Part B's idempotent `## Evolution` backfill, which must be committed rather than stranded as a dangling edit. Do NOT reintroddoc-arch-0006-uc-v1e a `[ -n "$GSD_WS" ]` branch around this commit: `GSD_WS` is set in Step 1's shell and each step's bash block runs in its own shell (the same reason Step 5 round-trips `OUTGOING_MILESTONE` through a file), so sdoc-arch-0006-uc-v1h a guard reads an unset variable, always takes the flat-mode branch, and only appears to work. STATE.md, unlike PROJECT.md, IS workstream-scoped (Step 5's switch just wrote the workstream's own copy) — resolved below via `init.new-milestone` rather than a literal `.planning/STATE.md`, which would commit the wrong (or a stale, unrelated) file under an active workstream.
+Stage PROJECT.md in both modes. Step 4's Part A guard — not this commit — is what protects the shared `## Current Milestone` heading (#2308): when a workstream is active Part A never writes it, so the only change PROJECT.md can carry here is Part B's idempotent `## Evolution` backfill, which must be committed rather than stranded as a dangling edit. Do NOT reintroduce a `[ -n "$GSD_WS" ]` branch around this commit: `GSD_WS` is set in Step 1's shell and each step's bash block runs in its own shell (the same reason Step 5 round-trips `OUTGOING_MILESTONE` through a file), so such a guard reads an unset variable, always takes the flat-mode branch, and only appears to work. STATE.md, unlike PROJECT.md, IS workstream-scoped (Step 5's switch just wrote the workstream's own copy) — resolved below via `init.new-milestone` rather than a literal `.planning/STATE.md`, which would commit the wrong (or a stale, unrelated) file under an active workstream.
 
 ```bash
 GSD_WS_ARG=$(cat .planning/.gsd-ws-arg 2>/dev/null || true)
@@ -366,7 +366,7 @@ mkdir -p .planning/research
 
 Spawn 4 parallel gsd-project-researcher agents. Each uses this template with dimension-specific fields:
 
-**Common strdoc-arch-0006-uc-v1ture for all 4 researchers:**
+**Common structure for all 4 researchers:**
 <!-- #2517 model-omit-on-inherit -->
 
 > **Model omission (#2517).** Omit the `model` parameter entirely when the value it would carry (`researcher_model`, `synthesizer_model`, `roadmapper_model`) is `"inherit"` or empty. An empty value 404s on runtimes without native tier aliases — the default on non-the agent runtimes. Omitting it inherits the orchestrator's model. See @gsd-core/references/model-profile-resolution.md.
@@ -439,7 +439,7 @@ Commit after writing.
 
 > **ORCHESTRATOR RULE — CODEX RUNTIME**: After calling Agent() above, stop working on this task immediately. Do not read more files, edit code, or run tests related to this task while the subagent is active. Wait for the subagent to return its result. This prevents duplicate work, conflicting edits, and wasted context. Only resume when the subagent result is available.
 
-**Synthesizer output self-heal (#222) — verify SUMMARY.md materialized:** The synthesizer's canonical output is `.planning/research/SUMMARY.md` on disk; its brief strdoc-arch-0006-uc-v1tured return (`## SYNTHESIS COMPLETE` plus a few `###` confirmation lines) is NOT the file content. The restriction is not always fabricated: Claude Code refuses a subagent's `Write` to a few exact basenames — `SUMMARY.md` among them — with `Subagents should return findings as text, not write report files` (observed on Claude Code 2.1.301), and the synthesizer is told to return the full document inline when its `Write` hits that error; the refusal is real, not fabricated. It depends on the exact basename (`SUMMARY.md`, `REPORT.md`, `FINDINGS.md`, `ANALYSIS.md`, case-insensitive; a prefixed name sdoc-arch-0006-uc-v1h as `01-01-SUMMARY.md` and other agents' files write fine), so do not tell other agents to avoid `Write`. Either cause lands in step 2. A known LLM false-refusal (issue #222) sometimes makes the agent return the full SUMMARY.md document inline — fabricating a write restriction (e.g. "the runtime is blocking file writes") — instead of writing the file. Prompt hardening alone does not fully eliminate it, so the orchestrator MUST absorb either cause deterministically before spawning `gsd-roadmapper`:
+**Synthesizer output self-heal (#222) — verify SUMMARY.md materialized:** The synthesizer's canonical output is `.planning/research/SUMMARY.md` on disk; its brief structured return (`## SYNTHESIS COMPLETE` plus a few `###` confirmation lines) is NOT the file content. The restriction is not always fabricated: Claude Code refuses a subagent's `Write` to a few exact basenames — `SUMMARY.md` among them — with `Subagents should return findings as text, not write report files` (observed on Claude Code 2.1.301), and the synthesizer is told to return the full document inline when its `Write` hits that error; the refusal is real, not fabricated. It depends on the exact basename (`SUMMARY.md`, `REPORT.md`, `FINDINGS.md`, `ANALYSIS.md`, case-insensitive; a prefixed name such as `01-01-SUMMARY.md` and other agents' files write fine), so do not tell other agents to avoid `Write`. Either cause lands in step 2. A known LLM false-refusal (issue #222) sometimes makes the agent return the full SUMMARY.md document inline — fabricating a write restriction (e.g. "the runtime is blocking file writes") — instead of writing the file. Prompt hardening alone does not fully eliminate it, so the orchestrator MUST absorb either cause deterministically before spawning `gsd-roadmapper`:
 
 1. Verify `.planning/research/SUMMARY.md` exists AND is substantive — non-empty, and free of any leftover `<!-- gsd:write-continue -->` continuation sentinel (which marks a truncated/incomplete write). You may validate with `gsd_run verify-summary .planning/research/SUMMARY.md` — it exits 0 regardless, so check its JSON `passed` field (`"passed": false` means missing or invalid), not the process exit code. If it passes, continue normally.
 2. If it is MISSING or invalid AND the synthesizer's return message contains the FULL SUMMARY.md document — recognizable by the template's top-level markers `# Project Research Summary`, `## Key Findings`, `## Implications for Roadmap`, and `## Sources`, not merely the brief `## SYNTHESIS COMPLETE` confirmation — the synthesizer returned the document inline (the #222 false-refusal, or the runtime's real refusal of the name `SUMMARY.md`): write that returned document to `.planning/research/SUMMARY.md` with the Write tool, then commit ALL research artifacts the synthesizer owns (it commits on behalf of the four researchers) with `gsd_run query commit "docs: complete project research" --files .planning/research/` unless they are already committed. Log `⚠ #222 self-heal: synthesizer returned SUMMARY.md inline without writing it; orchestrator persisted the file.`
@@ -561,20 +561,20 @@ ${AGENT_SKILLS_ROADMAPPER}
 
 </planning_context>
 
-<instrdoc-arch-0006-uc-v1tions>
+<instructions>
 Create roadmap for milestone v[X.Y]:
 1. Respect the selected numbering mode:
    - `--reset-phase-numbers` → start at Phase 1
    - default behavior → continue from the previous milestone's last phase number
 2. Derive phases from THIS MILESTONE's requirements only
 3. Map every requirement to exactly one phase
-4. Derive 2-5 sdoc-arch-0006-uc-v1cess criteria per phase (observable user behaviors)
+4. Derive 2-5 success criteria per phase (observable user behaviors)
 5. Validate 100% coverage
 6. Write files immediately (ROADMAP.md, STATE.md, update REQUIREMENTS.md traceability)
 7. Return ROADMAP CREATED with summary
 
 Write files first, then return.
-</instrdoc-arch-0006-uc-v1tions>
+</instructions>
 ", subagent_type="gsd-roadmapper", model="{roadmapper_model}", description="Create roadmap")
 ```
 
@@ -591,7 +591,7 @@ Write files first, then return.
 
 **[N] phases** | **[X] requirements mapped** | All covered ✓
 
-| # | Phase | Goal | Requirements | Sdoc-arch-0006-uc-v1cess Criteria |
+| # | Phase | Goal | Requirements | Success Criteria |
 |---|-------|------|--------------|------------------|
 | [N] | [Name] | [Goal] | [REQ-IDs] | [count] |
 
@@ -600,7 +600,7 @@ Write files first, then return.
 **Phase [N]: [Name]**
 Goal: [goal]
 Requirements: [REQ-IDs]
-Sdoc-arch-0006-uc-v1cess criteria:
+Success criteria:
 1. [criterion]
 2. [criterion]
 ```
@@ -707,7 +707,7 @@ Also: `/gsd-plan-phase [N] ${GSD_WS}` — skip discussion, plan directly
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] PROJECT.md updated with Current Milestone section (skipped when a workstream is active — shared file, see Step 4)
 - [ ] STATE.md reset for new milestone
 - [ ] MILESTONE-CONTEXT.md consumed and deleted (if existed)
@@ -723,5 +723,5 @@ Also: `/gsd-plan-phase [N] ${GSD_WS}` — skip discussion, plan directly
 - [ ] User knows next step: `/gsd-discuss-phase [N] ${GSD_WS}`
 
 **Atomic commits:** Each phase commits its artifacts immediately.
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>
 </output>

@@ -9,13 +9,13 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Instala dependências para build
-COPY package*.json ./
+COPY config-npm-0001-package-v1.0.json package.json
 RUN npm install
 
 # Copia fontes
 COPY src ./src
-COPY tailwind.config.js ./
-COPY postcss.config.js ./
+COPY config-tailwind-0001-tailwind-v1.0.js tailwind.config.js
+COPY config-postcss-0001-postcss-v1.0.js postcss.config.js
 
 # Build Tailwind CSS
 RUN npx tailwindcss -i ./src/styles/input.css -o ./src/styles/output.css --minify
@@ -26,8 +26,8 @@ RUN npx tailwindcss -i ./src/styles/input.css -o ./src/styles/output.css --minif
 FROM nginx:alpine AS runtime
 
 # Copia configuração nginx
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY nginx.dev.conf /etc/nginx/nginx.dev.conf
+COPY config-nginx-0001-nginx-v1.0.conf /etc/nginx/nginx.conf
+COPY config-nginx-0002-nginx-dev-v1.0.conf /etc/nginx/nginx.dev.conf
 
 # Copia arquivos buildados
 COPY --from=builder /app/src /usr/share/nginx/html

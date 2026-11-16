@@ -53,7 +53,7 @@ workflow:
 | **F1** | Conflito de Stack Tecnológica | 🔴 Crítico | Documentos `Refinamento_de_Requisitos.md` e `Report_Espec_MVP.md` ainda referenciam PostgreSQL/NestJS/React/TypeScript, enquanto o Relatório Final v3.1 define SQLite3/FastAPI/Vanilla JS - Nota de revisão: alterar SGBD para MySql | **Consolidar em v3.1**: Stack minimalista é a oficial. Arquivar documentos anteriores como "histórico". |
 | **F2** | Rate Limiting Inconsistente | 🟡 Médio | Alguns documentos definem 5 tentativas/15min, outros 6 tentativas | **Padronizar em 6 tentativas** conforme requisito explícito do projeto (anti-DDoS) |
 | **F3** | Recuperação de Senha Ambígua | 🟡 Médio | Alguns docs falam em Resend (email real), outros em pergunta de segurança | **Dupla via aprovada**: Via A (log no stdout para dev) + Via B (pergunta de segurança para produção acadêmica), toggle via env var `RECOVERY_MODE` |
-| **F4** | Modelo de Categorias Incorreto (v3.0) | 🔴 Crítico | DER v3.0 relacionava `proddoc-arch-0006-uc-v1ts` diretamente com `categories` via FK `category_id`, contradizendo a semântica real (categorias são de FORNECEDORES) | **DER v3.1**: Tabela pivô `supplier_categories` (N:N). Produtos são agnósticos à categoria. |
+| **F4** | Modelo de Categorias Incorreto (v3.0) | 🔴 Crítico | DER v3.0 relacionava `products` diretamente com `categories` via FK `category_id`, contradizendo a semântica real (categorias são de FORNECEDORES) | **DER v3.1**: Tabela pivô `supplier_categories` (N:N). Produtos são agnósticos à categoria. |
 | **F5** | Dualidade UC26 (Include + Extend) | 🟡 Médio | UC26 aparece como `<<include>>` (depende de UC25) E `<<extend>>` (é opcional sobre UC25) simultaneamente | **Documentar dualidade intencional**: Filtro PRECISA da seleção para existir (include), mas usuário PODE optar por não aplicá-lo (extend). Registrar no glossário. |
 | **F6** | Export CSV Server-Side vs Client-Side | 🟢 Baixo | Alguns docs mencionam endpoint de export, outros definem Blob client-side | **Client-side (ADR-005)**: Geração via `Blob` + `URL.createObjectURL()`. Zero carga no backend. Funciona para visitantes. |
 | **F7** | Persistência de Comparações | 🟢 Baixo | Alguns docs mencionam histórico de comparações, outros excluem explicitamente | **Não persistir comparações**: Apenas listas são persistidas. Seleção de fornecedores é temporária (sessão). |
@@ -450,7 +450,7 @@ workflow:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net" modified="2026-09-12T00:00:00.000Z" agent="COBECO MVP v3.1" version="24.0.0" type="device">
-  <diagram id="cobeco-doc-arch-0006-uc-v1d-v31" name="COBECO — Casos de Uso MVP v3.1">
+  <diagram id="cobeco-ucd-v31" name="COBECO — Casos de Uso MVP v3.1">
     <mxGraphModel dx="2800" dy="2000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2800" pageHeight="2000" math="0" shadow="1">
       <root>
         <mxCell id="0"/>

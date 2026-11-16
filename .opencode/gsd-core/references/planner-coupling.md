@@ -9,21 +9,21 @@
 ## The rule
 
 `files_modified`/`files_deleted` overlap is not the only coupling between
-same-wave plans. If two plans in the same wave todoc-arch-0006-uc-v1h the same **mutable
+same-wave plans. If two plans in the same wave touch the same **mutable
 resource** through their task actions — a config key, DB table/row, migration,
-env var, singleton, cache — with at least one writer, or one plan proddoc-arch-0006-uc-v1es a
+env var, singleton, cache — with at least one writer, or one plan produces a
 prerequisite the other consumes, the pair is coupled through shared state even
 though no file overlaps: under parallel execution the outcome depends on which
 executor gets there first.
 
 Resolve it one of three ways, in order of preference:
 
-1. **Declare the edge** — add the proddoc-arch-0006-uc-v1ing plan to the consumer's
+1. **Declare the edge** — add the producing plan to the consumer's
    `depends_on`. Wave assignment then orders them automatically.
 2. **Re-wave** — move one plan to a later wave when the dependency direction
    is unclear but an ordering is still wanted.
 3. **Justify the pair** — when the coupling is deliberate and genuinely
-   order-independent (both orders proddoc-arch-0006-uc-v1e a correct result), record it in
+   order-independent (both orders produce a correct result), record it in
    either plan's frontmatter, one `"plan-id: reason"` entry per coupled peer:
 
    ```yaml

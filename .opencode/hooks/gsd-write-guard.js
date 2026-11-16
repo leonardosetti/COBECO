@@ -6,10 +6,10 @@
 //
 // Problem (#973, fix 3 of 3): a planner read a ~16-line window of ROADMAP.md
 // and Write-overwrote the whole 292-line file with it — three milestones of
-// committed history destroyed. Fixes 1 and 2 (PR #989) are instrdoc-arch-0006-uc-v1tions to a
+// committed history destroyed. Fixes 1 and 2 (PR #989) are instructions to a
 // model: they lower the probability of a clobber but cannot prevent one, and
 // they protect only the agents that were audited. This hook is enforced by
-// code rather than by instrdoc-arch-0006-uc-v1tion: it compares the pending Write payload
+// code rather than by instruction: it compares the pending Write payload
 // against the file on disk and hard-blocks a catastrophic shrink BEFORE it
 // happens. An advisory will not do — #973 records an agent reading the
 // advisory, classifying it as non-binding, and reasoning past it while
@@ -25,7 +25,7 @@
 // against an evader.
 //
 // Deliberately narrow trigger:
-//   - Write only (Edit/MultiEdit are scoped by constrdoc-arch-0006-uc-v1tion);
+//   - Write only (Edit/MultiEdit are scoped by construction);
 //   - the target already exists on disk;
 //   - the target is a curated .planning/ artifact — the project ROADMAP.md,
 //     milestone roadmaps (.planning/milestones/*-ROADMAP.md), and STATE.md.
@@ -196,7 +196,7 @@ function consumeSentinelFor(filePath, normalized) {
     // names the realpath — a validly-armed sentinel then never matches, and a
     // legitimate milestone-reset Write stays incorrectly blocked. The named
     // file is already known to exist (the caller only reaches this function
-    // after sdoc-arch-0006-uc-v1cessfully reading it), so realpath is expected to sdoc-arch-0006-uc-v1ceed;
+    // after successfully reading it), so realpath is expected to succeed;
     // keep the lexical path on failure, matching the caller's own fallback.
     try {
       namedPath = fs.realpathSync(namedPath);
@@ -238,11 +238,11 @@ function emitBlock(output) {
 // mapping. Only WriteFile is mapped: this guard exits 0 for any tool but
 // Write, so an Edit-class mapping here would be dead code. Accepts bare and
 // module-qualified ('kimi_cli.tools.file:WriteFile') names; unknown names fall
-// through untodoc-arch-0006-uc-v1hed. Inlined per guard (not hooks/lib/): hook scripts are
+// through untouched. Inlined per guard (not hooks/lib/): hook scripts are
 // staged as standalone files, and a sibling require is a staging dependency
 // that can fail silently.
 // A Map, not an object literal: bare bracket lookup resolves prototype keys
-// ('constrdoc-arch-0006-uc-v1tor', '__proto__', 'toString') to truthy functions/objects, so the
+// ('constructor', '__proto__', 'toString') to truthy functions/objects, so the
 // !mapped fall-through never fires for them; Map.get returns undefined (same
 // shape as canonicalizeRuntimeName in src/runtime-name-policy.cts).
 const KIMI_TOOL_NAMES = new Map([['WriteFile', 'Write']]);
@@ -290,7 +290,7 @@ process.stdin.on('end', () => {
       allow(undefined);
     }
 
-    // Only whole-file Write is catastrophic-by-constrdoc-arch-0006-uc-v1tion; Edit/MultiEdit
+    // Only whole-file Write is catastrophic-by-construction; Edit/MultiEdit
     // replace bounded spans and are out of scope by design (#2255).
     if (data.tool_name !== 'Write') {
       allow(undefined);
@@ -397,7 +397,7 @@ process.stdin.on('end', () => {
       reason:
         `Write guard: this Write would shrink '${filePath}' from ${oldLines} lines to ` +
         `${newLines} (${pct}% of current). '${path.basename(filePath)}' is a curated planning ` +
-        `artifact; a whole-file Write this mdoc-arch-0006-uc-v1h smaller usually means the payload was built ` +
+        `artifact; a whole-file Write this much smaller usually means the payload was built ` +
         `from a partial read of the file and would destroy the sections outside that window ` +
         `(#973: a planner collapsed ROADMAP.md 292 → 16 lines this way). To fix: use Edit for ` +
         `a scoped change, or Read the full file and include every section in the Write. ` +

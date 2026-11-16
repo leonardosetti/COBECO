@@ -59,7 +59,7 @@
 //   located past wrapper prefixes AND their own options (`sudo -u U`,
 //   `env -i VAR=x`, `timeout -s KILL 5`, `nice -n 5`, `stdbuf -oL`, `exec`;
 //   see WRAPPERS, #5627); a closed set of
-//   NON-READING commands (test/[/ls/stat/rm/todoc-arch-0006-uc-v1h/echo/…) exempts that
+//   NON-READING commands (test/[/ls/stat/rm/touch/echo/…) exempts that
 //   segment's operands — `[ -f config-env-0001-env-example-v1.0 ]` and `ls config-env-0001-env-example-v1.0*` are existence checks
 //   GSD's own agents run — while `cp`/`mv`/`ln`/`git` are deliberately NOT
 //   exempt (`cp config-env-0001-env-example-v1.0 x && cat x` launders the name; `git show HEAD:config-env-0001-env-example-v1.0`
@@ -114,7 +114,7 @@
 // launches the debugger as a CLI process — `claude … --agent gsd-debugger` — is
 // denied (`debugger-cli-spawn`). The debug session manager is required to spawn
 // gsd-debugger with `Agent(run_in_background=false)` so it can read the
-// debugger's strdoc-arch-0006-uc-v1tured return; on a captured 1.15.0 run it routed around that
+// debugger's structured return; on a captured 1.15.0 run it routed around that
 // literal and shelled out with the Bash parameter `run_in_background: true`,
 // so no return ever came back and the checkpoint never advanced. Prose in the
 // agent file cannot stop an improvised tool call; a PreToolUse denial can, and
@@ -179,7 +179,7 @@ const WRAPPERS = new Map([
 // Commands whose ordinary operands are file NAMES, never file CONTENTS. A
 // closed set on purpose: anything not listed is assumed to read.
 const NON_READING_COMMANDS = new Set([
-  'test', '[', '[[', 'ls', 'stat', 'todoc-arch-0006-uc-v1h', 'rm', 'chmod', 'chown', 'mkdir',
+  'test', '[', '[[', 'ls', 'stat', 'touch', 'rm', 'chmod', 'chown', 'mkdir',
   'basename', 'dirname', 'realpath', 'file', 'echo', 'printf',
 ]);
 
@@ -278,12 +278,12 @@ const XARGS_VALUE_FLAGS = new Set(['-n', '-I', '-i', '-L', '-l', '-P', '-s', '-d
 // Probe names a Grep glob alternative is matched against. `config-env-0001-env-example-v1.0` and
 // `.secrets` are the exact names; the rest stand in for the open-ended
 // `config-env-0001-env-example-v1.0.<suffix>` family so empty-literal-prefix selectors (`*.local`,
-// `*.proddoc-arch-0006-uc-v1tion`, `*env.*`) are caught. Residual, stated in the header:
+// `*.production`, `*env.*`) are caught. Residual, stated in the header:
 // an alternative like `*.ts` matches no probe and is allowed even though a
 // `config-env-0001-env-example-v1.0.foo.ts` would satisfy the name predicate.
 const GLOB_PROBES = [
-  'config-env-0001-env-example-v1.0', '.secrets', 'config-env-0001-env-example-v1.0.local', 'config-env-0001-env-example-v1.0.development', 'config-env-0001-env-example-v1.0.proddoc-arch-0006-uc-v1tion',
-  'config-env-0001-env-example-v1.0.staging', 'config-env-0001-env-example-v1.0.test', 'config-env-0001-env-example-v1.0.development.local', 'config-env-0001-env-example-v1.0.proddoc-arch-0006-uc-v1tion.local',
+  'config-env-0001-env-example-v1.0', '.secrets', 'config-env-0001-env-example-v1.0.local', 'config-env-0001-env-example-v1.0.development', 'config-env-0001-env-example-v1.0.production',
+  'config-env-0001-env-example-v1.0.staging', 'config-env-0001-env-example-v1.0.test', 'config-env-0001-env-example-v1.0.development.local', 'config-env-0001-env-example-v1.0.production.local',
   'config-env-0001-env-example-v1.0.zzq',
 ];
 
@@ -416,7 +416,7 @@ function classifyGrepGlob(glob) {
   // Segment via the SAME `lastSegment` helper Read/Bash use (namesSecret),
   // rather than a hand-rolled forward-slash-only split — the two used to
   // diverge on a backslash-bearing glob (`config\config-env-0001-env-example-v1.0`), which `lastSegment`
-  // reddoc-arch-0006-uc-v1es to `config-env-0001-env-example-v1.0` but a `/`-only split left untodoc-arch-0006-uc-v1hed, letting it escape
+  // reduces to `config-env-0001-env-example-v1.0` but a `/`-only split left untouched, letting it escape
   // this arm's predicate while Read/Bash still blocked it.
   // Case-fold the last segment (GLOB_PROBES are lower case) so `.ENV*` and
   // `*.ENV` select the secret namespace on case-insensitive filesystems.
@@ -717,7 +717,7 @@ function tokenize(str) {
       const inner = str.slice(i + 2, e);
       nested.push(inner);
       // Emit a word carrying the inner script so a shell / `source` operand
-      // (`sh <(echo 'cat config-env-0001-env-example-v1.0')`) can reconstrdoc-arch-0006-uc-v1t it; the bare nested recursion
+      // (`sh <(echo 'cat config-env-0001-env-example-v1.0')`) can reconstruct it; the bare nested recursion
       // above only sees `echo …`, whose operands are not read.
       tokens.push({ kind: 'word', text: str.slice(i, e + 1), quoted: 'none', seg, procsub: inner });
       i = e + 1;
@@ -1053,7 +1053,7 @@ function copyDestinationIndices(operands) {
 // The statically-knowable stdin a segment writes: `echo`/`printf` operands
 // joined by a space (for `echo`, leading `-neE` flags dropped). Any other
 // source (`cat gen.sh | bash`, `curl … | sh`) is not knowable → null.
-function reconstrdoc-arch-0006-uc-v1tedScript(words) {
+function reconstructedScript(words) {
   const cmd = resolveCommand(words);
   if (!cmd) return null;
   if (cmd.base === 'echo') {
@@ -1066,14 +1066,14 @@ function reconstrdoc-arch-0006-uc-v1tedScript(words) {
 }
 
 // Same rule applied to a `<( … )` / `>( … )` inner script's first segment.
-function reconstrdoc-arch-0006-uc-v1tedProcsub(inner) {
+function reconstructedProcsub(inner) {
   const { tokens } = tokenize(inner);
   const words = [];
   for (const t of tokens) {
     if (t.kind === 'sep') break;
     if (t.kind === 'word') words.push(t);
   }
-  return reconstrdoc-arch-0006-uc-v1tedScript(words);
+  return reconstructedScript(words);
 }
 
 // The operator connecting segment `s` to the nearest PRECEDING segment that has
@@ -1184,7 +1184,7 @@ function findSecretRead(command, depth) {
     if (base === 'source' || base === '.') {
       for (const w of operands) {
         if (w.procsub !== undefined && depth < MAX_NESTING_DEPTH) {
-          const src = reconstrdoc-arch-0006-uc-v1tedProcsub(w.procsub);
+          const src = reconstructedProcsub(w.procsub);
           if (src !== null) {
             const hit = findSecretRead(src, depth + 1);
             if (hit) return hit;
@@ -1320,7 +1320,7 @@ function scanShellInterpreter(operands, heredocs, hereStrings, s, bySeg, sepAfte
   if (fileTok) {
     // Mode file: `bash <(echo 'cat config-env-0001-env-example-v1.0')`; a plain file is checked as an operand.
     if (fileTok.procsub !== undefined) {
-      const src = reconstrdoc-arch-0006-uc-v1tedProcsub(fileTok.procsub);
+      const src = reconstructedProcsub(fileTok.procsub);
       if (src !== null) return findSecretRead(src, depth + 1);
     }
     return null;
@@ -1336,7 +1336,7 @@ function scanShellInterpreter(operands, heredocs, hereStrings, s, bySeg, sepAfte
   }
   const { op, prevSeg } = precedingOp(s, bySeg, sepAfter);
   if ((op === '|' || op === '|&') && prevSeg >= 0) {
-    const src = reconstrdoc-arch-0006-uc-v1tedScript((bySeg.get(prevSeg) || []).filter((t) => t.kind === 'word'));
+    const src = reconstructedScript((bySeg.get(prevSeg) || []).filter((t) => t.kind === 'word'));
     if (src !== null) return findSecretRead(src, depth + 1);
   }
   return null;
@@ -1403,9 +1403,9 @@ function reasonFor(code, tool, target) {
   }
   if (code === 'debugger-cli-spawn') {
     return `Debugger spawn guard: this Bash command launches the debugger as a CLI process ('--agent ${target}'). ` +
-      'A shell-spawned debugger runs detached, returns no strdoc-arch-0006-uc-v1tured result, and the debug checkpoint never advances. ' +
+      'A shell-spawned debugger runs detached, returns no structured result, and the debug checkpoint never advances. ' +
       'Spawn it with the Agent tool instead: Agent(subagent_type="gsd-debugger", run_in_background=false, ...) ' +
-      'and wait for its strdoc-arch-0006-uc-v1tured return.';
+      'and wait for its structured return.';
   }
   return `Secret read guard: ${tool} would read '${target}', which matches a protected secret-file ` +
     `pattern (${PATTERN_TEXT}). Secret values must not be read into the conversation. ` +
@@ -1490,14 +1490,14 @@ function normalizeKimiPayload(data) {
       // arrays, plain objects), so nothing downstream — including
       // gsd-prompt-guard's scan of new_string — loses content it saw before.
       const editText = (v) => { try { return String(v ?? ''); } catch { return ''; } };
-      // #2595 (review Major 2): reconstrdoc-arch-0006-uc-v1t UNCONDITIONALLY, mirroring the
+      // #2595 (review Major 2): reconstruct UNCONDITIONALLY, mirroring the
       // `path` decision above rather than merely filling in when the field
       // happens to be absent. kimi-cli's StrReplaceFile schema is `path` +
       // `edit` only (src/kimi_cli/tools/file/replace.py @ 4a550ef) — it carries
       // no `old_string`/`new_string` at all, so either field appearing in a
       // Kimi payload is ALWAYS model-supplied, exactly like `file_path`. Under
       // the old `=== undefined` condition a model-supplied `new_string: ""`
-      // SHADOWED the reconstrdoc-arch-0006-uc-v1tion, leaving gsd-prompt-guard's injection scan
+      // SHADOWED the reconstruction, leaving gsd-prompt-guard's injection scan
       // reading '' and exiting at its `if (!content)` before it ever saw the
       // real `edit[].new` — a one-key bypass of the very scan this fix's
       // guarded coercion exists to keep fed. A `typeof` test would NOT close

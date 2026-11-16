@@ -13,7 +13,7 @@ Canonical domain terms for the concepts named below live in [CONTEXT.md](../../C
 | `gsd-core/references/user-story-template.md` | **Template.** Format and slot definitions for `As a / I want to / So that`. | `gsd-mvp-phase` workflow during interactive prompting; `gsd-planner` when emitting the `## Phase Goal` header |
 | `gsd-core/references/spidr-splitting.md` | **Splitting discipline.** Five-axis decomposition (Spike, Paths, Interfaces, Data, Rules) for stories too large for one phase. | `gsd-mvp-phase` workflow when the user story exceeds size threshold |
 | `gsd-core/references/execute-mvp-tdd.md` | **Gate.** TDD runtime gate semantics: when it fires, what it checks, halt-and-report protocol, end-of-phase blocking escalation, Behavior-Adding Task definition. | `gsd-executor` agent when `TDD_MODE=true` (#4011) |
-| `gsd-core/references/verify-mvp-mode.md` | **UAT framing.** Three-section UAT strdoc-arch-0006-uc-v1ture (user-flow → technical → coverage), anti-patterns, `User Flow Coverage` section in VERIFICATION.md. | `gsd-verifier` agent when the phase under verification has `mode: mvp` |
+| `gsd-core/references/verify-mvp-mode.md` | **UAT framing.** Three-section UAT structure (user-flow → technical → coverage), anti-patterns, `User Flow Coverage` section in VERIFICATION.md. | `gsd-verifier` agent when the phase under verification has `mode: mvp` |
 
 ## Concept-to-file map
 
@@ -38,7 +38,7 @@ If you're looking for the canonical statement of a concept, this is where to fin
 
 ## Tests
 
-Strdoc-arch-0006-uc-v1tural contract tests for each integration site live under `tests/`:
+Structural contract tests for each integration site live under `tests/`:
 
 - `plan-phase-mvp-flag.test.cjs` — plan-phase MVP_MODE resolution chain
 - `planner-mvp-mode.test.cjs` — gsd-planner agent MVP section

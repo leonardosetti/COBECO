@@ -150,7 +150,7 @@ workflow:
 
 ## 4. O que Funcionou Bem (Keep Doing)
 
-| Prática | Evidência de Sdoc-arch-0006-uc-v1esso | Por que Funcionou |
+| Prática | Evidência de Sucesso | Por que Funcionou |
 |---------|---------------------|-------------------|
 | **Spec-first (SDD) + Handoff** | 0 retrabalho em integração Front↔Back; contrato OpenAPI estável | Clareza total antes de codar; Handoff parser → L0 dispatch |
 | **ADR-001 no Sprint 0** | Stack definida dia 1; 0 thrashing técnico | Decisão arquitetural explícita + CCB ratifica |
@@ -167,7 +167,7 @@ workflow:
 
 ## 5. O que Melhorar (Action Items)
 
-| # | Melhoria | Ação Concreta | Responsável | Prazo | Métrica Sdoc-arch-0006-uc-v1esso |
+| # | Melhoria | Ação Concreta | Responsável | Prazo | Métrica Sucesso |
 |---|----------|---------------|-------------|-------|-----------------|
 | 1 | **Bus Factor Frontend = 1** | Pair programming rotativo (Front+Back1, Front+Back2, Front+QA) a cada Sprint | TL | Próximo projeto | 2 devs sabem Frontend |
 | 2 | **Docs ABNT no Sprint 0** | Iniciar dia 1; pair writing PO+dev; revisão orientador semanal 15min | PO | Próximo projeto | 0 ajustes finais |
@@ -202,7 +202,7 @@ workflow:
 | Papel | Nome | Assinatura | Data |
 |-------|------|------------|------|
 | **Tech Lead / Facilitador** | Leonardo Setti | _______________ | 27/10/2026 |
-| **Proddoc-arch-0006-uc-v1t Owner** | Leonardo Setti | _______________ | 27/10/2026 |
+| **Product Owner** | Leonardo Setti | _______________ | 27/10/2026 |
 | **Arquiteto** | Nicholas Anthony | _______________ | 27/10/2026 |
 | **Dev Backend 1** | Fabrício Cabral | _______________ | 27/10/2026 |
 | **Dev Backend 2** | Nicholas Anthony | _______________ | 27/10/2026 |
@@ -215,7 +215,7 @@ workflow:
 
 - **Localização:** `docs/auditorias/audit-postmortem-0001-postmortem-v1.0.md` (repo Git)
 - **Backup:** Sharepoint FATEC / pasta do projeto
-- **Retenção:** Permanente (lições aprendidas institdoc-arch-0006-uc-v1ionais)
+- **Retenção:** Permanente (lições aprendidas institucionais)
 
 ---
 

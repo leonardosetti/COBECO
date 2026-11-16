@@ -37,7 +37,7 @@ destino-evidencias-uat: 'Destino das evidências de UAT DECIDIDO = docs/uat/, cl
 gap-e4-backlog-req-us: 'Gap E.4 (conversao REQ->User Story, backlog inexistente) RESOLVIDO
   como artefato versionado: docs/analise/BACKLOG-REQ-US-M3-M4.md (criado 05/11/2026).
   Contem 17 cards (US-001..017) mapeados a REQ-01..15, com prioridade (10 must, 4
-  should, 3 conditional, 1 blocked), macro-fase (MF2-constrdoc-arch-0006-uc-v1ao/MF3-consolidacao),
+  should, 3 conditional, 1 blocked), macro-fase (MF2-construcao/MF3-consolidacao),
   status, trace id e spec de origem. Nao foi possivel publicar como Issues no GitHub:
   o PAT tem apenas leitura (createIssue 403, label create 403). O documento esta pronto
   para importacao manual via GitHub web pelo PO (agent-po). Marco alvo: M3 ja encerrou

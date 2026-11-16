@@ -59,7 +59,7 @@ Plans:
 **Decimal Phases:**
 
 - Phase 2.1: Critical Security Patch (inserted after Phase 2 for urgent fix)
-- Phase 5.1: Performance Hotfix (inserted after Phase 5 for proddoc-arch-0006-uc-v1tion issue)
+- Phase 5.1: Performance Hotfix (inserted after Phase 5 for production issue)
 
 **Key Decisions:**
 {{DECISIONS_FROM_PROJECT_STATE}}

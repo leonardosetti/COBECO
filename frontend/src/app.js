@@ -778,7 +778,7 @@ const Views = {
           <section class="card hidden" id="step-resultado">
             <div class="card-header flex items-center justify-between">
               <h2 class="text-xl font-semibold flex items-center gap-2">
-                <span class="badge badge-sdoc-arch-0006-uc-v1cess">Resultado</span> Comparação de Preços
+                <span class="badge badge-success">Resultado</span> Comparação de Preços
               </h2>
               <button id="btn-nova-comparacao" class="btn btn-ghost">Nova Comparação</button>
             </div>
@@ -1033,7 +1033,7 @@ const AuthViews = {
         const perfil = await ApiClient.getPerfil();
         State.setUser(perfil, response.access_token);
 
-        showToast('Login realizado com sdoc-arch-0006-uc-v1esso!', 'sdoc-arch-0006-uc-v1cess');
+        showToast('Login realizado com sucesso!', 'success');
 
         // Verifica lista efêmera
         if (State.ephemeralList) {
@@ -1051,7 +1051,7 @@ const AuthViews = {
             const action = document.querySelector('[data-action]')?.dataset.action;
             if (action === 'salvar') {
               ApiClient.promoverEfemera(State.ephemeralList).then(() => {
-                showToast('Lista salva com sdoc-arch-0006-uc-v1esso!', 'sdoc-arch-0006-uc-v1cess');
+                showToast('Lista salva com sucesso!', 'success');
                 State.clearEphemeralList();
               }).catch(e => showToast('Erro: ' + e.message, 'error'));
             } else {
@@ -1099,7 +1099,7 @@ const AuthViews = {
 
       try {
         await ApiClient.cadastrar(data);
-        showToast('Conta criada com sdoc-arch-0006-uc-v1esso! Redirecionando...', 'sdoc-arch-0006-uc-v1cess');
+        showToast('Conta criada com sucesso! Redirecionando...', 'success');
         setTimeout(() => State.navigate('login'), 1500);
       } catch (e) {
         showToast(e.message, 'error');
@@ -1114,7 +1114,7 @@ const AuthViews = {
       await ApiClient.logout();
     } catch {}
     State.clearUser();
-    showToast('Logout realizado', 'sdoc-arch-0006-uc-v1cess');
+    showToast('Logout realizado', 'success');
     State.navigate('home');
   },
 
@@ -1144,7 +1144,7 @@ const AuthViews = {
 
       try {
         await ApiClient.atualizarPerfil(data);
-        showToast('Perfil atualizado!', 'sdoc-arch-0006-uc-v1cess');
+        showToast('Perfil atualizado!', 'success');
         // Recarrega perfil
         const perfil = await ApiClient.getPerfil();
         State.setUser(perfil, ApiClient.getToken());
@@ -1177,7 +1177,7 @@ const AuthViews = {
         if (response.message && response.message.includes('logado no servidor')) {
           showToast('Se o usuário existir, o token foi logado no servidor (veja console do backend)', 'info');
         } else {
-          showToast('Se o usuário existir, instruções foram enviadas', 'sdoc-arch-0006-uc-v1cess');
+          showToast('Se o usuário existir, instruções foram enviadas', 'success');
         }
         setTimeout(() => State.navigate('login'), 2000);
       } catch (e) {
@@ -1216,7 +1216,7 @@ const AuthViews = {
           method: 'POST',
           body: JSON.stringify(data),
         });
-        showToast('Senha alterada com sdoc-arch-0006-uc-v1esso!', 'sdoc-arch-0006-uc-v1cess');
+        showToast('Senha alterada com sucesso!', 'success');
         setTimeout(() => State.navigate('login'), 1500);
       } catch (e) {
         showToast(e.message, 'error');
@@ -1364,7 +1364,7 @@ const ListaViews = {
         } else {
           await ApiClient.promoverEfemera({ nome, itens });
         }
-        showToast('Lista salva com sdoc-arch-0006-uc-v1esso!', 'sdoc-arch-0006-uc-v1cess');
+        showToast('Lista salva com sucesso!', 'success');
         State.clearEphemeralList();
         itens = [];
         nomeInput.value = '';
@@ -1403,7 +1403,7 @@ const ListaViews = {
         }
         try {
           await ApiClient.excluirLista(id, nome);
-          showToast('Lista excluída', 'sdoc-arch-0006-uc-v1cess');
+          showToast('Lista excluída', 'success');
           State.navigate('minhas-listas');
         } catch (e) {
           showToast('Erro: ' + e.message, 'error');
@@ -1424,7 +1424,7 @@ const ListaViews = {
       if (confirmacao !== nome) return;
       try {
         await ApiClient.excluirLista(id, nome);
-        showToast('Lista excluída', 'sdoc-arch-0006-uc-v1cess');
+        showToast('Lista excluída', 'success');
         State.navigate('minhas-listas');
       } catch (e) {
         showToast('Erro: ' + e.message, 'error');
@@ -1443,7 +1443,7 @@ const ListaViews = {
         a.download = `lista_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.pdf`;
         a.click();
         URL.revokeObjectURL(url);
-        showToast('PDF baixado!', 'sdoc-arch-0006-uc-v1cess');
+        showToast('PDF baixado!', 'success');
       } catch (e) {
         showToast('Erro ao gerar PDF: ' + e.message, 'error');
       } finally {
@@ -1594,7 +1594,7 @@ const ListaViews = {
 
       try {
         await ApiClient.atualizarLista(listaId, { nome, itens });
-        showToast('Lista atualizada com sdoc-arch-0006-uc-v1esso!', 'sdoc-arch-0006-uc-v1cess');
+        showToast('Lista atualizada com sucesso!', 'success');
         State.navigate('minhas-listas');
       } catch (e) {
         showToast('Erro ao salvar: ' + e.message, 'error');
@@ -1671,7 +1671,7 @@ const ComparacaoViews = {
           // Por enquanto, simula
           const simulated = Math.random() * 100;
           badge.textContent = simulated.toFixed(1) + '%';
-          badge.className = 'badge ' + (simulated >= minDisp ? 'badge-sdoc-arch-0006-uc-v1cess' : 'badge-warning');
+          badge.className = 'badge ' + (simulated >= minDisp ? 'badge-success' : 'badge-warning');
           if (simulated < minDisp) {
             cb.checked = false;
             cb.disabled = true;
@@ -1756,9 +1756,9 @@ function renderResultado(data) {
   container.innerHTML = `
     <div class="mb-6">
       <div class="flex items-center gap-2 mb-2">
-        <span class="badge badge-sdoc-arch-0006-uc-v1cess">Lista: ${escapeHtml(data.lista_nome)}</span>
+        <span class="badge badge-success">Lista: ${escapeHtml(data.lista_nome)}</span>
         ${data.melhor_fornecedor_id ? `
-          <span class="badge badge-sdoc-arch-0006-uc-v1cess">🏆 Melhor: Fornecedor #${data.melhor_fornecedor_id}</span>
+          <span class="badge badge-success">🏆 Melhor: Fornecedor #${data.melhor_fornecedor_id}</span>
         ` : ''}
       </div>
     </div>
@@ -1777,7 +1777,7 @@ function renderResultado(data) {
         <tbody>
           ${data.fornecedores.map(f => `
             <tr class="${f.eh_melhor ? 'bg-green-50' : ''}">
-              <td class="font-medium">${escapeHtml(f.fornecedor_nome)} ${f.eh_melhor ? '<span class="badge badge-sdoc-arch-0006-uc-v1cess ml-2">MELHOR</span>' : ''}</td>
+              <td class="font-medium">${escapeHtml(f.fornecedor_nome)} ${f.eh_melhor ? '<span class="badge badge-success ml-2">MELHOR</span>' : ''}</td>
               <td class="text-center">${f.itens_disponiveis}</td>
               <td class="text-center text-red-600">${f.itens_ausentes}</td>
               <td class="text-center">${f.percentual_disponibilidade.toFixed(1)}%</td>
@@ -1794,7 +1794,7 @@ function renderResultado(data) {
         ${data.fornecedores.map(f => `
           <div class="card ${f.eh_melhor ? 'ring-2 ring-green-500' : ''}">
             <div class="card-header flex items-center justify-between">
-              <h4 class="font-semibold">${escapeHtml(f.fornecedor_nome)} ${f.eh_melhor ? '<span class="badge badge-sdoc-arch-0006-uc-v1cess">MELHOR OFERTA</span>' : ''}</h4>
+              <h4 class="font-semibold">${escapeHtml(f.fornecedor_nome)} ${f.eh_melhor ? '<span class="badge badge-success">MELHOR OFERTA</span>' : ''}</h4>
               <span class="text-right">Total: <strong>${formatCurrency(f.preco_total)}</strong></span>
             </div>
             <div class="card-body p-0">

@@ -1,6 +1,6 @@
 <purpose>
 Clarify WHAT a phase delivers through a Socratic interview loop with quantitative ambiguity scoring.
-Proddoc-arch-0006-uc-v1es a SPEC.md with falsifiable requirements that discuss-phase treats as locked decisions.
+Produces a SPEC.md with falsifiable requirements that discuss-phase treats as locked decisions.
 
 This workflow handles "what" and "why" — discuss-phase handles "how".
 </purpose>
@@ -32,8 +32,8 @@ Rotate through these perspectives — each naturally surfaces different blindspo
 
 **Simplifier (round 2):** Surface minimum viable scope.
 - "What's the simplest version that solves the core problem?"
-- "If you had to cut 50%, what's the irreddoc-arch-0006-uc-v1ible core?"
-- "What would make this phase a sdoc-arch-0006-uc-v1cess even without the nice-to-haves?"
+- "If you had to cut 50%, what's the irreducible core?"
+- "What would make this phase a success even without the nice-to-haves?"
 
 **Boundary Keeper (round 3):** Lock the perimeter.
 - "What explicitly will NOT be done in this phase?"
@@ -300,11 +300,11 @@ fi
 rm -f "$REQS_JSON"
 # Exit-0-but-garbage guard: the report must parse as JSON with the expected { items[], coverage{} } shape.
 if ! printf '%s' "$COVERAGE" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{let r;try{r=JSON.parse(s)}catch{process.exit(1)}if(!r||!Array.isArray(r.items)||typeof r.coverage!=="object"||r.coverage===null)process.exit(1)})'; then
-  echo "ERROR: edge-probe proddoc-arch-0006-uc-v1ed an unparseable or malformed coverage report — refusing to proceed with the resolution loop." >&2
+  echo "ERROR: edge-probe produced an unparseable or malformed coverage report — refusing to proceed with the resolution loop." >&2
   exit 1
 fi
 # Render the validated report into the model's visible context (#3102). Until here $COVERAGE was
-# captured, shape-checked, and reddoc-arch-0006-uc-v1ed to coverage.applicable — the engine's per-requirement
+# captured, shape-checked, and reduced to coverage.applicable — the engine's per-requirement
 # items[] never reached the model, so the resolution loop below re-derived edge categories from
 # requirement PROSE (the data-flow twin of #2733's control-flow discard). These rows are the
 # deterministic FLOOR the resolution loop consumes. Printed RAW (not a bespoke table) so this
@@ -321,7 +321,7 @@ echo "### (end edge-probe coverage report)"
 APPLICABLE=$(printf '%s' "$COVERAGE" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{let n=0;try{n=JSON.parse(s).coverage.applicable}catch{n=0}process.stdout.write(String(n))})')
 UNCLASSIFIED=$(printf '%s' "$COVERAGE" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{let n=0;try{n=JSON.parse(s).coverage.unclassified}catch{n=0}process.stdout.write(String(n))})')
 # #4656: all-unclassified is the accidental-miss case the applicable:0 guard could never
-# reach — #1110's soft-signal rows make applicable non-zero by constrdoc-arch-0006-uc-v1tion there.
+# reach — #1110's soft-signal rows make applicable non-zero by construction there.
 if [ "$APPLICABLE" = "0" ] || [ "$UNCLASSIFIED" = "$APPLICABLE" ]; then
   echo "WARNING: edge-probe proposed ZERO applicable edges across all requirements — likely a classification miss or malformed requirements, not a genuinely edge-free spec. Do NOT silently write an empty Edge Coverage section." >&2
 fi
@@ -342,7 +342,7 @@ For each Requirement gathered so far:
    classification (relevance filter — see the taxonomy in the reference); do not narrow to them.
    Reuse any edges the Round-4 Failure Analyst already surfaced as pre-resolved.
 2. For each raised category, propose a CONCRETE candidate edge (not "consider
-   boundaries" — e.g. "R2 merges intervals; what about `[[1,2],[2,3]]` that only todoc-arch-0006-uc-v1h?").
+   boundaries" — e.g. "R2 merges intervals; what about `[[1,2],[2,3]]` that only touch?").
 3. Resolve each with the user (question; text mode → numbered list):
    - **Specify it** → write a new pass/fail line into Acceptance Criteria AND mark the
      edge `resolved` with `verification: explicit`.
@@ -398,7 +398,7 @@ For each Requirement gathered so far, run the two-stage recall→precision pass:
 
 1. **Stage 1 — Recall (adversarial prose probe).** Ask the single adversarial question of the
    requirement: *"What could this feature silently become that the author would NOT want, but
-   the spec does not forbid?"* Over-proddoc-arch-0006-uc-v1e (~10 raw must-NOT candidates) — recall first.
+   the spec does not forbid?"* Over-produce (~10 raw must-NOT candidates) — recall first.
 2. **Stage 2 — Precision (one-pass classifier).** Filter the raw list in a single pass:
    **DROP routine-engineering** items (normal correctness/hygiene — "must not mutate input",
    "must not throw on empty" — owned by the edge probe or code review); **KEEP
@@ -438,7 +438,7 @@ For each Requirement gathered so far, run the two-stage recall→precision pass:
        allowed** — if the author cannot yet name the wired check, leave the descriptor empty and
        proceed. It is NOT a hard authoring block; the item simply stays fail-closed/flagged
        downstream (an absent/partial descriptor — or one with no `check_violation_fixture` —
-       → `descriptorFromProjection` null/under-specified/fixture-less → proddoc-arch-0006-uc-v1er fail-closed
+       → `descriptorFromProjection` null/under-specified/fixture-less → producer fail-closed
        locate-or-unprovable, never green). Do NOT capture `failFirst` here — it is a
        verify-time caller attestation, not a spec-authored field (#1279).
    - **Dismiss (reason)** → mark `dismissed` with a REQUIRED non-empty reason (PROB-05). The
@@ -462,7 +462,7 @@ a prohibition** — a wrong dismissal is the exact silent failure this probe eli
 the load-bearing safety property). On a `test`-tier auto-resolution, capture the `check_kind` /
 `check_target` / `check_rule` / `check_violation_fixture` / `check_clean_fixture` descriptor **only when a wired check is unambiguous**; otherwise
 leave it empty — `--auto` NEVER fabricates a check path or fixture (a wrong locate is re-validated and
-fails closed at the proddoc-arch-0006-uc-v1er, but a fabricated path is still noise to avoid). Log:
+fails closed at the producer, but a fabricated path is still noise to avoid). Log:
 `[auto] prohibitions: R resolved, U unresolved`.
 
 **Text mode (PROB-09):** per Step 5's text-mode rule, replace the question menus above
@@ -499,7 +499,7 @@ Use the SPEC.md template from @/lab/FATEC/202602/ger_proj/COGME/.config-config-c
 **Count requirements.** The display in discuss-phase reads: "Found SPEC.md — {N} requirements locked."
 
 **Boundaries must be explicit lists:**
-- "In scope" — what this phase proddoc-arch-0006-uc-v1es
+- "In scope" — what this phase produces
 - "Out of scope" — what it explicitly does NOT do (with brief reasoning)
 
 **Acceptance criteria must be pass/fail checkboxes** — no "should feel good" or "looks reasonable."
@@ -545,7 +545,7 @@ Next: /gsd-discuss-phase {X}
 - Step 5.6 prohibition probe runs after the edge probe; dismissals require a reason; --auto never auto-dismisses a prohibition
 </critical_rules>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - Codebase scouted and current state understood before questioning
 - All 4 dimensions scored after every round
 - Gate passed OR user explicitly chose to write despite gaps
@@ -556,4 +556,4 @@ Next: /gsd-discuss-phase {X}
 - User directed to /gsd-discuss-phase as next step
 - Edge-completeness probe run; Edge Coverage section populated; unresolved edges flagged as assumptions
 - Prohibition-completeness probe run; Prohibitions section populated; unresolved prohibitions flagged as assumptions
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

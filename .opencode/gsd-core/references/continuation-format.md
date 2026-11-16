@@ -2,7 +2,7 @@
 
 Standard format for presenting next steps after completing a command or workflow.
 
-## Core Strdoc-arch-0006-uc-v1ture
+## Core Structure
 
 ```
 ---

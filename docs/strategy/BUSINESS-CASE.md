@@ -3,7 +3,7 @@
 **Versão:** 1.0  
 **Status:** Aprovado  
 **Data:** 13/11/2026  
-**Autor:** Leonardo Setti (Proddoc-arch-0006-uc-v1t Owner)  
+**Autor:** Leonardo Setti (Product Owner)  
 **Relacionado:** `docs/strategy/PROJECT-CHARTER.md`
 
 ---
@@ -14,7 +14,7 @@ O **COBECO MVP** é um sistema web desktop-first para comparação de preços de
 
 O problema abordado é real: consumidores gastam 30+ minutos comparando preços manualmente em múltiplos estabelecimentos. O COBECO reduz esse tempo para <5 minutos via lista de compras + seleção de fornecedores + motor de comparação consolidado + exportação PDF para impressão.
 
-O investimento é **zero financeiro** (R$ 0,00) — apenas horas da equipe (estimadas em ~1.800h totais) e uso de ferramentas FOSS (GitHub, Docker, MySQL, Python, Vanilla JS). O retorno é **eddoc-arch-0006-uc-v1acional e de portfólio**: software funcional público, artefatos de governança PMBOK+SDD reutilizáveis, e aprendizado prático de Clean Architecture, CI/CD, testes, LGPD.
+O investimento é **zero financeiro** (R$ 0,00) — apenas horas da equipe (estimadas em ~1.800h totais) e uso de ferramentas FOSS (GitHub, Docker, MySQL, Python, Vanilla JS). O retorno é **educacional e de portfólio**: software funcional público, artefatos de governança PMBOK+SDD reutilizáveis, e aprendizado prático de Clean Architecture, CI/CD, testes, LGPD.
 
 ---
 
@@ -75,7 +75,7 @@ O investimento é **zero financeiro** (R$ 0,00) — apenas horas da equipe (esti
 ### 5.1 Recursos Humanos
 | Papel | Qtd | Dedicação | Horas Estimadas | Observação |
 |-------|-----|-----------|-----------------|------------|
-| Proddoc-arch-0006-uc-v1t Owner / Tech Lead | 1 (Leonardo) | 50% | ~300h | Charter, RACI, PRD, PO duties, code review |
+| Product Owner / Tech Lead | 1 (Leonardo) | 50% | ~300h | Charter, RACI, PRD, PO duties, code review |
 | Dev Backend | 2 (Fabrício, Nicholas) | 100% | ~600h cada | Auth, Listas, Comparação, PDF, Perfil, Seed, Migrations |
 | Dev Frontend | 1 (Eduardo) | 100% | ~300h | Auth pages, Listas UI, Comparação UI, PDF print, Perfil UI, Feedback components |
 | QA / Dev Backend | 1 (Nicolas) | 50% QA + 50% Backend | ~300h | Test Plan, Unit/E2E, CI, RAID, Runbooks, Seed |
@@ -108,7 +108,7 @@ O investimento é **zero financeiro** (R$ 0,00) — apenas horas da equipe (esti
 | **Custo por Sprint** | ~420h / sprint | 5 pessoas × 6 dias × ~14h/dia (inclui estudo) |
 | **Custo Total (Horas)** | ~2.100h | Proxy de "investimento" |
 
-> **Nota:** Por ser projeto acadêmico sem fins ldoc-arch-0006-uc-v1rativos, a análise foca em **valor eddoc-arch-0006-uc-v1acional**, **entrega no prazo** e **qualidade técnica** como proxies de retorno. O "orçamento" é tempo da equipe.
+> **Nota:** Por ser projeto acadêmico sem fins lucrativos, a análise foca em **valor educacional**, **entrega no prazo** e **qualidade técnica** como proxies de retorno. O "orçamento" é tempo da equipe.
 
 ---
 
@@ -155,4 +155,4 @@ O investimento é **zero financeiro** (R$ 0,00) — apenas horas da equipe (esti
 ---
 
 **Fim do Business Case — COBECO MVP**  
-*Versão acadêmica simplificada — foco em valor eddoc-arch-0006-uc-v1acional e entrega técnica.*
+*Versão acadêmica simplificada — foco em valor educacional e entrega técnica.*

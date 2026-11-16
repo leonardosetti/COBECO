@@ -95,12 +95,12 @@ Project Research — Features dimension for [domain].
 <milestone_context>
 [greenfield OR subsequent]
 
-Greenfield: What features do [domain] proddoc-arch-0006-uc-v1ts have? What's table stakes vs differentiating?
+Greenfield: What features do [domain] products have? What's table stakes vs differentiating?
 Subsequent: How do [target features] typically work? What's expected behavior?
 </milestone_context>
 
 <question>
-What features do [domain] proddoc-arch-0006-uc-v1ts have? What's table stakes vs differentiating?
+What features do [domain] products have? What's table stakes vs differentiating?
 </question>
 
 <required_reading>
@@ -135,12 +135,12 @@ Project Research — Architecture dimension for [domain].
 <milestone_context>
 [greenfield OR subsequent]
 
-Greenfield: How are [domain] systems typically strdoc-arch-0006-uc-v1tured? What are major components?
+Greenfield: How are [domain] systems typically structured? What are major components?
 Subsequent: How do [target features] integrate with existing [domain] architecture?
 </milestone_context>
 
 <question>
-How are [domain] systems typically strdoc-arch-0006-uc-v1tured? What are major components?
+How are [domain] systems typically structured? What are major components?
 </question>
 
 <required_reading>
@@ -150,7 +150,7 @@ How are [domain] systems typically strdoc-arch-0006-uc-v1tured? What are major c
 ${AGENT_SKILLS_RESEARCHER}
 
 <downstream_consumer>
-Your ARCHITECTURE.md informs phase strdoc-arch-0006-uc-v1ture in roadmap. Include:
+Your ARCHITECTURE.md informs phase structure in roadmap. Include:
 - Component boundaries (what talks to what)
 - Data flow (how information moves)
 - Suggested build order (dependencies between components)
@@ -211,6 +211,6 @@ Use template: /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-00
 
 (The "wait for all 4 researchers before spawning the synthesizer" orchestrator rule, the full
 synthesizer `Agent()` call, and the entire #222 self-heal recovery sequence — including its log
-message and closing guarantee — are all stated verbatim in the spine. A pre-existing strdoc-arch-0006-uc-v1tural
+message and closing guarantee — are all stated verbatim in the spine. A pre-existing structural
 drift guard (`tests/research-agent-profiles.test.cjs`) pins them there, so nothing about this
 particular sub-flow is deferred to this file.)

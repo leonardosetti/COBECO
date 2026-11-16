@@ -1,6 +1,6 @@
 # Continue-Here Template
 
-Copy and fill this strdoc-arch-0006-uc-v1ture for `.planning/phases/XX-name/.continue-here.md`:
+Copy and fill this structure for `.planning/phases/XX-name/.continue-here.md`:
 
 ```yaml
 ---
@@ -41,7 +41,7 @@ last_updated: 2025-01-15T14:30:00Z
 </decisions_made>
 
 <blockers>
-[Anything stdoc-arch-0006-uc-v1k or waiting on external factors]
+[Anything stuck or waiting on external factors]
 
 - [Blocker 1]: [status/workaround]
 </blockers>

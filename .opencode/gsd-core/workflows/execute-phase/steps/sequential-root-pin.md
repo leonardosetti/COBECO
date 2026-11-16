@@ -14,7 +14,7 @@ Before this dispatch, read `gsd-core/references/worktree-path-safety.md` step 0p
 `<project_root_pin>` block, substituting `{PINNED_ROOT}` with the literal value of
 `$ORCHESTRATOR_WT` resolved at execute_waves entry, shell-single-quoted per that section's
 composition contract — the dispatched prompt must carry the bound, runnable guard verbatim;
-do not pass this instrdoc-arch-0006-uc-v1tion through in its place.
+do not pass this instruction through in its place.
 
 In this dispatch's `<required_reading>`, also replace the self-derivation line
 `PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)` with

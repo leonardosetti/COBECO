@@ -74,7 +74,7 @@ Exit.
 Extract from the result:
 - `phase_name` — the phase title
 - `goal` — the phase goal/description
-- `sdoc-arch-0006-uc-v1cess_criteria` — array of criteria
+- `success_criteria` — array of criteria
 - `section` — full raw section text (preserves depends_on, requirements, plans, etc.)
 
 Also parse the full section text to extract additional fields not in the SDK result:
@@ -126,7 +126,7 @@ Title:            {phase_name}
 Goal:             {goal}
 Depends on:       {depends_on or "(none)"}
 Requirements:     {requirements or "(none)"}
-Sdoc-arch-0006-uc-v1cess Criteria:
+Success Criteria:
   1. {criterion_1}
   2. {criterion_2}
   ...
@@ -137,7 +137,7 @@ Then ask the user what they want to change:
 ```
 What would you like to do?
 
-  [1] Edit specific fields (title, goal, depends_on, requirements, sdoc-arch-0006-uc-v1cess_criteria)
+  [1] Edit specific fields (title, goal, depends_on, requirements, success_criteria)
   [2] Regenerate all fields from a clarified intent
   [3] Cancel
 
@@ -157,7 +157,7 @@ Ask which fields to edit. For each field the user wants to change, prompt for th
 
 ```
 Which fields do you want to update? (comma-separated or "all")
-Options: title, goal, depends_on, requirements, sdoc-arch-0006-uc-v1cess_criteria
+Options: title, goal, depends_on, requirements, success_criteria
 ```
 
 For each selected field, ask:
@@ -179,8 +179,8 @@ Describe the revised intent for Phase {target} (replace the current description)
 Wait for user input. Use the clarified intent to rewrite all fields:
 - Generate a clear, concise `title` from the intent
 - Write a complete `goal` statement
-- Proddoc-arch-0006-uc-v1e updated `requirements` if the original had them
-- Generate `sdoc-arch-0006-uc-v1cess_criteria` (3-5 measurable criteria)
+- Produce updated `requirements` if the original had them
+- Generate `success_criteria` (3-5 measurable criteria)
 - Preserve `depends_on` unless the user explicitly mentioned changing it
 </step>
 
@@ -218,7 +218,7 @@ Build the updated phase section by applying the changes to the original `section
 - For `goal`: replace the `**Goal:**` line value
 - For `depends_on`: replace or add the `**Depends on:**` line
 - For `requirements`: replace or add the requirements block
-- For `sdoc-arch-0006-uc-v1cess_criteria`: replace the numbered list under `**Sdoc-arch-0006-uc-v1cess Criteria**:`
+- For `success_criteria`: replace the numbered list under `**Success Criteria**:`
 - For full regeneration: rebuild the entire section from the new field values
 
 Show a unified-style diff of old vs. new:
@@ -256,13 +256,13 @@ After writing, re-derive the milestone scope and compare it to the capture:
 SCOPE_AFTER=$(gsd_run query roadmap milestone-scope)
 ```
 
-If `scope` or `phases` differs from SCOPE_BEFORE, the replacement text introddoc-arch-0006-uc-v1ed a heading that terminates the current milestone window (a level 1-3 heading carrying a version token, a ✅/📋/🚧/🔄 marker, or the word "Milestone"). Restore ROADMAP.md by replacing the new section text with the original section text, then report and stop — do NOT update STATE.md and do NOT retry the write:
+If `scope` or `phases` differs from SCOPE_BEFORE, the replacement text introduced a heading that terminates the current milestone window (a level 1-3 heading carrying a version token, a ✅/📋/🚧/🔄 marker, or the word "Milestone"). Restore ROADMAP.md by replacing the new section text with the original section text, then report and stop — do NOT update STATE.md and do NOT retry the write:
 
 ```
 ERROR: edit rejected — milestone scope changed
 Phase set before: {SCOPE_BEFORE phases} / after: {SCOPE_AFTER phases}
 ROADMAP.md rolled back to the original section.
-The updated phase text must not introddoc-arch-0006-uc-v1e a milestone-scoping heading; rewrite the offending line as plain text or a list item.
+The updated phase text must not introduce a milestone-scoping heading; rewrite the offending line as plain text or a list item.
 ```
 
 Exit.
@@ -306,12 +306,12 @@ Fields changed: {changed_field_list}
 - Don't write without showing a diff and getting confirmation
 - Don't edit in_progress/completed phases without --force
 - Don't use raw Write on ROADMAP.md without reading it first; always replace section in place
-- Don't modify the phase directory strdoc-arch-0006-uc-v1ture — only ROADMAP.md changes
-- Don't introddoc-arch-0006-uc-v1e a milestone-scoping heading (level 1-3 with a version token, ✅/📋/🚧/🔄 marker, or "Milestone") in field values — it terminates the current milestone window; the post-write scope check rolls the edit back
+- Don't modify the phase directory structure — only ROADMAP.md changes
+- Don't introduce a milestone-scoping heading (level 1-3 with a version token, ✅/📋/🚧/🔄 marker, or "Milestone") in field values — it terminates the current milestone window; the post-write scope check rolls the edit back
 - Don't commit the change — that's the user's decision
 </anti_patterns>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 Edit-phase is complete when:
 
 - [ ] Phase {target} found and loaded from ROADMAP.md
@@ -324,4 +324,4 @@ Edit-phase is complete when:
 - [ ] Milestone scope verified unchanged after the write (rollback + error on mismatch)
 - [ ] STATE.md Roadmap Evolution updated
 - [ ] User informed of next steps
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

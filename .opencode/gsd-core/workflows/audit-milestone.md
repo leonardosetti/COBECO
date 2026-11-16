@@ -374,7 +374,7 @@ or `5.2` if `5.1` exists), never `<after-phase>`.
 ---
 </offer_next>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Milestone scope identified
 - [ ] All phase VERIFICATION.md files read
 - [ ] SUMMARY.md `requirements-completed` frontmatter extracted for each phase
@@ -383,9 +383,9 @@ or `5.2` if `5.1` exists), never `<after-phase>`.
 - [ ] Orphaned requirements detected (in traceability but absent from all VERIFICATIONs)
 - [ ] Tech debt and deferred gaps aggregated
 - [ ] Integration checker spawned with milestone requirement IDs
-- [ ] v{version}-MILESTONE-AUDIT.md created with strdoc-arch-0006-uc-v1tured requirement gap objects
+- [ ] v{version}-MILESTONE-AUDIT.md created with structured requirement gap objects
 - [ ] FAIL gate enforced — any unsatisfied requirement forces gaps_found status
 - [ ] Nyquist compliance scanned for all milestone phases (if enabled)
 - [ ] Missing VALIDATION.md phases flagged with validate-phase suggestion
 - [ ] Results presented with actionable next steps
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

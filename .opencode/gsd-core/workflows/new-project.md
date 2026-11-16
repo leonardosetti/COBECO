@@ -71,7 +71,7 @@ Proceeding without research subagents — roadmap will be generated inline.
 ```
 Skip Steps 6–7 (parallel research and synthesis) and proceed directly to roadmap creation in Step 8.
 
-**Detect runtime and set instrdoc-arch-0006-uc-v1tion file name:**
+**Detect runtime and set instruction file name:**
 
 Derive `RUNTIME` from the invoking prompt's `execution_context` path:
 - Path contains `/.codex/` → `RUNTIME=codex`
@@ -89,12 +89,12 @@ elif [ -n "$TRAE_CONFIG_DIR" ]; then RUNTIME="trae"
 else RUNTIME="claude"; fi
 ```
 
-Set the instrdoc-arch-0006-uc-v1tion file variable via the shared runtime-name policy adapter (`gsd_run query project-instrdoc-arch-0006-uc-v1tion-file`, backed by `getProjectInstrdoc-arch-0006-uc-v1tionFile` in `runtime-name-policy.cjs` — the single source of truth shared with `profile-output.cjs`):
+Set the instruction file variable via the shared runtime-name policy adapter (`gsd_run query project-instruction-file`, backed by `getProjectInstructionFile` in `runtime-name-policy.cjs` — the single source of truth shared with `profile-output.cjs`):
 ```bash
-INSTRUCTION_FILE=$(gsd_run query project-instrdoc-arch-0006-uc-v1tion-file --runtime "$RUNTIME")
+INSTRUCTION_FILE=$(gsd_run query project-instruction-file --runtime "$RUNTIME")
 ```
 
-All subsequent references to the project instrdoc-arch-0006-uc-v1tion file use `$INSTRUCTION_FILE`.
+All subsequent references to the project instruction file use `$INSTRUCTION_FILE`.
 
 **If `project_exists` is true and `init_incomplete` is true (#4040 — interrupted bootstrap):** Resume initialization instead of erroring. `.planning/` exists but initialization stopped before all core artifacts landed. Keep the existing `PROJECT.md` and any already-created artifacts (`REQUIREMENTS.md` if present, `config.json`); skip the steps that would recreate them and continue the flow from the first missing artifact in init order — `REQUIREMENTS.md` → `ROADMAP.md` + `STATE.md` — until all exist. Do not error and do not bounce the user back to `/gsd-progress` (that routing loop is the #4040 bug).
 
@@ -549,11 +549,11 @@ questions: [
   },
   {
     header: "Compact Content",
-    question: "Use token-minimized instrdoc-arch-0006-uc-v1tion content where available? (smaller context footprint)",
+    question: "Use token-minimized instruction content where available? (smaller context footprint)",
     multiSelect: false,
     options: [
-      { label: "No (Recommended)", description: "Full instrdoc-arch-0006-uc-v1tion detail loaded every time. Best while evaluating GSD or on a large context window." },
-      { label: "Yes", description: "Terser instrdoc-arch-0006-uc-v1tions where a compact variant exists; canonical detail loads only when actually needed. Frees up context for long sessions or large codebases." }
+      { label: "No (Recommended)", description: "Full instruction detail loaded every time. Best while evaluating GSD or on a large context window." },
+      { label: "Yes", description: "Terser instructions where a compact variant exists; canonical detail loads only when actually needed. Frees up context for long sessions or large codebases." }
     ]
   }
 ]
@@ -609,14 +609,14 @@ Recommended options:
 
 - `User Stories & Acceptance Criteria`
 - `Risks & Dependencies`
-- `Sdoc-arch-0006-uc-v1cess Metrics & Release Criteria`
+- `Success Metrics & Release Criteria`
 - `Stakeholder Review & Approval`
 
 Create `.planning/config-planning-0001-planning-config-v1-planning-0001-planning-config-v1.0-planning-0001-planning-config-v1.0-planning-0001-planning-config-v1.0.json` with all settings (CLI fills in remaining defaults automatically):
 
 ```bash
 mkdir -p .planning
-gsd_run query config-new-project '{"mode":"[yolo|interactive]","granularity":"[selected]","parallelization":true|false,"commit_docs":true|false,"model_profile":"quality|balanced|budget|adaptive|inherit","workflow":{"research":true|false,"plan_check":true|false,"verifier":true|false,"compact_content":true|false,"nyquist_validation":[false if granularity=coarse, true otherwise]},"plan_review":{"source_grounding":true|false},"ship":{"pr_body_sections":[{"heading":"User Stories & Acceptance Criteria","enabled":true|false,"source":"REQUIREMENTS.md ## User Stories || REQUIREMENTS.md ## Acceptance Criteria","fallback":"- Acceptance criteria are covered by the linked requirements and verification evidence."},{"heading":"Risks & Dependencies","enabled":true|false,"source":"PLAN.md ## Risks || PLAN.md ## Dependencies","fallback":"- No known high-risk rollout dependencies."},{"heading":"Sdoc-arch-0006-uc-v1cess Metrics & Release Criteria","enabled":true|false,"source":"REQUIREMENTS.md ## Definition of Done || VERIFICATION.md ## Release Criteria","fallback":"- Release when automated verification and required manual checks pass."},{"heading":"Stakeholder Review & Approval","enabled":true|false,"template":"- Proddoc-arch-0006-uc-v1t owner approval pending for {phase_name}."}]}}'
+gsd_run query config-new-project '{"mode":"[yolo|interactive]","granularity":"[selected]","parallelization":true|false,"commit_docs":true|false,"model_profile":"quality|balanced|budget|adaptive|inherit","workflow":{"research":true|false,"plan_check":true|false,"verifier":true|false,"compact_content":true|false,"nyquist_validation":[false if granularity=coarse, true otherwise]},"plan_review":{"source_grounding":true|false},"ship":{"pr_body_sections":[{"heading":"User Stories & Acceptance Criteria","enabled":true|false,"source":"REQUIREMENTS.md ## User Stories || REQUIREMENTS.md ## Acceptance Criteria","fallback":"- Acceptance criteria are covered by the linked requirements and verification evidence."},{"heading":"Risks & Dependencies","enabled":true|false,"source":"PLAN.md ## Risks || PLAN.md ## Dependencies","fallback":"- No known high-risk rollout dependencies."},{"heading":"Success Metrics & Release Criteria","enabled":true|false,"source":"REQUIREMENTS.md ## Definition of Done || VERIFICATION.md ## Release Criteria","fallback":"- Release when automated verification and required manual checks pass."},{"heading":"Stakeholder Review & Approval","enabled":true|false,"template":"- Product owner approval pending for {phase_name}."}]}}'
 ```
 
 **Note:** Run `/gsd-settings` anytime to update model profile, workflow agents, branching strategy, and other preferences.
@@ -755,7 +755,7 @@ Commit after writing.
 <!-- gsd:protected -->
 > **ORCHESTRATOR RULE — CODEX RUNTIME**: After calling Agent() above, stop working on this task immediately. Do not read more files, edit code, or run tests related to this task while the subagent is active. Wait for the subagent to return its result. This prevents duplicate work, conflicting edits, and wasted context. Only resume when the subagent result is available.
 
-**Synthesizer output self-heal (#222) — verify SUMMARY.md materialized:** The synthesizer's canonical output is `.planning/research/SUMMARY.md` on disk; its brief strdoc-arch-0006-uc-v1tured return (`## SYNTHESIS COMPLETE` plus a few `###` confirmation lines) is NOT the file content. The restriction is not always fabricated: Claude Code refuses a subagent's `Write` to a few exact basenames — `SUMMARY.md` among them — with `Subagents should return findings as text, not write report files` (observed on Claude Code 2.1.301), and the synthesizer is told to return the full document inline when its `Write` hits that error; the refusal is real, not fabricated. It depends on the exact basename (`SUMMARY.md`, `REPORT.md`, `FINDINGS.md`, `ANALYSIS.md`, case-insensitive; a prefixed name sdoc-arch-0006-uc-v1h as `01-01-SUMMARY.md` and other agents' files write fine), so do not tell other agents to avoid `Write`. Either cause lands in step 2. A known LLM false-refusal (issue #222) sometimes makes the agent return the full SUMMARY.md document inline — fabricating a write restriction (e.g. "the runtime is blocking file writes") — instead of writing the file. Prompt hardening alone does not fully eliminate it, so the orchestrator MUST absorb either cause deterministically before spawning `gsd-roadmapper`:
+**Synthesizer output self-heal (#222) — verify SUMMARY.md materialized:** The synthesizer's canonical output is `.planning/research/SUMMARY.md` on disk; its brief structured return (`## SYNTHESIS COMPLETE` plus a few `###` confirmation lines) is NOT the file content. The restriction is not always fabricated: Claude Code refuses a subagent's `Write` to a few exact basenames — `SUMMARY.md` among them — with `Subagents should return findings as text, not write report files` (observed on Claude Code 2.1.301), and the synthesizer is told to return the full document inline when its `Write` hits that error; the refusal is real, not fabricated. It depends on the exact basename (`SUMMARY.md`, `REPORT.md`, `FINDINGS.md`, `ANALYSIS.md`, case-insensitive; a prefixed name such as `01-01-SUMMARY.md` and other agents' files write fine), so do not tell other agents to avoid `Write`. Either cause lands in step 2. A known LLM false-refusal (issue #222) sometimes makes the agent return the full SUMMARY.md document inline — fabricating a write restriction (e.g. "the runtime is blocking file writes") — instead of writing the file. Prompt hardening alone does not fully eliminate it, so the orchestrator MUST absorb either cause deterministically before spawning `gsd-roadmapper`:
 
 1. Verify `.planning/research/SUMMARY.md` exists AND is substantive — non-empty, and free of any leftover `<!-- gsd:write-continue -->` continuation sentinel (which marks a truncated/incomplete write). You may validate with `gsd_run verify-summary .planning/research/SUMMARY.md` — it exits 0 regardless, so check its JSON `passed` field (`"passed": false` means missing or invalid), not the process exit code. If it passes, continue normally.
 2. If it is MISSING or invalid AND the synthesizer's return message contains the FULL SUMMARY.md document — recognizable by the template's top-level markers `# Project Research Summary`, `## Key Findings`, `## Implications for Roadmap`, and `## Sources`, not merely the brief `## SYNTHESIS COMPLETE` confirmation — the synthesizer returned the document inline (the #222 false-refusal, or the runtime's real refusal of the name `SUMMARY.md`): write that returned document to `.planning/research/SUMMARY.md` with the Write tool, then commit ALL research artifacts the synthesizer owns (it commits on behalf of the four researchers) with `gsd_run query commit "docs: complete project research" --files .planning/research/` unless they are already committed. Log `⚠ #222 self-heal: synthesizer returned SUMMARY.md inline without writing it; orchestrator persisted the file.`
@@ -933,16 +933,16 @@ If "adjust": Return to scoping.
 gsd_run query commit "docs: define v1 requirements" --files .planning/REQUIREMENTS.md
 ```
 
-## 7.5. Project Strdoc-arch-0006-uc-v1ture Mode
+## 7.5. Project Structure Mode
 
 **If auto mode:** Set `PROJECT_MODE=mvp` and skip this prompt.
 
 **Mode prompt: Vertical MVP vs Horizontal Layers.**
 
-Ask the user how they want to strdoc-arch-0006-uc-v1ture the project. Use `question` with two options:
+Ask the user how they want to structure the project. Use `question` with two options:
 
-- **Vertical MVP** — get a working app fast, add features slice by slice. Each phase delivers an end-to-end user capability. *(Recommended for new proddoc-arch-0006-uc-v1ts and rapid-iteration MVPs.)*
-- **Horizontal Layers** — build complete technical layers (DB → API → UI → wiring) and assemble at the end. *(Better for infrastrdoc-arch-0006-uc-v1ture-heavy projects with multiple developers.)*
+- **Vertical MVP** — get a working app fast, add features slice by slice. Each phase delivers an end-to-end user capability. *(Recommended for new products and rapid-iteration MVPs.)*
+- **Horizontal Layers** — build complete technical layers (DB → API → UI → wiring) and assemble at the end. *(Better for infrastructure-heavy projects with multiple developers.)*
 
 Set `PROJECT_MODE=mvp` if the user picks Vertical MVP, otherwise `PROJECT_MODE=standard`.
 
@@ -969,7 +969,7 @@ Example MVP-mode emit for Phase 1:
 ### Phase 1: [Name]
 **Goal:** [Goal]
 **Mode:** mvp
-**Sdoc-arch-0006-uc-v1cess Criteria**:
+**Success Criteria**:
 1. [Criterion]
 ```
 
@@ -992,17 +992,17 @@ ${AGENT_SKILLS_ROADMAPPER}
 
 </planning_context>
 
-<instrdoc-arch-0006-uc-v1tions>
+<instructions>
 Create roadmap:
-1. Derive phases from requirements (don't impose strdoc-arch-0006-uc-v1ture)
+1. Derive phases from requirements (don't impose structure)
 2. Map every v1 requirement to exactly one phase
-3. Derive 2-5 sdoc-arch-0006-uc-v1cess criteria per phase (observable user behaviors)
+3. Derive 2-5 success criteria per phase (observable user behaviors)
 4. Validate 100% coverage
 5. Write files immediately (ROADMAP.md, STATE.md, update REQUIREMENTS.md traceability)
 6. Return ROADMAP CREATED with summary
 
 Write files first, then return. This ensures artifacts persist even if context is lost.
-</instrdoc-arch-0006-uc-v1tions>
+</instructions>
 ", subagent_type="gsd-roadmapper", model="{roadmapper_model}", description="Create roadmap")
 ```
 
@@ -1027,7 +1027,7 @@ Read the created ROADMAP.md and present it nicely inline:
 
 **[N] phases** | **[X] requirements mapped** | All v1 requirements covered ✓
 
-| # | Phase | Goal | Requirements | Sdoc-arch-0006-uc-v1cess Criteria |
+| # | Phase | Goal | Requirements | Success Criteria |
 |---|-------|------|--------------|------------------|
 | 1 | [Name] | [Goal] | [REQ-IDs] | [count] |
 | 2 | [Name] | [Goal] | [REQ-IDs] | [count] |
@@ -1039,7 +1039,7 @@ Read the created ROADMAP.md and present it nicely inline:
 **Phase 1: [Name]**
 Goal: [goal]
 Requirements: [REQ-IDs]
-Sdoc-arch-0006-uc-v1cess criteria:
+Success criteria:
 1. [criterion]
 2. [criterion]
 3. [criterion]
@@ -1047,7 +1047,7 @@ Sdoc-arch-0006-uc-v1cess criteria:
 **Phase 2: [Name]**
 Goal: [goal]
 Requirements: [REQ-IDs]
-Sdoc-arch-0006-uc-v1cess criteria:
+Success criteria:
 1. [criterion]
 2. [criterion]
 
@@ -1063,7 +1063,7 @@ Sdoc-arch-0006-uc-v1cess criteria:
 Use question:
 
 - header: "Roadmap"
-- question: "Does this roadmap strdoc-arch-0006-uc-v1ture work for you?"
+- question: "Does this roadmap structure work for you?"
 - options:
   - "Approve" — Commit and continue
   - "Adjust phases" — Tell me what to change
@@ -1101,7 +1101,7 @@ Use question:
 
 **If "Review full file":** Display raw `cat .planning/ROADMAP.md`, then re-ask.
 
-**Generate or refresh project instrdoc-arch-0006-uc-v1tion file before final commit:**
+**Generate or refresh project instruction file before final commit:**
 
 ```bash
 gsd_run query generate-claude-md --output "$INSTRUCTION_FILE"
@@ -1211,11 +1211,11 @@ PHASE1_HAS_UI=$(echo "$PHASE1_SECTION" | grep -qi "UI hint.*yes" && echo "true" 
 - `.planning/REQUIREMENTS.md`
 - `.planning/ROADMAP.md`
 - `.planning/STATE.md`
-- `$INSTRUCTION_FILE` (runtime-derived via the shared `getProjectInstrdoc-arch-0006-uc-v1tionFile` policy: `doc-agents-0001-agents-canon.md` for codex/config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/kilo/kimi, `.github/copilot-instrdoc-arch-0006-uc-v1tions.md` for copilot, `GEMINI.md` for antigravity, `.claude/doc-agents-0001-agents-canon.md` for claude)
+- `$INSTRUCTION_FILE` (runtime-derived via the shared `getProjectInstructionFile` policy: `doc-agents-0001-agents-canon.md` for codex/config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/kilo/kimi, `.github/copilot-instructions.md` for copilot, `GEMINI.md` for antigravity, `.claude/doc-agents-0001-agents-canon.md` for claude)
 
 </output>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 
 - [ ] .planning/ directory created
 - [ ] Git repo initialized
@@ -1230,12 +1230,12 @@ PHASE1_HAS_UI=$(echo "$PHASE1_SECTION" | grep -qi "UI hint.*yes" && echo "true" 
 - [ ] gsd-roadmapper spawned with context
 - [ ] Roadmap files written immediately (not draft)
 - [ ] User feedback incorporated (if any)
-- [ ] ROADMAP.md created with phases, requirement mappings, sdoc-arch-0006-uc-v1cess criteria
+- [ ] ROADMAP.md created with phases, requirement mappings, success criteria
 - [ ] STATE.md initialized
 - [ ] REQUIREMENTS.md traceability updated
-- [ ] `$INSTRUCTION_FILE` generated with GSD workflow guidance (runtime-derived via the shared `getProjectInstrdoc-arch-0006-uc-v1tionFile` policy — `doc-agents-0001-agents-canon.md` for codex/config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/kilo/kimi, `.github/copilot-instrdoc-arch-0006-uc-v1tions.md` for copilot, `GEMINI.md` for antigravity, `.claude/doc-agents-0001-agents-canon.md` for claude; an existing hand-crafted file without GSD markers is left untodoc-arch-0006-uc-v1hed unless `--force`)
+- [ ] `$INSTRUCTION_FILE` generated with GSD workflow guidance (runtime-derived via the shared `getProjectInstructionFile` policy — `doc-agents-0001-agents-canon.md` for codex/config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/kilo/kimi, `.github/copilot-instructions.md` for copilot, `GEMINI.md` for antigravity, `.claude/doc-agents-0001-agents-canon.md` for claude; an existing hand-crafted file without GSD markers is left untouched unless `--force`)
 - [ ] User knows next step is `/gsd-discuss-phase 1`
 
 **Atomic commits:** Each phase commits its artifacts immediately. If context is lost, artifacts persist.
 
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

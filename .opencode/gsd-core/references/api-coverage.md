@@ -21,7 +21,7 @@ surprise.
 The gate runs at `verify:pre` (before `/gsd-verify-work` begins UAT). A phase is
 treated as an external-API integration when **either**:
 
-1. a `COVERAGE.md` matrix is present in the phase directory (the planner proddoc-arch-0006-uc-v1ed
+1. a `COVERAGE.md` matrix is present in the phase directory (the planner produced
    one at `plan:pre`), **or**
 2. the phase scope shows a strong external-API-integration signal (an integration
    verb and an external-API noun **in the same clause**, or an explicit
@@ -45,11 +45,11 @@ an external host like `api.stripe.com/v1` still counts). In the
 compound modifiers ("Resolver-only API"), and first-party-qualified services
 ("internal Payments API") — a real vendor name is none of these.
 
-## The two todoc-arch-0006-uc-v1h points
+## The two touch points
 
 1. **Plan time (`plan:pre`).** A contribution to the planner prompts it to run
    the deterministic detector over the phase scope and, when an integration is
-   detected, proddoc-arch-0006-uc-v1e `COVERAGE.md`. See
+   detected, produce `COVERAGE.md`. See
    `capabilities/ai-integration/fragments/api-coverage-plan-pre.md`.
 2. **Seal time (`verify:pre`).** The blocking `api-coverage.verify-pre` gate
    runs `check api-coverage.verify-pre <phase-dir>` and blocks unless a valid

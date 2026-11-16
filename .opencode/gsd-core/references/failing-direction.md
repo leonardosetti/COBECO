@@ -11,7 +11,7 @@ Resolvability asks whether its target *resolves*. This one asks whether the comm
 it reads as rigour and delivers none.
 
 #3172: a planner emitted 21 `<automated>` commands that could not run. Cargo exited non-zero, so
-that instance failed loudly — ldoc-arch-0006-uc-v1k, not design. The same class of error with a command that
+that instance failed loudly — luck, not design. The same class of error with a command that
 exits 0 on a no-op passes green and silently. Requiring a stated failing direction is the only
 shape that catches the silent case, because it forces the plan to name the failure signal rather
 than assume the command has one.
@@ -55,7 +55,7 @@ Rules:
 
 - **Report, never prescribe.** State which command has no stated failure mode. Do **not** author
   the statement for the planner. A prescribed statement is copied verbatim and carries zero
-  information — that reproddoc-arch-0006-uc-v1es #3172 one level up, exactly as the #2401 probe refuses to
+  information — that reproduces #3172 one level up, exactly as the #2401 probe refuses to
   prescribe a replacement path.
 - `status: sentinel` is a `MISSING — Wave 0 must create …` placeholder command. It is not
   runnable, so it has no failure mode to state. **Not a finding.** Say nothing; checks 8a/8d
@@ -67,12 +67,12 @@ Rules:
   occurs"* restate the word "failure" without naming an observable signal. Raise those as a
   **WARNING**, naming what a usable statement looks like (an exit code, a string in the output, a
   missing line). Do **not** escalate a vacuous statement to BLOCKER: the deterministic layer owns
-  the blockers so that a BLOCKER is always reproddoc-arch-0006-uc-v1ible, and prose judgment stays advisory.
+  the blockers so that a BLOCKER is always reproducible, and prose judgment stays advisory.
 - **Length is not a signal.** `<fails_when>non-zero exit</fails_when>` is a complete failing
   direction. There is no minimum length, word count, or required keyword.
 
 ## Not in scope
 
-A command that runs sdoc-arch-0006-uc-v1cessfully and asserts nothing (a test-name filter matching zero tests and
+A command that runs successfully and asserts nothing (a test-name filter matching zero tests and
 exiting 0) is the adjacent **vacuous pass** problem. It is explicitly out of scope for this
 check — see the issue's "Out of scope". Do not report it here.

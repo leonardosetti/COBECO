@@ -3,7 +3,10 @@
 
 import hashlib
 from datetime import UTC, datetime, timedelta
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
+
+if TYPE_CHECKING:
+    from src.domain.entities import Usuario
 
 import bcrypt
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
@@ -15,9 +18,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.adapters.db.database import get_db
-from src.adapters.db.models import UsuarioModel
+from src.adapters.db.models import SessaoModel, UsuarioModel
 from src.config import settings
-from src.domain.repositories import UsuarioRepository
+from src.domain.repositories import SessaoRepository, UsuarioRepository
+from src.domain.entities import Sessao
 from src.domain.usecases import (
     CadastrarUsuarioUseCase,
     CredenciaisInvalidas,
@@ -90,8 +94,8 @@ class RecuperarSenhaSolicitarRequest(BaseModel):
 
 class RecuperarSenhaConfirmarRequest(BaseModel):
     nome_usuario: str
-    resposta_seguranca: Optional[str] = None
-    token: Optional[str] = None
+    resposta_seguranca: str | None = None
+    token: str | None = None
     nova_senha: str = Field(..., min_length=8)
     confirmar_nova_senha: str
 
@@ -112,11 +116,11 @@ class PerfilResponse(BaseModel):
 
 
 class AtualizarPerfilRequest(BaseModel):
-    email: Optional[EmailStr] = None
-    nome: Optional[str] = Field(None, min_length=2, max_length=100)
-    senha_atual: Optional[str] = None
-    nova_senha: Optional[str] = Field(None, min_length=8)
-    confirmar_nova_senha: Optional[str] = None
+    email: EmailStr | None = None
+    nome: str | None = Field(None, min_length=2, max_length=100)
+    senha_atual: str | None = None
+    nova_senha: str | None = Field(None, min_length=8)
+    confirmar_nova_senha: str | None = None
 
 
 # ============================================================
@@ -134,6 +138,7 @@ class UsuarioRepositoryImpl(UsuarioRepository):
     def _to_domain(self, model: UsuarioModel) -> "Usuario":
         """Converte UsuarioModel para Usuario domain entity"""
         from src.domain.entities import Email, SenhaHash, Usuario
+
         return Usuario(
             id=model.id,
             nome_usuario=model.nome_usuario,
@@ -184,27 +189,27 @@ class UsuarioRepositoryImpl(UsuarioRepository):
         return self._to_domain(model) if model else None
 
     async def buscar_por_email(self, email: str):
-        result = await self.session.execute(
-            select(UsuarioModel).where(UsuarioModel.email == email)
-        )
+        result = await self.session.execute(select(UsuarioModel).where(UsuarioModel.email == email))
         model = result.scalar_one_or_none()
         return self._to_domain(model) if model else None
 
-    async def atualizar(self, usuario) -> "Usuario":
-        model = await self.buscar_por_id(usuario.id)
+    async def _buscar_model(self, usuario_id: int) -> UsuarioModel | None:
+        result = await self.session.execute(
+            select(UsuarioModel).where(UsuarioModel.id == usuario_id)
+        )
+        return result.scalar_one_or_none()
+
+    async def atualizar(self, usuario: Usuario) -> Usuario:
+        assert usuario.id is not None  # id da entidade persistida
+        model = await self._buscar_model(usuario.id)
         if model:
-            # Need to get the model again for update
-            result = await self.session.execute(
-                select(UsuarioModel).where(UsuarioModel.id == usuario.id)
-            )
-            db_model = result.scalar_one_or_none()
-            if db_model:
-                db_model.email = usuario.email.valor
-                db_model.nome = usuario.nome
-                db_model.senha_hash = usuario.senha_hash.valor
-                db_model.atualizado_em = datetime.now()
-            return self._to_domain(db_model)
-        return None
+            model.email = usuario.email.valor
+            model.nome = usuario.nome
+            model.senha_hash = usuario.senha_hash.valor
+            model.atualizado_em = datetime.now()
+            await self.session.flush()
+            return self._to_domain(model)
+        raise DomainError("USUARIO_NAO_ENCONTRADO", "Usuário não encontrado")
 
     async def soft_delete(self, usuario_id: int) -> bool:
         model = await self.buscar_por_id(usuario_id)
@@ -221,16 +226,13 @@ def get_usuario_repo(session: AsyncSession = Depends(get_db)) -> UsuarioReposito
 # ============================================================
 # Sessao Repository Implementation (Refresh Tokens)
 # ============================================================
-from src.domain.entities import Sessao
-from src.domain.repositories import SessaoRepository
-
-
 class SessaoRepositoryImpl(SessaoRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
     def _to_domain(self, model: "SessaoModel") -> Sessao:
         from src.domain.entities import Sessao
+
         return Sessao(
             id=model.id,
             usuario_id=model.usuario_id,
@@ -244,6 +246,7 @@ class SessaoRepositoryImpl(SessaoRepository):
 
     def _to_model(self, sessao: Sessao) -> "SessaoModel":
         from src.adapters.db.models import SessaoModel
+
         return SessaoModel(
             id=sessao.id,
             usuario_id=sessao.usuario_id,
@@ -262,10 +265,11 @@ class SessaoRepositoryImpl(SessaoRepository):
         await self.session.refresh(model)
         return self._to_domain(model)
 
-    async def buscar_por_token_hash(self, token_hash: str) -> Optional[Sessao]:
+    async def buscar_por_token_hash(self, token_hash: str) -> Sessao | None:
         from sqlalchemy import select
 
         from src.adapters.db.models import SessaoModel
+
         result = await self.session.execute(
             select(SessaoModel).where(SessaoModel.refresh_token_hash == token_hash)
         )
@@ -278,11 +282,12 @@ class SessaoRepositoryImpl(SessaoRepository):
         from sqlalchemy import select
 
         from src.adapters.db.models import SessaoModel
+
         result = await self.session.execute(
             select(SessaoModel).where(
                 SessaoModel.usuario_id == usuario_id,
                 SessaoModel.revogada_em.is_(None),
-                SessaoModel.expira_em > datetime.now()
+                SessaoModel.expira_em > datetime.now(),
             )
         )
         return [self._to_domain(m) for m in result.scalars().all()]
@@ -291,9 +296,8 @@ class SessaoRepositoryImpl(SessaoRepository):
         from sqlalchemy import select
 
         from src.adapters.db.models import SessaoModel
-        result = await self.session.execute(
-            select(SessaoModel).where(SessaoModel.id == sessao_id)
-        )
+
+        result = await self.session.execute(select(SessaoModel).where(SessaoModel.id == sessao_id))
         model = result.scalar_one_or_none()
         if model:
             model.revogada_em = datetime.now()
@@ -306,10 +310,10 @@ class SessaoRepositoryImpl(SessaoRepository):
         from sqlalchemy import select
 
         from src.adapters.db.models import SessaoModel
+
         result = await self.session.execute(
             select(SessaoModel).where(
-                SessaoModel.usuario_id == usuario_id,
-                SessaoModel.revogada_em.is_(None)
+                SessaoModel.usuario_id == usuario_id, SessaoModel.revogada_em.is_(None)
             )
         )
         count = 0
@@ -324,10 +328,11 @@ class SessaoRepositoryImpl(SessaoRepository):
         from sqlalchemy import select
 
         from src.adapters.db.models import SessaoModel
+
         result = await self.session.execute(
             select(SessaoModel).where(
                 SessaoModel.revogada_em.is_(None),
-                SessaoModel.expira_em <= datetime.now()
+                SessaoModel.expira_em <= datetime.now(),
             )
         )
         count = 0
@@ -358,6 +363,7 @@ def verificar_senha(senha: str, hash: str) -> bool:
 def criar_token(sub: str, expires_delta: timedelta, token_type: str = "access") -> str:
     """Cria JWT token"""
     from datetime import datetime
+
     expire = datetime.now(UTC) + expires_delta
     payload = {
         "sub": sub,
@@ -368,10 +374,13 @@ def criar_token(sub: str, expires_delta: timedelta, token_type: str = "access") 
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
 
-def decodificar_token(token: str) -> dict:
+def decodificar_token(token: str) -> dict[str, Any]:
     """Decodifica e valida JWT"""
     try:
-        return jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
+        payload: dict[str, Any] = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
+        )
+        return payload
     except ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expirado")
     except JWTError:
@@ -397,13 +406,14 @@ async def get_current_user(
 
 
 # Rate limiting simples em memória (produção: Redis)
-_tentativas_login = {}
-_tentativas_recovery = {}
+_tentativas_login: dict[str, list[float]] = {}
+_tentativas_recovery: dict[str, list[float]] = {}
 
 
 async def rate_limiter_login(nome_usuario: str):
     """6 tentativas/15min por username"""
     import time
+
     agora = time.time()
     chave = f"login:{nome_usuario}"
     if chave not in _tentativas_login:
@@ -421,6 +431,7 @@ async def rate_limiter_login(nome_usuario: str):
 async def rate_limiter_recovery(nome_usuario: str):
     """3 tentativas/hora para recovery"""
     import time
+
     agora = time.time()
     chave = f"recovery:{nome_usuario}"
     if chave not in _tentativas_recovery:
@@ -454,15 +465,17 @@ async def cadastrar_usuario(
 
     usecase = CadastrarUsuarioUseCase(repo, hash_senha)
     try:
-        usuario = await usecase.executar(CriarUsuarioInput(
-            nome_usuario=request.nome_usuario,
-            email=request.email,
-            nome=request.nome,
-            senha=request.senha,
-            pergunta_seguranca=request.pergunta_seguranca,
-            resposta_seguranca=request.resposta_seguranca,
-        ))
-        return {"message": "Conta criada com sdoc-arch-0006-uc-v1esso", "usuario_id": usuario.id}
+        usuario = await usecase.executar(
+            CriarUsuarioInput(
+                nome_usuario=request.nome_usuario,
+                email=request.email,
+                nome=request.nome,
+                senha=request.senha,
+                pergunta_seguranca=request.pergunta_seguranca,
+                resposta_seguranca=request.resposta_seguranca,
+            )
+        )
+        return {"message": "Conta criada com sucesso", "usuario_id": usuario.id}
     except UsuarioJaExiste:
         # Mensagem genérica (não revela qual campo)
         raise HTTPException(status_code=400, detail="Credenciais inválidas")
@@ -481,10 +494,12 @@ async def login(
 ):
     usecase = LoginUseCase(repo, verificar_senha, criar_token, rate_limiter_login)
     try:
-        tokens = await usecase.executar(LoginInput(
-            nome_usuario=request.nome_usuario,
-            senha=request.senha,
-        ))
+        tokens = await usecase.executar(
+            LoginInput(
+                nome_usuario=request.nome_usuario,
+                senha=request.senha,
+            )
+        )
     except CredenciaisInvalidas:
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
     except RateLimitExcedido as e:
@@ -524,7 +539,7 @@ async def login(
 )
 async def logout(
     response: Response,
-    refresh_token: Optional[str] = Cookie(None),
+    refresh_token: str | None = Cookie(None),
     sessao_repo: SessaoRepository = Depends(get_sessao_repo),
 ):
     # Revoga sessão no banco se refresh token fornecido
@@ -532,6 +547,7 @@ async def logout(
         refresh_hash = hash_refresh_token(refresh_token)
         sessao = await sessao_repo.buscar_por_token_hash(refresh_hash)
         if sessao:
+            assert sessao.id is not None  # PK após persistência
             await sessao_repo.revogar(sessao.id)
 
     response.delete_cookie(key="refresh_token", path="/", httponly=True, samesite="strict")
@@ -548,10 +564,10 @@ async def solicitar_recuperacao_senha(
 ):
     await rate_limiter_recovery(request.nome_usuario)
 
-    usecase = RecuperarSenhaUseCase(repo, hash_senha, rate_limiter_recovery)
+    usecase = RecuperarSenhaUseCase(repo, hash_senha, verificar_senha, rate_limiter_recovery)
     token = await usecase.solicitar_reset(request.nome_usuario)
 
-    # Sempre retorna sdoc-arch-0006-uc-v1esso (não revela se usuário existe)
+    # Sempre retorna sucesso (não revela se usuário existe)
     if token and settings.RECOVERY_MODE == "log":
         return {"message": "Se o usuário existir, token de recuperação foi logado no servidor"}
     return {"message": "Se o usuário existir, instruções foram enviadas"}
@@ -570,14 +586,14 @@ async def confirmar_recuperacao_senha(
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    usecase = RecuperarSenhaUseCase(repo, hash_senha, rate_limiter_recovery)
+    usecase = RecuperarSenhaUseCase(repo, hash_senha, verificar_senha, rate_limiter_recovery)
     try:
         await usecase.confirmar_reset(
             request.nome_usuario,
             request.resposta_seguranca or request.token or "",
             request.nova_senha,
         )
-        return {"message": "Senha alterada com sdoc-arch-0006-uc-v1esso"}
+        return {"message": "Senha alterada com sucesso"}
     except CredenciaisInvalidas:
         raise HTTPException(status_code=400, detail="Token/resposta inválida ou expirada")
 
@@ -588,7 +604,7 @@ async def confirmar_recuperacao_senha(
     summary="UC18/RF05 - Visualizar Perfil",
 )
 async def visualizar_perfil(
-    current_user = Depends(get_current_user),  # Domain entity Usuario
+    current_user=Depends(get_current_user),  # Domain entity Usuario
 ):
     return PerfilResponse(
         id=current_user.id,
@@ -622,7 +638,7 @@ async def gerenciar_perfil(
             nova_senha=request.nova_senha,
         )
         return PerfilResponse(
-            id=usuario.id,
+            id=usuario.id,  # type: ignore[arg-type]  # id da entidade persistida
             nome_usuario=usuario.nome_usuario,
             email=usuario.email.valor,
             nome=usuario.nome,

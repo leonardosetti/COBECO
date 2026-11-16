@@ -57,7 +57,7 @@ trace:
   - .github/workflows/config-ci-0001-github-actions-v1.0.yml (189 linhas — auditado diretamente no filesystem em 2026-11-03)
   - .github/workflows/sddai-verify.yml (44 linhas — wc -l, 2026-11-03)
   - .ai/agents/config-ledger-0001-ledger-v1.0.yaml:24 (drift G-05 — registro HISTÓRICO, não editar)
-  - docs/planos/plano-granular/plano-proddoc-arch-0006-uc-v1ao-agentes.md:33 (G-05)
+  - docs/planos/plano-granular/plano-producao-agentes.md:33 (G-05)
   - constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:84 (P-01), :94 (P-06), :124 (Art. 4.6), :219 (Art. 10.4)
   - .config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/agent-devops.md:6 ("Automation serves gates, never bypasses them")
 ---
@@ -74,7 +74,7 @@ Convenções: citação `arquivo:linha`. Identificadores/status/caminhos em EN; 
 
 ## 1. Contexto e origem
 
-Nasce da task TA-0056 (hf-exec-0612), item **B.7** da LISTA (docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:39): "Pipeline CI/CD — lint+testes ≤5 min/push, gates", parcialmente coberto pela `spec-005` §8 (fase única; spec-005:198-212), que deixou o nome exato do job de rede de contratos como **UNKNOWN - verify** (spec-005:210) — lacuna **C.4** (LISTA:51). Integra a onda 5 "Infraestrutura, Automação e Segurança" (D.2, LISTA:59; plano-proddoc-arch-0006-uc-v1ao-agentes.md:133-143).
+Nasce da task TA-0056 (hf-exec-0612), item **B.7** da LISTA (docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:39): "Pipeline CI/CD — lint+testes ≤5 min/push, gates", parcialmente coberto pela `spec-005` §8 (fase única; spec-005:198-212), que deixou o nome exato do job de rede de contratos como **UNKNOWN - verify** (spec-005:210) — lacuna **C.4** (LISTA:51). Integra a onda 5 "Infraestrutura, Automação e Segurança" (D.2, LISTA:59; plano-producao-agentes.md:133-143).
 
 Requisitos de origem: **REQ-11** — "Pipeline CI | lint+testes ≤5min/push (req_1.0.md:31) | N7.1 | **Must**" (spec-002-requisitos-review-round-1.spec.md:72) e **doc-user-story-0011-us-011** — "Given um push em feature branch; When o pipeline executa; Then lint+testes concluem em ≤5min e falha bloqueia merge" (spec-002:167).
 
@@ -86,7 +86,7 @@ Requisitos de origem: **REQ-11** — "Pipeline CI | lint+testes ≤5min/push (re
 
 | Tema | Decisão | Fonte vencedora | Texto superado |
 |---|---|---|---|
-| **G-05** — "`ci.yml` vazio" (plano-proddoc-arch-0006-uc-v1ao-agentes.md:33) × realidade de 189 linhas (ledger.yaml:24) | **FECHADO como drift descritivo.** O plano está obsoleto; o arquivo tem 189 linhas com 6 jobs (auditado diretamente, 2026-11-03, §3.1). A parcela TA-0048 registra: "DRIFT G-05 CONFIRMADO/FECHAVEL: plano-proddoc-arch-0006-uc-v1ao-agentes.md:33 ('ci.yml vazio') obsoleto; ledger.yaml:24 (TA-0029, HISTORICO nao editar) ja registrava 189 linhas; spec-011 registra G-05 como FECHADO por implementacao preexistente, delta only" (hf-exec-0604:42) | Auditoria direta do filesystem (ci.yml, 2026-11-03) + parcela TA-0048 (hf-exec-0604:42) | `docs/planos/plano-granular/plano-proddoc-arch-0006-uc-v1ao-agentes.md:33` ("G-05 \| `ci.yml` vazio") — registro histórico intocado; delta remanescente de G-05 declarado em §3.1 (nenhum job constrói as camadas Docker; timeout 15 min) |
+| **G-05** — "`ci.yml` vazio" (plano-producao-agentes.md:33) × realidade de 189 linhas (ledger.yaml:24) | **FECHADO como drift descritivo.** O plano está obsoleto; o arquivo tem 189 linhas com 6 jobs (auditado diretamente, 2026-11-03, §3.1). A parcela TA-0048 registra: "DRIFT G-05 CONFIRMADO/FECHAVEL: plano-producao-agentes.md:33 ('ci.yml vazio') obsoleto; ledger.yaml:24 (TA-0029, HISTORICO nao editar) ja registrava 189 linhas; spec-011 registra G-05 como FECHADO por implementacao preexistente, delta only" (hf-exec-0604:42) | Auditoria direta do filesystem (ci.yml, 2026-11-03) + parcela TA-0048 (hf-exec-0604:42) | `docs/planos/plano-granular/plano-producao-agentes.md:33` ("G-05 \| `ci.yml` vazio") — registro histórico intocado; delta remanescente de G-05 declarado em §3.1 (nenhum job constrói as camadas Docker; timeout 15 min) |
 | **doc-user-story-0011-us-011** — ≤5 min/push × `timeout-minutes: 15` do `test-suite` (ci.yml:111) | Vence REQ-11 (Must, spec-002:72) e doc-user-story-0011-us-011 (spec-002:167). doc-user-story-0011-us-011 está **NÃO ATENDIDO** hoje; a redução 15→≤5 e a paralelização são obrigação de implementação (delta D-01/D-02, §3.3), jamais contornada (sem skip — kill switch #1) | spec-002:72,167; spec-005:208 ("enquanto não reduzido, doc-user-story-0011-us-011 está não atendido"); parcela TA-0048 correção (1) | Estado atual do ci.yml:111 (timeout 15) e ci.yml:154-158 (flake8+mypy sequenciais dentro do test-suite) |
 | **C.4** — nome do job `contract-network` como `UNKNOWN - verify` (spec-005:210) | **FECHADO: o nome é FIXADO como `contract-network`** nesta spec (§3.4), conforme recomendação da parcela TA-0048 ("spec-011 FIXA nome contract-network como job novo"; hf-exec-0604:42) e mandato do hf-exec-0612:17 | hf-exec-0612:17; hf-exec-0604:42; LISTA:51 | `spec-005-container-layers-v1.spec.md:210` ("nome exato: UNKNOWN - verify") — texto histórico da spec-005 preservado; resolvido por spec posterior |
 | **C-07** (avaliada; NÃO relevante) | C-07 trata de ambiguidade de latência (cotação ≤2s × aplicação ≤3s P95, spec-002:126) — não toca CI/CD. Sem delta para este domínio | spec-002:126 | n/a |
@@ -190,7 +190,7 @@ Critérios binários, verificáveis na implementação (onda seguinte) — cada 
 | REQ-08 / doc-user-story-0008-us-008 (spec-002) | :69, :164 | Cobertura ≥80% validada por CI, senão merge bloqueado → §3.5.2, AC-09 |
 | spec-005 §8 (container-layers) | :198-212 | Delta base: fatos do CI (:200-204), proposta lint-and-unit ≤5min (:208), `contract-network` UNKNOWN (:210 — resolvido em §3.4), gates (:211), kill switch primeiro (:212) |
 | spec-005 §7.3 | :184-195 | Os 5 casos binários de contrato de rede executados pelo job `contract-network` (§3.4) |
-| G-05 (plano-proddoc-arch-0006-uc-v1ao-agentes.md × ledger.yaml) | :33 × :24 | Drift auditado e FECHADO (§2, §3.1); ledger histórico intocado |
+| G-05 (plano-producao-agentes.md × ledger.yaml) | :33 × :24 | Drift auditado e FECHADO (§2, §3.1); ledger histórico intocado |
 | C.4 (LISTA-SPECS-PENDENTES) | :51 | Nome do job `UNKNOWN - verify` → FIXADO `contract-network` (§3.4, AC-07) |
 | B.7 / D.2 (LISTA) | :39, :59 | Origem B.7; encaixe na onda 5 (A.14-A.18, plano:133-143) |
 | Parcela TA-0048 (hf-exec-0604) | :33-46 | Estado real 189 l/6 jobs, 6 correções (D-01..D-06), Free Tier P-01, merge-blocking, UNKNOWNs §7 |

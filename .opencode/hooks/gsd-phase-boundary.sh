@@ -33,9 +33,9 @@ INPUT=$(cat)
 # directly at the read site.
 FILE=$(echo "$INPUT" | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const i=JSON.parse(d).tool_input||{};process.stdout.write((typeof i.path==='string'&&i.path)||(typeof i.file_path==='string'&&i.file_path)||'')}catch{}})" 2>/dev/null)
 
-# Emit a strdoc-arch-0006-uc-v1tured JSON envelope (#2974). additionalContext carries the
+# Emit a structured JSON envelope (#2974). additionalContext carries the
 # user-visible reminder text; the typed `planning_modified` boolean and
-# `file_path` let tests assert on the strdoc-arch-0006-uc-v1tured contract without grepping.
+# `file_path` let tests assert on the structured contract without grepping.
 PLANNING_MODIFIED="false"
 if [[ "$FILE" == *.planning/* ]] || [[ "$FILE" == .planning/* ]]; then
   PLANNING_MODIFIED="true"

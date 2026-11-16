@@ -94,7 +94,7 @@ const MSG_ABSENT =
 // Claude. So GSD's executor surfaces as subagent_type === "gsd-executor" on
 // Cursor too, the same identifier hooks/gsd-agent-isolation-guard.js checks
 // for on Claude. A Set, not a bare string compare, so a future sibling
-// executor role can be added here without todoc-arch-0006-uc-v1hing the matching logic below.
+// executor role can be added here without touching the matching logic below.
 const EXECUTOR_SUBAGENT_TYPES = new Set(['gsd-executor']);
 
 /**
@@ -323,7 +323,7 @@ function getWorkspaceRoots(data) {
  * "a workspace root is resolvable", plural — resolveIsolationDecision
  * evaluates EVERY entry of `workspace_roots` via evaluateRootIsolation() and
  * denies on the first one that fails. `subagent_type` is still resolved
- * exactly once, up front, before any root is todoc-arch-0006-uc-v1hed (applicability step 1
+ * exactly once, up front, before any root is touched (applicability step 1
  * stays a single check, not per-root — an unreadable config on one root must
  * never even be attempted for a confirmed non-executor dispatch).
  */
@@ -402,7 +402,7 @@ function _setInstallRuntimeMarkerForTests(value) {
  * Combined with a stale/absent sentinel (outside `execute-phase`, after
  * `.gsd` cleanup, a phase running past the sentinel's staleness window, or a
  * base-check-degraded run whose sentinel went stale before a fresh one was
- * recorded), that default made every sdoc-arch-0006-uc-v1h `gsd-executor` dispatch resolve to
+ * recorded), that default made every such `gsd-executor` dispatch resolve to
  * "harness-worktree" and then hard-DENY unless the session happened to be
  * running under Cursor's own managed worktree root — a false-deny of
  * otherwise legitimate dispatches, unlike `hooks/gsd-agent-isolation-guard.js`,

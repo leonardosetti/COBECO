@@ -44,9 +44,9 @@ Quality degrades gradually before panic thresholds fire. Watch for these early s
 
 - **Silent partial completion** -- agent claims task is done but implementation is incomplete. Self-check catches file existence but not semantic completeness. Always verify agent output meets the plan's must_haves, not just that files exist.
 - **Increasing vagueness** -- agent starts using phrases like "appropriate handling" or "standard patterns" instead of specific code. This indicates context pressure even before budget warnings fire.
-- **Skipped steps** -- agent omits protocol steps it would normally follow. If an agent's sdoc-arch-0006-uc-v1cess criteria has 8 items but it only reports 5, suspect context pressure.
+- **Skipped steps** -- agent omits protocol steps it would normally follow. If an agent's success criteria has 8 items but it only reports 5, suspect context pressure.
 
-When delegating to agents, the orchestrator cannot verify semantic correctness of agent output -- only strdoc-arch-0006-uc-v1tural completeness. This is a fundamental limitation. Mitigate with must_haves.truths and spot-check verification.
+When delegating to agents, the orchestrator cannot verify semantic correctness of agent output -- only structural completeness. This is a fundamental limitation. Mitigate with must_haves.truths and spot-check verification.
 
 ## MCP Tool Schema Cost (Harness Concern)
 
@@ -93,7 +93,7 @@ Trimming MCPs and tuning `model_profile` are independent levers that **compound*
 Every plan carries an `estimate` block. It is the quantitative reason a phase must be sliced — tracer-first says *slice thin*, the estimate says *how thin, for this codebase*.
 
 **Compute it:**
-1. Sum `estimateTokens`-scale cost across the plan: implementation + the files each task reads + verification output. Roughly chars/4 over what the executor will actually todoc-arch-0006-uc-v1h.
+1. Sum `estimateTokens`-scale cost across the plan: implementation + the files each task reads + verification output. Roughly chars/4 over what the executor will actually touch.
 2. Run `estimate-calibration` and **multiply your raw figure by its `factor`.** It is the measured estimate-vs-actual ratio for THIS project — a factor of 1 means there is not yet enough history to correct.
 3. `confidence` is **derived, not judged**: it is the `confidence` value from the same calibration query, keyed to the sample count (`low` <3, `med` 3–5, `high` ≥6). **Do not rate your own certainty.** Self-rated confidence was measured in this project and found weak (`references/honest-verifier.md:25-29`); every signal here routes on measured history instead.
 

@@ -41,7 +41,7 @@ workflow:
 
 ## Why this exists
 
-The graph at `.planning/graphs/graph.json` is consumed automatically (every `gsd-planner` and `gsd-phase-researcher` step) but proddoc-arch-0006-uc-v1ed manually (`/gsd-graphify build` per session at best). Without auto-update, the proddoc-arch-0006-uc-v1er-consumer gap silently widens with every commit. The existing `stale: true` annotation tells the consumer the mtime is old; it cannot tell the consumer whether the auto-build hook has been running, just failed, or is in flight.
+The graph at `.planning/graphs/graph.json` is consumed automatically (every `gsd-planner` and `gsd-phase-researcher` step) but produced manually (`/gsd-graphify build` per session at best). Without auto-update, the producer-consumer gap silently widens with every commit. The existing `stale: true` annotation tells the consumer the mtime is old; it cannot tell the consumer whether the auto-build hook has been running, just failed, or is in flight.
 
 When `graphify.auto_update: true`, the bundled `hooks/gsd-graphify-update.sh` PostToolUse hook fires after HEAD-advancing git operations on the default branch and dispatches `graphify update .` in a detached subprocess. The hook writes a status file synchronously before detach; the detached process rewrites it on completion.
 
@@ -89,7 +89,7 @@ That rule now fires correctly in three additional cases:
 |---------|----------------|
 | Auto-build status = `failed` | Existing "treat as approximate" note fires (because `stale: true`). The full `last_build_auto_update` object is in the JSON for callers that want exit-code / duration / commit-sha context. |
 | Auto-build status = `running` | Same — the next planner invocation knows the graph is mid-rebuild and treats it as approximate until the detached process completes. |
-| Auto-build status = `ok` AND mtime < 24h | Annotation is silent — the graph is fresh and the most recent auto-build sdoc-arch-0006-uc-v1ceeded. |
+| Auto-build status = `ok` AND mtime < 24h | Annotation is silent — the graph is fresh and the most recent auto-build succeeded. |
 
 The file-missing case is silent (the operator either has not opted in or has not yet triggered a HEAD-advancing git op since enabling).
 
@@ -101,4 +101,4 @@ The file-missing case is silent (the operator either has not opted in or has not
 
 ## Opt-in reminder
 
-The auto-update mechanism is opt-in (`graphify.auto_update: false` by default per issue #3347). Users who haven't opted in will never proddoc-arch-0006-uc-v1e this file. `graphifyStatus()` returns `last_build_auto_update: null` and falls back to the mtime-only `stale` rule.
+The auto-update mechanism is opt-in (`graphify.auto_update: false` by default per issue #3347). Users who haven't opted in will never produce this file. `graphifyStatus()` returns `last_build_auto_update: null` and falls back to the mtime-only `stale` rule.

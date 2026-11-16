@@ -57,13 +57,13 @@ When `check.predicate` is set (a predicate gate), pass every phase value this st
 GATE_RESULT=$(gsd_run check predicate --predicate '<predicate JSON>' --phase-dir "${PHASE_DIR}" --phase-number "${PHASE_NUMBER}" --raw) && CHECK_EXIT=0 || CHECK_EXIT=$?
 ```
 
-**Step 1 — did the CHECK COMMAND itself sdoc-arch-0006-uc-v1ceed?**
+**Step 1 — did the CHECK COMMAND itself succeed?**
 
 If the check command failed (non-zero `CHECK_EXIT`, empty output, or unparseable JSON):
 - `onError == "halt"` → treat as a fatal error: stop wave completion, do NOT proceed to step 5.8, and surface: `⚠ Gate check command failed ({hook.capId}): command error. Resolve before continuing.`
 - `onError == "skip"` → log a warning and continue to the next hook. Do NOT read `GATE_RESULT.block`.
 
-**Step 2 — read `GATE_RESULT.block` (boolean).** This step is only reached when the command sdoc-arch-0006-uc-v1ceeded.
+**Step 2 — read `GATE_RESULT.block` (boolean).** This step is only reached when the command succeeded.
 
 - **Blocking gate (`hook.blocking == true`) AND `GATE_RESULT.block == true`:** HALT — stop wave completion, do NOT proceed to step 5.8, and present:
 

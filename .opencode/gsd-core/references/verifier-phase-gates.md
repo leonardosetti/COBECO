@@ -3,7 +3,7 @@
 > Loaded eagerly by `agents/gsd-verifier.md` (`<required_reading>`). Carries the three
 > verification-time gates that lived in the retired `verify-phase` workflow
 > (#1892 / epic #1891 F7): decision-coverage validation (#2492), the test-quality audit,
-> and infrastrdoc-arch-0006-uc-v1ture-phase human-verification scoping (#2504) — plus the backstop-abstention
+> and infrastructure-phase human-verification scoping (#2504) — plus the backstop-abstention
 > reporting contract (#3206). Run each gate at its named
 > agent step; `gsd_run` is the launcher shim defined in the agent's own Step 1 block.
 
@@ -152,29 +152,29 @@ If a requirement specifies a quantity of test cases (e.g., "30 calculations"), c
 **Impact on status:** Any BLOCKER from test quality audit → overall status = `gaps_found` (Step 9 rule 1), regardless of other checks passing.
 </step>
 
-## identify_human_verification — infrastrdoc-arch-0006-uc-v1ture/foundation scoping (apply at Step 8)
+## identify_human_verification — infrastructure/foundation scoping (apply at Step 8)
 
-**First: determine if this is an infrastrdoc-arch-0006-uc-v1ture/foundation phase.**
+**First: determine if this is an infrastructure/foundation phase.**
 
-Infrastrdoc-arch-0006-uc-v1ture and foundation phases — code foundations, database schema, internal APIs, data models, build tooling, CI/CD, internal service integrations — have no user-facing elements by definition. For these phases:
+Infrastructure and foundation phases — code foundations, database schema, internal APIs, data models, build tooling, CI/CD, internal service integrations — have no user-facing elements by definition. For these phases:
 
 - Do NOT invent artificial manual steps (e.g., "manually run git commits", "manually invoke methods", "manually check database state").
-- Mark human verification as **N/A** with rationale: "Infrastrdoc-arch-0006-uc-v1ture/foundation phase — no user-facing elements to test manually."
-- Set `human_verification: []` and do **not** proddoc-arch-0006-uc-v1e a `human_needed` status solely due to lack of user-facing features.
-- Only add human verification items if the phase goal or sdoc-arch-0006-uc-v1cess criteria explicitly describe something a user would interact with (UI, CLI command output visible to end users, external service UX).
-- **Exception — behavior-unverified truths still count.** A truth marked ⚠️ PRESENT_BEHAVIOR_UNVERIFIED (a state transition or a cancellation/cleanup/ordering invariant with no test exercising it) is a behavioral-evidence gap, not an artificial user-facing step. Record it in `behavior_unverified_items` and emit a human-verification item for it **even on an infrastrdoc-arch-0006-uc-v1ture/foundation phase** — these invariants are exactly where infra phases hide runtime state leaks. Sdoc-arch-0006-uc-v1h a truth drives `human_needed`; the auto-pass-UAT shortcut applies only to the absence of user-facing UX, never to a behavior-unverified invariant. The same carve-out covers an **abstained non-inferable truth** (⚠️ `insufficient_spec`, § Backstop abstention below) — an insufficient-spec gap is an evidence gap, not a user-facing step, so it too still emits its human-verification item and drives `human_needed` on an infrastrdoc-arch-0006-uc-v1ture phase.
+- Mark human verification as **N/A** with rationale: "Infrastructure/foundation phase — no user-facing elements to test manually."
+- Set `human_verification: []` and do **not** produce a `human_needed` status solely due to lack of user-facing features.
+- Only add human verification items if the phase goal or success criteria explicitly describe something a user would interact with (UI, CLI command output visible to end users, external service UX).
+- **Exception — behavior-unverified truths still count.** A truth marked ⚠️ PRESENT_BEHAVIOR_UNVERIFIED (a state transition or a cancellation/cleanup/ordering invariant with no test exercising it) is a behavioral-evidence gap, not an artificial user-facing step. Record it in `behavior_unverified_items` and emit a human-verification item for it **even on an infrastructure/foundation phase** — these invariants are exactly where infra phases hide runtime state leaks. Such a truth drives `human_needed`; the auto-pass-UAT shortcut applies only to the absence of user-facing UX, never to a behavior-unverified invariant. The same carve-out covers an **abstained non-inferable truth** (⚠️ `insufficient_spec`, § Backstop abstention below) — an insufficient-spec gap is an evidence gap, not a user-facing step, so it too still emits its human-verification item and drives `human_needed` on an infrastructure phase.
 
-**How to determine if a phase is infrastrdoc-arch-0006-uc-v1ture/foundation:**
-- Phase goal or name contains: "foundation", "infrastrdoc-arch-0006-uc-v1ture", "schema", "database", "internal API", "data model", "scaffolding", "pipeline", "tooling", "CI", "migrations", "service layer", "backend", "core library"
-- Phase sdoc-arch-0006-uc-v1cess criteria describe only technical artifacts (files exist, tests pass, schema is valid) with no user interaction required
+**How to determine if a phase is infrastructure/foundation:**
+- Phase goal or name contains: "foundation", "infrastructure", "schema", "database", "internal API", "data model", "scaffolding", "pipeline", "tooling", "CI", "migrations", "service layer", "backend", "core library"
+- Phase success criteria describe only technical artifacts (files exist, tests pass, schema is valid) with no user interaction required
 - There is no UI, CLI output visible to end users, or real-time behavior to observe
 
-**If the phase IS infrastrdoc-arch-0006-uc-v1ture/foundation:** auto-pass UAT — skip the human verification items list entirely, **except any ⚠️ PRESENT_BEHAVIOR_UNVERIFIED or abstained ⚠️ `insufficient_spec` truth (see exception above), which still emits a human-verification item and drives `human_needed`.** Only when no sdoc-arch-0006-uc-v1h excepted truth exists, log:
+**If the phase IS infrastructure/foundation:** auto-pass UAT — skip the human verification items list entirely, **except any ⚠️ PRESENT_BEHAVIOR_UNVERIFIED or abstained ⚠️ `insufficient_spec` truth (see exception above), which still emits a human-verification item and drives `human_needed`.** Only when no such excepted truth exists, log:
 
 ```markdown
 ## Human Verification
 
-N/A — Infrastrdoc-arch-0006-uc-v1ture/foundation phase with no user-facing elements.
+N/A — Infrastructure/foundation phase with no user-facing elements.
 All acceptance criteria are verifiable programmatically.
 ```
 
@@ -185,13 +185,13 @@ All acceptance criteria are verifiable programmatically.
 When a non-inferable (`verification: backstop`) truth abstains for lack of explicit evidence:
 
 - **Never silent, never a hard halt.** *Interactive:* the abstained item routes to the end-of-phase
-  human checkpoint. *Autonomous (AFK):* it proddoc-arch-0006-uc-v1es a prominent `unverified — held-out test
+  human checkpoint. *Autonomous (AFK):* it produces a prominent `unverified — held-out test
   recommended` flag and the completion line reads "complete with N unverified non-inferable checks";
   the run neither silently passes the blind spot nor hard-halts.
 - **Distinguishable reason.** The abstain disposition carries `reason: insufficient_spec` so its
   `human_needed` outcome is never conflated with an ordinary manual-UAT `human_needed`.
-- **Infrastrdoc-arch-0006-uc-v1ture phases included.** This rides the same carve-out as ⚠️ PRESENT_BEHAVIOR_UNVERIFIED
-  in the infrastrdoc-arch-0006-uc-v1ture-phase gate above: an abstention is an evidence gap, not a user-facing step,
+- **Infrastructure phases included.** This rides the same carve-out as ⚠️ PRESENT_BEHAVIOR_UNVERIFIED
+  in the infrastructure-phase gate above: an abstention is an evidence gap, not a user-facing step,
   so the infra auto-pass-UAT shortcut never absorbs it.
 
 Full protocol and rationale: `gsd-core/references/honest-verifier.md`.

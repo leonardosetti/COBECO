@@ -1,7 +1,7 @@
 # RCA Branching — Anti-Single-Cause Bias
 
 Loaded by `gsd-debugger` via `@-include` from Phase 2 (form hypothesis) and the
-pre-fix Strdoc-arch-0006-uc-v1tured Reasoning Checkpoint. A lightweight discipline that guards
+pre-fix Structured Reasoning Checkpoint. A lightweight discipline that guards
 against the best-known Root-Cause-Analysis failure mode: **5-Whys single-cause
 bias** — a linear "why → why → why" chain tends to isolate ONE cause and stop,
 even when a failure has several independent contributing causes.
@@ -74,7 +74,7 @@ full-table scan amplifies the race window) · environment (none) · data (none).
 AND-gate: **yes** — the corruption only occurs when a writer races AND the scan
 holds the read transaction open long enough for the interleaving. Collapse to a
 set: `root_causes: [missing async lock, missing index]`. Eliminated: timezone
-(reproddoc-arch-0006-uc-v1ed in UTC), env-var (unset in repro). The fix must address BOTH;
+(reproduced in UTC), env-var (unset in repro). The fix must address BOTH;
 addressing only the lock leaves the index-driven amplification, and the
 corruption recurs under load.
 

@@ -87,7 +87,7 @@ workflow:
 | Hook | Requisito Constitution | Status | Implementação Necessária |
 |------|------------------------|--------|-------------------------|
 | `pre-commit` | Art. 7.7, 17.5, 17.7 — Sanitização segredos antes de commit | ❌ Ausente | Script Python: `git diff --cached --name-only \| grep -iE '\config-env-0001-env-example-v1.0$|secrets/|\.pem$|\.key$|\.secret$'` + bloqueio |
-| `pre-push` | Art. 9.9, 17.5 — CI verde antes de push | ❌ Ausente | Verificar `gh run list --limit 1 --workflow=CI` status sdoc-arch-0006-uc-v1cess |
+| `pre-push` | Art. 9.9, 17.5 — CI verde antes de push | ❌ Ausente | Verificar `gh run list --limit 1 --workflow=CI` status success |
 | `commit-msg` | Conventional Commits (Art. 9.3) | ❌ Ausente | Validar formato `tipo(escopo): resumo` |
 | `pre-receive` (server-side) | Bloquear push direto em `main`/`stage` | ❌ N/A (GitHub Branch Protection) | Configurar via GitHub Branch Protection Rules |
 
@@ -115,7 +115,7 @@ workflow:
 | Fonte de Drift | Probabilidade | Impacto | Mitigação |
 |----------------|---------------|---------|-----------|
 | **Renomeação de arquivos** (ex: `doc-user-story-0001-us-001-v1.0.md` → `US-01-cadastro.md`) | Média | Quebra links em PRD, TRACEABILITY, C4, WBS | Hook `pre-commit` validar refs |
-| **Mudança de path** (ex: `docs/strategy/` → `docs/proddoc-arch-0006-uc-v1t/`) | Baixa | Quebra em massa | Não planejado |
+| **Mudança de path** (ex: `docs/strategy/` → `docs/product/`) | Baixa | Quebra em massa | Não planejado |
 | **Remoção de seção/âncora** (ex: `# 2. Critérios` removido) | Média | Links internos quebrados | Validação Markdown lint |
 | **Atualização de versão sem atualizar refs** (ex: `spec-004` → `spec-005`) | Alta | Rastreabilidade perdida | Hook `pre-commit` cross-ref |
 
@@ -139,7 +139,7 @@ workflow:
 | `scripts/sync_github_projects.py` | Sincroniza GitHub Projects ↔ Issues ↔ Milestones ↔ Labels (bidirecional) | `PyGithub`, `gh` CLI | **P1** (Rastreabilidade) |
 | `scripts/arch_audit.py` | Auditoria arquitetura: Clean Arch (Domain não importa FastAPI/SQLAlchemy), parameterized queries, PT-BR naming | `ast`, `sqlalchemy` | **P1** (Art. 17.8) |
 | `scripts/script-security-0001-secret-scan-v1.0.py` | Pre-commit: scan staged files para segredos (regex `config-env-0001-env-example-v1.0`, `secrets/`, `*.pem`, `*.key`, `*.secret`, JWT, API keys) | `re`, `git` | **P0** (Art. 7.7, 17.7) |
-| `scripts/script-ci-0001-ci-green-check-v1.0.py` | Pre-push: verifica último run CI (`gh run list`) = sdoc-arch-0006-uc-v1cess | `gh` CLI, `PyGithub` | **P0** (Art. 9.9, 17.5) |
+| `scripts/script-ci-0001-ci-green-check-v1.0.py` | Pre-push: verifica último run CI (`gh run list`) = success | `gh` CLI, `PyGithub` | **P0** (Art. 9.9, 17.5) |
 
 ---
 
@@ -196,7 +196,7 @@ workflow:
 
 ---
 
-## 8. Métricas de Sdoc-arch-0006-uc-v1esso (KPIs)
+## 8. Métricas de Sucesso (KPIs)
 
 | Métrica | Baseline Atual | Target Pós-Implementação | Frequência Medição |
 |---------|----------------|--------------------------|-------------------|

@@ -63,7 +63,7 @@ workflow:
 
 ## 2. Pré-requisitos e Verificações
 
-| # | Pré-requisito | Comando de Verificação | Critério de Sdoc-arch-0006-uc-v1esso |
+| # | Pré-requisito | Comando de Verificação | Critério de Sucesso |
 |---|---------------|------------------------|---------------------|
 | 1 | Docker Engine rodando | `docker version` | Client + Server respondem |
 | 2 | Docker Compose v2 | `docker compose version` | v2.x.x |
@@ -72,7 +72,7 @@ workflow:
 | 5 | Imagens disponíveis (local ou registry) | `docker images | grep cobeco` | backend, frontend, proxy, mysql |
 | 6 | Banco saudável (se operação precisa) | `make health` | `healthy` em todos containers |
 | 7 | Backup recente (se operação destrutiva) | `ls -la backups/` | Backup < 24h |
-| 8 | CI verde na branch alvo | GitHub Actions badge / `gh run list` | Último run: sdoc-arch-0006-uc-v1cess |
+| 8 | CI verde na branch alvo | GitHub Actions badge / `gh run list` | Último run: success |
 
 ---
 
@@ -108,7 +108,7 @@ curl -s http://localhost:8380/ | grep -q "COBECO" && echo "Frontend OK"
 curl -s http://localhost:8380/v1/docs | grep -q "swagger" && echo "Backend API OK"
 ```
 
-**Critério de Sdoc-arch-0006-uc-v1esso:** `make health` retorna todos `healthy` + smoke test passa.
+**Critério de Sucesso:** `make health` retorna todos `healthy` + smoke test passa.
 
 ---
 
@@ -147,7 +147,7 @@ make health
 make test
 ```
 
-**Critério de Sdoc-arch-0006-uc-v1esso:** `alembic upgrade head` sem erros + `seed.py` roda < 10s + `make test` passa.
+**Critério de Sucesso:** `alembic upgrade head` sem erros + `seed.py` roda < 10s + `make test` passa.
 
 ---
 
@@ -168,7 +168,7 @@ make ci
 # Equivale a: ruff + mypy + pytest --cov-fail-under=80 + build docker
 ```
 
-**Critério de Sdoc-arch-0006-uc-v1esso:** `make test-cov` → coverage ≥ 80% + 0 falhas. `make ci` → todos steps passam.
+**Critério de Sucesso:** `make test-cov` → coverage ≥ 80% + 0 falhas. `make ci` → todos steps passam.
 
 ---
 
@@ -295,12 +295,12 @@ make health
 | L1 | Dev de Plantão | <Nome> | Discord @usuario | 15 min (horário comercial) |
 | L2 | Tech Lead | <Nome> | Discord @usuario + Email | 30 min |
 | L3 | CCB Chair / PO | <Nome> | Discord @usuario + Email | 1h |
-| L4 | Orientador (se impacto acadêmico) | <Nome> | Email institdoc-arch-0006-uc-v1ional | 4h |
+| L4 | Orientador (se impacto acadêmico) | <Nome> | Email institucional | 4h |
 
 **Critérios de Escalação:**
 - L1 → L2: Incidente não resolvido em 30 min OU impacto em > 1 usuário
 - L2 → L3: Indisponibilidade total > 1h OU perda de dados OU decisão de escopo/prazo
-- L3 → L4: Impacto na nota final / entrega acadêmica / conformidade institdoc-arch-0006-uc-v1ional
+- L3 → L4: Impacto na nota final / entrega acadêmica / conformidade institucional
 
 ---
 

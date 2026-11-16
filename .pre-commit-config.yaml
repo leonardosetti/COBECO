@@ -19,7 +19,7 @@ repos:
     hooks:
       - id: artifact-validate
         name: Artifact Validation (P1/P2/P3)
-        entry: python scripts/script-validate-0002-artifact-validate-v1.0.py --file
+        entry: python scripts/artifact_validate.py --file
         language: system
         types: [markdown]
         stages: [commit]

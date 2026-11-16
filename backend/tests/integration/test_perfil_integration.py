@@ -90,7 +90,7 @@ class TestPerfilIntegration:
             json={"email": "email_invalido"},
             headers=auth_user["auth"],
         )
-        assert response.status_code == 40
+        assert response.status_code == 400
 
     @pytest.mark.asyncio
     async def test_atualizar_perfil_email_duplicado(self, client, auth_user):
@@ -112,7 +112,7 @@ class TestPerfilIntegration:
             json={"email": "outro@teste.com"},
             headers=auth_user["auth"],
         )
-        assert response.status_code == 40
+        assert response.status_code == 400
         assert "email" in response.json()["detail"].lower()
 
     @pytest.mark.asyncio
@@ -134,7 +134,7 @@ class TestPerfilIntegration:
             "/v1/auth/login",
             json={"nome_usuario": "testuser_perfil", "senha": "NovaSenha@456"},
         )
-        assert login_resp.status_code == 20
+        assert login_resp.status_code == 200
 
     @pytest.mark.asyncio
     async def test_alterar_senha_senha_atual_incorreta(self, client, auth_user):
@@ -147,7 +147,7 @@ class TestPerfilIntegration:
             },
             headers=auth_user["auth"],
         )
-        assert response.status_code == 40
+        assert response.status_code == 400
         assert "senha" in response.json()["detail"].lower()
 
     @pytest.mark.asyncio
@@ -161,8 +161,11 @@ class TestPerfilIntegration:
             },
             headers=auth_user["auth"],
         )
-        assert response.status_code == 40
-        assert "confirmar" in response.json()["detail"].lower() or "coincid" in response.json()["detail"].lower()
+        assert response.status_code == 400
+        assert (
+            "confirmar" in response.json()["detail"].lower()
+            or "coincid" in response.json()["detail"].lower()
+        )
 
     @pytest.mark.asyncio
     async def test_alterar_senha_nova_fraca(self, client, auth_user):
@@ -175,7 +178,7 @@ class TestPerfilIntegration:
             },
             headers=auth_user["auth"],
         )
-        assert response.status_code == 40
+        assert response.status_code == 400
         assert "senha" in response.json()["detail"].lower()
 
     @pytest.mark.asyncio
@@ -222,10 +225,10 @@ class TestSessoesRefreshToken:
     @pytest.mark.asyncio
     async def test_logout_remove_cookie_e_revoga_sessao(self, client, auth_user):
         """Logout remove cookie e revoga sessão no banco"""
-        refresh_token = auth_user["refresh_token"]
+        auth_user["refresh_token"]
 
         response = await client.post("/v1/auth/logout", headers=auth_user["auth"])
-        assert response.status_code == 24
+        assert response.status_code == 204
 
         # Cookie deve ser removido
         cookies = response.headers.get("set-cookie", "")
@@ -243,7 +246,7 @@ class TestSessoesRefreshToken:
         # o access token ainda funciona até expirar
         get_resp = await client.get("/v1/auth/perfil", headers=auth_user["auth"])
         # Access token ainda válido até expirar (15min)
-        assert get_resp.status_code == 20
+        assert get_resp.status_code == 200
 
 
 class TestLogoutEverywhere:
@@ -254,5 +257,5 @@ class TestLogoutEverywhere:
         """Endpoint futuro: POST /v1/auth/logout/all"""
         # Por enquanto apenas documenta a necessidade
         # response = await client.post("/v1/auth/logout/all", headers=auth_user["auth"])
-        # assert response.status_code == 24
+        # assert response.status_code == 204
         pass

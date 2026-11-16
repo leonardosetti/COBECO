@@ -102,7 +102,7 @@ Exit workflow.
 
 Default is active through the Capability Registry schema — only skip when the registry resolves no active code-review step hook. This check runs AFTER phase validation so invalid phase errors are shown first.
 
-Note: This reuses the code-review capability activation rather than introddoc-arch-0006-uc-v1ing a separate code-review-fix capability. Rationale: fixes are meaningless without review, so a single activation boundary makes sense. If independent control is needed later, a separate key can be added in v2.
+Note: This reuses the code-review capability activation rather than introducing a separate code-review-fix capability. Rationale: fixes are meaningless without review, so a single activation boundary makes sense. If independent control is needed later, a separate key can be added in v2.
 </step>
 
 <step name="check_review_exists">
@@ -242,7 +242,7 @@ Error: Code fix agent failed: ${error_message}
 ```
 
 Check if FIX_REPORT_PATH exists:
-- If yes: "Partial sdoc-arch-0006-uc-v1cess — some fixes may have been committed."
+- If yes: "Partial success — some fixes may have been committed."
 - If no: "No fixes applied."
 
 Either way:
@@ -381,9 +381,9 @@ Read REVIEW.md findings, apply fixes, commit each atomically, write REVIEW-FIX.m
 ${AGENT_SKILLS_FIXER}")
     # ORCHESTRATOR RULE — CODEX RUNTIME: After calling Agent() above, stop working on this task immediately. Do not read more files, edit code, or run tests related to this task while the subagent is active. Wait for the subagent to return its result before proceeding.
     
-    # Check if fixer sdoc-arch-0006-uc-v1ceeded
+    # Check if fixer succeeded
     if [ ! -f "${FIX_REPORT_PATH}" ]; then
-      echo "Warning: Iteration ${ITERATION} fixer failed to proddoc-arch-0006-uc-v1e fix report. Stopping auto-loop."
+      echo "Warning: Iteration ${ITERATION} fixer failed to produce fix report. Stopping auto-loop."
       break
     fi
     if _gsd_fix_scope_empty "${FIX_REPORT_PATH}"; then
@@ -394,7 +394,7 @@ ${AGENT_SKILLS_FIXER}")
     fi
   done
   
-  # After loop completes. The iteration COUNTER alone does not distinguish degradation from sdoc-arch-0006-uc-v1cess:
+  # After loop completes. The iteration COUNTER alone does not distinguish degradation from success:
   # a loop that converges on the final iteration exits with ITERATION == MAX_ITERATIONS and printed
   # "Reached maximum iterations. Remaining issues documented in REVIEW-FIX.md" over a run in which
   # every finding was fixed — telling the operator the opposite of what happened, on the one path
@@ -412,7 +412,7 @@ ${AGENT_SKILLS_FIXER}")
     if [ "$LOOP_END_STATUS" = "clean" ]; then
       # SILENT on convergence, deliberately. The loop's own break already printed "All issues
       # resolved after iteration N" on its way out, and reaching the cap does not make that less
-      # true — adding a second sdoc-arch-0006-uc-v1cess line here printed both, which is noise the first cut shipped.
+      # true — adding a second success line here printed both, which is noise the first cut shipped.
       # What this branch exists for is to NOT print the degradation warning; saying nothing is the
       # whole behaviour.
       :
@@ -431,7 +431,7 @@ fi
 Key design decisions for --auto (addresses ALL review HIGH concerns):
 1. **Re-review scope**: Uses REVIEW_FILES_ARRAY from original REVIEW.md frontmatter, falling back to full phase scope. Scope is NOT lost between iterations. Uses portable while-read loop (bash 3.2+ compatible, handles spaces in paths).
 2. **Artifact semantics**: REVIEW.md is overwritten by each re-review (latest review state). REVIEW-FIX.md is overwritten by each fixer iteration (latest fix state with iteration count). There is ONE final version of each artifact, not per-iteration copies.
-   Backup files (.iterN.md) preserve history for post-mortem analysis if iterations degrade. On sdoc-arch-0006-uc-v1cessful convergence (#3190) the backups are spent scratch and removed; on degradation (hit MAX_ITERATIONS / fixer failure) they are retained for post-mortem. The removal happens in `cleanup_iteration_backups`, after `record_disposition` has read them — they are the only surviving record of what an earlier iteration fixed, since this artifact keeps one final version rather than per-iteration copies.
+   Backup files (.iterN.md) preserve history for post-mortem analysis if iterations degrade. On successful convergence (#3190) the backups are spent scratch and removed; on degradation (hit MAX_ITERATIONS / fixer failure) they are retained for post-mortem. The removal happens in `cleanup_iteration_backups`, after `record_disposition` has read them — they are the only surviving record of what an earlier iteration fixed, since this artifact keeps one final version rather than per-iteration copies.
 3. **Commit timing**: Fix commits happen per-finding inside the agent. REVIEW-FIX.md is NOT committed until step 7 (after ALL iterations complete). Only ONE docs commit, not one per iteration. In --auto that single commit also stages the converged REVIEW.md alongside REVIEW-FIX.md (#3190), so the two committed artifacts agree — the initial code-review commit held iteration-1 REVIEW.md content, and the --auto re-review loop overwrote it each iteration.
 </step>
 
@@ -458,7 +458,7 @@ if [ -f "${FIX_REPORT_PATH}" ]; then
       # initial code-review pass (iteration-1 content). Stage the converged
       # REVIEW.md alongside REVIEW-FIX.md in this single docs commit so the two
       # committed artifacts agree. Non-auto single-pass runs never rewrite
-      # REVIEW.md, so it is left untodoc-arch-0006-uc-v1hed (guarded on AUTO_MODE).
+      # REVIEW.md, so it is left untouched (guarded on AUTO_MODE).
       COMMIT_FILES=("${FIX_REPORT_PATH}")
       if [ "$AUTO_MODE" = "true" ] && [ -f "${REVIEW_PATH}" ]; then
         COMMIT_FILES+=("${REVIEW_PATH}")
@@ -469,7 +469,7 @@ if [ -f "${FIX_REPORT_PATH}" ]; then
     fi
   else
     echo "Warning: REVIEW-FIX.md has invalid frontmatter (no status field). Not committing."
-    echo "Agent may have proddoc-arch-0006-uc-v1ed malformed output. Review manually: ${FIX_REPORT_PATH}"
+    echo "Agent may have produced malformed output. Review manually: ${FIX_REPORT_PATH}"
   fi
 else
   echo "Warning: REVIEW-FIX.md not found at ${FIX_REPORT_PATH}."
@@ -489,7 +489,7 @@ This commit happens ONCE at the end of the workflow, after all iterations (if --
 This is the step's second and final call site, and without it REQ-REVIEW-10 is unreachable in every
 shipped path. `execute-phase.md`'s `code_review_gate` runs the same step immediately after review,
 where `<NN>-REVIEW-FIX.md` cannot yet exist — the gate invokes review with neither `--fix` nor
-`--auto` — so every row it writes is `open` by constrdoc-arch-0006-uc-v1tion. The reconciliation logic that turns
+`--auto` — so every row it writes is `open` by construction. The reconciliation logic that turns
 those rows into `fixed` / `skipped` is reachable only once a fix report is on disk, which is here.
 Wired anywhere earlier and it reads a report that has not been written; wired into `code-review.md`
 instead, it is unreachable — that workflow delegates through `code-review/steps/dispatch-fix.md`,
@@ -664,16 +664,16 @@ echo "════════════════════════�
 **Windows:** This workflow uses bash features (arrays, variable expansion, while loops). On Windows, it requires Git Bash or WSL. Native PowerShell is not supported. The CI matrix (Ubuntu/macOS/Windows) runs under Git Bash on Windows runners, which provides bash compatibility.
 </platform_notes>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Phase validated before config gate check
 - [ ] Capability gate checked (execute:post code-review hook)
 - [ ] REVIEW.md existence verified (error if missing)
 - [ ] REVIEW.md status checked (skip if clean/skipped)
 - [ ] Agent spawned with correct config (review_path, fix_scope, fix_report_path)
-- [ ] Agent failure handled with partial-sdoc-arch-0006-uc-v1cess awareness (some fix commits may exist)
+- [ ] Agent failure handled with partial-success awareness (some fix commits may exist)
 - [ ] --auto iteration loop respects 3-iteration cap
 - [ ] --auto re-review uses persisted file scope (not lost between iterations)
 - [ ] REVIEW-FIX.md committed ONCE after all iterations (not per-iteration)
 - [ ] Missing fix report handled with explicit error message in present_results
 - [ ] Results presented inline with next step suggestion
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

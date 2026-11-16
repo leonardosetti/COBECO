@@ -75,7 +75,7 @@ Convenções: citação `arquivo:linha`. Identificadores/status/caminhos em EN; 
 
 ## 1. Contexto e origem
 
-Nasce da task TA-0057 (hf-exec-0613), item **B.8** da LISTA (docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:40): "Rastreabilidade de prompts SDD — 100% catalogados em `.ai/handoffs/`", com condição "pendente de criação" e entregável "spec de catálogo/rastreio dos prompts com critério de cobertura total". Encaixe de onda: a onda 6 "Corrente da Qualidade" lista B.8 entre as specs que faltam (D.3, LISTA:60; plano-proddoc-arch-0006-uc-v1ao-agentes.md:145-152) e a onda 7 "Commons e Meta" prevê "B.8/B.9 conforme escopo da onda" (D.4, LISTA:61). Fase EAP de destino: **N9.3**.
+Nasce da task TA-0057 (hf-exec-0613), item **B.8** da LISTA (docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:40): "Rastreabilidade de prompts SDD — 100% catalogados em `.ai/handoffs/`", com condição "pendente de criação" e entregável "spec de catálogo/rastreio dos prompts com critério de cobertura total". Encaixe de onda: a onda 6 "Corrente da Qualidade" lista B.8 entre as specs que faltam (D.3, LISTA:60; plano-producao-agentes.md:145-152) e a onda 7 "Commons e Meta" prevê "B.8/B.9 conforme escopo da onda" (D.4, LISTA:61). Fase EAP de destino: **N9.3**.
 
 Requisito de origem: **REQ-13** — "Rastreabilidade de prompts SDD | 100% catalogados em .ai/handoffs/ (req_1.0.md:38) | N9.3 | **Should**" (spec-002-requisitos-review-round-1.spec.md:74). Precedente de execução da REQ-13: hf-exec-0500, "Registro de execução do backend MVP (REQ-13)" (hf-exec-0500:8), que registrou T1–T14 com colunas "Agente de referência" e "Modelo" (hf-exec-0500:22-37) — o protótipo do dado de co-autoria que esta spec tornará auditável por catálogo.
 

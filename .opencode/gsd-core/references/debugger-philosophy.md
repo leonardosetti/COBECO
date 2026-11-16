@@ -30,7 +30,7 @@ When debugging code you wrote, you're fighting your own mental model.
 1. **Treat your code as foreign** - Read it as if someone else wrote it
 2. **Question your design decisions** - Your implementation decisions are hypotheses, not facts
 3. **Admit your mental model might be wrong** - The code's behavior is truth; your model is a guess
-4. **Prioritize code you todoc-arch-0006-uc-v1hed** - If you modified 100 lines and something breaks, those are prime suspects
+4. **Prioritize code you touched** - If you modified 100 lines and something breaks, those are prime suspects
 
 **The hardest admission:** "I implemented this wrong." Not "requirements were unclear" - YOU made an error.
 
@@ -56,7 +56,7 @@ When debugging, return to foundational truths:
 
 **Change one variable:** Make one change, test, observe, document, repeat. Multiple changes = no idea what mattered.
 
-**Complete reading:** Read entire functions, not just "relevant" lines. Read imports, config, tests. Skimming misses crdoc-arch-0006-uc-v1ial details.
+**Complete reading:** Read entire functions, not just "relevant" lines. Read imports, config, tests. Skimming misses crucial details.
 
 **Embrace not knowing:** "I don't know why this fails" = good (now you can investigate). "It must be X" = dangerous (you've stopped thinking).
 
@@ -67,7 +67,7 @@ Consider starting over when:
 2. **3+ "fixes" that didn't work** - Your mental model is wrong
 3. **You can't explain the current behavior** - Don't add changes on top of confusion
 4. **You're debugging the debugger** - Something fundamental is wrong
-5. **The fix works but you don't know why** - This isn't fixed, this is ldoc-arch-0006-uc-v1k
+5. **The fix works but you don't know why** - This isn't fixed, this is luck
 
 **Restart protocol:**
 1. Close all files and terminals

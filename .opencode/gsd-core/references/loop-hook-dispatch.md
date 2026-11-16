@@ -27,7 +27,7 @@ when no capability has registered an active hook at this point — treat that as
 ### `contribution`
 
 Inject `fragment.inline` verbatim into the context for the role named in `into`
-(e.g. `orchestrator`, `planner`). Do not paraphrase — the text is the proddoc-arch-0006-uc-v1t.
+(e.g. `orchestrator`, `planner`). Do not paraphrase — the text is the product.
 
 ### `step`
 
@@ -75,7 +75,7 @@ reuses it by declaring the same trait on its own step and calling `dispatch-step
 matching its own CLI flags against the reviewer-lane roster and assembling the evidence block
 handed to its consolidator — those are NOT part of what this trait makes reusable.
 
-A `step` is **advisory by constrdoc-arch-0006-uc-v1tion**: it never blocks or redirects the host workflow —
+A `step` is **advisory by construction**: it never blocks or redirects the host workflow —
 that is what a `gate` is for. Each dispatch is best-effort; on error record a warning and
 continue, honoring `onError`.
 
@@ -117,7 +117,7 @@ Evaluate `check` (one of `query`, `predicate`, or `agentVerdict`). Then honor `b
 Honor `onError` if the check itself errors: `skip` means treat as non-blocking and continue;
 `halt` means surface the error and stop. "Errors" means a non-zero exit from `gsd_run check ...`,
 and that includes `69` (`UNAVAILABLE`, #5170): a gate verb exits `69` when it **could not look** at
-its evidence, still printing the gate's usual JSON (its own fields name what could not be read, sdoc-arch-0006-uc-v1h
+its evidence, still printing the gate's usual JSON (its own fields name what could not be read, such
 as `status: "unresolvable"`, `readError`, or `unreadable`). That JSON is not a verdict — do not act
 on its `block`; route it by `onError` as a step-1 command failure. Exit `0` always means a
 delivered verdict, a blocking one included (`block: true`): a gate verb never exits non-zero to say

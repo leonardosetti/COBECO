@@ -1,6 +1,6 @@
 # Multi-Variant HTML Patterns
 
-Every sketch proddoc-arch-0006-uc-v1es 2-3 variants in the same HTML file. The user switches between them to compare.
+Every sketch produces 2-3 variants in the same HTML file. The user switches between them to compare.
 
 ## Tab-Based Variants
 

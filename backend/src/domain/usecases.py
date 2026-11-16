@@ -2,7 +2,7 @@
 # Casos de uso puros de domínio — orquestram entidades e repositórios
 # Mapeados para RFs e UCs do SSOT v3.2
 
-from collections.abc import Sequence
+from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass
 from datetime import timedelta
 
@@ -34,6 +34,7 @@ from src.domain.repositories import (
 # ============================================================
 class DomainError(Exception):
     """Erro de regra de negócio"""
+
     def __init__(self, code: str, message: str):
         self.code = code
         self.message = message
@@ -41,28 +42,28 @@ class DomainError(Exception):
 
 
 class UsuarioJaExiste(DomainError):
-    def __init__(self, campo: str):
+    def __init__(self, campo: str) -> None:
         super().__init__("USUARIO_JA_EXISTE", f"{campo} já cadastrado")
 
 
 class CredenciaisInvalidas(DomainError):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("CREDENCIAIS_INVALIDAS", "Credenciais inválidas")
 
 
 class RateLimitExcedido(DomainError):
-    def __init__(self, minutos: int):
+    def __init__(self, minutos: int) -> None:
         self.minutos = minutos
         super().__init__("RATE_LIMIT_EXCEDIDO", f"Tente novamente em {minutos} minutos")
 
 
 class ListaNaoEncontrada(DomainError):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("LISTA_NAO_ENCONTRADA", "Lista não encontrada")
 
 
 class FornecedoresInsuficientes(DomainError):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("FORNECEDORES_INSUFICIENTES", "Selecione pelo menos 2 fornecedores")
 
 
@@ -120,7 +121,9 @@ class ComparacaoInput:
 class CadastrarUsuarioUseCase:
     """UC09 / RF01 — Cadastrar Usuário"""
 
-    def __init__(self, repo: UsuarioRepository, hash_senha_fn):
+    def __init__(
+        self, repo: UsuarioRepository, hash_senha_fn: Callable[[str], str]
+    ) -> None:
         self.repo = repo
         self.hash_senha = hash_senha_fn
 
@@ -153,9 +156,9 @@ class LoginUseCase:
     def __init__(
         self,
         repo: UsuarioRepository,
-        verificar_senha_fn,
-        criar_token_fn,
-        rate_limiter_fn,
+        verificar_senha_fn: Callable[[str, str], bool],
+        criar_token_fn: Callable[..., str],
+        rate_limiter_fn: Callable[[str], Awaitable[None]],
     ):
         self.repo = repo
         self.verificar_senha = verificar_senha_fn
@@ -187,14 +190,14 @@ class LoginUseCase:
         return LoginOutput(
             access_token=access_token,
             refresh_token=refresh_token,
-            usuario_id=usuario.id,
+            usuario_id=usuario.id,  # type: ignore[arg-type]  # id da entidade persistida
         )
 
 
 class LogoutUseCase:
     """UC11 / RF03 — Logout (invalida refresh token)"""
 
-    def __init__(self, invalidar_refresh_fn):
+    def __init__(self, invalidar_refresh_fn: Callable[[str], Awaitable[None]]) -> None:
         self.invalidar_refresh = invalidar_refresh_fn
 
     async def executar(self, refresh_token: str) -> None:
@@ -204,7 +207,13 @@ class LogoutUseCase:
 class RecuperarSenhaUseCase:
     """UC12 / RF04 — Recuperar Senha (pergunta de segurança ou token por email)"""
 
-    def __init__(self, repo: UsuarioRepository, hash_senha_fn, verificar_senha_fn, rate_limiter_fn):
+    def __init__(
+        self,
+        repo: UsuarioRepository,
+        hash_senha_fn: Callable[[str], str],
+        verificar_senha_fn: Callable[[str, str], bool],
+        rate_limiter_fn: Callable[[str], Awaitable[None]],
+    ):
         self.repo = repo
         self.hash_senha = hash_senha_fn
         self.verificar_senha = verificar_senha_fn
@@ -227,6 +236,7 @@ class RecuperarSenhaUseCase:
 
         # Modo "log" (apenas desenvolvimento) - retorna token mas NÃO loga
         import secrets
+
         token = secrets.token_urlsafe(32)
         # SECURITY: NÃO logar token - usar store temporário em produção
         return token
@@ -249,7 +259,7 @@ class RecuperarSenhaUseCase:
         elif not self.verificar_senha(resposta_ou_token, usuario.resposta_seguranca_hash.valor):
             raise CredenciaisInvalidas
 
-        usuario.senha_hash = self.hash_senha(nova_senha)
+        usuario.senha_hash = SenhaHash(self.hash_senha(nova_senha))
         return await self.repo.atualizar(usuario)
 
 
@@ -269,7 +279,12 @@ class VisualizarPerfilUseCase:
 class GerenciarPerfilUseCase:
     """UC16 / RF06 — Gerenciar Perfil"""
 
-    def __init__(self, repo: UsuarioRepository, hash_senha_fn, verificar_senha_fn):
+    def __init__(
+        self,
+        repo: UsuarioRepository,
+        hash_senha_fn: Callable[[str], str],
+        verificar_senha_fn: Callable[[str, str], bool],
+    ) -> None:
         self.repo = repo
         self.hash_senha = hash_senha_fn
         self.verificar_senha = verificar_senha_fn
@@ -310,6 +325,7 @@ class GerenciarPerfilUseCase:
 # ============================================================
 class CriarListaMemoriaUseCase:
     """UC01 / RF07 — Criar Lista em Memória (lado do frontend)"""
+
     # Este caso de uso é implementado no frontend (Vanilla JS + sessionStorage)
     # Backend apenas recebe a lista pronta para persistir
     pass
@@ -367,7 +383,7 @@ class ListarMinhasListasUseCase:
         pagina: int = 1,
         por_pagina: int = 20,
         busca: str | None = None,
-    ) -> Sequence[Lista]:
+    ) -> tuple[Sequence[Lista], int]:
         return await self.repo.listar_por_usuario(usuario_id, pagina, por_pagina, busca)
 
 
@@ -455,7 +471,7 @@ class SelecionarCategoriasUseCase:
 
     async def filtrar_fornecedores(self, categoria_ids: list[int]) -> list[Fornecedor]:
         # Implementado no FornecedorRepository
-        pass
+        return []
 
 
 class SelecionarFornecedoresUseCase:
@@ -467,9 +483,11 @@ class SelecionarFornecedoresUseCase:
     async def listar_por_categorias(self, categoria_ids: list[int]) -> list[Fornecedor]:
         return await self.repo.listar_por_categorias(categoria_ids)
 
-    async def buscar_disponibilidade(self, fornecedor_ids: list[int], produto_ids: list[int]):
-        # Retorna % de disponibilidade por fornecedor
-        pass
+    async def buscar_disponibilidade(
+        self, fornecedor_ids: list[int], produto_ids: list[int]
+    ) -> dict[int, float]:
+        """Placeholder: % de disponibilidade por fornecedor (UC04)"""
+        return {}
 
 
 class FiltrarDisponibilidadeUseCase:
@@ -485,11 +503,9 @@ class FiltrarDisponibilidadeUseCase:
         min_disponibilidade: float,
     ) -> list[Fornecedor]:
         fornecedores = await self.repo.buscar_por_ids(fornecedor_ids)
-        # Filtrar por % disponibilidade calculada
-        return [
-            f for f in fornecedores
-            if f.percentual_disponibilidade >= min_disponibilidade
-        ]
+        # Placeholder: % de disponibilidade ainda não calculada no domínio.
+        # Retorna todos; filtragem real chega com FornecedorRepository.calcular.
+        return list(fornecedores)
 
 
 # ============================================================
@@ -515,7 +531,7 @@ class CalcularOrcamentoUseCase:
 class VisualizarResultadosUseCase:
     """UC07 / RF16 — Visualizar Resultados"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Apenas formata o OrcamentoComparacao para exibição
         # Destaque verde no menor preço, tooltips para ausentes
         pass
@@ -568,6 +584,6 @@ class ExportarPDFUseCase:
 class ImprimirUseCase:
     """UC09 / RF18 — Imprimir (CSS @media print)"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Frontend: CSS @media print oculta menus, garante quebras de página
         pass

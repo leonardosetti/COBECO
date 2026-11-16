@@ -1,10 +1,10 @@
 # PRD — <Nome do Produto / Funcionalidade>
 
-**Documento:** Proddoc-arch-0006-uc-v1t Requirements Document  
+**Documento:** Product Requirements Document  
 **Versão:** 1.0  
 **Status:** Draft | Aprovado | Arquivado  
 **Data:** DD/MM/AAAA  
-**Autor:** <Nome> (Proddoc-arch-0006-uc-v1t Owner)  
+**Autor:** <Nome> (Product Owner)  
 **Revisores:** <Nomes>  
 **Base:** req-func-0001-requisitos-funcionais-canon.md v3.2, req-use-case-0001-casos-de-uso-canon.md v3.2, board-roadmap-0001-roadmap-canon.md, Constitution v2.0
 
@@ -32,7 +32,7 @@
 |--------------|-----------------|---------|------|------------|
 | O1: Entregar MVP funcional | KR1: 18 RFs implementados | % RFs Done | 100% | GitHub Projects |
 | | KR2: Cobertura de testes | % cobertura | ≥ 80% | `pytest --cov` |
-| | KR3: Deploy reproduzível | `docker compose up` | Sdoc-arch-0006-uc-v1esso | Smoke test |
+| | KR3: Deploy reproduzível | `docker compose up` | Sucesso | Smoke test |
 | O2: Qualidade técnica | KR4: Clean Architecture | Code review | Aprovado | Rubrica R-01..R-07 |
 | | KR5: Documentação ABNT | Nota orientador | ≥ 8,0 | Avaliação formal |
 | O3: Aprendizado da equipe | KR6: ADRs + Specs + Handoffs | Artefatos SDD | 100% | Repo `.ai/` |

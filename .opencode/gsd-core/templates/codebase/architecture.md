@@ -172,7 +172,7 @@ Template for `.planning/codebase/ARCHITECTURE.md` - captures conceptual code org
 - Pattern: Commander.js command registration
 
 **Template:**
-- Purpose: Reusable document strdoc-arch-0006-uc-v1tures
+- Purpose: Reusable document structures
 - Examples: PROJECT.md, PLAN.md templates
 - Pattern: Markdown files with substitution variables
 

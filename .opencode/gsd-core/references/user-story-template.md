@@ -35,7 +35,7 @@ The full user story replaces the existing `**Goal:**` line in the phase section:
 **Mode:** mvp
 ```
 
-Two strdoc-arch-0006-uc-v1tural rules:
+Two structural rules:
 1. The `**Goal:**` line stays on a single line (no line breaks inside the story). If the story is longer than ~120 chars, it should be split into multiple phases via SPIDR (see `spidr-splitting.md`).
 2. The `**Mode:** mvp` line is added immediately below `**Goal:**`. If `**Mode:**` already exists, it is replaced (not duplicated).
 

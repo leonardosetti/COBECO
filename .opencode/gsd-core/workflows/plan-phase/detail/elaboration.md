@@ -10,7 +10,7 @@ This elaborates the spine's §9a trigger condition (above) — the recovery bann
 
 ```bash
 # #3218: this asks "did the planner write files to disk at all" — a
-# planner-proddoc-arch-0006-uc-v1ed-nothing check, not outstanding-work counting — so it
+# planner-produced-nothing check, not outstanding-work counting — so it
 # takes the PHYSICAL set (`plan_count_all`, status:superseded INCLUDED): a
 # superseded plan is still a file the planner wrote, and this check must not
 # read "nothing written" just because every plan happens to be superseded.
@@ -35,7 +35,7 @@ Offer 3 options:
 2. **Retry planner** — re-spawn the planner with the same prompt (return to step 8)
 3. **Stop** — exit; user can re-run `/gsd-plan-phase {N}` to resume
 
-**If `DISK_PLANS` is 0 and no marker:** The planner proddoc-arch-0006-uc-v1ed no output. Treat as
+**If `DISK_PLANS` is 0 and no marker:** The planner produced no output. Treat as
 `## PLANNING INCONCLUSIVE` and handle accordingly.
 
 ## § 9b — Handle Phase Split Recommendation
@@ -52,7 +52,7 @@ When the planner returns `## PHASE SPLIT RECOMMENDED`, it means the phase's sour
 ## Phase {X} exceeds context budget for full-fidelity implementation
 
 The planner found {N} source items that exceed the context budget when
-planned at full fidelity. Instead of reddoc-arch-0006-uc-v1ing scope, we recommend splitting:
+planned at full fidelity. Instead of reducing scope, we recommend splitting:
 
 **Option 1: Split into sub-phases**
 - Phase {X}a: {name} — {items} ({N} source items, ~{P}% context)
@@ -67,7 +67,7 @@ rest become a follow-up phase
 Use question with these 3 options.
 
 **If "Split":** Use `/gsd-phase --insert` to create the sub-phases, then replan each.
-**If "Proceed":** Return to planner with instrdoc-arch-0006-uc-v1tion to attempt all items at full fidelity, accepting more plans/tasks.
+**If "Proceed":** Return to planner with instruction to attempt all items at full fidelity, accepting more plans/tasks.
 **If "Prioritize":** Use question (multiSelect) to let user pick which items are "now" vs "later". Create CONTEXT.md for each sub-phase with the selected items.
 
 ## § 9c — Handle Source Audit Gaps
@@ -94,7 +94,7 @@ Options:
 
 Use question for each gap (or batch if multiple gaps).
 
-**If "Add plan":** Return to planner (step 8) with instrdoc-arch-0006-uc-v1tion to add plans covering the missing items, preserving existing plans.
+**If "Add plan":** Return to planner (step 8) with instruction to add plans covering the missing items, preserving existing plans.
 **If "Split":** Use `/gsd-phase --insert` for overflow items, then replan.
 **If "Defer":** Record in CONTEXT.md `## Deferred Ideas` with developer's confirmation. Proceed to step 10.
 

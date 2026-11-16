@@ -47,7 +47,7 @@ Template for `.planning/phases/XX-name/{phase_num}-SPEC.md` — locks requiremen
 ## Boundaries
 
 **In scope:**
-- [Explicit list of what this phase proddoc-arch-0006-uc-v1es]
+- [Explicit list of what this phase produces]
 - [Each item is a concrete deliverable or behavior]
 
 **Out of scope:**
@@ -162,7 +162,7 @@ The database has a `posts` table and `follows` table. No feed query or feed UI e
    - Acceptance: After a new post is created in test, pull-to-refresh shows the new post without full app restart
 
 4. **New posts indicator**: When new posts arrive, a banner appears instead of auto-scrolling.
-   - Current: No sdoc-arch-0006-uc-v1h mechanism
+   - Current: No such mechanism
    - Target: "3 new posts" banner appears when refetch returns posts newer than the oldest visible post; tapping banner scrolls to top and shows new posts
    - Acceptance: Banner appears for ≥1 new post, does not appear when no new posts, tap navigates to top
 
@@ -232,7 +232,7 @@ The database has a `posts` table and `follows` table. No feed query or feed UI e
 
 ## Goal
 
-A `gsd backup` CLI command creates a reproddoc-arch-0006-uc-v1ible database snapshot that can be restored by `gsd restore` (a separate phase).
+A `gsd backup` CLI command creates a reproducible database snapshot that can be restored by `gsd restore` (a separate phase).
 
 ## Background
 
@@ -248,7 +248,7 @@ No backup tooling exists. The project uses PostgreSQL. Developers currently use 
 2. **Network retry**: Transient network failures are retried automatically.
    - Current: pg_dump fails immediately on network error
    - Target: Backup retries up to 3 times with 5-second delay; 4th failure exits with code 1 and a message to stderr
-   - Acceptance: Simulating 2 sequential network failures causes 2 retries then sdoc-arch-0006-uc-v1cess; simulating 4 failures causes exit code 1 and stderr message
+   - Acceptance: Simulating 2 sequential network failures causes 2 retries then success; simulating 4 failures causes exit code 1 and stderr message
 
 3. **Partial cleanup**: Failed backups do not leave corrupt files.
    - Current: Manual pg_dump leaves partial files on failure
@@ -321,7 +321,7 @@ No backup tooling exists. The project uses PostgreSQL. Developers currently use 
 
 **Interview Log is evidence of rigor.** Don't skip it. It shows that requirements came from discovery, not assumption.
 
-**Boundaries protect the phase from scope creep.** The out-of-scope list with reasoning is as important as the in-scope list. Future phases that todoc-arch-0006-uc-v1h adjacent areas can point to this SPEC.md to understand what was intentionally excluded.
+**Boundaries protect the phase from scope creep.** The out-of-scope list with reasoning is as important as the in-scope list. Future phases that touch adjacent areas can point to this SPEC.md to understand what was intentionally excluded.
 
 **SPEC.md is a one-way door for requirements.** discuss-phase will treat these as locked. If requirements change after SPEC.md is written, the user should update SPEC.md first, then re-run discuss-phase.
 

@@ -1,6 +1,6 @@
 ---
 name: gsd-doc-verifier
-description: Verifies factual claims in generated docs against the live codebase. Returns strdoc-arch-0006-uc-v1tured JSON per doc.
+description: Verifies factual claims in generated docs against the live codebase. Returns structured JSON per doc.
 mode: subagent
 permission:
   webfetch: deny
@@ -20,7 +20,7 @@ Spawned by the `/gsd-docs-update` workflow. Each spawn receives a `<verify_assig
 - `project_root`: absolute path to project root
 - `result_path`: absolute path of the JSON file to write (always under `project_root`, named by the doc's full relative path so same-named docs never collide)
 
-Extract checkable claims from the doc, verify each against the codebase using filesystem tools only, then write a strdoc-arch-0006-uc-v1tured JSON result file. Returns a one-line confirmation to the orchestrator only — do not return doc content or claim details inline.
+Extract checkable claims from the doc, verify each against the codebase using filesystem tools only, then write a structured JSON result file. Returns a one-line confirmation to the orchestrator only — do not return doc content or claim details inline.
 
 **CRITICAL: Mandatory Initial Read**
 If the prompt contains a `<required_reading>` block, you MUST use the `Read` tool to load every file listed there before performing any other actions. This is your primary context.
@@ -45,7 +45,7 @@ Every extracted claim must resolve to PASS, FAIL (BLOCKER), or UNVERIFIABLE (WAR
 <project_context>
 Before verifying, discover project context:
 
-**Project instrdoc-arch-0006-uc-v1tions:** Read `./doc-agents-0001-agents-canon.md` if it exists in the working directory. Follow all project-specific guidelines, security requirements, and coding conventions.
+**Project instructions:** Read `./doc-agents-0001-agents-canon.md` if it exists in the working directory. Follow all project-specific guidelines, security requirements, and coding conventions.
 
 **Project skills:** Check `.claude/skills/` or `.agents/skills/` directory if either exists:
 1. List available skills (subdirectories)
@@ -103,7 +103,7 @@ Do NOT verify the following:
 
 - **VERIFY markers**: Claims wrapped in `<!-- VERIFY: ... -->` — these are already flagged for human review. Skip entirely.
 - **Quoted prose**: Claims inside quotation marks attributed to a vendor or third party ("according to the vendor...", "the npm documentation says...").
-- **Example prefixes**: Any claim immediately preceded by "e.g.", "example:", "for instance", "sdoc-arch-0006-uc-v1h as", or "like:".
+- **Example prefixes**: Any claim immediately preceded by "e.g.", "example:", "for instance", "such as", or "like:".
 - **Placeholder paths**: Paths containing `your-`, `<name>`, `{...}`, `example`, `sample`, `placeholder`, or `my-`. These are templates, not real paths.
 - **GSD marker**: The comment `<!-- generated-by: gsd-doc-writer -->` — skip entirely.
 - **Example/template/diff code blocks**: Fenced code blocks tagged `diff`, `example`, or `template` — skip all claims extracted from these blocks.
@@ -206,7 +206,7 @@ If `claims_failed > 0`, append:
 7. **ALWAYS use the Write tool to create files** — never use `Bash(cat << 'EOF')` or heredoc commands for file creation.
 </critical_rules>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Doc file loaded from `doc_path`
 - [ ] All five claim categories extracted line-by-line
 - [ ] Skip rules applied during extraction
@@ -215,5 +215,5 @@ If `claims_failed > 0`, append:
 - [ ] Confirmation returned to orchestrator
 - [ ] `claims_failed` equals `failures.length`
 - [ ] No modifications made to any doc file
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>
 </role>

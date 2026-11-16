@@ -2,7 +2,6 @@
 # Testes de integração para Exportação PDF (RF17)
 
 import pytest
-import io
 from httpx import AsyncClient, ASGITransport
 from src.main import app
 
@@ -50,7 +49,7 @@ async def lista_com_itens(client, auth_user):
         ],
     }
     response = await client.post("/v1/listas", json=lista_data, headers=auth_user)
-    assert response.status_code == 21
+    assert response.status_code == 201
     return response.json()
 
 
@@ -69,7 +68,7 @@ class TestExportacaoIntegration:
 
         assert response.status_code == 200
         assert response.headers["content-type"] == "application/pdf"
-        
+
         # Verifica header Content-Disposition
         content_disp = response.headers.get("content-disposition", "")
         assert "attachment" in content_disp
@@ -95,7 +94,7 @@ class TestExportacaoIntegration:
     @pytest.mark.asyncio
     async def test_exportar_pdf_lista_inexistente(self, client):
         response = await client.get("/export/lista/99999/pdf")
-        assert response.status_code == 44
+        assert response.status_code == 404
 
     @pytest.mark.asyncio
     async def test_pdf_conteudo_basico(self, client, auth_user, lista_com_itens):
@@ -127,7 +126,7 @@ class TestExportacaoIntegration:
         # Formato: attachment; filename="lista_YYYYMMDD.pdf"
         assert "attachment" in content_disp
         assert "filename=" in content_disp
-        assert ".pdf\"" in content_disp or ".pdf'" in content_disp
+        assert '.pdf"' in content_disp or ".pdf'" in content_disp
 
 
 class TestExportacaoFormatos:
@@ -150,9 +149,9 @@ class TestExportacaoFormatos:
     async def test_pdf_tempo_geracao_rnf11(self, client, auth_user, lista_com_itens):
         """RNF11 - <5s para até 10 itens"""
         import time
-        
+
         lista_id = lista_com_itens["id"]
-        
+
         start = time.time()
         response = await client.get(
             f"/export/lista/{lista_id}/pdf",
@@ -169,22 +168,23 @@ class TestExportacaoFormatos:
         # Cria lista com muitos itens (usa produtos do seed)
         prod_resp = await client.get("/v1/produtos?limit=20")
         produtos = prod_resp.json()["items"]
-        
+
         itens = []
         for i, prod in enumerate(produtos):
             itens.append({"produto_id": prod["id"], "quantidade": (i % 5) + 1})
             if len(itens) >= 20:
                 break
-        
-        # Repete para chegar a ~10 itens
-        itens_10 = itens * 5
-        
-        lista_data = {"nome": "Lista Grande 10 Itens", "itens": itens_100}
+
+        # Repete para chegar a ~100 itens
+        itens_100 = itens * 5
+
+        lista_data = {"nome": "Lista Grande 100 Itens", "itens": itens_100}
         create_resp = await client.post("/v1/listas", json=lista_data, headers=auth_user)
-        assert create_resp.status_code == 21
+        assert create_resp.status_code == 201
         lista_id = create_resp.json()["id"]
 
         import time
+
         start = time.time()
         response = await client.get(f"/export/lista/{lista_id}/pdf", headers=auth_user)
         elapsed = time.time() - start
@@ -208,14 +208,17 @@ class TestExportacaoFormatos:
             "resposta_seguranca": "Maria Silva",
         }
         await client.post("/v1/auth/cadastrar", json=user_data)
-        login = await client.post("/v1/auth/login", json={"nome_usuario": "testuser_export2", "senha": "Senha@123"})
+        login = await client.post(
+            "/v1/auth/login",
+            json={"nome_usuario": "testuser_export2", "senha": "Senha@123"},
+        )
         auth2 = {"Authorization": f"Bearer {login.json()['access_token']}"}
 
         resp_auth = await client.get(f"/export/lista/{lista_id}/pdf", headers=auth2)
         resp_anon = await client.get(f"/export/lista/{lista_id}/pdf")
 
         # Ambos devem ser PDFs válidos
-        assert resp_auth.status_code == 20
-        assert resp_anon.status_code == 20
+        assert resp_auth.status_code == 200
+        assert resp_anon.status_code == 200
         # Conteúdo deve ser idêntico (mesma lista)
         assert resp_auth.content == resp_anon.content

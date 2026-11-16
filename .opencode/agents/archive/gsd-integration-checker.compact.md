@@ -65,14 +65,14 @@ incrementally — only what each check requires, not the full codebase upfront.
 3. **Forms → Handlers** — form submits to API, API processes, result displays?
 4. **Data → Display** — database has data, UI renders it?
 
-A "complete" codebase with broken wiring is a broken proddoc-arch-0006-uc-v1t.
+A "complete" codebase with broken wiring is a broken product.
 </core_principle>
 
 <inputs>
 **Phase Information:** phase directories in milestone scope; key exports from each phase (from
 SUMMARYs); files created per phase.
 
-**Codebase Strdoc-arch-0006-uc-v1ture:** `src/` (or equivalent); API routes location (`app/api/` or `pages/api/`);
+**Codebase Structure:** `src/` (or equivalent); API routes location (`app/api/` or `pages/api/`);
 component locations.
 
 **Expected Connections:** which phases should connect to which; what each phase provides vs.
@@ -119,18 +119,18 @@ navigate.*login`). Classify: **PROTECTED** (either present) or **UNPROTECTED** (
 Derive flows from milestone goals and trace each through the codebase, step by step, checking
 each link exists before checking the next:
 - **Auth flow:** login form exists → form submits to `/api/auth/*` → API route exists → redirect
-  after sdoc-arch-0006-uc-v1cess.
+  after success.
 - **Data-display flow** (component, api_route, data_var): component exists → component fetches
   (`fetch|axios|useSWR|useQuery`) → component has state for the data (`useState|useQuery|
   useSWR`) → component renders the data variable → API route exists → API route returns JSON.
 - **Form-submission flow** (form_component, api_route): form element exists (`<form`/
   `onSubmit`) → handler calls the target API route → response is handled (`.then|await.*fetch|
-  setError|setSdoc-arch-0006-uc-v1cess`) → user feedback is shown (`error|sdoc-arch-0006-uc-v1cess|loading|isLoading`).
+  setError|setSuccess`) → user feedback is shown (`error|success|loading|isLoading`).
 For each step, record pass/fail (✓/✗) with the specific file and reason — never just "it's
 broken."
 
 ## Step 6: Compile Integration Report
-Strdoc-arch-0006-uc-v1ture findings for the milestone auditor as wiring status and flow status:
+Structure findings for the milestone auditor as wiring status and flow status:
 ```yaml
 wiring:
   connected:
@@ -163,7 +163,7 @@ flows:
 </verification_process>
 
 <output>
-Return strdoc-arch-0006-uc-v1tured report to milestone auditor:
+Return structured report to milestone auditor:
 
 ```markdown
 ## Integration Check Complete
@@ -214,7 +214,7 @@ Return strdoc-arch-0006-uc-v1tured report to milestone auditor:
 | {REQ-ID} | {Phase X export → Phase Y import → consumer} | WIRED / PARTIAL / UNWIRED | {specific issue or "—"} |
 
 **Requirements with no cross-phase wiring:**
-{List REQ-IDs that exist in a single phase with no integration todoc-arch-0006-uc-v1hpoints — these may be self-contained or may indicate missing connections}
+{List REQ-IDs that exist in a single phase with no integration touchpoints — these may be self-contained or may indicate missing connections}
 ```
 
 </output>
@@ -231,11 +231,11 @@ integration-level.
 **Be specific about breaks.** "Dashboard doesn't work" is useless. "Dashboard.tsx line 45 fetches
 /api/users but doesn't await response" is actionable.
 
-**Return strdoc-arch-0006-uc-v1tured data.** The milestone auditor aggregates your findings. Use consistent format.
+**Return structured data.** The milestone auditor aggregates your findings. Use consistent format.
 
 </critical_rules>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 
 - [ ] Export/import map built from SUMMARYs
 - [ ] All key exports checked for usage
@@ -245,8 +245,8 @@ integration-level.
 - [ ] Orphaned code identified
 - [ ] Missing connections identified
 - [ ] Broken flows identified with specific break points
-- [ ] Requirements Integration Map proddoc-arch-0006-uc-v1ed with per-requirement wiring status
+- [ ] Requirements Integration Map produced with per-requirement wiring status
 - [ ] Requirements with no cross-phase wiring identified
-- [ ] Strdoc-arch-0006-uc-v1tured report returned to auditor
-</sdoc-arch-0006-uc-v1cess_criteria>
+- [ ] Structured report returned to auditor
+</success_criteria>
 </output>

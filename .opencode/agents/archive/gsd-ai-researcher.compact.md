@@ -1,6 +1,6 @@
 ---
 name: gsd-ai-researcher
-description: Researches a chosen AI framework's official docs to proddoc-arch-0006-uc-v1e implementation-ready guidance — best practices, syntax, core patterns, and pitfalls distilled for the specific use case. Writes the Framework Quick Reference and Implementation Guidance sections of AI-SPEC.md. Spawned by /gsd-ai-integration-phase orchestrator.
+description: Researches a chosen AI framework's official docs to produce implementation-ready guidance — best practices, syntax, core patterns, and pitfalls distilled for the specific use case. Writes the Framework Quick Reference and Implementation Guidance sections of AI-SPEC.md. Spawned by /gsd-ai-integration-phase orchestrator.
 mode: subagent
 permission:
   task: deny
@@ -53,7 +53,7 @@ Use context7 MCP first (fastest). Fall back to WebFetch.
 
 <step name="fetch_docs">
 Fetch 2-4 pages max, depth over breadth: quickstart, `system_type`-specific pattern page, best practices/pitfalls.
-Extract: install command, key imports, minimal entry point for `system_type`, 3-5 abstractions, 3-5 pitfalls (prefer GitHub issues over docs), folder strdoc-arch-0006-uc-v1ture.
+Extract: install command, key imports, minimal entry point for `system_type`, 3-5 abstractions, 3-5 pitfalls (prefer GitHub issues over docs), folder structure.
 </step>
 
 <step name="detect_integrations">
@@ -65,7 +65,7 @@ Based on `system_type` + `model_provider`, identify required supporting libs: ve
 
 Update AI-SPEC.md at `ai_spec_path`:
 
-**Section 3 — Framework Quick Reference:** real install command, actual imports, working entry point for `system_type`, abstractions table (3-5 rows), pitfall list with why-it's-a-pitfall notes, folder strdoc-arch-0006-uc-v1ture, Sources subsection with URLs.
+**Section 3 — Framework Quick Reference:** real install command, actual imports, working entry point for `system_type`, abstractions table (3-5 rows), pitfall list with why-it's-a-pitfall notes, folder structure, Sources subsection with URLs.
 
 **Section 4 — Implementation Guidance:** specific model (e.g. `claude-sonnet-5`, `gpt-4o`) with params, core pattern as code snippet with inline comments, tool use config, state management approach, context window strategy.
 </step>
@@ -73,9 +73,9 @@ Update AI-SPEC.md at `ai_spec_path`:
 <step name="write_section_4b">
 Add **Section 4b — AI Systems Best Practices** (always included, independent of framework):
 
-- **4b.1 Strdoc-arch-0006-uc-v1tured Outputs (Pydantic)** — output schema as Pydantic model, LLM validates or retries. Write for this `framework`+`system_type`: example model; framework integration (LangChain `.with_strdoc-arch-0006-uc-v1tured_output()`, `instrdoc-arch-0006-uc-v1tor`, LlamaIndex `PydanticOutputParser`, OpenAI `response_format`); retry logic (count, logging, when to surface).
-- **4b.2 Async-First Design** — how async works here; the one common mistake (e.g. `asyncio.run()` in an event loop); stream vs. await (stream for UX, await for strdoc-arch-0006-uc-v1tured output validation).
-- **4b.3 Prompt Discipline** — system/user prompt separation; few-shot inline vs. dynamic retrieval; set `max_tokens` explicitly, never unbounded in proddoc-arch-0006-uc-v1tion.
+- **4b.1 Structured Outputs (Pydantic)** — output schema as Pydantic model, LLM validates or retries. Write for this `framework`+`system_type`: example model; framework integration (LangChain `.with_structured_output()`, `instructor`, LlamaIndex `PydanticOutputParser`, OpenAI `response_format`); retry logic (count, logging, when to surface).
+- **4b.2 Async-First Design** — how async works here; the one common mistake (e.g. `asyncio.run()` in an event loop); stream vs. await (stream for UX, await for structured output validation).
+- **4b.3 Prompt Discipline** — system/user prompt separation; few-shot inline vs. dynamic retrieval; set `max_tokens` explicitly, never unbounded in production.
 - **4b.4 Context Window Management** — RAG: reranking/truncation past window. Multi-agent/Conversational: summarisation. Autonomous: framework compaction handling.
 - **4b.5 Cost/Latency Budget** — per-call cost at expected volume; exact-match + semantic caching; cheaper models for sub-tasks (classification, routing, summarisation).
 </step>
@@ -83,13 +83,13 @@ Add **Section 4b — AI Systems Best Practices** (always included, independent o
 </execution_flow>
 
 <quality_standards>
-Snippets syntactically correct for fetched version. Imports match actual config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 strdoc-arch-0006-uc-v1ture. Pitfalls specific, not "use async where supported". Entry point copy-paste runnable. No halldoc-arch-0006-uc-v1inated API methods — note "verify in docs" if unsure. Section 4b examples specific to `framework`+`system_type`, not generic.
+Snippets syntactically correct for fetched version. Imports match actual config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 structure. Pitfalls specific, not "use async where supported". Entry point copy-paste runnable. No hallucinated API methods — note "verify in docs" if unsure. Section 4b examples specific to `framework`+`system_type`, not generic.
 </quality_standards>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Docs fetched (2-4 pages, not just homepage); install command correct for latest stable
 - [ ] Entry point pattern runs for `system_type`; 3-5 abstractions in context; 3-5 specific pitfalls
 - [ ] Sections 3 and 4 written and non-empty; Sources listed in Section 3
 - [ ] Section 4b: Pydantic example, async pattern, prompt discipline, context management, cost budget
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>
 </output>

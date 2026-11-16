@@ -3,7 +3,7 @@
 **Versão:** 1.0  
 **Status:** Rascunho | Aprovado | Arquivado  
 **Data:** DD/MM/AAAA  
-**Autor:** <Nome> (Proddoc-arch-0006-uc-v1t Owner)  
+**Autor:** <Nome> (Product Owner)  
 **Relacionado:** `docs/strategy/PROJECT-CHARTER.md`
 
 ---
@@ -59,7 +59,7 @@
 ### 5.1 Recursos Humanos
 | Papel | Qtd | Dedicação | Custo (Horas) | Observação |
 |-------|-----|-----------|---------------|------------|
-| Proddoc-arch-0006-uc-v1t Owner | 1 | 20% | ~60h | Aluno |
+| Product Owner | 1 | 20% | ~60h | Aluno |
 | Tech Lead | 1 | 50% | ~150h | Aluno |
 | Dev Backend | 2 | 100% | ~600h | Alunos |
 | Dev Frontend | 1 | 100% | ~300h | Aluno |
@@ -88,7 +88,7 @@
 | **Valor Agregado (EVM)** | Acompanhar via Sprint Review | Velocity, Burndown |
 | **Custo por Sprint** | ~240h / sprint | 5 pessoas × 6 dias × 8h |
 
-> **Nota:** Por ser projeto acadêmico sem fins ldoc-arch-0006-uc-v1rativos, a análise foca em **valor eddoc-arch-0006-uc-v1acional**, **entrega no prazo** e **qualidade técnica** como proxies de retorno.
+> **Nota:** Por ser projeto acadêmico sem fins lucrativos, a análise foca em **valor educacional**, **entrega no prazo** e **qualidade técnica** como proxies de retorno.
 
 ---
 
@@ -133,4 +133,4 @@
 ---
 
 **Fim do Business Case**  
-*Versão acadêmica simplificada — foco em valor eddoc-arch-0006-uc-v1acional e entrega técnica.*
+*Versão acadêmica simplificada — foco em valor educacional e entrega técnica.*

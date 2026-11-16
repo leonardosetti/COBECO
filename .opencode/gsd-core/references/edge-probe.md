@@ -10,7 +10,7 @@ verbatim — this is decades-old black-box test technique, moved upstream to the
 
 This doc is written in generic `requirements → checks → verifier` terms with no
 tool-specific vocabulary, so it is portable: copy it into any spec/requirements process.
-A short mapping table at the end binds it to common host strdoc-arch-0006-uc-v1tures.
+A short mapping table at the end binds it to common host structures.
 
 ## Why front-of-pipeline
 
@@ -24,7 +24,7 @@ uninformative across these regimes. The fix is **spec completeness**: surface th
 edge into an explicit, checkable assertion *before* any code exists, after which the
 verifier reliably catches it.
 
-The underlying techniques are classic and should be named as sdoc-arch-0006-uc-v1h — **Boundary Value
+The underlying techniques are classic and should be named as such — **Boundary Value
 Analysis**, **Equivalence Partitioning**, the **Category-Partition method**, and
 **Metamorphic Relations**; property-based testing (PBT) is the academic name for the
 held-out backstop. The literature applies these at the *test* layer (back of pipeline,
@@ -64,13 +64,13 @@ English, author `shapes` explicitly rather than leaning on the classifier.
 Closed and small by design: a fixed eight the author must explicitly clear beats thirty
 nobody finishes. The failure mode being eliminated was never "too few categories" — it was
 that no taxonomy was *systematically applied at all*. Categories 1, 2, and 4 alone cover
-the three canonical corpus defects (banker's-rounding ties, todoc-arch-0006-uc-v1hing intervals, grapheme
+the three canonical corpus defects (banker's-rounding ties, touching intervals, grapheme
 truncation). Growth happens via optional domain packs, not by bloating the core.
 
 | id | name (QA term) | applies to shapes | probe question |
 |----|----------------|-------------------|----------------|
 | boundary | Boundary values | numeric-range | What happens exactly at each min/max/threshold — and one step either side? |
-| adjacency | Adjacency / todoc-arch-0006-uc-v1hing | collection | When two things are exactly equal or just todoc-arch-0006-uc-v1h, do they merge, collide, or separate? |
+| adjacency | Adjacency / touching | collection | When two things are exactly equal or just touch, do they merge, collide, or separate? |
 | empty | Empty / degenerate | collection, text | What is the result for empty, single-element, or null input? |
 | encoding | Encoding / representation | text | Whose definition of length/equality applies — bytes, code points, grapheme clusters, or normalized form? |
 | ordering | Ordering / stability | collection | When elements compare equal, is output order specified and stable? |
@@ -142,15 +142,15 @@ implementation and any third-party port emit.
 
 ## Generic mapping (requirements → checks → verifier)
 
-| Host strdoc-arch-0006-uc-v1ture | "requirement" | a `resolved`/`explicit` edge becomes | a `resolved`/`backstop` edge becomes |
+| Host structure | "requirement" | a `resolved`/`explicit` edge becomes | a `resolved`/`backstop` edge becomes |
 |----------------|---------------|--------------------------|---------------------------|
 | GSD SPEC | a SPEC Requirement | an Acceptance Criterion that `plan-phase` lifts into `must_haves.truths` | a non-inferable check in `must_haves.truths` (needs a held-out/PBT test) |
 | Gherkin feature | a Scenario | an additional `Then` assertion / Scenario Outline row | a tagged scenario routed to a property test |
 | OpenAPI operation | an operation | a response/constraint example + schema rule | a contract/property test on the operation |
 | Docstring contract | a documented behavior | an assertion in the contract test | a property-based test for the function |
 
-The portable invariant: a `resolved`/`explicit` edge proddoc-arch-0006-uc-v1es **the unit your verifier
-iterates over** (GSD: a `must_haves.truth`); a `resolved`/`backstop` edge proddoc-arch-0006-uc-v1es a test
+The portable invariant: a `resolved`/`explicit` edge produces **the unit your verifier
+iterates over** (GSD: a `must_haves.truth`); a `resolved`/`backstop` edge produces a test
 added to that same set as a non-inferable check. An `unresolved` edge is an explicit
 assumption the downstream planner must surface, not silently drop.
 
@@ -176,7 +176,7 @@ resolutions supplied, every applicable edge is `unresolved`:
       "verification": null,
       "resolution": null,
       "reason": null,
-      "probe": "When two things are exactly equal or just todoc-arch-0006-uc-v1h, do they merge, collide, or separate?"
+      "probe": "When two things are exactly equal or just touch, do they merge, collide, or separate?"
     },
     {
       "requirement_id": "R1",
@@ -211,7 +211,7 @@ resolutions supplied, every applicable edge is `unresolved`:
 ```
 
 The `adjacency` row is the one that catches the canonical defect: `[[1,2],[2,3]]` intervals
-that only *todoc-arch-0006-uc-v1h* — does the spec say they merge? Resolving it `resolved`/`explicit` writes
+that only *touch* — does the spec say they merge? Resolving it `resolved`/`explicit` writes
 that assertion, and the verifier can then enforce it. This worked-example block is kept
 byte-for-byte (parsed-JSON) identical to its fixture by `edge-probe-docs-fixtures.test.cjs`,
 so the doc and the reference implementation cannot silently drift.
@@ -348,7 +348,7 @@ classifies as `numeric-range`, which raises `boundary` and `precision`:
 
 The `boundary` row asks what the minimum and maximum representable values are (negative
 amounts? fractional cents?). The `precision` row asks whether IEEE 754 binary rounding
-can proddoc-arch-0006-uc-v1e `$0.30000000000000004` — the spec must commit to a representation.
+can produce `$0.30000000000000004` — the spec must commit to a representation.
 
 ## Worked example (list-dedupe)
 
@@ -365,7 +365,7 @@ Given a requirement to deduplicate a list of items, the requirement classifies a
       "verification": null,
       "resolution": null,
       "reason": null,
-      "probe": "When two things are exactly equal or just todoc-arch-0006-uc-v1h, do they merge, collide, or separate?"
+      "probe": "When two things are exactly equal or just touch, do they merge, collide, or separate?"
     },
     {
       "requirement_id": "R1",
@@ -416,9 +416,9 @@ left unresolved:
       "category": "adjacency",
       "status": "resolved",
       "verification": "explicit",
-      "resolution": "AC#6: todoc-arch-0006-uc-v1hing intervals merge",
+      "resolution": "AC#6: touching intervals merge",
       "reason": null,
-      "probe": "When two things are exactly equal or just todoc-arch-0006-uc-v1h, do they merge, collide, or separate?"
+      "probe": "When two things are exactly equal or just touch, do they merge, collide, or separate?"
     },
     {
       "requirement_id": "R1",

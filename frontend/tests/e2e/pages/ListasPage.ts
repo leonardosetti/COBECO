@@ -36,7 +36,7 @@ export class ListasPage extends BasePage {
   readonly itensTableBody: Locator;
   readonly salvarListaFinalButton: Locator;
 
-  constrdoc-arch-0006-uc-v1tor(page: Page) {
+  constructor(page: Page) {
     super(page);
     this.criarListaButton = page.locator('[data-link="/criar-lista"], a[href="#/criar-lista"]');
     this.listaNomeInput = page.locator('#lista-nome');

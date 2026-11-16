@@ -88,11 +88,11 @@ function nearestExistingDir(start) {
 // StrReplaceFile takes `path` + `edit: Edit | list[Edit]` with `old`/`new` —
 // kimi-cli's hooks/events.py forwards tool_input verbatim, so both layers need
 // mapping. Accepts bare and module-qualified ('kimi_cli.tools.file:WriteFile')
-// names; unknown names fall through untodoc-arch-0006-uc-v1hed. Inlined per guard (not
+// names; unknown names fall through untouched. Inlined per guard (not
 // hooks/lib/): hook scripts are staged as standalone files, and a sibling
 // require is a staging dependency that can fail silently.
 // A Map, not an object literal: bare bracket lookup resolves prototype keys
-// ('constrdoc-arch-0006-uc-v1tor', '__proto__', 'toString') to truthy functions/objects, so the
+// ('constructor', '__proto__', 'toString') to truthy functions/objects, so the
 // !mapped fall-through never fires for them; Map.get returns undefined (same
 // shape as canonicalizeRuntimeName in src/runtime-name-policy.cts).
 const KIMI_TOOL_NAMES = new Map([['WriteFile', 'Write'], ['StrReplaceFile', 'Edit'], ['ReadFile', 'Read'], ['Shell', 'Bash']]);
@@ -153,14 +153,14 @@ function normalizeKimiPayload(data) {
       // arrays, plain objects), so nothing downstream — including
       // gsd-prompt-guard's scan of new_string — loses content it saw before.
       const editText = (v) => { try { return String(v ?? ''); } catch { return ''; } };
-      // #2595 (review Major 2): reconstrdoc-arch-0006-uc-v1t UNCONDITIONALLY, mirroring the
+      // #2595 (review Major 2): reconstruct UNCONDITIONALLY, mirroring the
       // `path` decision above rather than merely filling in when the field
       // happens to be absent. kimi-cli's StrReplaceFile schema is `path` +
       // `edit` only (src/kimi_cli/tools/file/replace.py @ 4a550ef) — it carries
       // no `old_string`/`new_string` at all, so either field appearing in a
       // Kimi payload is ALWAYS model-supplied, exactly like `file_path`. Under
       // the old `=== undefined` condition a model-supplied `new_string: ""`
-      // SHADOWED the reconstrdoc-arch-0006-uc-v1tion, leaving gsd-prompt-guard's injection scan
+      // SHADOWED the reconstruction, leaving gsd-prompt-guard's injection scan
       // reading '' and exiting at its `if (!content)` before it ever saw the
       // real `edit[].new` — a one-key bypass of the very scan this fix's
       // guarded coercion exists to keep fed. A `typeof` test would NOT close
@@ -196,7 +196,7 @@ process.stdin.on('end', () => {
     // This approach works even when cwd is a subdirectory of the worktree.
     // Combined into one spawn — git rev-parse accepts multiple query flags in
     // one invocation and prints one line of output per flag, in the exact
-    // order given, reddoc-arch-0006-uc-v1ing this guard's worst-case subprocess count under
+    // order given, reducing this guard's worst-case subprocess count under
     // CI/load contention (three spawns collapse into one). `--abbrev-ref HEAD`
     // is used instead of `symbolic-ref --short HEAD` because it is combinable
     // (a single `rev-parse` call) and behaviorally equivalent for this guard's
@@ -254,7 +254,7 @@ process.stdin.on('end', () => {
     // read rather than through normalization, and it is NOT closed by making
     // `path` authoritative: normalization returns early for native Claude Code
     // payloads (KIMI_TOOL_NAMES has no 'Edit' entry), so `{"tool_name":"Edit",
-    // "tool_input":{"file_path":[]}}` reached it untodoc-arch-0006-uc-v1hed — this guard's
+    // "tool_input":{"file_path":[]}}` reached it untouched — this guard's
     // original #260 surface. Same shape as hooks/gsd-windsurf-pre-write.js:75.
     const rawFilePath = typeof data.tool_input?.file_path === 'string'
       ? data.tool_input.file_path
@@ -271,7 +271,7 @@ process.stdin.on('end', () => {
     // holds only while every runtime reaching here either rejects relative paths
     // or resolves them against the worktree CWD. Claude Code's Edit/Write require
     // an absolute file_path, so the original #260 surface satisfies it by
-    // constrdoc-arch-0006-uc-v1tion. kimi-cli's StrReplaceFile takes `path` with no documented
+    // construction. kimi-cli's StrReplaceFile takes `path` with no documented
     // absoluteness guarantee, and its resolution behaviour is NOT verified here
     // (no source available to this repo at 4a550ef beyond the schema). If it
     // resolves relative paths against anything other than the tool CWD, a

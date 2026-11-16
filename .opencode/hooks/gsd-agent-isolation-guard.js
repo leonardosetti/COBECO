@@ -6,7 +6,7 @@
 // resolves the project's dispatch isolation correctly
 // (`gsd_run query dispatch-isolation --raw`), but DELIVERY of that value into
 // the model-authored `Agent(subagent_type="gsd-executor", ...)` call is a
-// prose instrdoc-arch-0006-uc-v1tion ("substitute $HARNESS_FLAG's value ... on Claude Code it
+// prose instruction ("substitute $HARNESS_FLAG's value ... on Claude Code it
 // is literally isolation=\"worktree\""). Nothing verifies the model actually
 // copied it. When it is omitted, the executor runs and commits directly in
 // the user's PRIMARY checkout instead of an isolated worktree, with no
@@ -93,7 +93,7 @@ const ON_CRASH = HOOK_ON_CRASH.ALLOW;
 // #3582: gsd-core/bin/lib/*.cjs (runtime-name-policy.cjs, capability-registry.cjs
 // below) are tsc build artifacts (ADR-457), gitignored and absent on a raw
 // plugin-marketplace / git-clone install that never ran `npm run build:lib`.
-// Self-heal before the first sdoc-arch-0006-uc-v1h require (resolveRegistryIsolation, below) —
+// Self-heal before the first such require (resolveRegistryIsolation, below) —
 // see ensureRuntimeBuild's own header for the full rationale. This module
 // itself (gsd-core/bin/ensure-runtime-build.cjs) depends on nothing under
 // ./lib, so requiring it here is always safe.
@@ -101,7 +101,7 @@ const { ensureRuntimeBuild, RuntimeBuildError } = require('../gsd-core/bin/ensur
 
 // No other executor-shaped subagent_type exists in agents/ today
 // (verified: only agents/gsd-executor.md). A Set, not a bare string compare,
-// so a future sibling executor role can be added here without todoc-arch-0006-uc-v1hing the
+// so a future sibling executor role can be added here without touching the
 // matching logic below.
 const EXECUTOR_SUBAGENT_TYPES = new Set(['gsd-executor']);
 
@@ -497,7 +497,7 @@ function resolveIsolationState(cwd, { clock = Date, dispatchIds = null } = {}) {
 
 /**
  * Process one PreToolUse payload (already JSON-parsed) and return the
- * decision without todoc-arch-0006-uc-v1hing stdin/stdout/process.exit — the exported,
+ * decision without touching stdin/stdout/process.exit — the exported,
  * directly-testable core of this hook's logic (#3045 MAJOR: "the clock seam
  * is dead code" fix). The stdin-driven script below is now a thin adapter
  * over this function so tests can `require()` it and inject a `clock`
@@ -525,7 +525,7 @@ function evaluateDispatch(data, { clock = Date } = {}) {
   // dispatch's own text, so a fresh sentinel that disagrees with THIS
   // dispatch is treated as inapplicable rather than trusted. PROMPT FIRST:
   // `description` is short, model-authored free text that only carries usable
-  // identity when the model happens to reproddoc-arch-0006-uc-v1e the dispatch template
+  // identity when the model happens to reproduce the dispatch template
   // verbatim, while the canonical `[gsd:dispatch phase="…" plan="…"]` marker
   // (or, failing that, the prose fallback) lives in the prompt body itself —
   // `description` is kept only as a fallback for a marker/prose match that

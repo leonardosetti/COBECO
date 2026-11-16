@@ -44,7 +44,7 @@ The gate spans two layers, and both must honor it. `gsd-executor` refuses to aut
 - Animation smoothness
 - Accessibility testing
 
-**Strdoc-arch-0006-uc-v1ture:**
+**Structure:**
 ```xml
 <task type="checkpoint:human-verify" gate="blocking">
   <what-built>[What the agent automated and deployed/built]</what-built>
@@ -61,7 +61,7 @@ The gate spans two layers, and both must honor it. `gsd-executor` refuses to aut
   <name>Build responsive dashboard layout</name>
   <files>src/components/Dashboard.tsx, src/app/dashboard/page.tsx</files>
   <action>Create dashboard with sidebar, header, and content area. Use Tailwind responsive classes for mobile.</action>
-  <verify>npm run build sdoc-arch-0006-uc-v1ceeds, no TypeScript errors</verify>
+  <verify>npm run build succeeds, no TypeScript errors</verify>
   <done>Dashboard component builds without errors</done>
 </task>
 
@@ -92,11 +92,11 @@ The gate spans two layers, and both must honor it. `gsd-executor` refuses to aut
   <files>App.xcodeproj, Sources/</files>
   <action>Run `xcodebuild -project App.xcodeproj -scheme App build`. Check for compilation errors in output.</action>
   <verify>Build output contains "BUILD SUCCEEDED", no errors</verify>
-  <done>App builds sdoc-arch-0006-uc-v1cessfully</done>
+  <done>App builds successfully</done>
 </task>
 
 <task type="checkpoint:human-verify" gate="blocking">
-  <what-built>Built macOS app at DerivedData/Build/Proddoc-arch-0006-uc-v1ts/Debug/App.app</what-built>
+  <what-built>Built macOS app at DerivedData/Build/Products/Debug/App.app</what-built>
   <how-to-verify>
     Open App.app and test:
     - App launches without crashes
@@ -117,8 +117,8 @@ Evaluate the rows **in order** and take the first that matches — they are a pr
 | # | Run | Tracer `<verify>` | Behavior |
 |---|---|---|---|
 | 1 | **Any run, any mode** (incl. auto) | task carries `gate="blocking-human"` | **STOP → `checkpoint:human-verify`.** Never auto-continued. |
-| 2 | Auto mode active (`AUTO_CHAIN`/`AUTO_CFG`) | any (row 1 already took `blocking-human`) | Re-run verify; HALT on failure, continue on sdoc-arch-0006-uc-v1cess. **Pre-existing behavior — unchanged by #3299.** |
-| 3 | Interactive, `end-of-phase` (default) | only `<automated>` | Re-run verify; HALT on failure, continue to expansion on sdoc-arch-0006-uc-v1cess — **no checkpoint** |
+| 2 | Auto mode active (`AUTO_CHAIN`/`AUTO_CFG`) | any (row 1 already took `blocking-human`) | Re-run verify; HALT on failure, continue on success. **Pre-existing behavior — unchanged by #3299.** |
+| 3 | Interactive, `end-of-phase` (default) | only `<automated>` | Re-run verify; HALT on failure, continue to expansion on success — **no checkpoint** |
 | 4 | Interactive, `end-of-phase` | carries `<human-check>` | STOP → `checkpoint:human-verify` |
 | 5 | Interactive, `mid-flight` | any | STOP → `checkpoint:human-verify` |
 
@@ -143,9 +143,9 @@ HUMAN_VERIFY_MODE=$(gsd_run query config-get workflow.human_verify_mode --defaul
 - Architecture decisions (monorepo vs separate repos)
 - Design choices (color scheme, layout approach)
 - Feature prioritization (which variant to build)
-- Data model decisions (schema strdoc-arch-0006-uc-v1ture)
+- Data model decisions (schema structure)
 
-**Strdoc-arch-0006-uc-v1ture:**
+**Structure:**
 ```xml
 <task type="checkpoint:decision" gate="blocking" auto_select="option-a">
   <decision>[What's being decided]</decision>
@@ -166,7 +166,7 @@ HUMAN_VERIFY_MODE=$(gsd_run query config-get workflow.human_verify_mode --defaul
 </task>
 ```
 
-`auto_select` is optional and names the `id` of the `<option>` auto-mode should pick when this checkpoint is reached unattended. Omit it and auto-mode escalates to a human instead of guessing from option order — the same treatment `gate="blocking-human"` already gets. An `auto_select` value that doesn't match any `<option id="…">` fails `verify plan-strdoc-arch-0006-uc-v1ture` at plan-parse time rather than silently falling back to the first option.
+`auto_select` is optional and names the `id` of the `<option>` auto-mode should pick when this checkpoint is reached unattended. Omit it and auto-mode escalates to a human instead of guessing from option order — the same treatment `gate="blocking-human"` already gets. An `auto_select` value that doesn't match any `<option id="…">` fails `verify plan-structure` at plan-parse time rather than silently falling back to the first option.
 
 **Example: Auth Provider Selection**
 ```xml
@@ -245,14 +245,14 @@ HUMAN_VERIFY_MODE=$(gsd_run query config-get workflow.human_verify_mode --defaul
 - Running builds/tests (use Bash tool)
 - Creating files (use Write tool)
 
-**Strdoc-arch-0006-uc-v1ture:**
+**Structure:**
 ```xml
 <task type="checkpoint:human-action" gate="blocking">
   <action>[What human must do - the agent already did everything automatable]</action>
-  <instrdoc-arch-0006-uc-v1tions>
+  <instructions>
     [What the agent already automated]
     [The ONE thing requiring human action]
-  </instrdoc-arch-0006-uc-v1tions>
+  </instructions>
   <verification>[What the agent can check afterward]</verification>
   <resume-signal>[How to continue]</resume-signal>
 </task>
@@ -269,11 +269,11 @@ HUMAN_VERIFY_MODE=$(gsd_run query config-get workflow.human_verify_mode --defaul
 
 <task type="checkpoint:human-action" gate="blocking">
   <action>Complete email verification for SendGrid account</action>
-  <instrdoc-arch-0006-uc-v1tions>
+  <instructions>
     I created the account and requested verification email.
     Check your inbox for SendGrid verification link and click it.
-  </instrdoc-arch-0006-uc-v1tions>
-  <verification>SendGrid API key works: curl test sdoc-arch-0006-uc-v1ceeds</verification>
+  </instructions>
+  <verification>SendGrid API key works: curl test succeeds</verification>
   <resume-signal>Type "done" when email verified</resume-signal>
 </task>
 ```
@@ -291,11 +291,11 @@ HUMAN_VERIFY_MODE=$(gsd_run query config-get workflow.human_verify_mode --defaul
 
 <task type="checkpoint:human-action" gate="blocking">
   <action>Authenticate Vercel CLI so I can continue deployment</action>
-  <instrdoc-arch-0006-uc-v1tions>
+  <instructions>
     I tried to deploy but got authentication error.
     Run: vercel login
     This will open your browser - complete the authentication flow.
-  </instrdoc-arch-0006-uc-v1tions>
+  </instructions>
   <verification>vercel whoami returns your account email</verification>
   <resume-signal>Type "done" when authenticated</resume-signal>
 </task>
@@ -319,7 +319,7 @@ When the agent encounters `type="checkpoint:*"`:
 
 1. **Stop immediately** - do not proceed to next task
 2. **Display checkpoint clearly** using the format below
-3. **Wait for user response** - do not halldoc-arch-0006-uc-v1inate completion
+3. **Wait for user response** - do not hallucinate completion
 4. **Verify if possible** - check files, run tests, whatever is specified
 5. **Resume execution** - continue to next task only after confirmation
 
@@ -445,7 +445,7 @@ I'll verify: vercel whoami returns your account
 | Platform | CLI Command | Example |
 |----------|-------------|---------|
 | Convex | `npx convex env set` | `npx convex env set OPENAI_API_KEY sk-...` |
-| Vercel | `vercel env add` | `vercel env add STRIPE_KEY proddoc-arch-0006-uc-v1tion` |
+| Vercel | `vercel env add` | `vercel env add STRIPE_KEY production` |
 | Railway | `railway variables set` | `railway variables set API_KEY=value` |
 | Fly | `fly secrets set` | `fly secrets set DATABASE_URL=...` |
 | Supabase | `supabase secrets set` | `supabase secrets set MY_SECRET=value` |
@@ -455,17 +455,17 @@ I'll verify: vercel whoami returns your account
 <!-- WRONG: Asking user to add env vars in dashboard -->
 <task type="checkpoint:human-action">
   <action>Add OPENAI_API_KEY to Convex dashboard</action>
-  <instrdoc-arch-0006-uc-v1tions>Go to dashboard.convex.dev → Settings → Environment Variables → Add</instrdoc-arch-0006-uc-v1tions>
+  <instructions>Go to dashboard.convex.dev → Settings → Environment Variables → Add</instructions>
 </task>
 
 <!-- RIGHT: the agent asks for value, then adds via CLI -->
 <task type="checkpoint:human-action">
   <action>Provide your OpenAI API key</action>
-  <instrdoc-arch-0006-uc-v1tions>
+  <instructions>
     I need your OpenAI API key for Convex backend.
     Get it from: https://platform.openai.com/api-keys
     Paste the key (starts with sk-)
-  </instrdoc-arch-0006-uc-v1tions>
+  </instructions>
   <verification>I'll add it via `npx convex env set` and verify</verification>
   <resume-signal>Paste your API key</resume-signal>
 </task>
@@ -499,7 +499,7 @@ gsd_run run-with-timeout 30 -- bash -c 'until node -e "fetch(\"http://localhost:
 
 **Port conflicts:** Kill stale process (`lsof -ti:3000 | xargs kill`) or use alternate port (`--port 3001`).
 
-**Server stays running** through checkpoints. Only kill when plan complete, switching to proddoc-arch-0006-uc-v1tion, or port needed for different service.
+**Server stays running** through checkpoints. Only kill when plan complete, switching to production, or port needed for different service.
 
 ## CLI Installation Handling
 
@@ -613,7 +613,7 @@ gsd_run run-with-timeout 30 -- bash -c 'until node -e "fetch(\"http://localhost:
   <verify>
     - upstash redis list shows database
     - config-env-0001-env-example-v1.0 contains UPSTASH_REDIS_URL
-    - Test connection sdoc-arch-0006-uc-v1ceeds
+    - Test connection succeeds
   </verify>
   <done>Redis database created and configured</done>
 </task>
@@ -628,7 +628,7 @@ gsd_run run-with-timeout 30 -- bash -c 'until node -e "fetch(\"http://localhost:
   <name>Create user schema</name>
   <files>src/db/schema.ts</files>
   <action>Define User, Session, Account tables with Drizzle ORM</action>
-  <verify>npm run db:generate sdoc-arch-0006-uc-v1ceeds</verify>
+  <verify>npm run db:generate succeeds</verify>
 </task>
 
 <task type="auto">
@@ -642,7 +642,7 @@ gsd_run run-with-timeout 30 -- bash -c 'until node -e "fetch(\"http://localhost:
   <name>Create login UI</name>
   <files>src/app/login/page.tsx, src/components/LoginButton.tsx</files>
   <action>Create login page with GitHub OAuth button</action>
-  <verify>npm run build sdoc-arch-0006-uc-v1ceeds</verify>
+  <verify>npm run build succeeds</verify>
 </task>
 
 <task type="auto">
@@ -710,7 +710,7 @@ gsd_run run-with-timeout 30 -- bash -c 'until node -e "fetch(\"http://localhost:
 <!-- BAD: Asking user to deploy via dashboard -->
 <task type="checkpoint:human-action" gate="blocking">
   <action>Deploy to Vercel</action>
-  <instrdoc-arch-0006-uc-v1tions>Visit vercel.com/new → Import repo → Click Deploy → Copy URL</instrdoc-arch-0006-uc-v1tions>
+  <instructions>Visit vercel.com/new → Import repo → Click Deploy → Copy URL</instructions>
 </task>
 
 <!-- GOOD: the agent deploys, user verifies -->
@@ -778,7 +778,7 @@ gsd_run run-with-timeout 30 -- bash -c 'until node -e "fetch(\"http://localhost:
 ```xml
 <task type="checkpoint:human-action">
   <action>Run database migrations</action>
-  <instrdoc-arch-0006-uc-v1tions>Run: npx prisma migrate deploy && npx prisma db seed</instrdoc-arch-0006-uc-v1tions>
+  <instructions>Run: npx prisma migrate deploy && npx prisma db seed</instructions>
 </task>
 ```
 
@@ -789,7 +789,7 @@ gsd_run run-with-timeout 30 -- bash -c 'until node -e "fetch(\"http://localhost:
 ```xml
 <task type="checkpoint:human-action">
   <action>Configure webhook URL in Stripe</action>
-  <instrdoc-arch-0006-uc-v1tions>Copy deployment URL → Stripe Dashboard → Webhooks → Add endpoint → Copy secret → Add to config-env-0001-env-example-v1.0</instrdoc-arch-0006-uc-v1tions>
+  <instructions>Copy deployment URL → Stripe Dashboard → Webhooks → Add endpoint → Copy secret → Add to config-env-0001-env-example-v1.0</instructions>
 </task>
 ```
 
@@ -810,7 +810,7 @@ gsd_run run-with-timeout 30 -- bash -c 'until node -e "fetch(\"http://localhost:
 - Reviewing test quality (tests fail for the right reason)
 - Confirming minimal GREEN implementations
 
-**Strdoc-arch-0006-uc-v1ture:**
+**Structure:**
 ```xml
 <task type="checkpoint:tdd-review" gate="advisory">
   <what-checked>TDD gate compliance for {count} plans in Phase {X}</what-checked>

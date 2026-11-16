@@ -15,7 +15,7 @@ else
   exit 0
 fi
 
-# Build the additionalContext text and emit it as a strdoc-arch-0006-uc-v1tured JSON
+# Build the additionalContext text and emit it as a structured JSON
 # envelope per the Claude Code SessionStart hook protocol (#2974). Tests
 # parse the JSON and assert on typed fields (state_present: bool,
 # config_mode: string, etc) rather than substring-matching free-form text.
@@ -34,7 +34,7 @@ fi
 # Use Node for JSON encoding so embedded newlines/quotes are escaped correctly.
 # additionalContext is the text Claude Code injects at session start; the
 # typed fields (state_present, config_mode) let tests assert on the
-# strdoc-arch-0006-uc-v1tured contract without grepping the prose.
+# structured contract without grepping the prose.
 node -e '
   const [statePresent, stateHead, configMode] = process.argv.slice(1);
   const headerLines = ["## Project State Reminder", ""];

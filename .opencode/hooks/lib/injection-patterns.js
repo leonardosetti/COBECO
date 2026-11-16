@@ -36,24 +36,24 @@ const INJECTION_PATTERNS = Object.freeze([
   // patterns made one sentence count twice and pushed a two-phrasing LOW
   // payload to HIGH (PR #4061 review).
   //   verbs    ignore|disregard|forget|discard|override. `override` carries
-  //            the old `override system|previous prompt|instrdoc-arch-0006-uc-v1tions` family;
+  //            the old `override system|previous prompt|instructions` family;
   //            `discard` is the synonym seen in the same planted phrasings.
   //   fillers  at least ONE of all|of|the|your|my|<qualifier> must sit between
   //            verb and noun (a lookahead, no repetition). Bare "override
-  //            rules" / "ignore instrdoc-arch-0006-uc-v1tions" are ordinary repo prose
+  //            rules" / "ignore instructions" are ordinary repo prose
   //            (measured: 6 hits across docs and source) and stay unmatched.
   //   tails    `disregard (all) previous` with no noun, and bare `forget` +
-  //            `instrdoc-arch-0006-uc-v1tions`, are kept verbatim because the old narrow
+  //            `instructions`, are kept verbatim because the old narrow
   //            patterns accepted them; the superset is pinned by
   //            tests/injection-patterns-parity.security.test.cjs.
-  //   known FP determined linter-doc prose sdoc-arch-0006-uc-v1h as "ignore (the) rules" trips
+  //   known FP determined linter-doc prose such as "ignore (the) rules" trips
   //            a single-pattern LOW advisory; one pattern can never block.
-  /(?:ignore|disregard|forget|discard|override)\s+(?=(?:all|of|the|your|my|system|previous|prior|above|earlier)\s)(?:all\s+)?(?:of\s+)?(?:the\s+|your\s+|my\s+)?(?:(?:system|previous|prior|above|earlier)\s+)?(?:instrdoc-arch-0006-uc-v1tions|directives|prompts?|rules)|disregard\s+(?:all\s+)?previous|forget\s+instrdoc-arch-0006-uc-v1tions/i,
+  /(?:ignore|disregard|forget|discard|override)\s+(?=(?:all|of|the|your|my|system|previous|prior|above|earlier)\s)(?:all\s+)?(?:of\s+)?(?:the\s+|your\s+|my\s+)?(?:(?:system|previous|prior|above|earlier)\s+)?(?:instructions|directives|prompts?|rules)|disregard\s+(?:all\s+)?previous|forget\s+instructions/i,
   /you\s+are\s+now\s+(?:a|an|the)\s+/i,
   /act\s+as\s+(?:a|an|the)\s+(?!plan|phase|wave)/i,
   /pretend\s+(?:you(?:'re| are)\s+|to\s+be\s+)/i,
   /from\s+now\s+on,?\s+you\s+(?:are|will|should|must)/i,
-  /(?:print|output|reveal|show|display|repeat)\s+(?:your\s+)?(?:system\s+)?(?:prompt|instrdoc-arch-0006-uc-v1tions)/i,
+  /(?:print|output|reveal|show|display|repeat)\s+(?:your\s+)?(?:system\s+)?(?:prompt|instructions)/i,
   /<\/?(?:system|assistant|human)>/i,
   /\[SYSTEM\]/i,
   /\[INST\]/i,

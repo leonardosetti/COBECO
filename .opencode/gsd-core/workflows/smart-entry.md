@@ -110,7 +110,7 @@ After invoking the command, **stop**. The dispatched command owns everything fro
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Situation detected via `gsd_run smart-entry --json`
 - [ ] Summary shown to orient the user
 - [ ] Menu offered (question, or numbered list under TEXT_MODE)
@@ -118,4 +118,4 @@ After invoking the command, **stop**. The dispatched command owns everything fro
 - [ ] Exactly one command dispatched
 - [ ] Any detection failure falls back to /gsd-progress (never strands the user)
 - [ ] No work done directly — launcher only
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

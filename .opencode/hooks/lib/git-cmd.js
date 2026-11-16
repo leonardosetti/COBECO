@@ -231,10 +231,10 @@ function isGitSubcommand(cmd, sub) {
  * spelling intact, which is why an earlier revision's claim of unreachability
  * was false; the caller now gates the resolver on the double-quoted arm alone
  * (review of #3816, round 4), so the claim holds again — for that reason, not
- * by ldoc-arch-0006-uc-v1k. That is the pre-fix behaviour for the whole form (fail closed, a
+ * by luck. That is the pre-fix behaviour for the whole form (fail closed, a
  * false positive on one rare spelling), and widening the bash capture to span
  * inner quotes would change what is captured for EVERY message containing one —
- * a regression class this fix deliberately does not todoc-arch-0006-uc-v1h (Codex review of
+ * a regression class this fix deliberately does not touch (Codex review of
  * #3816). The same capture truncation blocks a `"` in the SUBJECT LINE itself,
  * where it lands inside the line being measured. It does NOT block a `"` on a
  * later body line: the subject is already complete before the truncation point,
@@ -331,7 +331,7 @@ function resolveCommitSubject(messageArg) {
   const delimiter = opener[2] || opener[3] || opener[4];
   const body = lines.slice(1).map((l) => (stripTabs ? l.replace(/^\t+/, '') : l));
 
-  // TRUNCATION GUARD. The capture that proddoc-arch-0006-uc-v1ed this argument stops at the first
+  // TRUNCATION GUARD. The capture that produced this argument stops at the first
   // `"`, so a message containing one arrives here missing its tail — and its
   // terminator. Resolving anyway would hand the length gate a PREFIX of the real
   // subject and let an over-long message through, an enforcement hole that did

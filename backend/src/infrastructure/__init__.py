@@ -1,0 +1,1 @@
+"""COBECO Backend — pacote infrastructure."""

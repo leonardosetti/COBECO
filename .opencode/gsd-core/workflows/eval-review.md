@@ -1,5 +1,5 @@
 <purpose>
-Retroactive audit of an implemented AI phase's evaluation coverage. Standalone command that works on any GSD-managed AI phase. Proddoc-arch-0006-uc-v1es a scored EVAL-REVIEW.md with gap analysis and remediation plan.
+Retroactive audit of an implemented AI phase's evaluation coverage. Standalone command that works on any GSD-managed AI phase. Produces a scored EVAL-REVIEW.md with gap analysis and remediation plan.
 
 Use after /gsd-execute-phase to verify that the evaluation strategy from AI-SPEC.md was actually implemented. Mirrors the pattern of /gsd-ui-review and /gsd-validate-phase.
 </purpose>
@@ -59,7 +59,7 @@ EVAL_REVIEW_FILE=$(ls "${PHASE_DIR}"/*-EVAL-REVIEW.md 2>/dev/null | head -1)
 **Text mode (`workflow.text_mode: true` in config or `--text` flag):** Set `TEXT_MODE=true` if `--text` is present in `$ARGUMENTS` OR `text_mode` from init JSON is `true`. When TEXT_MODE is active, replace every `question` call with a plain-text numbered list and ask the user to type their choice number. This is required for non-the agent runtimes (OpenAI Codex, Antigravity, etc.) where `question` is not available.
 **If `EVAL_REVIEW_FILE` non-empty:**
 
-**If `--auto`:** Auto-select "View" — keep the existing EVAL-REVIEW.md untodoc-arch-0006-uc-v1hed and exit without
+**If `--auto`:** Auto-select "View" — keep the existing EVAL-REVIEW.md untouched and exit without
 re-auditing. Log: `[auto] EVAL-REVIEW.md exists — reusing as-is.` "Re-audit" is the regenerating
 choice; an unattended run reuses an existing artifact instead (#4776).
 
@@ -97,10 +97,10 @@ Build file list for auditor:
 Build prompt:
 
 ```markdown
-Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-eval-auditor.md for instrdoc-arch-0006-uc-v1tions.
+Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-eval-auditor.md for instructions.
 
 <objective>
-Conddoc-arch-0006-uc-v1t evaluation coverage audit of Phase {phase_number}: {phase_name}
+Conduct evaluation coverage audit of Phase {phase_number}: {phase_name}
 {If AI-SPEC exists: "Audit against AI-SPEC.md evaluation plan."}
 {If no AI-SPEC: "Audit against general AI eval best practices."}
 </objective>
@@ -161,7 +161,7 @@ gsd_run query commit "docs({phase_slug}): add EVAL-REVIEW.md — score {overall_
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Phase execution state detected correctly
 - [ ] AI-SPEC.md presence handled (with or without)
 - [ ] gsd-eval-auditor spawned with correct context
@@ -169,4 +169,4 @@ gsd_run query commit "docs({phase_slug}): add EVAL-REVIEW.md — score {overall_
 - [ ] Score and verdict displayed to user
 - [ ] Appropriate next steps surfaced based on verdict
 - [ ] Committed if commit_docs enabled
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

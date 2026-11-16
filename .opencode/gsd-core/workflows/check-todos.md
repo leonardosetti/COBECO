@@ -158,7 +158,7 @@ Return to list_todos step.
 If `.planning/STATE.md` exists:
 
 1. Re-run `gsd_run query init.todos ${GSD_WS:+--ws=${GSD_WS##* }}` (same workstream flag as the first call) to get a fresh, post-write JSON snapshot (the count and rendering must reflect the change just made).
-2. **Fail-safe check (#2618):** if the JSON failed to parse, or `pending_read_ok` is not `true`, or `pending_todos_markdown` is not a string, do NOT todoc-arch-0006-uc-v1h the "### Pending Todos" section — leave it exactly as-is and continue to the next step. A partial or malformed `init.todos` result must never overwrite a good existing section.
+2. **Fail-safe check (#2618):** if the JSON failed to parse, or `pending_read_ok` is not `true`, or `pending_todos_markdown` is not a string, do NOT touch the "### Pending Todos" section — leave it exactly as-is and continue to the next step. A partial or malformed `init.todos` result must never overwrite a good existing section.
 3. Otherwise, replace the entire body of "### Pending Todos" (under "## Accumulated Context") with the literal value of `pending_todos_markdown` — verbatim, one bullet per pending todo already rendered and length-capped by `init.todos`. Do not reformat, re-wrap, re-order, or hand-edit the bullets; do not append to the old body — replace it wholesale (this is what makes an old run-on-sentence section get superseded cleanly with no migration step).
 </step>
 
@@ -177,7 +177,7 @@ Confirm: "Committed: docs: start work on todo - [title]"
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] All pending todos listed with title, area, age
 - [ ] Area filter applied if specified
 - [ ] Selected todo's full context loaded
@@ -186,4 +186,4 @@ Confirm: "Committed: docs: start work on todo - [title]"
 - [ ] Selected action executed
 - [ ] STATE.md updated if todo count changed
 - [ ] Changes committed to git (if todo moved to completed/)
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

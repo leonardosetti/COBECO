@@ -1,6 +1,6 @@
 # Gate Prompt Patterns
 
-Reusable prompt patterns for strdoc-arch-0006-uc-v1tured gate checks in workflows and agents.
+Reusable prompt patterns for structured gate checks in workflows and agents.
 
 **For checkpoint format details, see `gsd-core/references/ui-brand.md`** -- a checkpoint is a `### CHECKPOINT: {Type}` heading followed by its content, then a `---` break and the bolded action prompt. Never a fixed-width drawn border: it wraps in a narrow pane.
 

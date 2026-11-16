@@ -63,7 +63,7 @@ Each task gets its own commit immediately after completion.
 
 > **Parallel agents:** When running as a parallel executor (spawned by execute-phase),
 > run commits normally — let pre-commit hooks run. Do NOT pass `--no-verify` by default
-> (#2924). Hooks should fire on the introddoc-arch-0006-uc-v1ing commit; silent bypass violates project
+> (#2924). Hooks should fire on the introducing commit; silent bypass violates project
 > doc-agents-0001-agents-canon.md guidance. If a project explicitly opts out via
 > `workflow.worktree_skip_hooks=true`, the orchestrator surfaces that flag in the
 > executor prompt; absent that signal, hooks run normally.
@@ -93,7 +93,7 @@ git commit -m "feat(08-02): create user registration endpoint
 
 - POST /auth/register validates email and password
 - Checks for duplicate users
-- Returns JWT token on sdoc-arch-0006-uc-v1cess
+- Returns JWT token on success
 "
 
 # TDD task - RED phase
@@ -167,7 +167,7 @@ gsd_run query commit "docs(pause): [phase-name] paused at task [X]/[Y]" --files 
 **Old approach (per-plan commits):**
 ```
 a7f2d1 feat(checkout): Stripe payments with webhook verification
-3e9c4b feat(proddoc-arch-0006-uc-v1ts): catalog with search, filters, and pagination
+3e9c4b feat(products): catalog with search, filters, and pagination
 8a1b2c feat(auth): JWT with refresh rotation using jose
 5c3d7e feat(foundation): Next.js 15 + Prisma + Tailwind scaffold
 2f4a8d docs: initialize ecommerce-app (5 phases)
@@ -181,11 +181,11 @@ a7f2d1 feat(checkout): Stripe payments with webhook verification
 7g8h9i feat(04-01): implement payment session creation
 0j1k2l feat(04-01): create checkout page component
 
-# Phase 03 - Proddoc-arch-0006-uc-v1ts
-3m4n5o docs(03-02): complete proddoc-arch-0006-uc-v1t listing plan
+# Phase 03 - Products
+3m4n5o docs(03-02): complete product listing plan
 6p7q8r feat(03-02): add pagination controls
 9s0t1u feat(03-02): implement search and filters
-2v3w4x feat(03-01): create proddoc-arch-0006-uc-v1t catalog schema
+2v3w4x feat(03-01): create product catalog schema
 
 # Phase 02 - Auth
 5y6z7a docs(02-02): complete token refresh plan
@@ -205,7 +205,7 @@ a7f2d1 feat(checkout): Stripe payments with webhook verification
 5c6d7e docs: initialize ecommerce-app (5 phases)
 ```
 
-Each plan proddoc-arch-0006-uc-v1es 2-4 commits (tasks + metadata). Clear, granular, bisectable.
+Each plan produces 2-4 commits (tasks + metadata). Clear, granular, bisectable.
 
 </example_log>
 
@@ -240,7 +240,7 @@ Each plan proddoc-arch-0006-uc-v1es 2-4 commits (tasks + metadata). Clear, granu
 **Failure recovery:**
 - Task 1 committed ✅, Task 2 failed ❌
 - the agent in next session: sees task 1 complete, can retry task 2
-- Can `git reset --hard` to last sdoc-arch-0006-uc-v1cessful task
+- Can `git reset --hard` to last successful task
 
 **Debugging:**
 - `git bisect` finds exact failing task, not just failing plan

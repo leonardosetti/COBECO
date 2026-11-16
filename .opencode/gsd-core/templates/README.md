@@ -1,6 +1,6 @@
 # GSD Canonical Artifact Registry
 
-This directory contains the template files for every artifact that GSD workflows officially proddoc-arch-0006-uc-v1e. The table below is the authoritative index: **if a `.planning/` root file is not listed here, `gsd-health` will flag it as W019** (unrecognized artifact).
+This directory contains the template files for every artifact that GSD workflows officially produce. The table below is the authoritative index: **if a `.planning/` root file is not listed here, `gsd-health` will flag it as W019** (unrecognized artifact).
 
 Agents should query this file before treating a `.planning/` file as authoritative. If the file name does not appear below, it is not a canonical GSD artifact.
 
@@ -10,7 +10,7 @@ Agents should query this file before treating a `.planning/` file as authoritati
 
 These files live directly at `.planning/` — not inside phase subdirectories.
 
-| File | Template | Proddoc-arch-0006-uc-v1ed by | Purpose |
+| File | Template | Produced by | Purpose |
 |------|----------|-------------|---------|
 | `PROJECT.md` | `project.md` | `/gsd-new-project` | Project identity, goals, requirements summary |
 | `ROADMAP.md` | `roadmap.md` | `/gsd-new-milestone`, `/gsd-new-project` | Phase plan with milestones and progress tracking |
@@ -32,7 +32,7 @@ These files live directly at `.planning/` — not inside phase subdirectories.
 
 ### Version-stamped artifacts (pattern: `vX.Y-*.md`)
 
-| Pattern | Proddoc-arch-0006-uc-v1ed by | Purpose |
+| Pattern | Produced by | Purpose |
 |---------|-------------|---------|
 | `vX.Y-MILESTONE-AUDIT.md` | `/gsd-audit-milestone` | Milestone audit report before archiving |
 
@@ -44,7 +44,7 @@ These files are archived to `.planning/milestones/` by `/gsd-complete-milestone`
 
 These files live inside a phase directory. They are NOT checked by W019 (which only inspects the `.planning/` root).
 
-| File Pattern | Template | Proddoc-arch-0006-uc-v1ed by | Purpose |
+| File Pattern | Template | Produced by | Purpose |
 |-------------|----------|-------------|---------|
 | `NN-MM-PLAN.md` | `phase-prompt.md` | `/gsd-plan-phase` | Executable implementation plan |
 | `NN-MM-SUMMARY.md` | `summary.md` | `/gsd-execute-phase` | Post-execution summary with learnings |
@@ -76,7 +76,7 @@ Files archived by `/gsd-complete-milestone`. These are never checked by W019.
 
 ## Adding a New Canonical Artifact
 
-When a new workflow proddoc-arch-0006-uc-v1es a `.planning/` root file:
+When a new workflow produces a `.planning/` root file:
 
 1. Add the file name to `CANONICAL_EXACT` in `gsd-core/bin/lib/artifacts.cjs`
 2. Add a row to the **`.planning/` Root Artifacts** table above

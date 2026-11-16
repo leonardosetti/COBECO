@@ -149,7 +149,7 @@ Promoted from quick note captured on {original date}.
 8. **Empty note text after stripping flags**: Treat as `list` subcommand
 </edge_cases>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Append: Note file written with correct frontmatter and verbatim text
 - [ ] Append: No questions asked — instant capture
 - [ ] List: Both scopes shown with sequential numbering
@@ -157,4 +157,4 @@ Promoted from quick note captured on {original date}.
 - [ ] Promote: Todo created with correct format
 - [ ] Promote: Source note marked as promoted
 - [ ] Global fallback: Works when no `.planning/` exists
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

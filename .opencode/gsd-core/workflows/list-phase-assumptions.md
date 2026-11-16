@@ -58,7 +58,7 @@ Based on roadmap description and project context, identify assumptions across fi
 What libraries, frameworks, patterns, or tools would the agent use?
 - "I'd use X library because..."
 - "I'd follow Y pattern because..."
-- "I'd strdoc-arch-0006-uc-v1ture this as Z because..."
+- "I'd structure this as Z because..."
 
 **2. Implementation Order:**
 What would the agent build first, second, third?
@@ -170,11 +170,11 @@ If "Re-examine": Return to analyze_phase with updated understanding
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - Phase number validated against roadmap
 - Assumptions surfaced across five areas: technical approach, implementation order, scope, risks, dependencies
 - Confidence levels marked where appropriate
 - "What do you think?" prompt presented
 - User feedback acknowledged
 - Clear next steps offered
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

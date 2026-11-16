@@ -52,7 +52,7 @@ SUMMARY_FILES=$(ls "${PHASE_DIR}"/*-SUMMARY.md 2>/dev/null)
 ```
 
 - **State A** (`VALIDATION_FILE` non-empty): Audit existing
-- **State B** (`VALIDATION_FILE` empty, `SUMMARY_FILES` non-empty): Reconstrdoc-arch-0006-uc-v1t from artifacts
+- **State B** (`VALIDATION_FILE` empty, `SUMMARY_FILES` non-empty): Reconstruct from artifacts
 - **State C** (`SUMMARY_FILES` empty): Exit — "Phase {N} not executed. Run /gsd-execute-phase {N} ${GSD_WS} first."
 
 ## 2. Discovery
@@ -65,9 +65,9 @@ Read all PLAN and SUMMARY files. Extract: task lists, requirement IDs, key-files
 
 Per task: `{ task_id, plan_id, wave, requirement_ids, has_automated_command }`
 
-### 2c. Detect Test Infrastrdoc-arch-0006-uc-v1ture
+### 2c. Detect Test Infrastructure
 
-State A: Parse from existing VALIDATION.md Test Infrastrdoc-arch-0006-uc-v1ture table.
+State A: Parse from existing VALIDATION.md Test Infrastructure table.
 State B: Filesystem scan:
 
 ```bash
@@ -115,10 +115,10 @@ Print: `◆ Spawning nyquist auditor... (runs in a subagent — no output until 
 
 ```
 Agent(
-  prompt="Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-nyquist-auditor.md for instrdoc-arch-0006-uc-v1tions.\n\n" +
+  prompt="Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-nyquist-auditor.md for instructions.\n\n" +
     "<required_reading>{PLAN, SUMMARY, impl files, VALIDATION.md}</required_reading>" +
     "<gaps>{gap list}</gaps>" +
-    "<test_infrastrdoc-arch-0006-uc-v1ture>{framework, config, commands}</test_infrastrdoc-arch-0006-uc-v1ture>" +
+    "<test_infrastructure>{framework, config, commands}</test_infrastructure>" +
     "<constraints>Never modify impl files. Max 3 debug iterations. Escalate impl bugs.</constraints>" +
     "${AGENT_SKILLS_AUDITOR}",
   subagent_type="gsd-nyquist-auditor",
@@ -138,7 +138,7 @@ Handle return:
 
 **State B (create):**
 1. Read template from `/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/templates/VALIDATION.md`
-2. Fill: frontmatter (**set `status: validated`**), Test Infrastrdoc-arch-0006-uc-v1ture, Per-Task Map, Manual-Only, Sign-Off
+2. Fill: frontmatter (**set `status: validated`**), Test Infrastructure, Per-Task Map, Manual-Only, Sign-Off
 3. Write to `${PHASE_DIR}/${PADDED_PHASE}-VALIDATION.md`
 
 **State A (update):**
@@ -181,12 +181,12 @@ Display `/clear` reminder.
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Nyquist config checked (exit if disabled)
 - [ ] Input state detected (A/B/C)
 - [ ] State C exits cleanly
 - [ ] PLAN/SUMMARY files read, requirement map built
-- [ ] Test infrastrdoc-arch-0006-uc-v1ture detected
+- [ ] Test infrastructure detected
 - [ ] Gaps classified (COVERED/PARTIAL/MISSING)
 - [ ] User gate with gap table
 - [ ] Auditor spawned with complete context
@@ -194,4 +194,4 @@ Display `/clear` reminder.
 - [ ] VALIDATION.md created or updated
 - [ ] Test files committed separately
 - [ ] Results with routing presented
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

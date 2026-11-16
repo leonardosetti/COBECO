@@ -224,7 +224,7 @@ matriz REQ → spec → doc → test é duty 4, :22):
 |---|---|---|
 | doc_id | `DOC-001` reservado para o doc de arquitetura de produto (atribuição formal na implementação) | agent-iso-26514-specialist.md:119 |
 | doc_type | `design` (enum :120 — arquitetura é documentação de design; mapeamento final na emissão do doc) | agent-iso-26514-specialist.md:120 |
-| iso_clause | **`UNKNOWN - verify`** — o especialista ISO estabelece a cláusula ISO/IEC/IEEE 26514:2022 do doc_type `design` com o texto da norma em mãos; inventar cláusula é proibido (DON'T 7, :100; anti-halldoc-arch-0006-uc-v1ination :70-72) | agent-iso-26514-specialist.md:100 |
+| iso_clause | **`UNKNOWN - verify`** — o especialista ISO estabelece a cláusula ISO/IEC/IEEE 26514:2022 do doc_type `design` com o texto da norma em mãos; inventar cláusula é proibido (DON'T 7, :100; anti-hallucination :70-72) | agent-iso-26514-specialist.md:100 |
 | traceability | REQ-14 (spec-002...:75; plano-integral...:84) → spec-013 (esta) → doc de arquitetura (destino `UNKNOWN - verify`) → test_openapi.py (lado OpenAPI) | agent-iso-26514-specialist.md:123 |
 | verdict | `conforme\|brecha\|gap\|pending_human` na parcela de QA documental (:125) | agent-iso-26514-specialist.md:125 |
 

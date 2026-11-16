@@ -58,7 +58,7 @@ Procedimento padronizado para criar release, tag SemVer, gerar changelog, public
 | Item | Verificação |
 |------|-------------|
 | Gate 3 aprovado | CCB + Orientador assinaram |
-| CI verde na `main` | Último run `sdoc-arch-0006-uc-v1cess` |
+| CI verde na `main` | Último run `success` |
 | Coverage ≥ 80% | `pytest --cov-fail-under=80` passa |
 | Runbooks testados | Game Day realizado |
 | CHANGELOG.md atualizado | Entrada para nova versão |
@@ -89,7 +89,7 @@ git pull origin main
 
 # 2. Verificar CI status
 gh run list --branch main --limit 1
-# Deve mostrar "sdoc-arch-0006-uc-v1cess" no último run
+# Deve mostrar "success" no último run
 
 # 3. Verificar coverage
 git checkout main
@@ -189,7 +189,7 @@ make health-prod
 | Item | Verificação | Responsável |
 |------|-------------|-------------|
 | Gate 3 aprovado | CCB + Orientador assinaram | PO |
-| CI verde na main | Último run sdoc-arch-0006-uc-v1cess | DevOps |
+| CI verde na main | Último run success | DevOps |
 | Coverage ≥ 80% | `make test-cov` passa | QA |
 | Runbooks testados | Game Day realizado | DevOps |
 | CHANGELOG.md atualizado | Entrada nova versão | PO |

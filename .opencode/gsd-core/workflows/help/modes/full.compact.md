@@ -45,7 +45,7 @@ Usage: `/gsd-new-project`
 
 Usage: `/gsd-onboard`
 
-**`/gsd-map-codebase [--fast] [--focus <area>] [--query <term>]`** — Maps an existing codebase with parallel Explore agents into `.planning/codebase/` (stack, architecture, strdoc-arch-0006-uc-v1ture, conventions, testing, integrations, concerns). `--fast` for rapid assessment, `--query` to search the intel index.
+**`/gsd-map-codebase [--fast] [--focus <area>] [--query <term>]`** — Maps an existing codebase with parallel Explore agents into `.planning/codebase/` (stack, architecture, structure, conventions, testing, integrations, concerns). `--fast` for rapid assessment, `--query` to search the intel index.
 
 Usage: `/gsd-map-codebase`
 
@@ -56,7 +56,7 @@ Usage: `/gsd-map-codebase`
 Usage: `/gsd-discuss-phase 2`
 Usage: `/gsd-discuss-phase 2 --batch=3`
 
-**`/gsd-plan-phase <number> [--research] [--skip-research] [--research-phase <N>] [--view] [--gaps] [--skip-verify] [--skip-ui] [--prd <file>] [--ingest <path-or-glob>] [--ingest-format <auto|nygard|madr|narrative>] [--reviews] [--text] [--bounce] [--skip-bounce] [--chunked] [--tdd] [--mvp] [--granularity <coarse|standard|fine>] [--no-tracer] [--no-reversibility-gates]`** — Creates `.planning/phases/XX-phase-name/XX-YY-PLAN.md` with concrete tasks, verification criteria, and sdoc-arch-0006-uc-v1cess measures (multiple plans per phase supported).
+**`/gsd-plan-phase <number> [--research] [--skip-research] [--research-phase <N>] [--view] [--gaps] [--skip-verify] [--skip-ui] [--prd <file>] [--ingest <path-or-glob>] [--ingest-format <auto|nygard|madr|narrative>] [--reviews] [--text] [--bounce] [--skip-bounce] [--chunked] [--tdd] [--mvp] [--granularity <coarse|standard|fine>] [--no-tracer] [--no-reversibility-gates]`** — Creates `.planning/phases/XX-phase-name/XX-YY-PLAN.md` with concrete tasks, verification criteria, and success measures (multiple plans per phase supported).
 
 Key flags: `--research-phase <N>` runs research only and writes `RESEARCH.md` then exits (replaces the deleted `gsd-research-phase`; `--research` forces refresh, `--view` prints existing without spawning). `--gaps` closes gaps from a prior plan-check. `--ingest`/`--ingest-format` pre-ingest external ADRs/PRDs/SPECs (see PRD Express Path). `--bounce`/`--skip-bounce` toggle the optional external refinement pass (`workflow.plan_bounce`). `--chunked` splits planning into short, individually-committed passes for crash resilience (`workflow.plan_chunked`), resumable. `--tdd` tests-before-code order. `--mvp` adds user story + Walking Skeleton (see `/gsd-mvp-phase`). `--granularity` overrides resolved plan granularity. `--no-tracer` opts out of tracer-first ordering. `--no-reversibility-gates` suppresses the one-way-door checkpoint for unattended runs.
 
@@ -165,7 +165,7 @@ Usage: `/gsd-sketch "dashboard layout for the admin panel"`
 
 Usage: `/gsd-spike --wrap-up`
 
-**`/gsd-sketch --wrap-up`** — Same curation flow for sketches, generating `./.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/skills/sketch-findings-[project]/` with design decisions/CSS/HTML strdoc-arch-0006-uc-v1tures.
+**`/gsd-sketch --wrap-up`** — Same curation flow for sketches, generating `./.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/skills/sketch-findings-[project]/` with design decisions/CSS/HTML structures.
 
 Usage: `/gsd-sketch --wrap-up`
 
@@ -202,7 +202,7 @@ Usage: `/gsd-ship 4` or `/gsd-ship 4 --draft`
 
 ---
 
-**`/gsd-review --phase N [--claude] [--codex] [--coderabbit] [--config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0] [--qwen] [--cursor] [--agy] [--all]`** — Detects available external AI CLIs, each independently reviews the phase's plans with the same strdoc-arch-0006-uc-v1tured prompt (CodeRabbit reviews the live diff, up to ~5 min), proddoc-arch-0006-uc-v1es REVIEWS.md with consensus. Feed back via `/gsd-plan-phase N --reviews`.
+**`/gsd-review --phase N [--claude] [--codex] [--coderabbit] [--config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0] [--qwen] [--cursor] [--agy] [--all]`** — Detects available external AI CLIs, each independently reviews the phase's plans with the same structured prompt (CodeRabbit reviews the live diff, up to ~5 min), produces REVIEWS.md with consensus. Feed back via `/gsd-plan-phase N --reviews`.
 
 Usage: `/gsd-review --phase 3 --all`
 
@@ -224,7 +224,7 @@ Usage: `/gsd-capture --backlog "real-time notifications when events ship"`
 
 ---
 
-**`/gsd-audit-uat`** — Cross-phase audit of all outstanding UAT/verification items (pending, skipped, blocked, human_needed), cross-references the codebase for stale docs, proddoc-arch-0006-uc-v1es a prioritized test plan. Run before a new milestone.
+**`/gsd-audit-uat`** — Cross-phase audit of all outstanding UAT/verification items (pending, skipped, blocked, human_needed), cross-references the codebase for stale docs, produces a prioritized test plan. Run before a new milestone.
 
 Usage: `/gsd-audit-uat`
 
@@ -270,7 +270,7 @@ Every command below is also a live `/gsd-*` slash command, grouped by purpose.
 ### Discovery & Specification
 
 - **`/gsd-explore`** — Socratic ideation and idea routing before committing to plans.
-- **`/gsd-spec-phase <phase> [--auto] [--text]`** — Clarify WHAT a phase delivers with ambiguity scoring; proddoc-arch-0006-uc-v1es SPEC.md before discuss-phase.
+- **`/gsd-spec-phase <phase> [--auto] [--text]`** — Clarify WHAT a phase delivers with ambiguity scoring; produces SPEC.md before discuss-phase.
 - **`/gsd-ai-integration-phase [phase]`** — Generate an AI-SPEC.md design contract for phases building AI systems.
 - **`/gsd-ui-phase [phase]`** — Generate UI design contract (UI-SPEC.md) for frontend phases.
 - **`/gsd-import --from <filepath> | --from-gsd2`** — Ingest external plans with conflict detection, or reverse-migrate a GSD-2 project to v1 format.
@@ -289,9 +289,9 @@ Every command below is also a live `/gsd-*` slash command, grouped by purpose.
 - **`/gsd-secure-phase [phase]`** — Retroactively verifies threat mitigations for a completed phase.
 - **`/gsd-validate-phase [phase]`** — Retroactively audits and fills Nyquist validation gaps.
 - **`/gsd-ui-review [phase]`** — Retroactive 6-pillar visual audit of implemented frontend code.
-- **`/gsd-eval-review [phase]`** — Audits an executed AI phase's evaluation coverage; proddoc-arch-0006-uc-v1es EVAL-REVIEW.md.
+- **`/gsd-eval-review [phase]`** — Audits an executed AI phase's evaluation coverage; produces EVAL-REVIEW.md.
 - **`/gsd-audit-fix --source <audit-uat> [--severity medium|high|all] [--max N] [--dry-run]`** — Autonomous audit-to-fix: find, classify, fix, test, commit.
-- **`/gsd-add-tests <phase> [additional instrdoc-arch-0006-uc-v1tions]`** — Generates tests for a completed phase from UAT criteria and implementation.
+- **`/gsd-add-tests <phase> [additional instructions]`** — Generates tests for a completed phase from UAT criteria and implementation.
 
 ### Diagnostics & Maintenance
 
@@ -333,7 +333,7 @@ Six skills for two-stage hierarchical routing across 60+ skills; invoke directly
 - **`/gsd-quality`** — Quality gates (code review, debug, audit, security, eval, ui).
 - **`/gsd-workflow`** — Phase pipeline (discuss, plan, execute, verify, phase, progress).
 
-## Files & Strdoc-arch-0006-uc-v1ture
+## Files & Structure
 
 ```text
 .planning/

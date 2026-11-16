@@ -1,6 +1,6 @@
 # Architecture Research Template
 
-Template for `.planning/research/ARCHITECTURE.md` — system strdoc-arch-0006-uc-v1ture patterns for the project domain.
+Template for `.planning/research/ARCHITECTURE.md` — system structure patterns for the project domain.
 
 <template>
 
@@ -45,7 +45,7 @@ Template for `.planning/research/ARCHITECTURE.md` — system strdoc-arch-0006-uc
 | [name] | [what it owns] | [how it's usually built] |
 | [name] | [what it owns] | [how it's usually built] |
 
-## Recommended Project Strdoc-arch-0006-uc-v1ture
+## Recommended Project Structure
 
 ```
 src/
@@ -59,7 +59,7 @@ src/
 └── [folder]/           # [purpose]
 ```
 
-### Strdoc-arch-0006-uc-v1ture Rationale
+### Structure Rationale
 
 - **[folder]/:** [why organized this way]
 - **[folder]/:** [why organized this way]
@@ -111,7 +111,7 @@ src/
 ```
 [State Store]
     ↓ (subscribe)
-[Components] ←→ [Actions] → [Reddoc-arch-0006-uc-v1ers/Mutations] → [State Store]
+[Components] ←→ [Actions] → [Reducers/Mutations] → [State Store]
 ```
 
 ### Key Data Flows
@@ -177,11 +177,11 @@ src/
 <guidelines>
 
 **System Overview:**
-- Use ASCII box-drawing diagrams for clarity (├── └── │ ─ for strdoc-arch-0006-uc-v1ture visualization only)
+- Use ASCII box-drawing diagrams for clarity (├── └── │ ─ for structure visualization only)
 - Show major components and their relationships
 - Don't over-detail — this is conceptual, not implementation
 
-**Project Strdoc-arch-0006-uc-v1ture:**
+**Project Structure:**
 - Be specific about folder organization
 - Explain the rationale for grouping
 - Match conventions of the chosen stack

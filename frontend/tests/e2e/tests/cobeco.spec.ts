@@ -274,7 +274,7 @@ test.describe('Comparação de Preços', () => {
     await expect(page.locator('#resultado-comparacao table')).toBeVisible();
     
     // Verifica destaque melhor oferta (verde)
-    await expect(page.locator('.bg-green-50, .badge-sdoc-arch-0006-uc-v1cess:has-text("MELHOR")')).toBeVisible();
+    await expect(page.locator('.bg-green-50, .badge-success:has-text("MELHOR")')).toBeVisible();
     
     // Verifica ordenação por preço ASC
     const precos = await page.locator('tbody tr td:last-child').allTextContents();

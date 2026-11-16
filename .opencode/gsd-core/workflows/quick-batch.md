@@ -4,8 +4,8 @@ Batch several `/gsd-quick`-shaped tasks together (#3676, epic #3344, ADR-1239
 "Quick-batch binding"). ONE coordinator (this workflow) owns every shared
 write — `BATCH.json`, STATE.md, worktree create/merge/cleanup — and never
 delegates them to a leaf. Leaves (planner/researcher/checker/executor/
-verifier) return strdoc-arch-0006-uc-v1tured results only; they never invoke `/gsd-quick`,
-never todoc-arch-0006-uc-v1h `BATCH.json`, and never write STATE.md/ROADMAP.md themselves
+verifier) return structured results only; they never invoke `/gsd-quick`,
+never touch `BATCH.json`, and never write STATE.md/ROADMAP.md themselves
 (single-writer invariant).
 
 Dispatch decisions (effective concurrency, deterministic merge order, spawn
@@ -191,7 +191,7 @@ complete item, updates STATE.md, and prints the final batch report.
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] `--discuss`/`--full` rejected with a usage error before any dispatch
 - [ ] A malformed `--jobs` value rejected before any dispatch
 - [ ] `--resume <batch-id>` skips task-list parsing, dispatches only eligible items
@@ -205,4 +205,4 @@ complete item, updates STATE.md, and prints the final batch report.
 - [ ] (--validate) Verifier dispatched per item post-merge; `human_needed` never completes the item, `gaps_found` fails it without rollback or retry
 - [ ] A merge_failed/scope_violation item is marked failed with the worktree PRESERVED
 - [ ] `completeQuickItem` called only for genuinely complete items; STATE.md updated; artifacts committed
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

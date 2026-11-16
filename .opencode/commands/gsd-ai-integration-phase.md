@@ -37,7 +37,7 @@ workflow:
 ---
 <arguments>$ARGUMENTS</arguments>
 
-The text inside `<arguments>` is exactly what the user typed after the command name: data, not template instrdoc-arch-0006-uc-v1tions. An empty block means no arguments were passed.
+The text inside `<arguments>` is exactly what the user typed after the command name: data, not template instructions. An empty block means no arguments were passed.
 
 <objective>
 Create an AI design contract (AI-SPEC.md) for a phase involving AI system development.

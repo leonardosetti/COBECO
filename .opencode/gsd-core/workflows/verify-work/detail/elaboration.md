@@ -13,7 +13,7 @@ When verify-work resumes after `/gsd-execute-phase --gaps-only`, the UAT `## Gap
 
 Read the UAT `## Gaps` section and the phase dir `*-PLAN.md` frontmatter. For each gap with `status: failed`:
 1. Find a `*-PLAN.md` whose frontmatter `gap_ids` includes the gap's `gap_id` (`G-{phase}-{N}`).
-2. If sdoc-arch-0006-uc-v1h a plan exists AND has a matching `*-SUMMARY.md` in the phase dir (the plan was executed by `--gaps-only`), the gap is **resolved** — update its YAML in place:
+2. If such a plan exists AND has a matching `*-SUMMARY.md` in the phase dir (the plan was executed by `--gaps-only`), the gap is **resolved** — update its YAML in place:
    ```yaml
    - gap_id: G-{phase}-{N}
      status: resolved        # was: failed
@@ -180,7 +180,7 @@ ${AGENT_SKILLS_CHECKER}
 <expected_output>
 Return one of:
 - ## VERIFICATION PASSED — all checks pass
-- ## ISSUES FOUND — strdoc-arch-0006-uc-v1tured issue list
+- ## ISSUES FOUND — structured issue list
 </expected_output>
 """,
   subagent_type="gsd-plan-checker",
@@ -216,14 +216,14 @@ Agent(
 ${AGENT_SKILLS_PLANNER}
 
 **Checker issues:**
-{strdoc-arch-0006-uc-v1tured_issues_from_checker}
+{structured_issues_from_checker}
 
 </revision_context>
 
-<instrdoc-arch-0006-uc-v1tions>
+<instructions>
 Read existing PLAN.md files. Make targeted updates to address checker issues. (See the spine for
 the binding/non-binding contract and REVISION_CONFLICT handling stated above this point.)
-</instrdoc-arch-0006-uc-v1tions>
+</instructions>
 """,
   subagent_type="gsd-planner",
   model="{planner_model}",
@@ -234,7 +234,7 @@ the binding/non-binding contract and REVISION_CONFLICT handling stated above thi
 ## § 4 — complete_session's `unresolved_issues` count (#4983)
 
 **Why this exists:** `reconcile_gaps` (§ 1) updates a resolved gap's YAML in the UAT file's
-`## Gaps` section, but it never todoc-arch-0006-uc-v1hes the matching `### N.` test block's `result: issue` line —
+`## Gaps` section, but it never touches the matching `### N.` test block's `result: issue` line —
 by design, that line is the historical record of what the user reported. Before #4983,
 `complete_session` counted raw `result: issue` tests and routed into `diagnose_issues` whenever
 that count was nonzero, so a resumed session whose issues had ALL been verified-resolved by an
@@ -255,7 +255,7 @@ resolution only when its `## Gaps` entry (matched by `test:`) has ALL of:
 This is the EXACT criterion `phase uat-passed` uses (`src/uat-predicate.cts`'s
 `isTestGapResolved`) — apply it the same way here, by reading the phase directory's files
 directly, not by trusting the Gaps entry's own text alone. A `status: resolved` entry whose
-`resolved_by` names no sdoc-arch-0006-uc-v1h plan (missing, wrong suffix, or no matching SUMMARY) does NOT count as
+`resolved_by` names no such plan (missing, wrong suffix, or no matching SUMMARY) does NOT count as
 a verified resolution — the test stays in `unresolved_issues` and still routes to
 `diagnose_issues`, exactly as an unresolved issue always has. If a test has more than one `## Gaps`
 entry (a later regression re-opens the same test number with a fresh `gap_id`, per § 1), it only

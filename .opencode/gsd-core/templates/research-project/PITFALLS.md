@@ -189,12 +189,12 @@ How roadmap phases should address these pitfalls.
 
 **"Looks Done But Isn't":**
 - Checklist format for verification during execution
-- Common in demos vs. proddoc-arch-0006-uc-v1tion
+- Common in demos vs. production
 - Prevents "it works on my machine" issues
 
 **Pitfall-to-Phase Mapping:**
 - Critical for roadmap creation
 - Each pitfall should map to a phase that prevents it
-- Informs phase ordering and sdoc-arch-0006-uc-v1cess criteria
+- Informs phase ordering and success criteria
 
 </guidelines>

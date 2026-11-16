@@ -60,7 +60,7 @@ para **ter uma conta pessoal e acessar todas as funcionalidades (listas persisti
 
 ## 2. Critérios de Aceite — Formato Gherkin
 
-### Cenário 1: Cadastro bem-sdoc-arch-0006-uc-v1edido com dados válidos
+### Cenário 1: Cadastro bem-sucedido com dados válidos
 ```gherkin
 Dado que sou um visitante na página de cadastro
 Quando preencho "nome_usuario" único, "email" único, "senha" (mín 8 chars), "confirmar_senha" igual, "pergunta_seguranca" e "resposta"
@@ -68,7 +68,7 @@ E clico em "Cadastrar"
 Então o sistema cria minha conta
 E faz hash da senha com bcrypt (salt=12)
 E faz hash da resposta da pergunta de segurança
-E me redireciona para a página de login com mensagem "Cadastro realizado com sdoc-arch-0006-uc-v1esso"
+E me redireciona para a página de login com mensagem "Cadastro realizado com sucesso"
 E meu usuário fica com "deletado_em" nulo
 ```
 
@@ -110,7 +110,7 @@ Então o sistema retorna erro 400 "Senha deve ter no mínimo 8 caracteres"
 
 | # | Critério (Resumo) | Tipo | Automatizável? | Teste Relacionado | Status |
 |---|-------------------|------|----------------|-------------------|--------|
-| AC-01 | Cadastro sdoc-arch-0006-uc-v1esso com dados válidos + bcrypt + hash resposta | Funcional | Sim | `test_cadastrar_usuario_sdoc-arch-0006-uc-v1esso.py` | ✅ |
+| AC-01 | Cadastro sucesso com dados válidos + bcrypt + hash resposta | Funcional | Sim | `test_cadastrar_usuario_sucesso.py` | ✅ |
 | AC-02 | Erro 409 nome_usuario duplicado | Funcional | Sim | `test_cadastrar_usuario_duplicado_username.py` | ✅ |
 | AC-03 | Erro 409 email duplicado | Funcional | Sim | `test_cadastrar_usuario_duplicado_email.py` | ✅ |
 | AC-04 | Erro 400 senhas não conferem | Funcional | Sim | `test_cadastrar_usuario_senhas_nao_conferem.py` | ✅ |
@@ -127,9 +127,9 @@ Então o sistema retorna erro 400 "Senha deve ter no mínimo 8 caracteres"
 | TA-001 | Criar endpoint POST /v1/usuarios com validação Pydantic (UsuarioCreate) | Backend | 4 | Fabrício | ✅ Done | `feat/UC-09-cadastrar-usuario` |
 | TA-002 | Implementar bcrypt hash (passlib) + unicidade nome_usuario/email no DB | Backend | 3 | Fabrício | ✅ Done | `feat/UC-09-cadastrar-usuario` |
 | TA-003 | Hash da resposta da pergunta de segurança (bcrypt) | Backend | 2 | Fabrício | ✅ Done | `feat/UC-09-cadastrar-usuario` |
-| TA-004 | Testes unitários: sdoc-arch-0006-uc-v1esso, duplicados, validações, bcrypt | Backend | 3 | Nicolas | ✅ Done | `feat/UC-09-cadastrar-usuario` |
+| TA-004 | Testes unitários: sucesso, duplicados, validações, bcrypt | Backend | 3 | Nicolas | ✅ Done | `feat/UC-09-cadastrar-usuario` |
 | TA-005 | Página Cadastro (Vanilla JS + Tailwind): form, validação client-side, submit fetch | Frontend | 6 | Eduardo | ✅ Done | `feat/UC-09-cadastrar-usuario` |
-| TA-006 | Integração Front↔Back: exibir erros 409/400, redirect login sdoc-arch-0006-uc-v1esso | Frontend | 2 | Eduardo | ✅ Done | `feat/UC-09-cadastrar-usuario` |
+| TA-006 | Integração Front↔Back: exibir erros 409/400, redirect login sucesso | Frontend | 2 | Eduardo | ✅ Done | `feat/UC-09-cadastrar-usuario` |
 
 ---
 

@@ -224,11 +224,11 @@ If this routing line already exists (append mode), leave it as-is.
 <step name="generate_conventions">
 ## Generate or Update CONVENTIONS.md
 
-Analyze all processed spikes for recurring patterns and write `.planning/spikes/CONVENTIONS.md`. This file tells future spike sessions *how we spike* — the stack, strdoc-arch-0006-uc-v1ture, and patterns that have been established.
+Analyze all processed spikes for recurring patterns and write `.planning/spikes/CONVENTIONS.md`. This file tells future spike sessions *how we spike* — the stack, structure, and patterns that have been established.
 
 1. Read all spike source code and doc-readme-0001-readme-canons looking for:
    - **Stack choices** — What language/framework/runtime appears across multiple spikes?
-   - **Strdoc-arch-0006-uc-v1ture patterns** — Common file layouts, port numbers, naming schemes
+   - **Structure patterns** — Common file layouts, port numbers, naming schemes
    - **Recurring approaches** — How auth is handled, how styling is done, how data is served
    - **Tools & libraries** — Packages that showed up repeatedly with versions that worked
 
@@ -242,7 +242,7 @@ Patterns and stack choices established across spike sessions. New spikes follow 
 ## Stack
 [What we use for frontend, backend, scripts, and why — derived from what repeated across spikes]
 
-## Strdoc-arch-0006-uc-v1ture
+## Structure
 [Common file layouts, port assignments, naming patterns]
 
 ## Patterns
@@ -306,15 +306,15 @@ After the summary, present next-step options:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] All unprocessed spikes auto-included and processed
 - [ ] Spikes grouped by feature area
 - [ ] Spike-findings skill exists at `./.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/skills/` with SKILL.md (including requirements), references/, sources/
 - [ ] Reference files are implementation blueprints with Requirements, How to Build It, What to Avoid, Constraints
 - [ ] Requirements in each reference file and in SKILL.md are scoped to the idea key(s) actually represented among the wrapped spikes — never blended with an unrelated idea's requirements
-- [ ] `.planning/spikes/CONVENTIONS.md` created or updated with recurring stack/strdoc-arch-0006-uc-v1ture/pattern choices
+- [ ] `.planning/spikes/CONVENTIONS.md` created or updated with recurring stack/structure/pattern choices
 - [ ] `.planning/spikes/WRAP-UP-SUMMARY.md` written for project history
 - [ ] Project doc-agents-0001-agents-canon.md has auto-load routing line
 - [ ] Summary presented
 - [ ] Next-step options presented (including frontier spike exploration via `/gsd-spike`)
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

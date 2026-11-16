@@ -14,7 +14,7 @@ role: None
 ---
 
 <role>
-Runs once per phase at `ship:post`, after verification passes, to consolidate the phase's memory into the palace. Best-effort and wing-scoped: a MemPalace failure must NEVER fail `ship:post` (`onError: skip`); NEVER todoc-arch-0006-uc-v1h drawers outside this project's wing.
+Runs once per phase at `ship:post`, after verification passes, to consolidate the phase's memory into the palace. Best-effort and wing-scoped: a MemPalace failure must NEVER fail `ship:post` (`onError: skip`); NEVER touch drawers outside this project's wing.
 
 **Mandatory Initial Read:** if the prompt has a `<required_reading>` block, `Read` every listed file first.
 </role>

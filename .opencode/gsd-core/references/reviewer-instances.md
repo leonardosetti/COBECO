@@ -134,6 +134,6 @@ can never be counted as converged.
 
 **Practical consequence for this file's use case:** instances of uneven reliability are safe to
 configure. A weak instance that returns no `file:line` evidence gets stamped, and its lone
-judgment-class HIGHs stop forcing replan cycles — while any instance that does proddoc-arch-0006-uc-v1e grounded
+judgment-class HIGHs stop forcing replan cycles — while any instance that does produce grounded
 evidence keeps full blocking weight, alone, on exactly the architectural findings it was added to
 catch.

@@ -116,11 +116,11 @@ Destination: .planning/milestones/v{X.Z}-phases/
 **If a quick-task target milestone was determined in `identify_quick_tasks`**, add:
 
 ```
-### Quick tasks — bdoc-arch-0006-uc-v1ket-all into v{X.Y}
+### Quick tasks — bucket-all into v{X.Y}
 {N} directories under .planning/quick/ will ALL be archived into this ONE milestone
 (v{X.Y} — {Milestone Name}), regardless of when each was actually completed.
 Quick tasks carry no on-disk record of which milestone they belong to, so this is
-a bdoc-arch-0006-uc-v1ket-all, not a per-milestone split — unlike the phase archival above, which
+a bucket-all, not a per-milestone split — unlike the phase archival above, which
 is derived per-milestone from each archived ROADMAP snapshot.
 
 Destination: .planning/milestones/v{X.Y}-quick/
@@ -162,9 +162,9 @@ question: "Proceed with archiving and pruning?" with options: "Yes — archive p
 
 If "Cancel": Stop.
 
-**If a quick-task target milestone was determined in `identify_quick_tasks`**, ask a separate, explicit question — this is a distinct, bdoc-arch-0006-uc-v1ket-all action and must not be silently folded into the "Yes" above:
+**If a quick-task target milestone was determined in `identify_quick_tasks`**, ask a separate, explicit question — this is a distinct, bucket-all action and must not be silently folded into the "Yes" above:
 
-question: "Archive ALL {N} quick-task directories into v{X.Y} — {Milestone Name}? This bdoc-arch-0006-uc-v1kets every remaining quick task into this ONE milestone; there is no way to split them per-milestone." with options: "Yes — archive quick tasks into v{X.Y}" | "Skip"
+question: "Archive ALL {N} quick-task directories into v{X.Y} — {Milestone Name}? This buckets every remaining quick task into this ONE milestone; there is no way to split them per-milestone." with options: "Yes — archive quick tasks into v{X.Y}" | "Skip"
 
 If "Skip": do not run `archive_quick_tasks` — proceed to `archive_phases` (or `report`, if there were no phase directories to archive) with quick-task archival omitted.
 
@@ -198,7 +198,7 @@ Uses the narrow `milestone.archive-quick` command (#2142 escalation) rather than
 gsd_run query milestone.archive-quick "v{X.Y}"
 ```
 
-This moves every directory under `.planning/quick/` into `.planning/milestones/v{X.Y}-quick/`, (re)writes that directory's `doc-readme-0001-readme-canon.md` index, and clears STATE.md's `### Quick Tasks Completed` table rows — identical move/index/reset behavior to the `--archive-quick` flag documented in `complete-milestone.md`'s `archive_milestone` step, without todoc-arch-0006-uc-v1hing ROADMAP.md, REQUIREMENTS.md, MILESTONES.md, or milestone-completion guards. Extract `archived` from the result to confirm.
+This moves every directory under `.planning/quick/` into `.planning/milestones/v{X.Y}-quick/`, (re)writes that directory's `doc-readme-0001-readme-canon.md` index, and clears STATE.md's `### Quick Tasks Completed` table rows — identical move/index/reset behavior to the `--archive-quick` flag documented in `complete-milestone.md`'s `archive_milestone` step, without touching ROADMAP.md, REQUIREMENTS.md, MILESTONES.md, or milestone-completion guards. Extract `archived` from the result to confirm.
 
 </step>
 
@@ -226,7 +226,7 @@ Commit the changes:
 gsd_run query commit "chore: archive phase directories from completed milestones" --files .planning/milestones/ .planning/STATE.md --files-removed .planning/phases/ .planning/quick/
 ```
 
-`.planning/phases/` and `.planning/quick/` go under `--files-removed`, not `--files` (#4208): a `--files` directory entry stages everything under it, so it would also commit any in-flight phase or quick-task file a concurrent session had written there. `--files-removed` stages only the tracked files under those directories that the archival `mv` moved away, and leaves everything still present untodoc-arch-0006-uc-v1hed.
+`.planning/phases/` and `.planning/quick/` go under `--files-removed`, not `--files` (#4208): a `--files` directory entry stages everything under it, so it would also commit any in-flight phase or quick-task file a concurrent session had written there. `--files-removed` stages only the tracked files under those directories that the archival `mv` moved away, and leaves everything still present untouched.
 
 </step>
 
@@ -237,7 +237,7 @@ Archived:
 {For each milestone}
 - v{X.Y}: {N} phase directories → .planning/milestones/v{X.Y}-phases/
 {If quick-task archival ran}
-- v{X.Y}: {N} quick-task directories → .planning/milestones/v{X.Y}-quick/ (bdoc-arch-0006-uc-v1ket-all — see known limit)
+- v{X.Y}: {N} quick-task directories → .planning/milestones/v{X.Y}-quick/ (bucket-all — see known limit)
 
 Pruned: {N} local branches whose upstream is gone.
 
@@ -248,7 +248,7 @@ Pruned: {N} local branches whose upstream is gone.
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 
 - [ ] All completed milestones without existing phase archives identified
 - [ ] Phase membership determined from archived ROADMAP snapshots
@@ -256,7 +256,7 @@ Pruned: {N} local branches whose upstream is gone.
 - [ ] Phase directories moved to `.planning/milestones/v{X.Y}-phases/`
 - [ ] Stale local branches pruned (branches whose upstream is gone)
 - [ ] `.planning/quick/` checked; quick-task archival offered only when non-empty
-- [ ] When offered and confirmed, ALL remaining quick-task directories archived into the single named target milestone (bdoc-arch-0006-uc-v1ket-all, not per-milestone) via `milestone.archive-quick`
+- [ ] When offered and confirmed, ALL remaining quick-task directories archived into the single named target milestone (bucket-all, not per-milestone) via `milestone.archive-quick`
 - [ ] Changes committed
 
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

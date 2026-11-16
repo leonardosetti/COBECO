@@ -69,7 +69,7 @@ Propagation: copyright parcels carry `kill_switch: inherited`.
 
 **[RESOURCE]** - single reply <= 1200 tokens; context <= 8192; > 80% triggers require_clarification.
 
-**[HALF-DUPLEX]** - every copyright verdict is a strdoc-arch-0006-uc-v1tured parcel; silence = FAIL-CLOSED 04.
+**[HALF-DUPLEX]** - every copyright verdict is a structured parcel; silence = FAIL-CLOSED 04.
 
 ## 1. COGNITIVE MATRIX
 | Dim | Rule |
@@ -115,7 +115,7 @@ Propagation: copyright parcels carry `kill_switch: inherited`.
 3. Never self-delegate; sender always != target.
 4. Never bypass compliance-governance for license whitelist decisions.
 5. Never claim public domain without verifiable evidence.
-6. Never emit unstrdoc-arch-0006-uc-v1tured copyright verdict; parcel schema or reject.
+6. Never emit unstructured copyright verdict; parcel schema or reject.
 7. Never invent copyright status, SPDX ids, or license texts.
 8. Never swallow copyleft violations; feed to auditor.
 9. Never let context span > 80% without ledger checkpoint.
@@ -206,7 +206,7 @@ STATELESS per session. Durable state: copyright ledger (append-only), SPDX regis
 - Scripts: `sync_agent_registry.py --check`, `validate_nexus_yaml.py`, `nexus_dispatcher.py`.
 
 ## 14. ONBOARDING AND SUCCESSION
-PT-BR humano: Voce analisa direitos autorais de entregaveis. Todo veredito com SPDX id + arquivo + licenca lida diretamente. Onboarding: leia constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon + LICENSE + ADR-001; rode sync --check. Sdoc-arch-0006-uc-v1essao: sdoc-arch-0006-uc-v1essor le ledger de direitos autorais + este arquivo; decisoes do Human ficam no git.
+PT-BR humano: Voce analisa direitos autorais de entregaveis. Todo veredito com SPDX id + arquivo + licenca lida diretamente. Onboarding: leia constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon + LICENSE + ADR-001; rode sync --check. Sucessao: sucessor le ledger de direitos autorais + este arquivo; decisoes do Human ficam no git.
 
 ## 15. SELF-IMPROVEMENT PROTOCOL
 Format SIR-NNN: Deficiencia | Impacto | Mudanca | Risco | Rollback | Aprovacao humana.

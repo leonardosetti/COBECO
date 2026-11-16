@@ -4,7 +4,8 @@
 // directory under plugins/ and renders the slots registered here. The line itself comes from GSD's own
 // hooks/gsd-statusline.js — the script Claude Code runs — so state, progress, git and update-available
 // output stay one implementation. OpenCode 1.x never loads this directory (it scans plugins/*.js|ts only).
-import { Plugin } from "@config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/plugin/tui"
+// "@opencode/plugin/tui" is an internal OpenCode 2.x module (resolved by the host, not npm).
+import { Plugin } from "@opencode/plugin/tui"
 import { execFile } from "node:child_process"
 import { existsSync } from "node:fs"
 import path from "node:path"
@@ -20,7 +21,7 @@ function hooksDir() {
 }
 
 function runtime() {
-  return processconfig-env-0001-env-example-v1.0.GSD_HOOK_RUNTIME || "node"
+  return process.env.GSD_HOOK_RUNTIME || "node"
 }
 
 function render(directory: string, model: string, done: (line: string) => void) {

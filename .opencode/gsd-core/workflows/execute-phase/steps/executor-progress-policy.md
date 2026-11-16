@@ -21,7 +21,7 @@ Reconcile activity as well as artifacts:
   from the LAST sign of progress, not from dispatch — may the pause in step 3 fire, and it
   asks the user; it does not act on its own.
 
-## Never inject urgency or finalization instrdoc-arch-0006-uc-v1tions into a live executor
+## Never inject urgency or finalization instructions into a live executor
 
 Messages of the "Finalize immediately", "wrap up now", "you are taking too long" family are
 forbidden: they arrive mid-verification and turn a correct run into a truncated one. If an

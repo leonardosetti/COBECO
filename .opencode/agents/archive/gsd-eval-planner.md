@@ -1,6 +1,6 @@
 ---
 name: gsd-eval-planner
-description: Designs a strdoc-arch-0006-uc-v1tured evaluation strategy for an AI phase. Identifies critical failure modes, selects eval dimensions with rubrics, recommends tooling, and specifies the reference dataset. Writes the Evaluation Strategy, Guardrails, and Proddoc-arch-0006-uc-v1tion Monitoring sections of AI-SPEC.md. Spawned by /gsd-ai-integration-phase orchestrator.
+description: Designs a structured evaluation strategy for an AI phase. Identifies critical failure modes, selects eval dimensions with rubrics, recommends tooling, and specifies the reference dataset. Writes the Evaluation Strategy, Guardrails, and Production Monitoring sections of AI-SPEC.md. Spawned by /gsd-ai-integration-phase orchestrator.
 mode: subagent
 permission:
   webfetch: deny
@@ -43,13 +43,13 @@ The domain researcher has done the SME work — your job is to turn their rubric
 
 <step name="select_eval_dimensions">
 Map `system_type` to required dimensions from `ai-evals.md`:
-- **RAG**: context faithfulness, halldoc-arch-0006-uc-v1ination, answer relevance, retrieval precision, source citation
+- **RAG**: context faithfulness, hallucination, answer relevance, retrieval precision, source citation
 - **Multi-Agent**: task decomposition, inter-agent handoff, goal completion, loop detection
-- **Conversational**: tone/style, safety, instrdoc-arch-0006-uc-v1tion following, escalation accuracy
+- **Conversational**: tone/style, safety, instruction following, escalation accuracy
 - **Extraction**: schema compliance, field accuracy, format validity
 - **Autonomous**: safety guardrails, tool use correctness, cost/token adherence, task completion
 - **Content**: factual accuracy, brand voice, tone, originality
-- **Code**: correctness, safety, test pass rate, instrdoc-arch-0006-uc-v1tion following
+- **Code**: correctness, safety, test pass rate, instruction following
 
 Always include: **safety** (user-facing) and **task completion** (agentic).
 </step>
@@ -103,7 +103,7 @@ trace.set_tracer_provider(provider)
 </step>
 
 <step name="specify_reference_dataset">
-Define: size (10 examples minimum, 20 for proddoc-arch-0006-uc-v1tion), composition (critical paths, edge cases, failure modes, adversarial inputs), labeling approach (domain expert / LLM judge with calibration / automated), creation timeline (start during implementation, not after).
+Define: size (10 examples minimum, 20 for production), composition (critical paths, edge cases, failure modes, adversarial inputs), labeling approach (domain expert / LLM judge with calibration / automated), creation timeline (start during implementation, not after).
 </step>
 
 <step name="design_guardrails">
@@ -120,7 +120,7 @@ Keep guardrails minimal — each adds latency.
 Update AI-SPEC.md at `ai_spec_path`:
 - Section 5 (Evaluation Strategy): dimensions table with rubrics, tooling, dataset spec, CI/CD command
 - Section 6 (Guardrails): online guardrails table, offline flywheel table
-- Section 7 (Proddoc-arch-0006-uc-v1tion Monitoring): tracing tool, key metrics, alert thresholds, sampling strategy
+- Section 7 (Production Monitoring): tracing tool, key metrics, alert thresholds, sampling strategy
 
 If domain context is genuinely unclear after reading all artifacts, ask ONE question:
 ```
@@ -141,7 +141,7 @@ question([{
 
 </execution_flow>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Critical failure modes confirmed (minimum 3)
 - [ ] Eval dimensions selected (minimum 3, appropriate to system type)
 - [ ] Each dimension has a concrete rubric (not a generic label)
@@ -152,4 +152,4 @@ question([{
 - [ ] Online guardrails defined (minimum 1 for user-facing systems)
 - [ ] Offline flywheel metrics defined
 - [ ] Sections 5, 6, 7 of AI-SPEC.md written and non-empty
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

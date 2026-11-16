@@ -22,7 +22,7 @@ export class CadastroPage extends BasePage {
   readonly submitButton: Locator;
   readonly loginLink: Locator;
 
-  constrdoc-arch-0006-uc-v1tor(page: Page) {
+  constructor(page: Page) {
     super(page);
     this.nomeUsuarioInput = page.locator('#cad-nome-usuario, input[name="nome_usuario"]');
     this.emailInput = page.locator('#cad-email, input[name="email"]');
@@ -66,7 +66,7 @@ export class CadastroPage extends BasePage {
       }
     });
     
-    // Wait for navigation to login (sdoc-arch-0006-uc-v1cess case)
+    // Wait for navigation to login (success case)
     await this.page.waitForURL('**/#/login', { timeout: 10000 }).catch(() => {});
     
     // Try to get toast message before navigation

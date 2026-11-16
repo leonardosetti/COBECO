@@ -8,7 +8,7 @@ export class LoginPage extends BasePage {
   readonly cadastrarLink: Locator;
   readonly recuperarSenhaLink: Locator;
 
-  constrdoc-arch-0006-uc-v1tor(page: Page) {
+  constructor(page: Page) {
     super(page);
     this.usuarioInput = page.locator('input[name="nome_usuario"]');
     this.senhaInput = page.locator('input[name="senha"]');

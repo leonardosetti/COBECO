@@ -38,11 +38,11 @@ is not a nice-to-have.
 
 **Plan-checker's artifact glob needs the marker, not just mtimes:** the
 plan-checker spawn watches `*-PLAN.md` for freshness, but a checker that
-PASSES todoc-arch-0006-uc-v1hes none of those files — no fresh mtime, ever, on a clean run.
+PASSES touches none of those files — no fresh mtime, ever, on a clean run.
 Without `{outputFile}` correctly bound to the real completion output, a
 healthy plan-checker that returns `## VERIFICATION PASSED` in two minutes
 would still be declared `stalled` once `planner.stall_threshold_minutes`
-elapses — reporting a sdoc-arch-0006-uc-v1ceeded agent as hung, which is worse than the
+elapses — reporting a succeeded agent as hung, which is worse than the
 original unbounded wait. The marker path (via `{outputFile}`) is the ONLY
 working completion signal for that spawn; the artifact glob is secondary
 there.
@@ -71,11 +71,11 @@ Agent() return) — nothing else.
 `PLANNER_STALL_INTERVAL_MINUTES` before its first check, so a planner that
 completes in seconds is not observed by this path until that interval
 elapses (default 5 min) — slower than a plain blocking call's near-instant
-return on sdoc-arch-0006-uc-v1cess. This is deliberate: it trades a bounded, at-most-one-
-interval delay on the (common) sdoc-arch-0006-uc-v1cess path for eliminating the unbounded,
+return on success. This is deliberate: it trades a bounded, at-most-one-
+interval delay on the (common) success path for eliminating the unbounded,
 possibly-indefinite hang on the (rare, previously unrecoverable) stall path
 this issue is about. `PLANNER_STALL_INTERVAL_MINUTES` is the knob for
-projects that want a tighter sdoc-arch-0006-uc-v1cess-path latency at the cost of more
+projects that want a tighter success-path latency at the cost of more
 config-get calls.
 
 This block is independent of, and never gated behind, the `query

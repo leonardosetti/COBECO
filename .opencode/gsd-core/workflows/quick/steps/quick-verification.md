@@ -50,7 +50,7 @@ The query is **total** over the closed VerificationStatus set (#5118): beyond th
 | `passed` | Store `$VERIFICATION_STATUS = "Verified"`, continue to step 7 |
 | `human_needed` | Display items needing manual check, store `$VERIFICATION_STATUS = "Needs Review"`, continue |
 | `gaps_found` | Display gap summary, offer: 1) Re-run executor to fix gaps, 2) Accept as-is. Store `$VERIFICATION_STATUS = "Gaps"` |
-| anything else — `missing`, `stale`, `unparseable`, `phase_dir_not_found` | Do **not** improvise a result. Report that verification proddoc-arch-0006-uc-v1ed no usable status, naming `$STATUS`, then offer: 1) Re-run the verifier, 2) Accept as-is without verification. Store `$VERIFICATION_STATUS = "Unverified (${STATUS})"` |
+| anything else — `missing`, `stale`, `unparseable`, `phase_dir_not_found` | Do **not** improvise a result. Report that verification produced no usable status, naming `$STATUS`, then offer: 1) Re-run the verifier, 2) Accept as-is without verification. Store `$VERIFICATION_STATUS = "Unverified (${STATUS})"` |
 
 > **Why the status only, and not `next_action` / `next_command`.** The query projects those two for
 > the phase pipeline — they name `execute-phase`, `plan-phase --gaps` and `verify-work`, and they

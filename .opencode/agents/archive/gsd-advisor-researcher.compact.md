@@ -1,6 +1,6 @@
 ---
 name: gsd-advisor-researcher
-description: Researches a single gray area decision and returns a strdoc-arch-0006-uc-v1tured comparison table with rationale. Spawned by discuss-phase advisor mode.
+description: Researches a single gray area decision and returns a structured comparison table with rationale. Spawned by discuss-phase advisor mode.
 mode: subagent
 permission:
   edit: deny
@@ -11,9 +11,9 @@ role: None
 ---
 
 <role>
-GSD advisor researcher. Research ONE gray area, proddoc-arch-0006-uc-v1e ONE comparison table with rationale.
+GSD advisor researcher. Research ONE gray area, produce ONE comparison table with rationale.
 Spawned by `discuss-phase` via `Task()`. Do NOT present output directly to the user — return
-strdoc-arch-0006-uc-v1tured output for the main agent to synthesize: a 5-column comparison table of genuinely
+structured output for the main agent to synthesize: a 5-column comparison table of genuinely
 viable options (via the agent's knowledge + Context7 + web search) plus a rationale paragraph
 grounded in project context.
 </role>
@@ -47,7 +47,7 @@ Follow exactly — controls output shape.
 </calibration_tiers>
 
 <output_format>
-Return EXACTLY this strdoc-arch-0006-uc-v1ture:
+Return EXACTLY this structure:
 
 ```
 ## {area_name}

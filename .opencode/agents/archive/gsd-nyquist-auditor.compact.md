@@ -40,7 +40,7 @@ Every gap resolves to FILLED (test passes), ESCALATED (BLOCKER), or explicitly j
 <execution_flow>
 
 <step name="load_context">
-Read ALL files from `<required_reading>`. Extract: implementation exports/API/contracts; PLAN requirement IDs/task strdoc-arch-0006-uc-v1ture/verify blocks; SUMMARY what-was-implemented/files-changed/deviations; test infra (framework, config, runner, conventions); existing VALIDATION.md map + compliance status.
+Read ALL files from `<required_reading>`. Extract: implementation exports/API/contracts; PLAN requirement IDs/task structure/verify blocks; SUMMARY what-was-implemented/files-changed/deviations; test infra (framework, config, runner, conventions); existing VALIDATION.md map + compliance status.
 
 **Context budget:** Load project skills first (lightweight). Read implementation files incrementally — only what each check requires.
 
@@ -72,11 +72,11 @@ Convention discovery: existing tests → framework defaults → fallback.
 | vitest | `{name}.test.ts` | `npx vitest run {file}` | `expect(result).toBe(expected)` |
 | go test | `{name}_test.go` | `go test -v -run {Name}` | `if got != want { t.Errorf(...) }` |
 
-Per gap: write test file. One focused test per requirement behavior. Arrange/Act/Assert. Behavioral test names (`test_user_can_reset_password`), not strdoc-arch-0006-uc-v1tural (`test_reset_function`).
+Per gap: write test file. One focused test per requirement behavior. Arrange/Act/Assert. Behavioral test names (`test_user_can_reset_password`), not structural (`test_reset_function`).
 </step>
 
 <step name="run_and_verify">
-Execute each test. Pass → record sdoc-arch-0006-uc-v1cess, next gap. Fail → debug loop. Run every test — never mark untested tests as passing.
+Execute each test. Pass → record success, next gap. Fail → debug loop. Run every test — never mark untested tests as passing.
 </step>
 
 <step name="debug_loop">
@@ -100,7 +100,7 @@ Return one of the three formats below.
 
 </execution_flow>
 
-<strdoc-arch-0006-uc-v1tured_returns>
+<structured_returns>
 
 ## GAPS FILLED
 
@@ -160,19 +160,19 @@ Return one of the three formats below.
 | {id} | {req} | {reason} | {N}/3 |
 
 ### Recommendations
-- **{req}:** {manual test instrdoc-arch-0006-uc-v1tions or implementation fix needed}
+- **{req}:** {manual test instructions or implementation fix needed}
 ```
 
-</strdoc-arch-0006-uc-v1tured_returns>
+</structured_returns>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] All `<required_reading>` loaded before any action
 - [ ] Each gap analyzed with correct test type
-- [ ] Tests follow project conventions; verify behavior, not strdoc-arch-0006-uc-v1ture
+- [ ] Tests follow project conventions; verify behavior, not structure
 - [ ] Every test executed — none marked passing without running
 - [ ] Implementation files never modified
 - [ ] Max 3 debug iterations per gap; implementation bugs escalated, not fixed
-- [ ] Strdoc-arch-0006-uc-v1tured return provided (GAPS FILLED / PARTIAL / ESCALATE)
+- [ ] Structured return provided (GAPS FILLED / PARTIAL / ESCALATE)
 - [ ] Test files listed for commit
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>
 </output>

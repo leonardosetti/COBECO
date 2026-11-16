@@ -2,7 +2,7 @@
 # Endpoints: Categorias, Fornecedores, Produtos (Autocomplete)
 
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,7 +15,11 @@ from src.adapters.db.models import (
     FornecedorModel,
     ProdutoModel,
 )
-from src.domain.repositories import CategoriaRepository, FornecedorRepository, ProdutoRepository
+from src.domain.repositories import (
+    CategoriaRepository,
+    FornecedorRepository,
+    ProdutoRepository,
+)
 
 router = APIRouter(tags=["Catálogo"])
 
@@ -66,9 +70,7 @@ class CategoriaRepositoryImpl(CategoriaRepository):
         self.session = session
 
     async def listar_todas(self):
-        result = await self.session.execute(
-            select(CategoriaModel).order_by(CategoriaModel.nome)
-        )
+        result = await self.session.execute(select(CategoriaModel).order_by(CategoriaModel.nome))
         return list(result.scalars().all())
 
     async def buscar_por_id(self, categoria_id: int):
@@ -90,7 +92,7 @@ class FornecedorRepositoryImpl(FornecedorRepository):
 
     async def listar_ativos(self):
         result = await self.session.execute(
-            select(FornecedorModel).where(FornecedorModel.ativo == True).order_by(FornecedorModel.nome)
+            select(FornecedorModel).where(FornecedorModel.ativo).order_by(FornecedorModel.nome)
         )
         return list(result.scalars().all())
 
@@ -100,15 +102,19 @@ class FornecedorRepositoryImpl(FornecedorRepository):
         # Usando união (pelo menos uma categoria)
         from sqlalchemy import select
 
-        subquery = select(FornecedorCategoriaModel.fornecedor_id).where(
-            FornecedorCategoriaModel.categoria_id.in_(categoria_ids)
-        ).group_by(FornecedorCategoriaModel.fornecedor_id)
+        subquery = (
+            select(FornecedorCategoriaModel.fornecedor_id)
+            .where(FornecedorCategoriaModel.categoria_id.in_(categoria_ids))
+            .group_by(FornecedorCategoriaModel.fornecedor_id)
+        )
 
         result = await self.session.execute(
-            select(FornecedorModel).where(
+            select(FornecedorModel)
+            .where(
                 FornecedorModel.id.in_(subquery),
-                FornecedorModel.ativo == True,
-            ).order_by(FornecedorModel.nome)
+                FornecedorModel.ativo,
+            )
+            .order_by(FornecedorModel.nome)
         )
         return list(result.scalars().all())
 
@@ -132,11 +138,12 @@ class FornecedorRepositoryImpl(FornecedorRepository):
         produto_ids: list[int],
     ):
         from src.adapters.db.models import FornecedorProdutoModel
+
         result = await self.session.execute(
             select(FornecedorProdutoModel).where(
                 FornecedorProdutoModel.fornecedor_id == fornecedor_id,
                 FornecedorProdutoModel.produto_id.in_(produto_ids),
-                FornecedorProdutoModel.ativo == True,
+                FornecedorProdutoModel.ativo,
                 FornecedorProdutoModel.estoque > 0,
             )
         )
@@ -155,28 +162,30 @@ class ProdutoRepositoryImpl(ProdutoRepository):
 
     async def buscar_por_id(self, produto_id: int):
         result = await self.session.execute(
-            select(ProdutoModel).where(ProdutoModel.id == produto_id, ProdutoModel.ativo == True)
+            select(ProdutoModel).where(ProdutoModel.id == produto_id, ProdutoModel.ativo)
         )
         return result.scalar_one_or_none()
 
     async def buscar_por_ids(self, ids: list[int]):
         result = await self.session.execute(
-            select(ProdutoModel).where(ProdutoModel.id.in_(ids), ProdutoModel.ativo == True)
+            select(ProdutoModel).where(ProdutoModel.id.in_(ids), ProdutoModel.ativo)
         )
         return list(result.scalars().all())
 
     async def autocomplete(self, query: str, limit: int = 10):
         result = await self.session.execute(
-            select(ProdutoModel).where(
+            select(ProdutoModel)
+            .where(
                 ProdutoModel.nome.ilike(f"%{query}%"),
-                ProdutoModel.ativo == True,
-            ).limit(limit)
+                ProdutoModel.ativo,
+            )
+            .limit(limit)
         )
         return list(result.scalars().all())
 
     async def listar_ativos(self):
         result = await self.session.execute(
-            select(ProdutoModel).where(ProdutoModel.ativo == True).order_by(ProdutoModel.nome)
+            select(ProdutoModel).where(ProdutoModel.ativo).order_by(ProdutoModel.nome)
         )
         return list(result.scalars().all())
 
@@ -185,7 +194,9 @@ def get_categoria_repo(session: AsyncSession = Depends(get_db)) -> CategoriaRepo
     return CategoriaRepositoryImpl(session)
 
 
-def get_fornecedor_repo(session: AsyncSession = Depends(get_db)) -> FornecedorRepository:
+def get_fornecedor_repo(
+    session: AsyncSession = Depends(get_db),
+) -> FornecedorRepository:
     return FornecedorRepositoryImpl(session)
 
 
@@ -215,7 +226,7 @@ async def listar_categorias(
 )
 async def listar_fornecedores(
     categorias: str | None = Query(None, description="IDs de categorias separados por vírgula"),
-    repo: FornecedorRepository = Depends(get_fornecedor_repo),
+    repo: FornecedorRepositoryImpl = Depends(get_fornecedor_repo),
     categoria_repo: CategoriaRepository = Depends(get_categoria_repo),
 ):
     if categorias:
@@ -225,21 +236,24 @@ async def listar_fornecedores(
         fornecedores = await repo.listar_ativos()
 
     response = []
-    for f in fornecedores:
+    for fornecedor in fornecedores:
         # Busca categorias do fornecedor
         from sqlalchemy import select
+
         cat_result = await repo.session.execute(
-            select(CategoriaModel).join(FornecedorCategoriaModel).where(
-                FornecedorCategoriaModel.fornecedor_id == f.id
-            )
+            select(CategoriaModel)
+            .join(FornecedorCategoriaModel)
+            .where(FornecedorCategoriaModel.fornecedor_id == fornecedor.id)
         )
         cats = cat_result.scalars().all()
-        response.append(FornecedorResponse(
-            id=f.id,
-            nome=f.nome,
-            cnpj=f.cnpj,
-            categorias=[CategoriaResponse.model_validate(c) for c in cats],
-        ))
+        response.append(
+            FornecedorResponse(
+                id=fornecedor.id or 0,
+                nome=fornecedor.nome,
+                cnpj=fornecedor.cnpj.valor,
+                categorias=[CategoriaResponse.model_validate(c) for c in cats],
+            )
+        )
     return response
 
 

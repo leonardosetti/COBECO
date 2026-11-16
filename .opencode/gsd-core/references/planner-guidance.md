@@ -4,7 +4,7 @@
 
 Planning for ONE person (the user) and ONE implementer (the agent).
 - No teams, stakeholders, ceremonies, coordination overhead
-- User = visionary/proddoc-arch-0006-uc-v1t owner, the agent = builder
+- User = visionary/product owner, the agent = builder
 - Estimate effort in context window cost, not time
 
 ## Plans Are Prompts
@@ -13,7 +13,7 @@ PLAN.md IS the prompt (not a document that becomes one). Contains:
 - Objective (what and why)
 - Context (@file references)
 - Tasks (with verification criteria)
-- Sdoc-arch-0006-uc-v1cess criteria (measurable)
+- Success criteria (measurable)
 
 ## Quality Degradation Curve
 
@@ -30,7 +30,7 @@ PLAN.md IS the prompt (not a document that becomes one). Contains:
 
 Plan -> Execute -> Ship -> Learn -> Repeat
 
-**Anti-enterprise patterns (delete if seen):** team strdoc-arch-0006-uc-v1tures, RACI matrices, sprint ceremonies, time estimates in human units, complexity/difficulty as scope justification, documentation for documentation's sake.
+**Anti-enterprise patterns (delete if seen):** team structures, RACI matrices, sprint ceremonies, time estimates in human units, complexity/difficulty as scope justification, documentation for documentation's sake.
 
 ---
 
@@ -61,9 +61,9 @@ Each task targets **10–30% context consumption**.
 - Migration + data transform: ~30-40%
 - Pure config/wiring: ~5-10%
 
-**Too large signals:** Todoc-arch-0006-uc-v1hes >3-5 files, multiple distinct chunks, action section >1 paragraph.
+**Too large signals:** Touches >3-5 files, multiple distinct chunks, action section >1 paragraph.
 
-**Combine signals:** One task sets up for the next, separate tasks todoc-arch-0006-uc-v1h same file, neither meaningful alone.
+**Combine signals:** One task sets up for the next, separate tasks touch same file, neither meaningful alone.
 
 ## Interface-First Task Ordering
 
@@ -98,7 +98,7 @@ Record in `user_setup` frontmatter. Only include what the agent literally cannot
 
 **For each task, record:**
 - `needs`: What must exist before this runs
-- `creates`: What this proddoc-arch-0006-uc-v1es
+- `creates`: What this produces
 - `has_checkpoint`: Requires user interaction?
 
 **Example:** A→C, B→D, C+D→E, E→F(checkpoint). Waves: {A,B} → {C,D} → {E} → {F}.
@@ -114,7 +114,7 @@ Exclusive file ownership prevents conflicts:
 files_modified: [src/models/user.ts, src/api/users.ts]
 
 # Plan 02 frontmatter (no overlap = parallel)
-files_modified: [src/models/proddoc-arch-0006-uc-v1t.ts, src/api/proddoc-arch-0006-uc-v1ts.ts]
+files_modified: [src/models/product.ts, src/api/products.ts]
 ```
 
 No overlap → can run parallel. File in multiple plans → later plan depends on earlier.
@@ -143,7 +143,7 @@ Derive plans from actual work. Granularity determines compression tolerance, not
 **Phase:** {phase-name}
 **Plans:** {N} plan(s) in {M} wave(s)
 
-### Wave Strdoc-arch-0006-uc-v1ture
+### Wave Structure
 
 | Wave | Plans | Autonomous |
 |------|-------|------------|

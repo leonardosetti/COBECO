@@ -1,21 +1,21 @@
 # CI/CD Pipeline Review Patterns
 
-Rubric for the **CI/CD pipelines** entry of `gsd-code-reviewer`'s language-aware checks. Read at `standard` and `deep` depth only, when a file in scope is a pipeline file. These defects rarely fail a test. They show up at release or deploy time, as a broken release or a bad proddoc-arch-0006-uc-v1tion deploy.
+Rubric for the **CI/CD pipelines** entry of `gsd-code-reviewer`'s language-aware checks. Read at `standard` and `deep` depth only, when a file in scope is a pipeline file. These defects rarely fail a test. They show up at release or deploy time, as a broken release or a bad production deploy.
 
 Pipeline files are recognized by path, not extension: `.github/workflows/*.yml` / `*.yaml`, `Dockerfile*` / `Containerfile`, `config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0002-docker-compose-override-v1-v1-v1.0-v1.0*.yml` / `compose*.yaml`, and deploy scripts (`deploy*.sh` and equivalents). A deploy script is also a Shell file: apply both sets of checks.
 
-Adapted from the `ci-cd-reliability-architecture` skill in [l-gevity/l-gevity-skills](https://github.com/l-gevity/l-gevity-skills) (MIT), reddoc-arch-0006-uc-v1ed to what is checkable from file contents at review time (#4101).
+Adapted from the `ci-cd-reliability-architecture` skill in [l-gevity/l-gevity-skills](https://github.com/l-gevity/l-gevity-skills) (MIT), reduced to what is checkable from file contents at review time (#4101).
 
 ## Checks
 
 | Check | Signal | Why it matters | Severity |
 |---|---|---|---|
-| **Non-idempotent step** | `npm install` where a `config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0-lock.json` exists (should be `npm ci`); `pip install` with no lock or pinned requirements; `mkdir` without `-p`; an unguarded `rm`; delete-then-create of a live resource | A re-run proddoc-arch-0006-uc-v1es a different result, or fails part-way and leaves the target broken | Warning |
-| **Missing timeout** | A job with `runs-on:` and no job-level `timeout-minutes:` | A stdoc-arch-0006-uc-v1k job holds its runner until the 6-hour default | Warning |
+| **Non-idempotent step** | `npm install` where a `config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0-lock.json` exists (should be `npm ci`); `pip install` with no lock or pinned requirements; `mkdir` without `-p`; an unguarded `rm`; delete-then-create of a live resource | A re-run produces a different result, or fails part-way and leaves the target broken | Warning |
+| **Missing timeout** | A job with `runs-on:` and no job-level `timeout-minutes:` | A stuck job holds its runner until the 6-hour default | Warning |
 | **Missing concurrency guard** | A deploy workflow with no `concurrency` group and `cancel-in-progress: true` | Two pushes run in parallel; the older run can finish last and deploy over the newer one | Warning |
-| **Per-environment rebuild** | The same commit is built separately for each environment instead of build-once/promote | The artifact that reaches proddoc-arch-0006-uc-v1tion is not the artifact that passed CI | Warning |
+| **Per-environment rebuild** | The same commit is built separately for each environment instead of build-once/promote | The artifact that reaches production is not the artifact that passed CI | Warning |
 | **Deploy without health check or rollback** | A deploy step with no post-deploy health check and no rollback path | A bad deploy stays live until a human notices | Warning |
-| **Load-bearing `continue-on-error`** | `continue-on-error: true` on a step whose sdoc-arch-0006-uc-v1cess later steps assume | The failure is masked; later steps run on a broken state and the job reports green | Warning |
+| **Load-bearing `continue-on-error`** | `continue-on-error: true` on a step whose success later steps assume | The failure is masked; later steps run on a broken state and the job reports green | Warning |
 | **Static cloud credentials** | Long-lived cloud keys stored as secrets for a provider that supports OIDC (`permissions: id-token: write`) | A leaked key stays valid until someone rotates it; OIDC tokens expire per run | Warning |
 | **Unpinned third-party action** | `uses: owner/action@main`, `@master` or `@latest` | An unpinned ref lets the action's code change between two runs of the same commit | Warning |
 
@@ -40,6 +40,6 @@ Cite the line. For the concurrency, rebuild and rollback checks, also name what 
 ### WR-02: Deploy workflow lacks concurrency guard — stale commit can deploy last
 
 **File:** `.github/workflows/deploy.yml:8`
-**Issue:** Two pushes in quick sdoc-arch-0006-uc-v1cession run in parallel; the older run can finish after the newer one and overwrite proddoc-arch-0006-uc-v1tion.
+**Issue:** Two pushes in quick succession run in parallel; the older run can finish after the newer one and overwrite production.
 **Fix:** Add a `concurrency` group keyed on the ref, with `cancel-in-progress: true`.
 ```

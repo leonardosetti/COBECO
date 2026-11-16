@@ -204,7 +204,7 @@ time make seed
 
 # 3. Verificar contagens
 docker compose exec backend python -c "
-from src.infrastrdoc-arch-0006-uc-v1ture.database import SessionLocal
+from src.infrastructure.database import SessionLocal
 from src.domain.entities import Categoria, Fornecedor, Produto, Preco
 db = SessionLocal()
 print(f'Categorias: {db.query(Categoria).count()}')
@@ -345,7 +345,7 @@ make lint        # ruff + mypy OK
 
 - [ ] Todos 16 itens **Done** (Status = Done no board)
 - [ ] Cobertura testes ≥ 80% (`make test-cov`)
-- [ ] CI verde na `main` (último run sdoc-arch-0006-uc-v1cess)
+- [ ] CI verde na `main` (último run success)
 - [ ] Documentação ABNT aprovada (orientador)
 - [ ] PRD aprovado (Gate 2 CCB)
 - [ ] Diagramas C4 validados

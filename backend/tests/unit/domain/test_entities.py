@@ -5,10 +5,21 @@ import pytest
 from datetime import datetime
 from decimal import Decimal
 from src.domain.entities import (
-    Usuario, Categoria, Fornecedor, Produto,
-    FornecedorProduto, Lista, ItemLista,
-    ItemComparacao, FornecedorComparacao, OrcamentoComparacao,
-    Sessao, Email, CNPJ, SenhaHash, UnidadeMedida
+    Usuario,
+    Categoria,
+    Fornecedor,
+    Produto,
+    FornecedorProduto,
+    Lista,
+    ItemLista,
+    ItemComparacao,
+    FornecedorComparacao,
+    OrcamentoComparacao,
+    Sessao,
+    Email,
+    CNPJ,
+    SenhaHash,
+    UnidadeMedida,
 )
 
 
@@ -227,9 +238,15 @@ class TestEntidadesComparacao:
             lista_id=1,
             lista_nome="Lista Teste",
             fornecedores=[
-                FornecedorComparacao(fornecedor_id=2, fornecedor_nome="B", preco_total=Decimal("200.00")),
-                FornecedorComparacao(fornecedor_id=1, fornecedor_nome="A", preco_total=Decimal("100.00")),
-                FornecedorComparacao(fornecedor_id=3, fornecedor_nome="C", preco_total=Decimal("150.00")),
+                FornecedorComparacao(
+                    fornecedor_id=2, fornecedor_nome="B", preco_total=Decimal("200.00")
+                ),
+                FornecedorComparacao(
+                    fornecedor_id=1, fornecedor_nome="A", preco_total=Decimal("100.00")
+                ),
+                FornecedorComparacao(
+                    fornecedor_id=3, fornecedor_nome="C", preco_total=Decimal("150.00")
+                ),
             ],
         )
         orcamento.ordenar_por_preco()

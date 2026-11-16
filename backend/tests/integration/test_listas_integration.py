@@ -2,7 +2,6 @@
 # Testes de integração para CRUD de Listas e Itens (RF07-RF11)
 
 import pytest
-from decimal import Decimal
 from httpx import AsyncClient, ASGITransport
 from src.main import app
 
@@ -42,7 +41,7 @@ async def sample_produtos(client):
     """Garante que existam produtos para testes"""
     # O seed já popula produtos, apenas verificamos
     response = await client.get("/v1/catalogo/produtos?limit=5")
-    assert response.status_code == 2000
+    assert response.status_code == 200
     return response.json()["items"]
 
 
@@ -67,7 +66,7 @@ class TestListasIntegration:
             headers=auth_user,
         )
 
-        assert response.status_code == 21
+        assert response.status_code == 201
         data = response.json()
         assert data["nome"] == "Compras da Semana"
         assert data["usuario_id"] > 0
@@ -83,7 +82,7 @@ class TestListasIntegration:
             json={"nome": "Lista Vazia", "itens": []},
             headers=auth_user,
         )
-        assert response.status_code == 40
+        assert response.status_code == 400
         assert "pelo menos 1 item" in response.json()["detail"].lower()
 
     @pytest.mark.asyncio
@@ -93,7 +92,7 @@ class TestListasIntegration:
             json={"nome": "Lista", "itens": [{"produto_id": 99999, "quantidade": 1}]},
             headers=auth_user,
         )
-        assert response.status_code == 40
+        assert response.status_code == 400
         assert "não encontrado" in response.json()["detail"].lower()
 
     @pytest.mark.asyncio
@@ -161,7 +160,10 @@ class TestListasIntegration:
         # Cria lista com user atual
         create_resp = await client.post(
             "/listas",
-            json={"nome": "Minha Lista", "itens": [{"produto_id": sample_produtos[0]["id"], "quantidade": 1}]},
+            json={
+                "nome": "Minha Lista",
+                "itens": [{"produto_id": sample_produtos[0]["id"], "quantidade": 1}],
+            },
             headers=auth_user,
         )
         lista_id = create_resp.json()["id"]
@@ -177,19 +179,24 @@ class TestListasIntegration:
             "resposta_seguranca": "Maria",
         }
         await client.post("/v1/auth/cadastrar", json=other_user)
-        login_resp = await client.post("/v1/auth/login", json={"nome_usuario": "outrouser", "senha": "Senha@123"})
+        login_resp = await client.post(
+            "/v1/auth/login", json={"nome_usuario": "outrouser", "senha": "Senha@123"}
+        )
         other_auth = {"Authorization": f"Bearer {login_resp.json()['access_token']}"}
 
         # Tenta acessar lista do primeiro usuário
         response = await client.get(f"/listas/{lista_id}", headers=other_auth)
-        assert response.status_code == 44
+        assert response.status_code == 404
 
     @pytest.mark.asyncio
     async def test_atualizar_lista_nome(self, client, auth_user, sample_produtos):
         """RF10 - Editar lista salva"""
         create_resp = await client.post(
             "/listas",
-            json={"nome": "Nome Original", "itens": [{"produto_id": sample_produtos[0]["id"], "quantidade": 1}]},
+            json={
+                "nome": "Nome Original",
+                "itens": [{"produto_id": sample_produtos[0]["id"], "quantidade": 1}],
+            },
             headers=auth_user,
         )
         lista_id = create_resp.json()["id"]
@@ -206,7 +213,10 @@ class TestListasIntegration:
     async def test_atualizar_lista_nome_vazio_falha(self, client, auth_user, sample_produtos):
         create_resp = await client.post(
             "/listas",
-            json={"nome": "Original", "itens": [{"produto_id": sample_produtos[0]["id"], "quantidade": 1}]},
+            json={
+                "nome": "Original",
+                "itens": [{"produto_id": sample_produtos[0]["id"], "quantidade": 1}],
+            },
             headers=auth_user,
         )
         lista_id = create_resp.json()["id"]
@@ -216,14 +226,17 @@ class TestListasIntegration:
             json={"nome": ""},
             headers=auth_user,
         )
-        assert response.status_code == 40
+        assert response.status_code == 400
 
     @pytest.mark.asyncio
     async def test_excluir_lista_com_confirmacao(self, client, auth_user, sample_produtos):
         """RF11 - Exclusão lógica com confirmação de nome"""
         create_resp = await client.post(
             "/listas",
-            json={"nome": "Para Excluir", "itens": [{"produto_id": sample_produtos[0]["id"], "quantidade": 1}]},
+            json={
+                "nome": "Para Excluir",
+                "itens": [{"produto_id": sample_produtos[0]["id"], "quantidade": 1}],
+            },
             headers=auth_user,
         )
         lista_id = create_resp.json()["id"]
@@ -234,7 +247,7 @@ class TestListasIntegration:
             json={"confirmacao_nome": "Nome Errado"},
             headers=auth_user,
         )
-        assert response.status_code == 40
+        assert response.status_code == 400
         assert "confirmação" in response.json()["detail"].lower()
 
         # Exclui com confirmação correta
@@ -243,11 +256,11 @@ class TestListasIntegration:
             json={"confirmacao_nome": "Para Excluir"},
             headers=auth_user,
         )
-        assert response.status_code == 24
+        assert response.status_code == 204
 
         # Lista não aparece mais
         list_resp = await client.get("/listas/minhas", headers=auth_user)
-        ids = [l["id"] for l in list_resp.json()["items"]]
+        ids = [item["id"] for item in list_resp.json()["items"]]
         assert lista_id not in ids
 
 
@@ -258,7 +271,10 @@ class TestItensListaIntegration:
     async def test_adicionar_item_lista_existente(self, client, auth_user, sample_produtos):
         create_resp = await client.post(
             "/listas",
-            json={"nome": "Lista para Itens", "itens": [{"produto_id": sample_produtos[0]["id"], "quantidade": 1}]},
+            json={
+                "nome": "Lista para Itens",
+                "itens": [{"produto_id": sample_produtos[0]["id"], "quantidade": 1}],
+            },
             headers=auth_user,
         )
         lista_id = create_resp.json()["id"]

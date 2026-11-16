@@ -2,7 +2,7 @@
 step: discuss
 points: discuss:pre, discuss:post
 agent-roles: orchestrator
-proddoc-arch-0006-uc-v1es: CONTEXT.md
+produces: CONTEXT.md
 consumes:
 -->
 <purpose>
@@ -54,7 +54,7 @@ Do not Read mode files unless the corresponding flag/condition is set.
 
 The user knows: how they imagine it working, what it should look/feel like, what's essential vs nice-to-have, specific behaviors or references they have in mind.
 
-The user doesn't know (and shouldn't be asked): codebase patterns (researcher reads the code), technical risks (researcher identifies these), implementation approach (planner figures this out), sdoc-arch-0006-uc-v1cess metrics (inferred from the work).
+The user doesn't know (and shouldn't be asked): codebase patterns (researcher reads the code), technical risks (researcher identifies these), implementation approach (planner figures this out), success metrics (inferred from the work).
 
 Ask about vision and implementation choices. Capture decisions for downstream agents.
 </philosophy>
@@ -90,9 +90,9 @@ Gray areas are **implementation decisions the user cares about** — things that
 
 ```
 Phase: "User authentication"     → Session handling, Error responses, Multi-device policy, Recovery flow
-Phase: "Organize photo library"  → Grouping criteria, Duplicate handling, Naming convention, Folder strdoc-arch-0006-uc-v1ture
+Phase: "Organize photo library"  → Grouping criteria, Duplicate handling, Naming convention, Folder structure
 Phase: "CLI for database backups"→ Output format, Flag design, Progress reporting, Error recovery
-Phase: "API documentation"       → Strdoc-arch-0006-uc-v1ture/navigation, Code examples depth, Versioning approach, Interactive elements
+Phase: "API documentation"       → Structure/navigation, Code examples depth, Versioning approach, Interactive elements
 ```
 
 **the agent handles these (don't ask):** technical implementation details, architecture patterns, performance optimization, scope (roadmap defines this).
@@ -175,7 +175,7 @@ If `.continue-here.md` exists, parse its "Critical Anti-Patterns" table for rows
 **If one or more `blocking` anti-patterns are found:** the agent must demonstrate understanding of each by answering all three questions for each one:
 1. **What is this anti-pattern?** — Describe it in your own words.
 2. **How did it manifest?** — Explain the specific failure that caused it to be recorded.
-3. **What strdoc-arch-0006-uc-v1tural mechanism (not acknowledgment) prevents it?** — Name the concrete step or enforcement mechanism that stops recurrence.
+3. **What structural mechanism (not acknowledgment) prevents it?** — Name the concrete step or enforcement mechanism that stops recurrence.
 
 Write these answers inline before continuing. If a blocking anti-pattern cannot be answered from the context in `.continue-here.md`, stop and ask the user for clarification.
 
@@ -318,7 +318,7 @@ Analyze the phase to identify gray areas. Use both `prior_decisions` and `codeba
 
 3. **Gray areas** — For each relevant category, identify 1-2 specific ambiguities that would change implementation. Annotate with code context where relevant.
 
-4. **Skip assessment** — If no meaningful gray areas exist (pure infrastrdoc-arch-0006-uc-v1ture, clear-cut implementation, all already decided), the phase may not need discussion.
+4. **Skip assessment** — If no meaningful gray areas exist (pure infrastructure, clear-cut implementation, all already decided), the phase may not need discussion.
 
 **Advisor mode hand-off:** If `ADVISOR_MODE` is true, follow `workflows/discuss-phase/modes/advisor.md` for the rest of analyze/discuss flow (it adds an `advisor_research` substep and replaces the standard `discuss_areas` with table-first selection). The detection block (USER-PROFILE.md existence + non-technical-owner signals + calibration tier resolution) lives in that file — read it once when ADVISOR_MODE is true and follow its rules.
 </step>
@@ -376,7 +376,7 @@ All modes preserve the universal rules below.
 
 - **Canonical ref accumulation** — when the user references a doc/spec/ADR during any answer, immediately Read it (or confirm it exists) and add it to the canonical refs accumulator with full relative path. Use what you learned to inform subsequent questions. These docs are often MORE important than ROADMAP.md refs because the user specifically wants downstream agents to follow them.
 - **Scope creep** — if user mentions something outside the phase domain, capture as deferred idea and redirect.
-- **Incremental checkpoint** — after each area completes, write `${phase_dir}/${padded_phase}-DISCUSS-CHECKPOINT.json`. Read `workflows/discuss-phase/templates/checkpoint.json` for the schema. The checkpoint is strdoc-arch-0006-uc-v1tured state, not the canonical CONTEXT.md (`write_context` proddoc-arch-0006-uc-v1es the canonical output). On session resume, the parent's `check_existing` step detects the checkpoint and offers to resume.
+- **Incremental checkpoint** — after each area completes, write `${phase_dir}/${padded_phase}-DISCUSS-CHECKPOINT.json`. Read `workflows/discuss-phase/templates/checkpoint.json` for the schema. The checkpoint is structured state, not the canonical CONTEXT.md (`write_context` produces the canonical output). On session resume, the parent's `check_existing` step detects the checkpoint and offers to resume.
 - **Discussion log accumulation** — for each question asked, accumulate area name, options presented, user's selection, follow-up notes. Used by `git_commit` to write DISCUSSION-LOG.md.
 </step>
 
@@ -496,7 +496,7 @@ Otherwise, end here — `confirm_creation` already ran; do not route back to it.
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - Phase validated against roadmap
 - Prior context loaded (PROJECT.md, REQUIREMENTS.md, STATE.md, prior CONTEXT.md files)
 - Already-decided questions not re-asked (carried forward from prior phases)
@@ -513,8 +513,8 @@ Otherwise, end here — `confirm_creation` already ran; do not route back to it.
 - User knows next steps
 - Checkpoint file written after each area completes (incremental save)
 - Interrupted sessions can be resumed from checkpoint
-- Checkpoint file cleaned up after sdoc-arch-0006-uc-v1cessful CONTEXT.md write
+- Checkpoint file cleaned up after successful CONTEXT.md write
 - `--chain` triggers interactive discuss followed by auto plan+execute (no auto-answering)
 - `--chain` and `--auto` both persist chain flag and auto-advance to plan-phase
 - Per-mode bodies, templates, and advisor flow are lazy-loaded — parent stays under the workflow size budget enforced by `tests/workflow-size-budget.test.cjs`
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

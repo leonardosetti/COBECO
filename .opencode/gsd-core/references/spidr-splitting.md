@@ -37,7 +37,7 @@ If yes: split by interface. Web first if user-facing; API first if integration-d
 
 ### Data
 
-> "Does this feature todoc-arch-0006-uc-v1h multiple data scopes (one user vs. many, single team vs. multi-tenant, small CSV vs. large dataset)?"
+> "Does this feature touch multiple data scopes (one user vs. many, single team vs. multi-tenant, small CSV vs. large dataset)?"
 
 If yes: split by scope. Smallest scope first (one user, single team, small data), then expand.
 
@@ -53,7 +53,7 @@ When SPIDR triggers, the workflow:
 
 1. Restates the user-supplied story.
 2. Asks "Which SPIDR axis fits best?" with the five options above.
-3. Walks through the chosen axis interactively (one focused question), proddoc-arch-0006-uc-v1es a split proposal: "Phase N (this one): X. Phase N+1: Y. Phase N+2: Z."
+3. Walks through the chosen axis interactively (one focused question), produces a split proposal: "Phase N (this one): X. Phase N+1: Y. Phase N+2: Z."
 4. Confirms the split with the user.
 5. On accept: writes the FIRST phase's story to the current ROADMAP entry; defers creating new phases for the splits to a follow-up step (the workflow surfaces a list of `/gsd-phase` invocations the user can run after `mvp-phase` completes — but does not run them automatically, to preserve user control over phase numbering).
 6. On reject: proceeds with the original story unchanged.

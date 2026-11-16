@@ -58,10 +58,10 @@ Then offer next actions as plain text (no mutation here):
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Seeds listed with ID, status, scope, trigger, and title
 - [ ] Status filter applied when provided
 - [ ] Empty / no-match case handled with guidance
 - [ ] Summary line shows total and per-status counts
 - [ ] No seed files were modified (read-only)
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

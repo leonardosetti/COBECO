@@ -127,7 +127,7 @@ E loga erro completo no backend
 | TA-161 | Backend: Duas templates — Lista (itens simples) e Comparação (por fornecedor + highlight melhor) | Backend | 3 | Fabrício | ✅ | `feat/UC-08-export-pdf` |
 | TA-162 | Backend: Performance — otimizar loops, registrar fonte uma vez, streaming response se > 10s | Backend | 2 | Fabrício | ✅ | `feat/UC-08-export-pdf` |
 | TA-163 | Testes: lista, comparação, visitante, auth, performance, formato, erros | Backend | 2 | Nicolas | ✅ | `feat/UC-08-export-pdf` |
-| TA-164 | Frontend: Botão Exportar → POST, blob download, filename, toast sdoc-arch-0006-uc-v1esso/erro | Frontend | 3 | Eduardo | ✅ | `feat/UC-08-export-pdf` |
+| TA-164 | Frontend: Botão Exportar → POST, blob download, filename, toast sucesso/erro | Frontend | 3 | Eduardo | ✅ | `feat/UC-08-export-pdf` |
 
 ---
 

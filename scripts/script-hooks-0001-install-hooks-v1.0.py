@@ -130,18 +130,18 @@ def main() -> int:
         ('commit-msg', COMMIT_MSG_CONTENT),
     ]
     
-    sdoc-arch-0006-uc-v1cess = 0
+    success = 0
     for name, content in hooks:
         hook_path = HOOKS_DIR / name
         if hook_path.exists() and not args.force:
             print(f"⚠️  {name} já existe (use --force para sobrescrever)")
             continue
         if write_hook(name, content):
-            sdoc-arch-0006-uc-v1cess += 1
+            success += 1
     
-    print(f"\n✅ {sdoc-arch-0006-uc-v1cess}/{len(hooks)} hooks instalados")
+    print(f"\n✅ {success}/{len(hooks)} hooks instalados")
     
-    if sdoc-arch-0006-uc-v1cess > 0:
+    if success > 0:
         print("\n📋 Hooks ativos:")
         print("   pre-commit:  Secret Scanner (Art. 7.7, 17.7)")
         print("   pre-push:    CI Green Check + Branch Protection (Art. 9.9, 17.5)")
@@ -149,7 +149,7 @@ def main() -> int:
         print("\n⚠️  Para bypass de emergência: git commit --no-verify / git push --no-verify")
         print("   (VIOLA CONSTITUTION - USE APENAS EM EMERGÊNCIA REAL)")
     
-    return 0 if sdoc-arch-0006-uc-v1cess > 0 else 1
+    return 0 if success > 0 else 1
 
 
 if __name__ == '__main__':

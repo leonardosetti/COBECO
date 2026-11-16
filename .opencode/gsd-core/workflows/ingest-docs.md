@@ -188,7 +188,7 @@ Per-spawn prompt fields:
 
 **Model on every classifier spawn (#3602):** `model="{CLASSIFIER_MODEL}"` is a parameter of each Task/Agent call — not a prompt field, never folded into the prompt text — so `dynamic_routing`/`model_profile` tiers apply instead of the caller's session model. Omit the parameter per the rule above when the value is `"inherit"` or empty.
 
-Collect the one-line confirmations from each classifier. If any classifier errors out, surface the error and abort without todoc-arch-0006-uc-v1hing `.planning/` further.
+Collect the one-line confirmations from each classifier. If any classifier errors out, surface the error and abort without touching `.planning/` further.
 
 </step>
 
@@ -231,7 +231,7 @@ The synthesizer writes:
 
 <step name="conflict_gate">
 
-Read `.planning/INGEST-CONFLICTS.md`. Count entries in each bdoc-arch-0006-uc-v1ket (the synthesizer always writes the three-bdoc-arch-0006-uc-v1ket header; parse the `### BLOCKERS ({N})`, `### WARNINGS ({N})`, `### INFO ({N})` lines).
+Read `.planning/INGEST-CONFLICTS.md`. Count entries in each bucket (the synthesizer always writes the three-bucket header; parse the `### BLOCKERS ({N})`, `### WARNINGS ({N})`, `### INFO ({N})` lines).
 
 Apply the safety semantics from `gsd-core/references/doc-conflict-engine.md`. Operation noun: `ingest`.
 
@@ -264,7 +264,7 @@ Optionally display `GSD > No conflicts. Auto-resolved: {N}.` Absence of conflict
 
 **Applies only when MODE=new.**
 
-Audit PROJECT.md field requirements that `gsd-roadmapper` expects. For fields derivable from `.planning/intel/SYNTHESIS.md` (project scope, goals/non-goals, constraints, locked decisions), synthesize from the intel. For fields NOT derivable (project name, developer-facing sdoc-arch-0006-uc-v1cess metric, target runtime), prompt via `question` one at a time — minimal question set, no interrogation.
+Audit PROJECT.md field requirements that `gsd-roadmapper` expects. For fields derivable from `.planning/intel/SYNTHESIS.md` (project scope, goals/non-goals, constraints, locked decisions), synthesize from the intel. For fields NOT derivable (project name, developer-facing success metric, target runtime), prompt via `question` one at a time — minimal question set, no interrogation.
 
 **Routing gate (#3827): approval to classify documents is not approval to write the planning scaffold.** Before delegating, display the exact destinations and require an explicit choice:
 
@@ -304,7 +304,7 @@ Agent({
     Per-type intel: {intel_dir}/decisions.md, {intel_dir}/requirements.md, {intel_dir}/constraints.md, {intel_dir}/context.md
     User-supplied fields: {collected in previous step}
 
-    Proddoc-arch-0006-uc-v1e:
+    Produce:
     - {project_path}
     - {requirements_path}
     - {roadmap_path}
@@ -325,7 +325,7 @@ Agent({
 
 Load existing `.planning/ROADMAP.md`, `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, all `CONTEXT.md` files under `.planning/phases/`.
 
-The synthesizer has already hard-blocked on any LOCKED-in-ingest vs LOCKED-in-existing contradiction; if we reach this step, no sdoc-arch-0006-uc-v1h blockers remain.
+The synthesizer has already hard-blocked on any LOCKED-in-ingest vs LOCKED-in-existing contradiction; if we reach this step, no such blockers remain.
 
 Plan the merge:
 - **New requirements** from synthesized `.planning/intel/requirements.md` that do not overlap existing REQUIREMENTS.md entries → append to REQUIREMENTS.md

@@ -14,7 +14,7 @@ if (require.main === module && !processconfig-env-0001-env-example-v1.0.NODE_V8_
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-// Namespace (not destrdoc-arch-0006-uc-v1tured) so tests can inject spawn failures by
+// Namespace (not destructured) so tests can inject spawn failures by
 // monkeypatching childProcess.execFileSync.
 const childProcess = require('child_process');
 const { HOOK_ON_CRASH, allow, crash } = require('./lib/hook-exit.js');
@@ -43,7 +43,7 @@ if (require.main === module) {
     // #3911: crash(ON_CRASH, ...) with an undefined payload preserves the
     // pre-migration `process.stdout.write(''); process.exit(0);` byte-for-
     // byte — undefined makes terminateNow's stdout JSON.stringify throw
-    // internally (swallowed there), so fd 1 stays untodoc-arch-0006-uc-v1hed, same as writing
+    // internally (swallowed there), so fd 1 stays untouched, same as writing
     // an explicit empty string did.
     crash(ON_CRASH, undefined);
   }
@@ -57,13 +57,13 @@ const {
   renderBracketMilestoneDisplay,
 } = require('../gsd-core/bin/lib/phase-id-display.cjs');
 // #2850: reuse the existing workstream resolution seams rather than
-// re-implementing CLI>env>store precedence or path constrdoc-arch-0006-uc-v1tion inline.
+// re-implementing CLI>env>store precedence or path construction inline.
 // peekActiveWorkstream is the read-only sibling of the store-tier lookup
 // resolveActiveWorkstream defaults to (getActiveWorkstream) — that default
 // self-heals a stale/invalid pointer by deleting it, which is correct for a
 // command but not for a renderer invoked on every prompt. Injecting it via
 // resolveActiveWorkstream's own `getStored` override keeps the CLI>env>store
-// precedence itself fully reused (untodoc-arch-0006-uc-v1hed); only the store tier's *write*
+// precedence itself fully reused (untouched); only the store tier's *write*
 // side effect is removed.
 const { resolveActiveWorkstream, peekActiveWorkstream } = require('../gsd-core/bin/lib/active-workstream-store.cjs');
 const { listAvailableWorkstreams, planningPaths } = require('../gsd-core/bin/lib/planning-workspace.cjs');
@@ -786,7 +786,7 @@ function contextTokenSuffix(currentUsage) {
  * collapse to their keyword; free-text narratives are no longer
  * keyword-guessed from substrings (a `.planning/` mention in non-English
  * prose used to render `planning`), and pass through unrecognized to the
- * first-word fallback below. "paused" — the canonical stdoc-arch-0006-uc-v1k state — is
+ * first-word fallback below. "paused" — the canonical stuck state — is
  * uppercased to PAUSED, the one state worth shouting about. The fallback is
  * capped at 16 chars so a rogue STATE.md can't blow up the line.
  * Returns null for empty input.
@@ -816,7 +816,7 @@ function shortGsdStatus(status) {
  *
  * Drops the milestone name and progress bar — the biggest width costs in the
  * default format — and collapses narrative statuses via shortGsdStatus().
- * The default "full" format is untodoc-arch-0006-uc-v1hed.
+ * The default "full" format is untouched.
  */
 function formatGsdStateCompact(s, opts = {}) {
   // #2850: mirrors formatGsdState's observable "nothing resolvable" signal.

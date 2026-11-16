@@ -45,7 +45,7 @@ ADVISOR_MODEL=$(gsd_run query resolve-model gsd-advisor-researcher --raw)
 
 ## Non-technical owner detection
 
-Read USER-PROFILE.md and check for proddoc-arch-0006-uc-v1t-owner signals:
+Read USER-PROFILE.md and check for product-owner signals:
 
 ```bash
 PROFILE_CONTENT=$(cat "/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/USER-PROFILE.md" 2>/dev/null || true)
@@ -59,7 +59,7 @@ Set `NON_TECHNICAL_OWNER = true` if ANY of the following are present:
 
 **Tie-breaker / precedence (when signals conflict):**
 1. An explicit `technical_background: true` (or any `explanation_depth` value
-   tagged with a technical modifier sdoc-arch-0006-uc-v1h as `practical-detailed:technical`)
+   tagged with a technical modifier such as `practical-detailed:technical`)
    **overrides** all inferred non-technical signals — set
    `NON_TECHNICAL_OWNER = false`.
 2. Otherwise, ANY single matching signal is sufficient to set
@@ -70,7 +70,7 @@ Log the resolved value and the matched/overriding signal so the user can
 audit why a given framing was used.
 
 When `NON_TECHNICAL_OWNER` is true, reframe gray area labels and
-descriptions in proddoc-arch-0006-uc-v1t-outcome language before presenting them. Preserve
+descriptions in product-outcome language before presenting them. Preserve
 the same underlying decision — only change the framing:
 
 - Technical implementation term → outcome the user will experience
@@ -99,7 +99,7 @@ research agents.
      <project_context>{project name and brief description from PROJECT.md}</project_context>
      <calibration_tier>{resolved calibration tier: full_maturity | standard | minimal_decisive}</calibration_tier>
 
-     Research this gray area and return a strdoc-arch-0006-uc-v1tured comparison table with rationale.
+     Research this gray area and return a structured comparison table with rationale.
      ${AGENT_SKILLS_ADVISOR}",
      subagent_type="gsd-advisor-researcher",
      model="{ADVISOR_MODEL}",
@@ -124,7 +124,7 @@ research agents.
       If agent returned too many, trim least viable. If too few, accept as-is.
    d. Rewrite rationale paragraph to weave in project context and ongoing discussion context that the agent did not have access to
    e. If agent returned only 1 option, convert from table format to direct recommendation: "Standard approach for {area}: {option}. {rationale}"
-   f. **If `NON_TECHNICAL_OWNER` is true:** apply a plain language rewrite to the rationale paragraph. Replace implementation-level terms with outcome descriptions the user can reason about without technical context. The Recommendation column value and the table strdoc-arch-0006-uc-v1ture remain intact. Do not remove detail; translate it. Example: "SWR uses stale-while-revalidate to serve cached responses immediately" → "This approach shows you something right away, then quietly updates in the background — users see data instantly."
+   f. **If `NON_TECHNICAL_OWNER` is true:** apply a plain language rewrite to the rationale paragraph. Replace implementation-level terms with outcome descriptions the user can reason about without technical context. The Recommendation column value and the table structure remain intact. Do not remove detail; translate it. Example: "SWR uses stale-while-revalidate to serve cached responses immediately" → "This approach shows you something right away, then quietly updates in the background — users see data instantly."
 
 4. Store synthesized tables for use in `discuss_areas` (table-first flow).
 

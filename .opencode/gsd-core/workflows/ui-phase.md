@@ -106,9 +106,9 @@ UI_SPEC_FILE=$(ls "${PHASE_DIR}"/*-UI-SPEC.md 2>/dev/null | head -1)
 **Text mode (`workflow.text_mode: true` in config or `--text` flag):** Set `TEXT_MODE=true` if `--text` is present in `$ARGUMENTS` OR `text_mode` from init JSON is `true`. When TEXT_MODE is active, replace every `question` call with a plain-text numbered list and ask the user to type their choice number. This is required for non-the agent runtimes (OpenAI Codex, Antigravity, etc.) where `question` is not available.
 **If exists:**
 
-**If `--auto`:** Auto-select "Skip" — keep the existing UI-SPEC untodoc-arch-0006-uc-v1hed and proceed to step 7
+**If `--auto`:** Auto-select "Skip" — keep the existing UI-SPEC untouched and proceed to step 7
 (checker). Log: `[auto] UI-SPEC exists — reusing as-is, proceeding to verification.` Skip is the
-auto choice because it is the only non-destrdoc-arch-0006-uc-v1tive one: "Update" re-runs the researcher, which
+auto choice because it is the only non-destructive one: "Update" re-runs the researcher, which
 rewrites the whole contract and drops answers a person already recorded in it, and "View" exits
 without verifying anything. A `--auto` run most often meets this file as an unverified draft from
 a run that ended before its checker ran, which is exactly the state the checker should now see.
@@ -137,7 +137,7 @@ Display:
 Build prompt:
 
 ```markdown
-Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-ui-researcher.md for instrdoc-arch-0006-uc-v1tions.
+Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-ui-researcher.md for instructions.
 
 <objective>
 Create UI design contract for Phase {phase_number}: {phase_name}
@@ -208,7 +208,7 @@ Display:
 Build prompt:
 
 ```markdown
-Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-ui-checker.md for instrdoc-arch-0006-uc-v1tions.
+Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-ui-checker.md for instructions.
 
 <objective>
 Validate UI design contract for Phase {phase_number}: {phase_name}
@@ -284,7 +284,7 @@ Do NOT re-ask the user questions that are already answered.
   the blocking `required_property` still fails; that choice belongs to the cap escalation below.
   Re-spawn the researcher with the chosen resolution and return to this step.
 
-  **Bounded:** a conflict naming the SAME `required_property` twice in a row (no sdoc-arch-0006-uc-v1cessful revision in between) is a stall, and so is
+  **Bounded:** a conflict naming the SAME `required_property` twice in a row (no successful revision in between) is a stall, and so is
   the THIRD conflict return of this loop whatever property it names — alternating property names
   would otherwise never trip the repeat rule. Stop re-spawning and route it to the same cap
   escalation below, so declining to spend an iteration cannot make this path unbounded.
@@ -418,7 +418,7 @@ fi
 rm -f "$ELEMENTS_JSON"
 # Malformed-report guard: exit 0 but garbage. The report must parse as { items[], coverage{} }.
 if ! printf '%s' "$COVERAGE" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{let r;try{r=JSON.parse(s)}catch{process.exit(1)}if(!r||!Array.isArray(r.items)||typeof r.coverage!=="object"||r.coverage===null)process.exit(1)})'; then
-  echo "ERROR: ui-consideration-probe proddoc-arch-0006-uc-v1ed an unparseable or malformed coverage report — refusing to proceed with the resolution loop." >&2
+  echo "ERROR: ui-consideration-probe produced an unparseable or malformed coverage report — refusing to proceed with the resolution loop." >&2
   exit 1
 fi
 # Zero-applicable guard: a report where NO category applied across ANY element is far more likely a
@@ -523,7 +523,7 @@ gsd_run query state.record-session \
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Config checked (exit if ui_phase disabled)
 - [ ] Phase validated against roadmap
 - [ ] Prerequisites checked (CONTEXT.md, RESEARCH.md — non-blocking warnings)
@@ -536,4 +536,4 @@ gsd_run query state.record-session \
 - [ ] Final status displayed with next steps
 - [ ] UI-SPEC.md committed (if commit_docs enabled)
 - [ ] State updated
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

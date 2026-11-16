@@ -107,7 +107,7 @@ def dispatch_to_l0(handoff: dict) -> dict:
     # response = requests.post('http://localhost:8080/dispatch', json=handoff)
     # return response.json()
     
-    # MVP: Retorna sdoc-arch-0006-uc-v1esso simulado
+    # MVP: Retorna sucesso simulado
     return {
         'status': 'dispatched',
         'dispatched_at': datetime.utcnow().isoformat() + 'Z',
@@ -166,7 +166,7 @@ def main() -> int:
     
     # Resultado final com dod + kill_switch (Constitution Art. 17.3)
     result = {
-        'status': 'sdoc-arch-0006-uc-v1cess',
+        'status': 'success',
         'dispatch_id': dispatch_id,
         'task_id': handoff['task_id'],
         'spec_id': handoff['spec_id'],

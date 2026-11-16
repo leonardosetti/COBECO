@@ -150,7 +150,7 @@ TEST_EXIT=$?
 if [ "${TEST_EXIT}" -eq 0 ]; then
   echo "✓ Post-merge test gate passed — no cross-plan conflicts"
 elif [ "${TEST_EXIT}" -eq 124 ]; then
-  echo "⚠ POST-MERGE TEST GATE TIMED OUT after ${TEST_GATE_TIMEOUT}s — the runner did not exit, likely stdoc-arch-0006-uc-v1k in watch/dev mode (e.g. vitest without 'run'). Verify tests with a one-shot command (e.g. 'vitest run') or raise workflow.test_gate_timeout. For Xcode suites: xcodebuild collects a sysdiagnose into the .xcresult by default (~10 minutes on a passing suite) — add '-collect-test-diagnostics never' to the test command or raise workflow.test_gate_timeout."
+  echo "⚠ POST-MERGE TEST GATE TIMED OUT after ${TEST_GATE_TIMEOUT}s — the runner did not exit, likely stuck in watch/dev mode (e.g. vitest without 'run'). Verify tests with a one-shot command (e.g. 'vitest run') or raise workflow.test_gate_timeout. For Xcode suites: xcodebuild collects a sysdiagnose into the .xcresult by default (~10 minutes on a passing suite) — add '-collect-test-diagnostics never' to the test command or raise workflow.test_gate_timeout."
 else
   echo "✗ Post-merge test gate failed (exit code ${TEST_EXIT})"
   # gsd-handoff:begin wave-failure-record

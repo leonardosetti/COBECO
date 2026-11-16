@@ -43,7 +43,7 @@ def create_engine_with_retry(url: str, max_retries: int = 30, retry_interval: in
             # Testa a conexão
             with engine.connect() as conn:
                 conn.execute(text("SELECT 1"))
-            print(f"Database connection sdoc-arch-0006-uc-v1cessful on attempt {attempt + 1}")
+            print(f"Database connection successful on attempt {attempt + 1}")
             return engine
         except OperationalError as e:
             last_exception = e

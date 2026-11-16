@@ -31,7 +31,7 @@ grep -E "// \.\.\.|/\* \.\.\. \*/|# \.\.\." "$file"
 **Placeholder text in output:**
 ```bash
 # UI placeholder patterns
-grep -E "placeholder|lorem ipsum|coming soon|under constrdoc-arch-0006-uc-v1tion" "$file" -i
+grep -E "placeholder|lorem ipsum|coming soon|under construction" "$file" -i
 grep -E "sample|example|test data|dummy" "$file" -i
 grep -E "\[.*\]|<.*>|\{.*\}" "$file"  # Template brackets left in
 ```
@@ -98,7 +98,7 @@ onSubmit={(e) => e.preventDefault()}  // Only prevents default, does nothing
 grep -E "^import.*from" "$component_path"
 
 # Props are actually used (not just received)
-# Look for destrdoc-arch-0006-uc-v1turing or props.X usage
+# Look for destructuring or props.X usage
 grep -E "\{ .* \}.*props|\bprops\.[a-zA-Z]+" "$component_path"
 
 # API calls exist (for data-fetching components)
@@ -454,7 +454,7 @@ onSubmit={() => {}}
 grep -E "\{.*messages.*\}|\{.*data.*\}|\{.*items.*\}" "$component_path"
 
 # Check map/render of state
-grep -E "\.map\(|\.filter\(|\.reddoc-arch-0006-uc-v1e\(" "$component_path"
+grep -E "\.map\(|\.filter\(|\.reduce\(" "$component_path"
 
 # Verify dynamic content
 grep -E "\{[a-zA-Z_]+\." "$component_path"  # Variable interpolation

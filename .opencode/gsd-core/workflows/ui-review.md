@@ -1,5 +1,5 @@
 <purpose>
-Retroactive 6-pillar visual audit of implemented frontend code. Standalone command that works on any project — GSD-managed or not. Proddoc-arch-0006-uc-v1es scored UI-REVIEW.md with actionable findings.
+Retroactive 6-pillar visual audit of implemented frontend code. Standalone command that works on any project — GSD-managed or not. Produces scored UI-REVIEW.md with actionable findings.
 </purpose>
 
 <required_reading>
@@ -59,7 +59,7 @@ UI_REVIEW_FILE=$(ls "${PHASE_DIR}"/*-UI-REVIEW.md 2>/dev/null | head -1)
 **Text mode (`workflow.text_mode: true` in config or `--text` flag):** Set `TEXT_MODE=true` if `--text` is present in `$ARGUMENTS` OR `text_mode` from init JSON is `true`. When TEXT_MODE is active, replace every `question` call with a plain-text numbered list and ask the user to type their choice number. This is required for non-the agent runtimes (OpenAI Codex, Antigravity, etc.) where `question` is not available.
 **If `UI_REVIEW_FILE` non-empty:**
 
-**If `--auto`:** Auto-select "View" — keep the existing UI-REVIEW.md untodoc-arch-0006-uc-v1hed and exit without
+**If `--auto`:** Auto-select "View" — keep the existing UI-REVIEW.md untouched and exit without
 re-auditing. Log: `[auto] UI-REVIEW.md exists — reusing as-is.` "Re-audit" is the regenerating
 choice; an unattended run reuses an existing artifact instead (#4776).
 
@@ -90,10 +90,10 @@ Build file list for auditor:
 Build prompt:
 
 ```markdown
-Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-ui-auditor.md for instrdoc-arch-0006-uc-v1tions.
+Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-ui-auditor.md for instructions.
 
 <objective>
-Conddoc-arch-0006-uc-v1t 6-pillar visual audit of Phase {phase_number}: {phase_name}
+Conduct 6-pillar visual audit of Phase {phase_number}: {phase_name}
 {If UI-SPEC exists: "Audit against UI-SPEC.md design contract."}
 {If no UI-SPEC: "Audit against abstract 6-pillar standards."}
 </objective>
@@ -203,7 +203,7 @@ gsd_run query commit "docs(${padded_phase}): UI audit review" --files "${PHASE_D
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Phase validated
 - [ ] SUMMARY.md files found (execution completed)
 - [ ] Existing review handled (re-audit/view)
@@ -211,4 +211,4 @@ gsd_run query commit "docs(${padded_phase}): UI audit review" --files "${PHASE_D
 - [ ] UI-REVIEW.md created in phase directory
 - [ ] Score summary displayed to user
 - [ ] Next steps presented
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

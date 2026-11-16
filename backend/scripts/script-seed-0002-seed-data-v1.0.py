@@ -53,7 +53,7 @@ class Category:
     name: str
     segment: str
     description: str
-    proddoc-arch-0006-uc-v1ts: tuple[str, ...]
+    products: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -65,7 +65,7 @@ class Supplier:
 
 
 @dataclass(frozen=True)
-class Proddoc-arch-0006-uc-v1t:
+class Product:
     id: int
     category_id: int
     name: str
@@ -76,7 +76,7 @@ class Proddoc-arch-0006-uc-v1t:
 @dataclass(frozen=True)
 class Offer:
     supplier_id: int
-    proddoc-arch-0006-uc-v1t_id: int
+    product_id: int
     price: Decimal
     stock: int
 
@@ -86,7 +86,7 @@ class SeedDataset:
     profile: Profile
     categories: tuple[Category, ...]
     suppliers: tuple[Supplier, ...]
-    proddoc-arch-0006-uc-v1ts: tuple[Proddoc-arch-0006-uc-v1t, ...]
+    products: tuple[Product, ...]
     offers: tuple[Offer, ...]
     supplier_categories: tuple[tuple[int, int], ...]
 
@@ -95,7 +95,7 @@ class SeedDataset:
         return {
             "categorias": len(self.categories),
             "fornecedores": len(self.suppliers),
-            "produtos": len(self.proddoc-arch-0006-uc-v1ts),
+            "produtos": len(self.products),
             "precos": len(self.offers),
             "relacoes": len(self.supplier_categories),
         }
@@ -117,14 +117,14 @@ def _category(
     name: str,
     segment: str,
     description: str,
-    proddoc-arch-0006-uc-v1ts: str,
+    products: str,
 ) -> Category:
     return Category(
         id=category_id,
         name=normalize_text(name),
         segment=normalize_text(segment),
         description=normalize_text(description),
-        proddoc-arch-0006-uc-v1ts=tuple(normalize_text(item) for item in proddoc-arch-0006-uc-v1ts.split("|")),
+        products=tuple(normalize_text(item) for item in products.split("|")),
     )
 
 
@@ -222,7 +222,7 @@ CATEGORIES: Final[tuple[Category, ...]] = (
         "Bebidas",
         "Alimentação e hogar",
         "Bebidas e drinks",
-        "Água Mineral|Sdoc-arch-0006-uc-v1o de Laranja|Cerveja|Vinho Tinto|Refrigerante|Chá|Energético|Café Toddy|"
+        "Água Mineral|Suco de Laranja|Cerveja|Vinho Tinto|Refrigerante|Chá|Energético|Café Toddy|"
         "Whisky|Azeite de Oliva",
     ),
     _category(
@@ -503,9 +503,9 @@ def _infer_unit(name: str) -> str:
     return "un"
 
 
-def _base_price(category_id: int, proddoc-arch-0006-uc-v1t_index: int) -> Decimal:
+def _base_price(category_id: int, product_index: int) -> Decimal:
     base = _CATEGORY_BASE_PRICES[category_id]
-    increment = Decimal(proddoc-arch-0006-uc-v1t_index * 5 + (proddoc-arch-0006-uc-v1t_index % 3) * 2)
+    increment = Decimal(product_index * 5 + (product_index % 3) * 2)
     return _money(base + increment)
 
 
@@ -575,13 +575,13 @@ def _supplier(
     )
 
 
-def _offer_price(proddoc-arch-0006-uc-v1t_price: Decimal, supplier_id: int, proddoc-arch-0006-uc-v1t_id: int) -> Decimal:
-    adjustment = Decimal(90 + ((supplier_id * 7 + proddoc-arch-0006-uc-v1t_id * 3) % 21))
-    return _money(proddoc-arch-0006-uc-v1t_price * adjustment / Decimal("100"))
+def _offer_price(product_price: Decimal, supplier_id: int, product_id: int) -> Decimal:
+    adjustment = Decimal(90 + ((supplier_id * 7 + product_id * 3) % 21))
+    return _money(product_price * adjustment / Decimal("100"))
 
 
-def _stock(supplier_id: int, proddoc-arch-0006-uc-v1t_id: int) -> int:
-    return (supplier_id * 31 + proddoc-arch-0006-uc-v1t_id * 17) % 1000
+def _stock(supplier_id: int, product_id: int) -> int:
+    return (supplier_id * 31 + product_id * 17) % 1000
 
 
 def _build_baseline() -> SeedDataset:
@@ -591,22 +591,22 @@ def _build_baseline() -> SeedDataset:
         for supplier_id, (name, base_cnpj, categories) in enumerate(_BASELINE_SUPPLIERS, start=1)
     )
 
-    proddoc-arch-0006-uc-v1ts: list[Proddoc-arch-0006-uc-v1t] = []
-    proddoc-arch-0006-uc-v1t_id = 1
+    products: list[Product] = []
+    product_id = 1
     for category_id, quantity in _BASELINE_PRODUCT_GROUPS:
         category = categories[category_id - 1]
-        for proddoc-arch-0006-uc-v1t_index in range(quantity):
-            name = category.proddoc-arch-0006-uc-v1ts[proddoc-arch-0006-uc-v1t_index]
-            proddoc-arch-0006-uc-v1ts.append(
-                Proddoc-arch-0006-uc-v1t(
-                    id=proddoc-arch-0006-uc-v1t_id,
+        for product_index in range(quantity):
+            name = category.products[product_index]
+            products.append(
+                Product(
+                    id=product_id,
                     category_id=category_id,
                     name=name,
                     unit=_infer_unit(name),
-                    price=_base_price(category_id, proddoc-arch-0006-uc-v1t_index),
+                    price=_base_price(category_id, product_index),
                 )
             )
-            proddoc-arch-0006-uc-v1t_id += 1
+            product_id += 1
 
     suppliers_by_category = {
         category_id: tuple(
@@ -616,8 +616,8 @@ def _build_baseline() -> SeedDataset:
     }
     all_supplier_ids = tuple(supplier.id for supplier in suppliers)
     offers: list[Offer] = []
-    for proddoc-arch-0006-uc-v1t in proddoc-arch-0006-uc-v1ts:
-        selected = list(suppliers_by_category[proddoc-arch-0006-uc-v1t.category_id][:_BASELINE_OFFERS_PER_PRODUCT])
+    for product in products:
+        selected = list(suppliers_by_category[product.category_id][:_BASELINE_OFFERS_PER_PRODUCT])
         selected.extend(
             supplier_id
             for supplier_id in all_supplier_ids
@@ -627,9 +627,9 @@ def _build_baseline() -> SeedDataset:
             offers.append(
                 Offer(
                     supplier_id=supplier_id,
-                    proddoc-arch-0006-uc-v1t_id=proddoc-arch-0006-uc-v1t.id,
-                    price=_offer_price(proddoc-arch-0006-uc-v1t.price, supplier_id, proddoc-arch-0006-uc-v1t.id),
-                    stock=_stock(supplier_id, proddoc-arch-0006-uc-v1t.id),
+                    product_id=product.id,
+                    price=_offer_price(product.price, supplier_id, product.id),
+                    stock=_stock(supplier_id, product.id),
                 )
             )
 
@@ -644,7 +644,7 @@ def _build_baseline() -> SeedDataset:
         profile="baseline",
         categories=categories,
         suppliers=suppliers,
-        proddoc-arch-0006-uc-v1ts=tuple(proddoc-arch-0006-uc-v1ts),
+        products=tuple(products),
         offers=tuple(offers),
         supplier_categories=supplier_categories,
     )
@@ -669,24 +669,24 @@ def _build_expanded() -> SeedDataset:
             )
         )
 
-    proddoc-arch-0006-uc-v1ts: list[Proddoc-arch-0006-uc-v1t] = []
-    proddoc-arch-0006-uc-v1t_id = 1
+    products: list[Product] = []
+    product_id = 1
     for category in categories:
-        for proddoc-arch-0006-uc-v1t_index, base_name in enumerate(category.proddoc-arch-0006-uc-v1ts):
+        for product_index, base_name in enumerate(category.products):
             for variant_index, variant in enumerate(_VARIANTS):
                 price = _money(
-                    _base_price(category.id, proddoc-arch-0006-uc-v1t_index) * _VARIANT_FACTORS[variant_index]
+                    _base_price(category.id, product_index) * _VARIANT_FACTORS[variant_index]
                 )
-                proddoc-arch-0006-uc-v1ts.append(
-                    Proddoc-arch-0006-uc-v1t(
-                        id=proddoc-arch-0006-uc-v1t_id,
+                products.append(
+                    Product(
+                        id=product_id,
                         category_id=category.id,
                         name=f"{category.name} - {base_name} - {variant}",
                         unit=_infer_unit(base_name),
                         price=price,
                     )
                 )
-                proddoc-arch-0006-uc-v1t_id += 1
+                product_id += 1
 
     suppliers_by_category = {
         category_id: tuple(
@@ -695,14 +695,14 @@ def _build_expanded() -> SeedDataset:
         for category_id in range(1, 27)
     }
     offers: list[Offer] = []
-    for proddoc-arch-0006-uc-v1t in proddoc-arch-0006-uc-v1ts:
-        for supplier_id in suppliers_by_category[proddoc-arch-0006-uc-v1t.category_id]:
+    for product in products:
+        for supplier_id in suppliers_by_category[product.category_id]:
             offers.append(
                 Offer(
                     supplier_id=supplier_id,
-                    proddoc-arch-0006-uc-v1t_id=proddoc-arch-0006-uc-v1t.id,
-                    price=_offer_price(proddoc-arch-0006-uc-v1t.price, supplier_id, proddoc-arch-0006-uc-v1t.id),
-                    stock=_stock(supplier_id, proddoc-arch-0006-uc-v1t.id),
+                    product_id=product.id,
+                    price=_offer_price(product.price, supplier_id, product.id),
+                    stock=_stock(supplier_id, product.id),
                 )
             )
 
@@ -717,7 +717,7 @@ def _build_expanded() -> SeedDataset:
         profile="expanded",
         categories=categories,
         suppliers=tuple(suppliers),
-        proddoc-arch-0006-uc-v1ts=tuple(proddoc-arch-0006-uc-v1ts),
+        products=tuple(products),
         offers=tuple(offers),
         supplier_categories=supplier_categories,
     )
@@ -733,22 +733,22 @@ def validate_dataset(dataset: SeedDataset) -> None:  # noqa: PLR0912
 
     category_ids = {category.id for category in dataset.categories}
     supplier_ids = {supplier.id for supplier in dataset.suppliers}
-    proddoc-arch-0006-uc-v1t_ids = {proddoc-arch-0006-uc-v1t.id for proddoc-arch-0006-uc-v1t in dataset.proddoc-arch-0006-uc-v1ts}
+    product_ids = {product.id for product in dataset.products}
     if len(category_ids) != len(dataset.categories):
         raise ValueError("IDs de categoria duplicados")
     if len(supplier_ids) != len(dataset.suppliers):
         raise ValueError("IDs de fornecedor duplicados")
-    if len(proddoc-arch-0006-uc-v1t_ids) != len(dataset.proddoc-arch-0006-uc-v1ts):
+    if len(product_ids) != len(dataset.products):
         raise ValueError("IDs de produto duplicados")
 
     category_names = [category.name.casefold() for category in dataset.categories]
     supplier_names = [supplier.name.casefold() for supplier in dataset.suppliers]
-    proddoc-arch-0006-uc-v1t_names = [proddoc-arch-0006-uc-v1t.name.casefold() for proddoc-arch-0006-uc-v1t in dataset.proddoc-arch-0006-uc-v1ts]
+    product_names = [product.name.casefold() for product in dataset.products]
     if len(category_names) != len(set(category_names)):
         raise ValueError("nomes de categoria duplicados")
     if len(supplier_names) != len(set(supplier_names)):
         raise ValueError("nomes de fornecedor duplicados")
-    if len(proddoc-arch-0006-uc-v1t_names) != len(set(proddoc-arch-0006-uc-v1t_names)):
+    if len(product_names) != len(set(product_names)):
         raise ValueError("nomes de produto duplicados")
 
     if len({supplier.cnpj for supplier in dataset.suppliers}) != len(dataset.suppliers):
@@ -756,13 +756,13 @@ def validate_dataset(dataset: SeedDataset) -> None:  # noqa: PLR0912
     if not all(is_valid_cnpj(supplier.cnpj) for supplier in dataset.suppliers):
         raise ValueError("CNPJ inválido")
 
-    for proddoc-arch-0006-uc-v1t in dataset.proddoc-arch-0006-uc-v1ts:
-        if proddoc-arch-0006-uc-v1t.category_id not in category_ids:
-            raise ValueError(f"produto {proddoc-arch-0006-uc-v1t.id} referencia categoria inexistente")
-        if not _UNIT_PATTERN.fullmatch(proddoc-arch-0006-uc-v1t.unit):
-            raise ValueError(f"unidade inválida no produto {proddoc-arch-0006-uc-v1t.id}: {proddoc-arch-0006-uc-v1t.unit}")
-        if proddoc-arch-0006-uc-v1t.price < 0 or proddoc-arch-0006-uc-v1t.price.as_tuple().exponent != _PRICE_EXPONENT:
-            raise ValueError(f"preço inválido no produto {proddoc-arch-0006-uc-v1t.id}: {proddoc-arch-0006-uc-v1t.price}")
+    for product in dataset.products:
+        if product.category_id not in category_ids:
+            raise ValueError(f"produto {product.id} referencia categoria inexistente")
+        if not _UNIT_PATTERN.fullmatch(product.unit):
+            raise ValueError(f"unidade inválida no produto {product.id}: {product.unit}")
+        if product.price < 0 or product.price.as_tuple().exponent != _PRICE_EXPONENT:
+            raise ValueError(f"preço inválido no produto {product.id}: {product.price}")
 
     relation_keys = set()
     for supplier_id, category_id in dataset.supplier_categories:
@@ -775,9 +775,9 @@ def validate_dataset(dataset: SeedDataset) -> None:  # noqa: PLR0912
 
     offer_keys = set()
     for offer in dataset.offers:
-        if offer.supplier_id not in supplier_ids or offer.proddoc-arch-0006-uc-v1t_id not in proddoc-arch-0006-uc-v1t_ids:
+        if offer.supplier_id not in supplier_ids or offer.product_id not in product_ids:
             raise ValueError(f"oferta inválida: {offer}")
-        key = (offer.supplier_id, offer.proddoc-arch-0006-uc-v1t_id)
+        key = (offer.supplier_id, offer.product_id)
         if key in offer_keys:
             raise ValueError(f"oferta duplicada: {key}")
         offer_keys.add(key)

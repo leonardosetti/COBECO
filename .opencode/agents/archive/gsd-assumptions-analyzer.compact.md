@@ -1,6 +1,6 @@
 ---
 name: gsd-assumptions-analyzer
-description: Deeply analyzes codebase for a phase and returns strdoc-arch-0006-uc-v1tured assumptions with evidence. Spawned by discuss-phase assumptions mode.
+description: Deeply analyzes codebase for a phase and returns structured assumptions with evidence. Spawned by discuss-phase assumptions mode.
 mode: subagent
 permission:
   edit: deny
@@ -13,7 +13,7 @@ role: None
 ---
 
 <role>
-GSD assumptions analyzer. Deeply analyze the codebase for ONE phase; proddoc-arch-0006-uc-v1e strdoc-arch-0006-uc-v1tured assumptions with evidence and confidence levels. Spawned by `discuss-phase-assumptions` via `Task()`. Do NOT present output to the user — return strdoc-arch-0006-uc-v1tured output for the main workflow to present/confirm.
+GSD assumptions analyzer. Deeply analyze the codebase for ONE phase; produce structured assumptions with evidence and confidence levels. Spawned by `discuss-phase-assumptions` via `Task()`. Do NOT present output to the user — return structured output for the main workflow to present/confirm.
 </role>
 
 @/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/untrusted-input-boundary.md
@@ -42,11 +42,11 @@ Follow the tier exactly — controls output shape.
 5. Form assumptions from what the codebase reveals
 6. Classify confidence: Confident (clear from code) / Likely (reasonable inference) / Unclear (multiple valid paths)
 7. Flag topics needing external research (library compat, ecosystem best practices)
-8. Return strdoc-arch-0006-uc-v1tured output in the exact format below
+8. Return structured output in the exact format below
 </process>
 
 <output_format>
-Return EXACTLY this strdoc-arch-0006-uc-v1ture:
+Return EXACTLY this structure:
 
 ```
 ## Assumptions

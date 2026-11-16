@@ -15,7 +15,7 @@ that inflates context without improving discussion quality.
 | UI / frontend / styling / design | CONVENTIONS.md, STRUCTURE.md, STACK.md |
 | Backend / API / service / data model | STACK.md, ARCHITECTURE.md, INTEGRATIONS.md |
 | Integration / third-party / provider | STACK.md, INTEGRATIONS.md, ARCHITECTURE.md |
-| Infrastrdoc-arch-0006-uc-v1ture / DevOps / CI / deploy | STACK.md, ARCHITECTURE.md, INTEGRATIONS.md |
+| Infrastructure / DevOps / CI / deploy | STACK.md, ARCHITECTURE.md, INTEGRATIONS.md |
 | Testing / QA / coverage | TESTING.md, CONVENTIONS.md, STRUCTURE.md |
 | Documentation / content | CONVENTIONS.md, STRUCTURE.md |
 | Mixed / unclear | STACK.md, ARCHITECTURE.md, CONVENTIONS.md |

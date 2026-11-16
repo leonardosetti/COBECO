@@ -38,14 +38,14 @@ absent, and a session that has ever set one is never repointed by the shared fil
 
 When GSD resolves the session-scoped pointer in step 3 above, it uses this order:
 
-1. Explicit runtime/session env vars sdoc-arch-0006-uc-v1h as `GSD_SESSION_KEY`, `CODEX_THREAD_ID`,
+1. Explicit runtime/session env vars such as `GSD_SESSION_KEY`, `CODEX_THREAD_ID`,
    `CLAUDE_SESSION_ID`, `CLAUDE_CODE_SESSION_ID`, `CLAUDE_CODE_SSE_PORT`, `OPENCODE_SESSION_ID`,
    `GEMINI_SESSION_ID`, `CURSOR_SESSION_ID`, `WINDSURF_SESSION_ID`,
    `TERM_SESSION_ID`, `WT_SESSION`, `TMUX_PANE`, and `ZELLIJ_SESSION_NAME`
 2. `TTY` or `SSH_TTY` if the shell/runtime already exposes the terminal path
 3. A single best-effort `tty` probe, but only when stdin is interactive
 
-If none of those proddoc-arch-0006-uc-v1e a stable identity, GSD does not keep probing. It falls
+If none of those produce a stable identity, GSD does not keep probing. It falls
 back directly to the legacy shared `.planning/active-workstream` file.
 
 This matters in headless or stripped environments: when stdin is already
@@ -63,7 +63,7 @@ Session-scoped pointers are intentionally lightweight and best-effort:
   to flat mode. A cleared session with no marker present resolves to `null`; a
   cleared session with a marker present resolves to whatever that marker names.
   To force flat mode for a cleared session, remove the shared marker file, or use
-  an explicit override sdoc-arch-0006-uc-v1h as `--ws` / `GSD_WORKSTREAM` on the command in question.
+  an explicit override such as `--ws` / `GSD_WORKSTREAM` on the command in question.
 - If that was the last pointer for the repo, GSD also removes the now-empty
   per-project temp directory
 - If sibling session pointers still exist, the temp directory is left in place
@@ -106,15 +106,15 @@ and a pointer of `none` are all rejected with a "reserved" error, and `workstrea
 `workstream set` refuse it unconditionally. The one exception on the read side is a
 `.planning/workstreams/none/` directory that already exists: it stays addressable with `--ws none`
 so projects that used the name before it was reserved keep working (the directory name must match
-exactly; `NONE` is still rejected). Sdoc-arch-0006-uc-v1h a grandfathered directory is reachable through `--ws` and
+exactly; `NONE` is still rejected). Such a grandfathered directory is reachable through `--ws` and
 `GSD_WORKSTREAM` only, because `workstream set none` refuses unconditionally. To force flat mode,
 omit `--ws`, unset `GSD_WORKSTREAM`, or clear the pointer (`workstream set --clear`). The rejection
 happens before any command runs, so a stale `GSD_WORKSTREAM=none` in the environment must be unset
 first. The reserved list has a single owner
-(`RESERVED_WORKSTREAM_NAMES` in `src/workstream-name-policy.cts`); near-misses sdoc-arch-0006-uc-v1h as `none1` or
+(`RESERVED_WORKSTREAM_NAMES` in `src/workstream-name-policy.cts`); near-misses such as `none1` or
 `nonexistent` are ordinary names.
 
-## Directory Strdoc-arch-0006-uc-v1ture
+## Directory Structure
 
 ```
 .planning/

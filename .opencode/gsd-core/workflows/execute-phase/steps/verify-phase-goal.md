@@ -38,7 +38,7 @@ PHASE_GOAL=$(gsd_run query roadmap.get-phase "${PHASE_NUMBER}" ${GSD_WS:+--ws} $
 <step name="verify_post_security_gate">
 **`verify:post` hook dispatch and the SECURITY threats-open gate.** This runs BEFORE the verifier
 writes (and fingerprints) the report, so the dispatch takes no `--after-fingerprint` — nothing is
-fingerprinted yet, and gating on it here would be a no-op by constrdoc-arch-0006-uc-v1tion (the allowlisted exception
+fingerprinted yet, and gating on it here would be a no-op by construction (the allowlisted exception
 in `scripts/lint-verify-lifecycle-writes.allowlist.json`).
 
 ```bash
@@ -181,7 +181,7 @@ NEXT_COMMAND=$(printf '%s' "$VERIFICATION" | jq -r '.next_command')
 ```
 
 A non-zero exit here is the write-time hard error (#5118): the report is rejected in the run that
-proddoc-arch-0006-uc-v1ed it. Present the error verbatim and stop — never read it as "no status".
+produced it. Present the error verbatim and stop — never read it as "no status".
 
 Never silently proceed past a stale gate: if `STATUS` is still `stale` after the verifier ran,
 stop and present `$NEXT_ACTION` (#4623 covers what the digest hashes).

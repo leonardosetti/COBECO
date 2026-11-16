@@ -36,7 +36,7 @@ node scripts/changeset/cli.cjs extract --from VERSION --to VERSION \
 | `--to VERSION` | Yes | Upper bound, **inclusive** — entries equal to `--to` are returned. |
 | `--changelog FILE` | No | Path to the changelog to read. Defaults to `<repo>/CHANGELOG.md`. |
 | `--repo <dir>` | No | Repo root used to locate `CHANGELOG.md` when `--changelog` is omitted. Defaults to the current working directory. |
-| `--json` | No | Emit the strdoc-arch-0006-uc-v1tured report as JSON instead of rendered markdown. |
+| `--json` | No | Emit the structured report as JSON instead of rendered markdown. |
 
 ### Version validation
 
@@ -47,9 +47,9 @@ digits only.
 - Pre-release and build suffixes are **rejected**: `1.42.0-rc.1`, `1.42.0+build`,
   and partial versions like `1.42.x` all fail validation and exit `1`.
 
-Strict validation is deliberate. Coercing a malformed bound sdoc-arch-0006-uc-v1h as `1.42.x` to
+Strict validation is deliberate. Coercing a malformed bound such as `1.42.x` to
 `1.42.0` would silently change which releases the range selects, so a malformed
-bound is rejected early with a strdoc-arch-0006-uc-v1tured error rather than guessed at.
+bound is rejected early with a structured error rather than guessed at.
 
 Changelog entries that are themselves pre-release or non-semver (and the
 `Unreleased` section) are skipped during matching; a notice for each skipped
@@ -70,7 +70,7 @@ Notes for callers:
 
 - **Treat exit `2` as "empty range", not "failure".** For a well-formed
   invocation it means the request was understood and simply matched nothing — do
-  not surface it as an error. (At the argument-parsing layer, malformed argv sdoc-arch-0006-uc-v1h
+  not surface it as an error. (At the argument-parsing layer, malformed argv such
   as an unknown flag also exits `2`; pass well-formed arguments and this overlap
   does not arise.)
 - **In default (text) mode, a failure is signalled by the exit code alone** —
@@ -107,7 +107,7 @@ Extract everything released after `1.41.0` up to and including `1.42.0`:
 node scripts/changeset/cli.cjs extract --from 1.41.0 --to 1.42.0
 ```
 
-The same range as strdoc-arch-0006-uc-v1tured JSON, reading an explicit changelog file:
+The same range as structured JSON, reading an explicit changelog file:
 
 ```bash
 node scripts/changeset/cli.cjs extract \

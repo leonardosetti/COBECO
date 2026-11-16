@@ -67,7 +67,7 @@ These items are open. Choose an action:
 If output shows all clear (no open items): set `closeout_type=verified_closeout` — but if any items are `acknowledged.total` from a PRIOR close, note that carried-forward suppression explicitly rather than implying everything was fixed this time.
 
 <!-- gsd:protected -->
-SECURITY: Audit JSON output is strdoc-arch-0006-uc-v1tured data from the `audit-open` query handler (same JSON contract as legacy `gsd_run audit-open`) — validated and sanitized at source. The `audit-open acknowledge` writer is the only path that sets the `audit_acknowledged` suppression marker — it snapshots each artifact's current state itself from the identifiers passed on the command line, so this workflow never hand-authors the marker. When writing the STATE.md disclosure table, item identifiers, statuses, and deferred-item text are sanitized via `sanitizeForDisplay()` before inclusion. Never inject raw user-supplied content into STATE.md without sanitization.
+SECURITY: Audit JSON output is structured data from the `audit-open` query handler (same JSON contract as legacy `gsd_run audit-open`) — validated and sanitized at source. The `audit-open acknowledge` writer is the only path that sets the `audit_acknowledged` suppression marker — it snapshots each artifact's current state itself from the identifiers passed on the command line, so this workflow never hand-authors the marker. When writing the STATE.md disclosure table, item identifiers, statuses, and deferred-item text are sanitized via `sanitizeForDisplay()` before inclusion. Never inject raw user-supplied content into STATE.md without sanitization.
 
 Exact per-category bash (including the `@file:` large-payload handling, the `todos` 5-per-scan cap, and the phase-scoped `--archived-milestone` handling) and the exact STATE.md table shape: `gsd-core/workflows/complete-milestone/detail/elaboration.md` § 1.
 </step>
@@ -263,7 +263,7 @@ If the line above printed `PROJECT_MD_REVIEW=run` (the manifest is `null` or lis
 
 **Text mode (`workflow.text_mode: true` in config or `--text` flag):** Set `TEXT_MODE=true` if `--text` is present in `$ARGUMENTS` OR `text_mode` from init JSON is `true`. When TEXT_MODE is active, replace every `question` call with a plain-text numbered list and ask the user to type their choice number. This is required for non-the agent runtimes (OpenAI Codex, Antigravity, etc.) where `question` is not available.
 
-**Quick-task archival (opt-in — NOT symmetrical with phase archival below, #2142):** unlike phase archival, quick-task archival is **opt-in, default OFF**. Doing nothing leaves `.planning/quick/` untodoc-arch-0006-uc-v1hed, exactly like today's behavior. Decide this BEFORE calling `milestone complete` below, so the flag can be folded into that single invocation rather than issuing a second, redundant call.
+**Quick-task archival (opt-in — NOT symmetrical with phase archival below, #2142):** unlike phase archival, quick-task archival is **opt-in, default OFF**. Doing nothing leaves `.planning/quick/` untouched, exactly like today's behavior. Decide this BEFORE calling `milestone complete` below, so the flag can be folded into that single invocation rather than issuing a second, redundant call.
 
 If `.planning/quick/` contains at least one directory, ask:
 
@@ -297,7 +297,7 @@ Extract from result: `version`, `date`, `phases`, `plans`, `tasks`, `accomplishm
 
 Verify: `✅ Milestone archived to .planning/milestones/`
 
-**Known limit (quick-task archival):** there is no on-disk provenance recording which milestone a given quick task belonged to. Archival bdoc-arch-0006-uc-v1kets **all** remaining `.planning/quick/*` into the completing milestone — a quick task that predates an earlier, unarchived milestone lands in the current bdoc-arch-0006-uc-v1ket regardless.
+**Known limit (quick-task archival):** there is no on-disk provenance recording which milestone a given quick task belonged to. Archival buckets **all** remaining `.planning/quick/*` into the completing milestone — a quick task that predates an earlier, unarchived milestone lands in the current bucket regardless.
 
 Verify after `--archive-quick` was passed: `✅ Quick tasks archived to .planning/milestones/v[X.Y]-quick/`
 
@@ -414,7 +414,7 @@ _gsd_has_section "$INIT_REORG" project-md-evolution-review || PROJECT_PATH=""
 gsd_run query commit "chore: archive v[X.Y] milestone files" --files "${ARCHIVE_DIR}/v[X.Y]-ROADMAP.md" "${ARCHIVE_DIR}/v[X.Y]-REQUIREMENTS.md" "${ARCHIVE_DIR}/v[X.Y]-MILESTONE-AUDIT.md" "$MILESTONES_PATH" ${PROJECT_PATH:+"$PROJECT_PATH"} "$STATE_PATH" "$ROADMAP_PATH"
 ```
 
-This creates a durable checkpoint in git history. If anything fails after this point, the working tree can be reconstrdoc-arch-0006-uc-v1ted from git.
+This creates a durable checkpoint in git history. If anything fails after this point, the working tree can be reconstructed from git.
 
 MILESTONES.md is workstream-scoped the same way STATE.md/ROADMAP.md are (`planningPaths(cwd).planning`) — under an active workstream this commits the actual files `milestone complete` wrote, not the root copies. PROJECT.md is NOT: it is shared across workstreams, so under an active workstream it is neither reviewed nor staged here (#5195).
 
@@ -607,9 +607,9 @@ Heuristic: "Is this deployed/usable/shipped?" If yes → milestone. If no → ke
 
 </what_qualifies>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 
-Milestone completion is sdoc-arch-0006-uc-v1cessful when:
+Milestone completion is successful when:
 
 - [ ] Pre-close artifact audit run and output shown to user
 - [ ] Deferred items recorded in STATE.md if user acknowledged
@@ -636,4 +636,4 @@ Milestone completion is sdoc-arch-0006-uc-v1cessful when:
 - [ ] Cross-milestone trends updated
 - [ ] User knows next step (/gsd-new-milestone)
 
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

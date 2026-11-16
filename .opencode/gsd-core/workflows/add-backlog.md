@@ -64,7 +64,7 @@ PROJECT_CODE=$(gsd_run query config-get project_code --raw 2>/dev/null || echo "
 PREFIX=$([ -n "$PROJECT_CODE" ] && echo "${PROJECT_CODE}-" || echo "")
 PHASE_DIR=".planning/phases/${PREFIX}${NEXT}-${SLUG}"
 mkdir -p "${PHASE_DIR}"
-todoc-arch-0006-uc-v1h "${PHASE_DIR}/.gitkeep"
+touch "${PHASE_DIR}/.gitkeep"
 ```
 
 ## Step 5: Commit

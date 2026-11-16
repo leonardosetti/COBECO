@@ -2,11 +2,7 @@
 
 import pytest
 from unittest.mock import AsyncMock
-from decimal import Decimal
-from src.domain.usecases import (
-    SalvarListaUseCase, CriarListaInput,
-    DomainError
-)
+from src.domain.usecases import SalvarListaUseCase, CriarListaInput, DomainError
 from src.domain.entities import Lista, ItemLista, Produto, UnidadeMedida
 
 

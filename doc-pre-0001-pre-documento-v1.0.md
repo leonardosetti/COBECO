@@ -114,7 +114,7 @@ Trabalho acadêmico apresentado à disciplina de [Nome da Disciplina], do Curso 
 
 # 1. OBJETIVO DO PROJETO
 
-O projeto COBECO (Cotação de Bens de Consumo) tem como objetivo desenvolver uma aplicação web *desktop-first* para a comparação inteligente de preços de listas de compras entre diferentes fornecedores mockados. O sistema visa otimizar o processo de decisão de compra, permitindo que usuários (autenticados ou não) criem listas de itens, pré-filtrem fornecedores por categorias macro, visualizem uma tabela comparativa flat (itens disponíveis, ausentes e preço total) e exportem o resultado em formato PDF. O projeto segue uma abordagem acadêmica de MVP (Minimum Viable Proddoc-arch-0006-uc-v1t), com prazo de execução de 30 dias, priorizando a aplicação rigorosa de conceitos de Engenharia de Software, como Clean Architecture, Specification-Driven Development (SDD) e princípios ACID.
+O projeto COBECO (Cotação de Bens de Consumo) tem como objetivo desenvolver uma aplicação web *desktop-first* para a comparação inteligente de preços de listas de compras entre diferentes fornecedores mockados. O sistema visa otimizar o processo de decisão de compra, permitindo que usuários (autenticados ou não) criem listas de itens, pré-filtrem fornecedores por categorias macro, visualizem uma tabela comparativa flat (itens disponíveis, ausentes e preço total) e exportem o resultado em formato PDF. O projeto segue uma abordagem acadêmica de MVP (Minimum Viable Product), com prazo de execução de 30 dias, priorizando a aplicação rigorosa de conceitos de Engenharia de Software, como Clean Architecture, Specification-Driven Development (SDD) e princípios ACID.
 
 # 2. ESCOPO
 
@@ -350,9 +350,9 @@ Os protótipos de baixa fidelidade (wireframes) foram estruturados para validar 
 
 ## 5.2. Protótipo de Alta Fidelidade
 O protótipo de alta fidelidade seguirá um *Design System* minimalista e profissional, implementado via **Tailwind CSS** (via CDN), garantindo consistência visual e rapidez no desenvolvimento:
-*   **Paleta de Cores:** Fundo principal em cinza claro (`bg-gray-50`), cartões em branco (`bg-white`), cor primária de ação em azul institdoc-arch-0006-uc-v1ional (`bg-blue-600`), e cor de destaque para a melhor oferta em verde (`text-green-600`, `bg-green-50`).
+*   **Paleta de Cores:** Fundo principal em cinza claro (`bg-gray-50`), cartões em branco (`bg-white`), cor primária de ação em azul institucional (`bg-blue-600`), e cor de destaque para a melhor oferta em verde (`text-green-600`, `bg-green-50`).
 *   **Tipografia:** Fonte sans-serif padrão do sistema (Inter/Roboto), com tamanhos escalonados (ex: `text-2xl font-bold` para títulos de tela, `text-sm text-gray-500` para metadados).
-*   **Componentes de Feedback:** Modais centralizados com *backdrop* escurecido para confirmações críticas (ex: exclusão de lista, promoção de lista efêmera) e *toasts* no canto superior direito para notificações de sdoc-arch-0006-uc-v1esso/erro.
+*   **Componentes de Feedback:** Modais centralizados com *backdrop* escurecido para confirmações críticas (ex: exclusão de lista, promoção de lista efêmera) e *toasts* no canto superior direito para notificações de sucesso/erro.
 *   **Impressão:** Regras CSS `@media print` definidas para ocultar cabeçalhos, botões e navegação, garantindo que a tabela de comparação seja impressa em formato A4, com quebras de página controladas e repetição de cabeçalho de tabela.
 
 # 6. TECNOLOGIAS UTILIZADAS
@@ -373,7 +373,7 @@ A decisão arquitetural de utilizar uma stack minimalista (Vanilla JS + FastAPI 
 
 # 8. REFERÊNCIAS
 
-MARTIN, Robert C. **Clean Architecture: A Craftsman's Guide to Software Strdoc-arch-0006-uc-v1ture and Design**. Boston: Addison-Wesley Professional, 2017.
+MARTIN, Robert C. **Clean Architecture: A Craftsman's Guide to Software Structure and Design**. Boston: Addison-Wesley Professional, 2017.
 
 FOWLER, Martin. **Patterns of Enterprise Application Architecture**. Boston: Addison-Wesley Professional, 2002.
 

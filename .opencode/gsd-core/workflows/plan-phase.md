@@ -2,7 +2,7 @@
 step: plan
 points: plan:pre, plan:post
 agent-roles: researcher, planner, checker
-proddoc-arch-0006-uc-v1es: PLAN.md
+produces: PLAN.md
 consumes: CONTEXT.md
 -->
 <purpose>
@@ -22,7 +22,7 @@ Read all files referenced by the invoking prompt's execution_context before star
 <available_agent_types>
 Valid GSD subagent types (use exact names — do not fall back to 'general-purpose'):
 - gsd-phase-researcher — Researches technical approaches for a phase
-- gsd-pattern-mapper — Analyzes codebase for existing patterns, proddoc-arch-0006-uc-v1es PATTERNS.md
+- gsd-pattern-mapper — Analyzes codebase for existing patterns, produces PATTERNS.md
 - gsd-planner — Creates detailed plans from phase scope
 - gsd-plan-checker — Reviews plan quality before execution
 </available_agent_types>
@@ -41,7 +41,7 @@ Skill() on Claude Code so that the plan-checker subagent can still spawn. plan-p
 itself does not need to detect this case.
 
 **#1009 caveat (discuss-phase early-exit):**
-The "display the command and exit" instrdoc-arch-0006-uc-v1tion near `## 4` applies only to the
+The "display the command and exit" instruction near `## 4` applies only to the
 discuss-phase early-exit path. It does NOT authorize inline role performance for any
 plan-phase agents.
 
@@ -99,7 +99,7 @@ CONTEXT_WINDOW=$(gsd_run query config-get context_window --raw 2>/dev/null || ec
 MVP_MODE_CFG=$(gsd_run query config-get workflow.mvp_mode --raw 2>/dev/null || echo "false")
 ```
 
-When the tdd capability's `workflow.tdd_mode` is active (resolved via the plan:pre render-hooks), the planner agent is instrdoc-arch-0006-uc-v1ted to apply `type: tdd` to eligible tasks using heuristics from `gsd-core/references/tdd.md`. The TDD guidance is injected via the tdd capability's contribution hook at §5.6; no inline config-get is needed.
+When the tdd capability's `workflow.tdd_mode` is active (resolved via the plan:pre render-hooks), the planner agent is instructed to apply `type: tdd` to eligible tasks using heuristics from `gsd-core/references/tdd.md`. The TDD guidance is injected via the tdd capability's contribution hook at §5.6; no inline config-get is needed.
 
 When `CONTEXT_WINDOW >= 500000`, the planner prompt includes the 3 most recent prior-phase CONTEXT.md/SUMMARY.md files plus any phases in the current phase's `Depends on:` field (explicit deps load regardless of recency).
 
@@ -184,7 +184,7 @@ fi
 ```
 
 When `WALKING_SKELETON=true`:
-- Planner is instrdoc-arch-0006-uc-v1ted to proddoc-arch-0006-uc-v1e `SKELETON.md` in the phase directory alongside `PLAN.md`. The template lives at `/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/skeleton-template.md` — the planner reads it when proddoc-arch-0006-uc-v1ing SKELETON.md (lazy; not loaded on non-skeleton runs).
+- Planner is instructed to produce `SKELETON.md` in the phase directory alongside `PLAN.md`. The template lives at `/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/skeleton-template.md` — the planner reads it when producing SKELETON.md (lazy; not loaded on non-skeleton runs).
 - The plan must scaffold project + routing + one real DB read/write + one real UI interaction + dev deployment — the thinnest possible end-to-end working slice.
 
 **Interaction with `--prd <filepath>`.** `--mvp` and `--prd` compose. The PRD express path (Step 3.5) creates `CONTEXT.md` from the PRD file and continues to research; the Walking Skeleton gate fires independently from the conditions above. When both are active on Phase 1 of a new project, the planner receives `WALKING_SKELETON=true` and PRD-derived context simultaneously — the PRD informs *what the skeleton should prove*. No precedence is needed; the two signals are orthogonal. See [`gsd-core/references/mvp-concepts.md`](../references/mvp-concepts.md) for the broader interaction map.
@@ -472,7 +472,7 @@ test -f "${PHASE_DIR}/${PADDED_PHASE}-VALIDATION.md" && echo "VALIDATION_CREATED
 PLAN_PRE_HOOKS_JSON=$(gsd_run loop render-hooks plan:pre --raw)
 ```
 
-**Contribution dispatch (#3606):** inject every `kind == "contribution"` fragment from `PLAN_PRE_HOOKS_JSON` per @gsd-core/references/loop-hook-dispatch.md, in array order, into the role each entry's `into` names — planner-targeted ones land in the prompt block below, orchestrator-targeted ones in your working context. The security specialization below is one sdoc-arch-0006-uc-v1h contribution, not a replacement for the generic dispatch.
+**Contribution dispatch (#3606):** inject every `kind == "contribution"` fragment from `PLAN_PRE_HOOKS_JSON` per @gsd-core/references/loop-hook-dispatch.md, in array order, into the role each entry's `into` names — planner-targeted ones land in the prompt block below, orchestrator-targeted ones in your working context. The security specialization below is one such contribution, not a replacement for the generic dispatch.
 
 Resolve active contribution hooks from `PLAN_PRE_HOOKS_JSON` where `kind == "contribution"` and `capId == "security"`.
 
@@ -496,7 +496,7 @@ Continue to step 5.6. Security config is passed to the planner in step 8.
 
 ## 5.6. Plan:Pre Capability Dispatch and UI Design Contract Gate
 
-> Capability-driven dispatch. Resolves active `plan:pre` hooks via the capability registry; each hook's `when` condition is evaluated by the registry — no inline config-get needed. This section handles skill-based planning preflights sdoc-arch-0006-uc-v1h as `ai-integration`, agent-backed hooks through `ref.agent`, and the UI gate whose deterministic check comes from `check.query`.
+> Capability-driven dispatch. Resolves active `plan:pre` hooks via the capability registry; each hook's `when` condition is evaluated by the registry — no inline config-get needed. This section handles skill-based planning preflights such as `ai-integration`, agent-backed hooks through `ref.agent`, and the UI gate whose deterministic check comes from `check.query`.
 >
 > **Config semantics (cutover fix):** `workflow.ui_phase` gates UI-SPEC *generation* (step); `workflow.ui_safety_gate` gates the *planning block* (gate). Both-on = identical to OLD §5.6. Intended change: `{ui_phase:true, ui_safety_gate:false}` now auto-generates in pipelines but does NOT block manual planning (each key controls exactly what its description says).
 
@@ -774,7 +774,7 @@ ${CONTEXT_WINDOW >= 500000 ? `
 **Cross-phase context (1M model enrichment):**
 - CONTEXT.md files from the 3 most recent completed phases (locked decisions — maintain consistency)
 - SUMMARY.md files from the 3 most recent completed phases (what was built — reuse patterns, avoid duplication)
-- LEARNINGS.md files from the 3 most recent completed phases (strdoc-arch-0006-uc-v1tured decisions, patterns, lessons, surprises — skip silently if a phase has no LEARNINGS.md; prefix each block with \`[from Phase N LEARNINGS]\` for source attribution; if total size exceeds 15% of context budget, drop oldest first)
+- LEARNINGS.md files from the 3 most recent completed phases (structured decisions, patterns, lessons, surprises — skip silently if a phase has no LEARNINGS.md; prefix each block with \`[from Phase N LEARNINGS]\` for source attribution; if total size exceeds 15% of context budget, drop oldest first)
 - CONTEXT.md, SUMMARY.md, and LEARNINGS.md from any phases listed in the current phase's "Depends on:" field in ROADMAP.md (regardless of recency — explicit dependencies always load, deduplicated against the 3 most recent)
 - Skip all other prior phases to stay within context budget
 ` : ''}
@@ -792,7 +792,7 @@ directory. Surfaced at every context window — not part of the 1M enrichment ab
 ` : ''}
 ${API_SURFACE_PATH ? `
 <intel_surface_hint>
-**API Surface (HINT — may be incomplete):** When \`intel.enabled\` is true, \`${API_SURFACE_PATH}\` lists symbols extracted from the codebase by regex/JS analysis. Prefer symbols listed there when referencing existing code. This surface is regex/JS-derived and MAY BE INCOMPLETE — a symbol's absence means *unknown*, not *nonexistent*. Never treat the surface as exhaustive. If you reference a symbol that is not in the surface and this phase creates it, list it under "Artifacts this phase proddoc-arch-0006-uc-v1es".
+**API Surface (HINT — may be incomplete):** When \`intel.enabled\` is true, \`${API_SURFACE_PATH}\` lists symbols extracted from the codebase by regex/JS analysis. Prefer symbols listed there when referencing existing code. This surface is regex/JS-derived and MAY BE INCOMPLETE — a symbol's absence means *unknown*, not *nonexistent*. Never treat the surface as exhaustive. If you reference a symbol that is not in the surface and this phase creates it, list it under "Artifacts this phase produces".
 </intel_surface_hint>
 ` : ''}
 ${AGENT_SKILLS_PLANNER}
@@ -850,7 +850,7 @@ Rules + worked examples: @gsd-core/references/planner-failing-direction.md
 </failing_direction_contract>
 <!-- gsd:protected:end -->
 
-**Project instrdoc-arch-0006-uc-v1tions:** Read ./doc-agents-0001-agents-canon.md or ./.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/doc-agents-0001-agents-canon.md if either exists — follow project-specific guidelines
+**Project instructions:** Read ./doc-agents-0001-agents-canon.md or ./.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/doc-agents-0001-agents-canon.md if either exists — follow project-specific guidelines
 **Project skills:** Check .claude/skills/ or .agents/skills/ directory (if either exists) — read SKILL.md files, plans should account for project skill rules
 
 {For each active entry in `PLAN_PRE_HOOKS_JSON` where `kind == "contribution"` and `into == "planner"` (in array order): inject the entry's `fragment.inline` verbatim here. This delivers all planner-targeted contributions — including tdd's `<tdd_mode_active>` block (type:tdd heuristics), schema-gate's schema-push detection guidance (if active at plan:pre), and security's threat-model guidance. For the security contribution, also surface the resolved `configValues`: `security_asvs_level` (ASVS enforcement level) and `security_block_on` (severity threshold) so the planner uses the configured values when generating `<threat_model>` blocks. If no active planner contributions exist, omit this block entirely.}
@@ -858,7 +858,7 @@ Rules + worked examples: @gsd-core/references/planner-failing-direction.md
 **TRACER_MODE:** ${TRACER_MODE} (false = horizontal layers instead of a leading `type="tracer"` slice; see `planner-mvp-mode.md`.)
 **REVERSIBILITY_GATES:** ${REVERSIBILITY_GATES} (false = rate but do not gate; see `planner-reversibility.md`.)
 **MVP_MODE:** ${MVP_MODE} (when true, follow vertical-slice rules from `/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/planner-mvp-mode.md`; when false, ignore MVP guidance entirely.)
-**WALKING_SKELETON:** ${WALKING_SKELETON} (when true, the first deliverable must be a Walking Skeleton — Read the template at `/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/skeleton-template.md` and proddoc-arch-0006-uc-v1e SKELETON.md alongside PLAN.md.)
+**WALKING_SKELETON:** ${WALKING_SKELETON} (when true, the first deliverable must be a Walking Skeleton — Read the template at `/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/skeleton-template.md` and produce SKELETON.md alongside PLAN.md.)
 **Granularity:** {granularity}
 
 ${MVP_MODE === 'true' ? `
@@ -891,10 +891,10 @@ Output consumed by /gsd-execute-phase. Plans need:
 - Tasks in XML format with read_first and acceptance_criteria fields (MANDATORY on every task)
 - Verification criteria
 - must_haves for goal-backward verification
-- If the SPEC has an `## Edge Coverage` section, lift every resolved (verification: explicit) edge's acceptance criterion into `must_haves.truths` as a plain string, and every resolved (verification: backstop) edge **as a strdoc-arch-0006-uc-v1tured flat-scalar marker** — an object item `{ statement: <the check>, verification: backstop }`, NOT a prose note (the verifier branches deterministically on the `verification: backstop` field; a parenthetical is unparseable — the #1110 fragility). Use a flat scalar `verification:` continuation key, never a nested object (ADR-550 #1278). At verify time a `backstop` truth the verifier cannot confirm with explicit evidence abstains → `human_needed` (reason `insufficient_spec`), never a silent pass (#1154; see `gsd-core/references/honest-verifier.md`). `unresolved` edges are explicit assumptions — surface them in the plan, do not silently drop them. **Otherwise** (`EDGE_ABSENT`): apply the SAME lift to the fallback report `{COVERAGE}` (per §C of `gsd-core/references/specless-probe-fallback.md`); a SPEC-supplied section is never re-run.
+- If the SPEC has an `## Edge Coverage` section, lift every resolved (verification: explicit) edge's acceptance criterion into `must_haves.truths` as a plain string, and every resolved (verification: backstop) edge **as a structured flat-scalar marker** — an object item `{ statement: <the check>, verification: backstop }`, NOT a prose note (the verifier branches deterministically on the `verification: backstop` field; a parenthetical is unparseable — the #1110 fragility). Use a flat scalar `verification:` continuation key, never a nested object (ADR-550 #1278). At verify time a `backstop` truth the verifier cannot confirm with explicit evidence abstains → `human_needed` (reason `insufficient_spec`), never a silent pass (#1154; see `gsd-core/references/honest-verifier.md`). `unresolved` edges are explicit assumptions — surface them in the plan, do not silently drop them. **Otherwise** (`EDGE_ABSENT`): apply the SAME lift to the fallback report `{COVERAGE}` (per §C of `gsd-core/references/specless-probe-fallback.md`); a SPEC-supplied section is never re-run.
 - If the SPEC has a `## Prohibitions` section, lift every resolved prohibition into the `must_haves.prohibitions:` sibling block (NOT `truths` — ADR-550 D3) with `statement`+`status`+`verification`, via the single `projectProhibitions` serializer (Hyrum — no second serializer); unresolved -> flagged assumptions, don't drop; never put a must-NOT under `truths`. **Otherwise** (`PROHIB_ABSENT`), author the recalled prohibitions into the SAME block via the SAME `projectProhibitions` contract but **descriptor-less** (no `check_*`) so each disposes flagged-unverified; never auto-dismiss. Section-level precedence + no-silent-drop equality apply (§C).
 - If a `-UI-SPEC.md` exists (resolved above as `UI_SPEC_PATH`) with a `## UI Considerations` section, lift it by the **identical rule** as `## Edge Coverage` above — resolved (explicit) → `must_haves.truths` string, resolved (backstop) → flat scalar `{ statement, verification: backstop }`, `unresolved` → explicit planner assumption (no new verb — ADR-550 #1278/#1154; #1867). Read it from `UI_SPEC_PATH` (the SPEC glob excludes `-UI-SPEC.md`).
-- **"Artifacts this phase proddoc-arch-0006-uc-v1es" section (MANDATORY)** — list every symbol this phase creates: decorators, classes, functions, CLI flags, strdoc-arch-0006-uc-v1t/dataclass fields, new file paths. The plan-review-convergence source-grounding pass reads this section to exclude newly-created symbols from drift verification; omitting it causes new symbols to be flagged for acknowledgement.
+- **"Artifacts this phase produces" section (MANDATORY)** — list every symbol this phase creates: decorators, classes, functions, CLI flags, struct/dataclass fields, new file paths. The plan-review-convergence source-grounding pass reads this section to exclude newly-created symbols from drift verification; omitting it causes new symbols to be flagged for acknowledgement.
 </downstream_consumer>
 <!-- gsd:protected:end -->
 
@@ -903,7 +903,7 @@ Output consumed by /gsd-execute-phase. Plans need:
 
 Every task MUST include these fields — they are NOT optional:
 
-1. **`<read_first>`** — Files the executor MUST read before todoc-arch-0006-uc-v1hing anything. Always include:
+1. **`<read_first>`** — Files the executor MUST read before touching anything. Always include:
    - The file being modified (so executor sees current state, not assumptions)
    - Any "source of truth" file referenced in CONTEXT.md (reference implementations, existing patterns, config files, schemas)
    - Any file whose patterns, signatures, types, or conventions must be replicated or respected
@@ -926,7 +926,7 @@ Every task MUST include these fields — they are NOT optional:
    - Do not include full file contents, fenced code blocks, or complete implementations in `<action>`
    - The executor should understand the intended target state from `<action>` and use `<read_first>` files for current implementation details, patterns, and source-of-truth context
 
-**Why this matters:** Executor agents work from the plan text. Vague instrdoc-arch-0006-uc-v1tions like "update the config to match proddoc-arch-0006-uc-v1tion" proddoc-arch-0006-uc-v1e shallow one-line changes. Concrete instrdoc-arch-0006-uc-v1tions like "add DATABASE_URL, set POOL_SIZE=20, add REDIS_URL, and read config/runtime.ts before editing" proddoc-arch-0006-uc-v1e complete work without turning the planner into the executor.
+**Why this matters:** Executor agents work from the plan text. Vague instructions like "update the config to match production" produce shallow one-line changes. Concrete instructions like "add DATABASE_URL, set POOL_SIZE=20, add REDIS_URL, and read config/runtime.ts before editing" produce complete work without turning the planner into the executor.
 </deep_work_rules>
 
 <!-- gsd:protected:start -->
@@ -940,7 +940,7 @@ Every task MUST include these fields — they are NOT optional:
 - [ ] Dependencies correctly identified
 - [ ] Waves assigned for parallel execution
 - [ ] must_haves derived from phase goal
-- [ ] Every PLAN.md includes an "Artifacts this phase proddoc-arch-0006-uc-v1es" section listing symbols created by this phase (decorators, classes, functions, CLI flags, strdoc-arch-0006-uc-v1t/dataclass fields, new file paths)
+- [ ] Every PLAN.md includes an "Artifacts this phase produces" section listing symbols created by this phase (decorators, classes, functions, CLI flags, struct/dataclass fields, new file paths)
 - [ ] Every SPEC ## Edge Coverage resolved edge is represented in a plan's must_haves (no silent drops)
 - [ ] Every UI-SPEC ## UI Considerations resolved consideration is represented in a plan's must_haves (no silent drops)
 - [ ] Every SPEC ## Prohibitions resolved item is represented in a plan's must_haves.prohibitions (no silent drops)
@@ -1077,13 +1077,13 @@ If an actionable finding remains only in REVIEWS.md and would be invisible to /g
 
 **Phase requirement IDs (MUST ALL be covered):** {phase_req_ids}
 
-**Project instrdoc-arch-0006-uc-v1tions:** Read ./doc-agents-0001-agents-canon.md or ./.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/doc-agents-0001-agents-canon.md if either exists — verify plans honor project guidelines
+**Project instructions:** Read ./doc-agents-0001-agents-canon.md or ./.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/doc-agents-0001-agents-canon.md if either exists — verify plans honor project guidelines
 **Project skills:** Check .claude/skills/ or .agents/skills/ directory (if either exists) — verify plans account for project skill rules
 </verification_context>
 
 <expected_output>
 - ## VERIFICATION PASSED — all checks pass
-- ## ISSUES FOUND — strdoc-arch-0006-uc-v1tured issue list
+- ## ISSUES FOUND — structured issue list
 </expected_output>
 ```
 
@@ -1106,7 +1106,7 @@ Agent(
 
 ## 11. Handle Checker Return
 
-- **`marker_received` + `## VERIFICATION PASSED`:** If the return lists an entry whose severity is BLOCKER or WARNING, in the YAML issues block or listed in prose (a mention sdoc-arch-0006-uc-v1h as "no warnings" or a zero count is not an entry), treat it as `## ISSUES FOUND` instead: display issues, check iteration count, proceed to step 12, which counts those prose entries as BLOCKER/WARNING entries (the no-YAML-block shortcut there does not apply). The sentinel never decides alone, and an entry with a missing or unrecognized severity counts as a BLOCKER (#5578). Otherwise display confirmation, proceed to step 13.
+- **`marker_received` + `## VERIFICATION PASSED`:** If the return lists an entry whose severity is BLOCKER or WARNING, in the YAML issues block or listed in prose (a mention such as "no warnings" or a zero count is not an entry), treat it as `## ISSUES FOUND` instead: display issues, check iteration count, proceed to step 12, which counts those prose entries as BLOCKER/WARNING entries (the no-YAML-block shortcut there does not apply). The sentinel never decides alone, and an entry with a missing or unrecognized severity counts as a BLOCKER (#5578). Otherwise display confirmation, proceed to step 13.
 - **`marker_received` + `## ISSUES FOUND`:** Display issues, check iteration count, proceed to step 12.
 - **`stalled`:** Automatically surface 11a's recovery choice (Accept verification / Retry checker / Stop) — no manual interrupt needed.
 - **Empty / truncated / no recognized marker:** → Filesystem fallback (step 11a).
@@ -1131,7 +1131,7 @@ Track `stall_reentry_count` (starts at 0; incremented each time "Adjust approach
 
 **If iteration_count < 3:**
 
-Parse issue count from checker return: count BLOCKER + WARNING entries in the YAML issues block (strdoc-arch-0006-uc-v1tured output from gsd-plan-checker); an entry whose severity is missing or unrecognized counts as a BLOCKER (fail closed). Entries a `## VERIFICATION PASSED` return lists in prose count the same way (#5578). If the checker's return contains no YAML issues block and lists no BLOCKER or WARNING entry in prose (i.e., the plan was approved with no issues), treat `issue_count` as 0 and skip the stall check — the plan passed. Proceed to step 13 — likewise when every entry in the block is explicitly INFO (display them as advisories). Advisory format: `ℹ advisory — {dimension}: {description}` per INFO entry, listed once before the step-13 output.
+Parse issue count from checker return: count BLOCKER + WARNING entries in the YAML issues block (structured output from gsd-plan-checker); an entry whose severity is missing or unrecognized counts as a BLOCKER (fail closed). Entries a `## VERIFICATION PASSED` return lists in prose count the same way (#5578). If the checker's return contains no YAML issues block and lists no BLOCKER or WARNING entry in prose (i.e., the plan was approved with no issues), treat `issue_count` as 0 and skip the stall check — the plan passed. Proceed to step 13 — likewise when every entry in the block is explicitly INFO (display them as advisories). Advisory format: `ℹ advisory — {dimension}: {description}` per INFO entry, listed once before the step-13 output.
 
 Display (only when entering the revision loop — skip if the paragraph above already proceeded to step 13): `Revision iteration {N}/3 -- {blocker_count} blockers, {warning_count} warnings`
 
@@ -1169,10 +1169,10 @@ Revision prompt:
 
 ${AGENT_SKILLS_PLANNER}
 
-**Checker issues:** {strdoc-arch-0006-uc-v1tured_issues_from_checker}
+**Checker issues:** {structured_issues_from_checker}
 </revision_context>
 
-<instrdoc-arch-0006-uc-v1tions>
+<instructions>
 `required_property` + evidence + severity BIND. `fix_hint` is ONE non-binding example route: a
 smaller or different mechanism reaching the same property resolves it — say which. Re-check CONTEXT.md's locked decisions, capability guidance, and existing plan constraints
 BEFORE editing; if a hint would contradict one, or the
@@ -1181,7 +1181,7 @@ the alternatives rather than applying or working around it. Full contract:
 `gsd-core/references/planner-revision.md`.
 
 Do NOT replan from scratch unless fundamental. Return what changed.
-</instrdoc-arch-0006-uc-v1tions>
+</instructions>
 ```
 
 ```
@@ -1429,7 +1429,7 @@ This step is derived entirely from existing PLAN frontmatter — no extra LLM pa
 gsd_run query roadmap.annotate-dependencies "${PHASE_NUMBER}"
 ```
 
-Skip this step if `plan_count` is 0. Re-running regenerates the annotation from current PLAN frontmatter; an unchanged result writes nothing, and an unrecognised checklist row leaves ROADMAP.md untodoc-arch-0006-uc-v1hed and reports `skipped: "unrecognised_checklist_row"`. The `**Cross-cutting constraints:**` header line ends in an HTML-comment marker; that block is machine-owned and the bullets directly under it are regenerated. Put hand-written bullets after a blank line. Bullets kept from a block written before the marker existed are reported as `stale_legacy_constraints`.
+Skip this step if `plan_count` is 0. Re-running regenerates the annotation from current PLAN frontmatter; an unchanged result writes nothing, and an unrecognised checklist row leaves ROADMAP.md untouched and reports `skipped: "unrecognised_checklist_row"`. The `**Cross-cutting constraints:**` header line ends in an HTML-comment marker; that block is machine-owned and the bullets directly under it are regenerated. Put hand-written bullets after a blank line. Bullets kept from a block written before the marker existed are reported as `stale_legacy_constraints`.
 
 ## 13d. Commit Plans if commit_docs is true
 
@@ -1480,12 +1480,12 @@ GATE_RESULT=$(gsd_run check predicate --predicate '<hook.check.predicate as JSON
 ```
 (Read the hook's `check` object in-context to pick the branch; a gate with neither is a malformed registry entry — skip with a warning.)
 
-**Step 1 — did the CHECK COMMAND itself sdoc-arch-0006-uc-v1ceed?**
+**Step 1 — did the CHECK COMMAND itself succeed?**
 If the check command failed (non-zero `CHECK_EXIT`, empty output, or unparseable JSON):
 - `onError == "halt"` → halt and surface command error.
 - `onError == "skip"` → log a warning and continue to the next hook.
 
-**Step 2 — read `GATE_RESULT.block` (boolean).** Only reached when command sdoc-arch-0006-uc-v1ceeded.
+**Step 2 — read `GATE_RESULT.block` (boolean).** Only reached when command succeeded.
 
 - If `hook.blocking == true` and `GATE_RESULT.block == true`: halt. (gap-analysis is always `blocking: false` so this branch is informational only.)
 - If `hook.blocking == false` (advisory): if `GATE_RESULT.block == true` or non-empty `table`/`summary`, output the gap table and continue. Advisory gates never block phase completion.
@@ -1540,11 +1540,11 @@ Verification: {Passed | Passed with override | Skipped}
 </offer_next>
 
 <windows_troubleshooting>
-Read `gsd-core/workflows/plan-phase/steps/windows-troubleshooting.md` if plan-phase freezes on Windows during agent spawning (stdio deadlocks with MCP servers, anthropics/claude-code#28126) — it covers force-kill, orphaned-node cleanup, stale task-dir cleanup, reddoc-arch-0006-uc-v1ing the MCP server count, and the `--skip-research` fallback.
+Read `gsd-core/workflows/plan-phase/steps/windows-troubleshooting.md` if plan-phase freezes on Windows during agent spawning (stdio deadlocks with MCP servers, anthropics/claude-code#28126) — it covers force-kill, orphaned-node cleanup, stale task-dir cleanup, reducing the MCP server count, and the `--skip-research` fallback.
 </windows_troubleshooting>
 
 <!-- gsd:protected:start -->
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] .planning/ directory validated
 - [ ] Phase validated against roadmap
 - [ ] Phase directory created if needed
@@ -1558,5 +1558,5 @@ Read `gsd-core/workflows/plan-phase/steps/windows-troubleshooting.md` if plan-ph
 - [ ] Verification passed OR user override OR max iterations with user decision
 - [ ] User sees status between agent spawns
 - [ ] User knows next steps
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>
 <!-- gsd:protected:end -->

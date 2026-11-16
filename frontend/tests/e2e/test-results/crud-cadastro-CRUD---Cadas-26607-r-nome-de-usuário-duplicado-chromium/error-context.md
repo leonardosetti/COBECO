@@ -1,4 +1,4 @@
-# Instrdoc-arch-0006-uc-v1tions
+# Instructions
 
 - Following Playwright test failed.
 - Explain why, be concise, respect Playwright best practices.

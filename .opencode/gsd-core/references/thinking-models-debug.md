@@ -1,6 +1,6 @@
 # Thinking Models: Debug Cluster
 
-Strdoc-arch-0006-uc-v1tured reasoning models for the **debugger** agent. Apply these at decision points during investigation, not continuously. Each model counters a specific documented failure mode.
+Structured reasoning models for the **debugger** agent. Apply these at decision points during investigation, not continuously. Each model counters a specific documented failure mode.
 
 Source: Curated from [thinking-partner](https://github.com/mattnowdev/thinking-partner) model catalog (150+ models). Selected for direct applicability to GSD debugging workflow.
 
@@ -18,7 +18,7 @@ Before testing any hypothesis, build a fault tree: start with the observed sympt
 
 **Counters:** Making random changes and hoping something works -- the "shotgun debugging" anti-pattern.
 
-For each hypothesis from the fault tree, follow the strict protocol: PREDICT ("If hypothesis H is correct, then test T should proddoc-arch-0006-uc-v1e result R"), TEST (execute exactly one test), OBSERVE (record the actual result), CONCLUDE (matched = SUPPORTED, failed = ELIMINATED, unexpected = new evidence). Never skip the PREDICT step -- without a prediction, you cannot distinguish a meaningful result from noise. Never change more than one variable per test -- if you change two things and the bug disappears, you don't know which change fixed it.
+For each hypothesis from the fault tree, follow the strict protocol: PREDICT ("If hypothesis H is correct, then test T should produce result R"), TEST (execute exactly one test), OBSERVE (record the actual result), CONCLUDE (matched = SUPPORTED, failed = ELIMINATED, unexpected = new evidence). Never skip the PREDICT step -- without a prediction, you cannot distinguish a meaningful result from noise. Never change more than one variable per test -- if you change two things and the bug disappears, you don't know which change fixed it.
 
 ## 3. Occam's Razor
 
@@ -30,15 +30,15 @@ Before investigating complex multi-component interaction bugs, race conditions, 
 
 **Counters:** Failing to isolate causation by not asking "what if we changed just this one thing?"
 
-When you have a hypothesis about the root cause, constrdoc-arch-0006-uc-v1t a counterfactual: "If I change ONLY this one variable/config/line, the bug should disappear (or appear)." Execute the counterfactual test. If the bug persists after your targeted change, your hypothesis is wrong -- the cause is elsewhere. If the bug disappears, you have strong causal evidence. This is more powerful than correlation ("the bug appeared after deploy X") because it tests the mechanism, not just the timeline.
+When you have a hypothesis about the root cause, construct a counterfactual: "If I change ONLY this one variable/config/line, the bug should disappear (or appear)." Execute the counterfactual test. If the bug persists after your targeted change, your hypothesis is wrong -- the cause is elsewhere. If the bug disappears, you have strong causal evidence. This is more powerful than correlation ("the bug appeared after deploy X") because it tests the mechanism, not just the timeline.
 
 ---
 
 ## When NOT to Think
 
-Skip strdoc-arch-0006-uc-v1tured reasoning models when the situation does not benefit from them:
+Skip structured reasoning models when the situation does not benefit from them:
 
 - **Obvious single-cause bugs** -- If the error message names the exact file, line, and cause (e.g., `TypeError: Cannot read property 'x' of undefined at foo.js:42`), fix it directly. Do not build a fault tree for a null reference with a stack trace.
-- **Reproddoc-arch-0006-uc-v1ing a known fix** -- If you already know the root cause from a previous investigation or the user told you exactly what is wrong, skip hypothesis-driven investigation and go straight to the fix.
+- **Reproducing a known fix** -- If you already know the root cause from a previous investigation or the user told you exactly what is wrong, skip hypothesis-driven investigation and go straight to the fix.
 - **Typos, missing imports, wrong paths** -- If Occam's Razor would immediately resolve it, apply the fix without invoking the full model. The model exists for when simple checks fail, not to gate simple checks.
 - **Reading error logs** -- Reading and understanding error output is normal debugging, not a "decision point." Only invoke models when you have multiple plausible hypotheses and need to choose which to test first.

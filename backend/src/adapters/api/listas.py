@@ -12,6 +12,7 @@ from sqlalchemy.orm import selectinload
 from src.adapters.api.auth import get_current_user
 from src.adapters.db.database import get_db
 from src.adapters.db.models import ItemListaModel, ListaModel, ProdutoModel
+from src.domain.entities import Lista
 from src.domain.repositories import ListaRepository, ProdutoRepository
 from src.domain.usecases import (
     CriarListaInput,
@@ -72,7 +73,19 @@ class ListaRepositoryImpl(ListaRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def criar(self, lista) -> ListaModel:
+    async def _buscar_model(self, lista_id: int, usuario_id: int) -> ListaModel | None:
+        result = await self.session.execute(
+            select(ListaModel)
+            .options(selectinload(ListaModel.itens))
+            .where(
+                ListaModel.id == lista_id,
+                ListaModel.usuario_id == usuario_id,
+                ListaModel.deletado_em.is_(None),
+            )
+        )
+        return result.scalar_one_or_none()
+
+    async def criar(self, lista: Lista) -> Lista:
         model = ListaModel(
             usuario_id=lista.usuario_id,
             nome=lista.nome,
@@ -96,19 +109,11 @@ class ListaRepositoryImpl(ListaRepository):
             .options(selectinload(ListaModel.itens))
             .where(ListaModel.id == model.id)
         )
-        return result.scalar_one()
+        return result.scalar_one().to_domain()
 
-    async def buscar_por_id(self, lista_id: int, usuario_id: int):
-        result = await self.session.execute(
-            select(ListaModel)
-            .options(selectinload(ListaModel.itens))
-            .where(
-                ListaModel.id == lista_id,
-                ListaModel.usuario_id == usuario_id,
-                ListaModel.deletado_em.is_(None),
-            )
-        )
-        return result.scalar_one_or_none()
+    async def buscar_por_id(self, lista_id: int, usuario_id: int) -> Lista | None:
+        model = await self._buscar_model(lista_id, usuario_id)
+        return model.to_domain() if model else None
 
     async def listar_por_usuario(
         self,
@@ -116,7 +121,7 @@ class ListaRepositoryImpl(ListaRepository):
         pagina: int = 1,
         por_pagina: int = 20,
         busca: str | None = None,
-    ):
+    ) -> tuple[list[Lista], int]:
         query = select(ListaModel).where(
             ListaModel.usuario_id == usuario_id,
             ListaModel.deletado_em.is_(None),
@@ -138,28 +143,31 @@ class ListaRepositoryImpl(ListaRepository):
         result = await self.session.execute(query)
         listas = result.scalars().all()
 
-        return listas, total
+        return [item.to_domain() for item in listas], total or 0
 
-    async def atualizar(self, lista) -> ListaModel:
-        model = await self.buscar_por_id(lista.id, lista.usuario_id)
-        if model:
-            model.nome = lista.nome
-            model.atualizado_em = datetime.now()
+    async def atualizar(self, lista: Lista) -> Lista:
+        model = await self._buscar_model(lista.id, lista.usuario_id)
+        if not model:
+            raise ListaNaoEncontrada
+        model.nome = lista.nome
+        model.atualizado_em = datetime.now()
 
-            # Remove itens antigos (delete-orphan) antes de inserir os novos
-            # (flush intermediário evita violar uq_item_lista_produto)
-            model.itens.clear()
-            await self.session.flush()
+        # Remove itens antigos (delete-orphan) antes de inserir os novos
+        # (flush intermediário evita violar uq_item_lista_produto)
+        model.itens.clear()
+        await self.session.flush()
 
-            for item in lista.itens:
-                model.itens.append(ItemListaModel(
+        for item in lista.itens:
+            model.itens.append(
+                ItemListaModel(
                     lista_id=model.id,
                     produto_id=item.produto_id,
                     quantidade=item.quantidade,
-                ))
-            await self.session.flush()
+                )
+            )
+        await self.session.flush()
 
-        return model
+        return model.to_domain()
 
     async def soft_delete(self, lista_id: int, usuario_id: int, confirmacao_nome: str) -> bool:
         model = await self.buscar_por_id(lista_id, usuario_id)
@@ -175,29 +183,29 @@ class ProdutoRepositoryImpl(ProdutoRepository):
 
     async def buscar_por_id(self, produto_id: int):
         result = await self.session.execute(
-            select(ProdutoModel).where(ProdutoModel.id == produto_id, ProdutoModel.ativo == True)
+            select(ProdutoModel).where(ProdutoModel.id == produto_id, ProdutoModel.ativo)
         )
         return result.scalar_one_or_none()
 
     async def buscar_por_ids(self, ids: list[int]):
         result = await self.session.execute(
-            select(ProdutoModel).where(ProdutoModel.id.in_(ids), ProdutoModel.ativo == True)
+            select(ProdutoModel).where(ProdutoModel.id.in_(ids), ProdutoModel.ativo)
         )
         return list(result.scalars().all())
 
     async def autocomplete(self, query: str, limit: int = 10):
         result = await self.session.execute(
-            select(ProdutoModel).where(
+            select(ProdutoModel)
+            .where(
                 ProdutoModel.nome.ilike(f"%{query}%"),
-                ProdutoModel.ativo == True,
-            ).limit(limit)
+                ProdutoModel.ativo,
+            )
+            .limit(limit)
         )
         return list(result.scalars().all())
 
     async def listar_ativos(self):
-        result = await self.session.execute(
-            select(ProdutoModel).where(ProdutoModel.ativo == True)
-        )
+        result = await self.session.execute(select(ProdutoModel).where(ProdutoModel.ativo))
         return list(result.scalars().all())
 
 
@@ -220,16 +228,19 @@ def get_produto_repo(session: AsyncSession = Depends(get_db)) -> ProdutoReposito
 )
 async def salvar_lista(
     request: CriarListaRequest,
-    current_user = Depends(get_current_user),
+    current_user=Depends(get_current_user),
     lista_repo: ListaRepository = Depends(get_lista_repo),
     produto_repo: ProdutoRepository = Depends(get_produto_repo),
 ):
     usecase = SalvarListaUseCase(lista_repo, produto_repo)
     try:
-        lista = await usecase.executar(current_user.id, CriarListaInput(
-            nome=request.nome,
-            itens=[item.model_dump() for item in request.itens],
-        ))
+        lista = await usecase.executar(
+            current_user.id,
+            CriarListaInput(
+                nome=request.nome,
+                itens=[item.model_dump() for item in request.itens],
+            ),
+        )
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -237,14 +248,16 @@ async def salvar_lista(
     itens_resposta = []
     for item in lista.itens:
         produto = await produto_repo.buscar_por_id(item.produto_id)
-        itens_resposta.append({
-            "produto_id": item.produto_id,
-            "produto_nome": produto.nome if produto else "Desconhecido",
-            "quantidade": item.quantidade,
-        })
+        itens_resposta.append(
+            {
+                "produto_id": item.produto_id,
+                "produto_nome": produto.nome if produto else "Desconhecido",
+                "quantidade": item.quantidade,
+            }
+        )
 
     return ListaResponse(
-        id=lista.id,
+        id=lista.id,  # type: ignore[arg-type]  # id definido no flush do repo
         nome=lista.nome,
         itens=itens_resposta,
         criado_em=lista.criado_em.isoformat(),
@@ -261,7 +274,7 @@ async def listar_minhas_listas(
     pagina: int = Query(1, ge=1),
     por_pagina: int = Query(20, ge=1, le=100),
     busca: str | None = Query(None),
-    current_user = Depends(get_current_user),
+    current_user=Depends(get_current_user),
     lista_repo: ListaRepository = Depends(get_lista_repo),
 ):
     usecase = ListarMinhasListasUseCase(lista_repo)
@@ -269,12 +282,12 @@ async def listar_minhas_listas(
 
     items = [
         ListaResumoResponse(
-            id=l.id,
-            nome=l.nome,
-            total_itens=len(l.itens),
-            criado_em=l.criado_em.isoformat(),
+            id=lista.id,
+            nome=lista.nome,
+            total_itens=len(lista.itens),
+            criado_em=lista.criado_em.isoformat(),
         )
-        for l in listas
+        for lista in listas
     ]
 
     return PaginatedResponse(
@@ -294,7 +307,7 @@ async def listar_minhas_listas(
 )
 async def promover_lista_efemera(
     lista_memoria: dict,
-    current_user = Depends(get_current_user),
+    current_user=Depends(get_current_user),
     lista_repo: ListaRepository = Depends(get_lista_repo),
     produto_repo: ProdutoRepository = Depends(get_produto_repo),
 ):
@@ -304,14 +317,16 @@ async def promover_lista_efemera(
     itens_resposta = []
     for item in lista.itens:
         produto = await produto_repo.buscar_por_id(item.produto_id)
-        itens_resposta.append({
-            "produto_id": item.produto_id,
-            "produto_nome": produto.nome if produto else "Desconhecido",
-            "quantidade": item.quantidade,
-        })
+        itens_resposta.append(
+            {
+                "produto_id": item.produto_id,
+                "produto_nome": produto.nome if produto else "Desconhecido",
+                "quantidade": item.quantidade,
+            }
+        )
 
     return ListaResponse(
-        id=lista.id,
+        id=lista.id,  # type: ignore[arg-type]  # id definido no flush do repo
         nome=lista.nome,
         itens=itens_resposta,
         criado_em=lista.criado_em.isoformat(),
@@ -326,7 +341,7 @@ async def promover_lista_efemera(
 )
 async def buscar_lista(
     lista_id: int,
-    current_user = Depends(get_current_user),
+    current_user=Depends(get_current_user),
     lista_repo: ListaRepository = Depends(get_lista_repo),
     produto_repo: ProdutoRepository = Depends(get_produto_repo),
 ):
@@ -337,14 +352,16 @@ async def buscar_lista(
     itens_resposta = []
     for item in lista.itens:
         produto = await produto_repo.buscar_por_id(item.produto_id)
-        itens_resposta.append({
-            "produto_id": item.produto_id,
-            "produto_nome": produto.nome if produto else "Desconhecido",
-            "quantidade": item.quantidade,
-        })
+        itens_resposta.append(
+            {
+                "produto_id": item.produto_id,
+                "produto_nome": produto.nome if produto else "Desconhecido",
+                "quantidade": item.quantidade,
+            }
+        )
 
     return ListaResponse(
-        id=lista.id,
+        id=lista.id,  # type: ignore[arg-type]  # id definido no flush do repo
         nome=lista.nome,
         itens=itens_resposta,
         criado_em=lista.criado_em.isoformat(),
@@ -360,16 +377,20 @@ async def buscar_lista(
 async def editar_lista(
     lista_id: int,
     request: CriarListaRequest,
-    current_user = Depends(get_current_user),
+    current_user=Depends(get_current_user),
     lista_repo: ListaRepository = Depends(get_lista_repo),
     produto_repo: ProdutoRepository = Depends(get_produto_repo),
 ):
     usecase = EditarListaUseCase(lista_repo, produto_repo)
     try:
-        lista = await usecase.executar(lista_id, current_user.id, CriarListaInput(
-            nome=request.nome,
-            itens=[item.model_dump() for item in request.itens],
-        ))
+        lista = await usecase.executar(
+            lista_id,
+            current_user.id,
+            CriarListaInput(
+                nome=request.nome,
+                itens=[item.model_dump() for item in request.itens],
+            ),
+        )
     except ListaNaoEncontrada:
         raise HTTPException(status_code=404, detail="Lista não encontrada")
     except Exception as e:
@@ -378,14 +399,16 @@ async def editar_lista(
     itens_resposta = []
     for item in lista.itens:
         produto = await produto_repo.buscar_por_id(item.produto_id)
-        itens_resposta.append({
-            "produto_id": item.produto_id,
-            "produto_nome": produto.nome if produto else "Desconhecido",
-            "quantidade": item.quantidade,
-        })
+        itens_resposta.append(
+            {
+                "produto_id": item.produto_id,
+                "produto_nome": produto.nome if produto else "Desconhecido",
+                "quantidade": item.quantidade,
+            }
+        )
 
     return ListaResponse(
-        id=lista.id,
+        id=lista.id,  # type: ignore[arg-type]  # id definido no flush do repo
         nome=lista.nome,
         itens=itens_resposta,
         criado_em=lista.criado_em.isoformat(),
@@ -401,10 +424,13 @@ async def editar_lista(
 async def excluir_lista(
     lista_id: int,
     confirmacao_nome: str = Query(..., description="Nome da lista para confirmação"),
-    current_user = Depends(get_current_user),
+    current_user=Depends(get_current_user),
     lista_repo: ListaRepository = Depends(get_lista_repo),
 ):
     usecase = ExcluirListaUseCase(lista_repo)
     sucesso = await usecase.executar(lista_id, current_user.id, confirmacao_nome)
     if not sucesso:
-        raise HTTPException(status_code=400, detail="Nome de confirmação incorreto ou lista não encontrada")
+        raise HTTPException(
+            status_code=400,
+            detail="Nome de confirmação incorreto ou lista não encontrada",
+        )

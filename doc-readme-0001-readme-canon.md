@@ -41,6 +41,11 @@ workflow:
 _Projeto acadêmico da disciplina de Laboratório de Engenharia de Software_  
 _FATEC Taquaritinga - Análise e Desenvolvimento de Sistemas_
 
+[![CI](https://github.com/leonardosetti/COBECO/actions/workflows/config-ci-0001-github-actions-v1.0.yml/badge.svg)](https://github.com/leonardosetti/COBECO/actions/workflows/config-ci-0001-github-actions-v1.0.yml)
+[![Lint & Test](https://github.com/leonardosetti/COBECO/actions/workflows/config-ci-0001-github-actions-v1.0.yml/badge.svg?branch=main&event=push)](https://github.com/leonardosetti/COBECO/actions/workflows/config-ci-0001-github-actions-v1.0.yml)
+[![Docker Build](https://github.com/leonardosetti/COBECO/actions/workflows/config-ci-0001-github-actions-v1.0.yml/badge.svg?branch=main&event=push&job=build)](https://github.com/leonardosetti/COBECO/actions/workflows/config-ci-0001-github-actions-v1.0.yml)
+[![Release](https://github.com/leonardosetti/COBECO/actions/workflows/config-ci-0001-github-actions-v1.0.yml/badge.svg?branch=main&event=push&job=cd)](https://github.com/leonardosetti/COBECO/actions/workflows/config-ci-0001-github-actions-v1.0.yml)
+
 ---
 
 ## 📖 Sobre o Projeto
@@ -308,7 +313,7 @@ COBECO/
 │   │   ├── domain/             # Entidades, Value Objects, Repositories (interfaces)
 │   │   ├── usecases/           # Casos de uso puros (Clean Architecture)
 │   │   ├── adapters/           # API (FastAPI), DB (SQLAlchemy), External
-│   │   └── infrastrdoc-arch-0006-uc-v1ture/     # Config, Security, External services
+│   │   └── infrastructure/     # Config, Security, External services
 │   ├── tests/                  # Unit + Integration tests
 │   ├── scripts/                # Fonte canônica e gerador do seed
 │   ├── alembic/                # Migrations
@@ -396,7 +401,7 @@ Todas as tecnologias utilizadas são **FOSS** (Free and Open Source Software):
 
 **Equipe:**
 
-- **Proddoc-arch-0006-uc-v1t Owner:** [Nome do Stakeholder]
+- **Product Owner:** [Nome do Stakeholder]
 - **Tech Lead:** [Nome do Desenvolvedor Sênior]
 - **Arquiteto de Software:** [Nome do Arquiteto]
 

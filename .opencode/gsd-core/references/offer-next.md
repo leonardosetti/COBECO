@@ -83,4 +83,4 @@ If CONTEXT.md **exists** for the next phase, present:
 /gsd-execute-phase {next} ${GSD_WS} — execute next phase (skip planning)
 ```
 
-Only suggest the commands listed above. Do not invent or halldoc-arch-0006-uc-v1inate command names.
+Only suggest the commands listed above. Do not invent or hallucinate command names.

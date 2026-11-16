@@ -106,7 +106,7 @@ plano-integral:310. Estado unico: `canonical-mirror` (todos rastreaveis a TAP §
 | REQ-04 | Emissao invoice PDF | WeasyPrint ≤3s/documento (req_1.0.md:14) | N5.4 | Must |
 | REQ-05 | Tempo de resposta da aplicacao | ≤3s em 95% (req_1.0.md:15) | N5.1 | Must |
 | REQ-06 | Interface web responsiva FOSS | Chrome/Firefox/Edge ult. 2 versoes (req_1.0.md:16) | N5.3 | Must |
-| REQ-07 | Cache de cotacoes (SQLite) | reddoc-arch-0006-uc-v1ao ≥50% chamadas API (req_1.0.md:17) | N5.2 | Must |
+| REQ-07 | Cache de cotacoes (SQLite) | reducao ≥50% chamadas API (req_1.0.md:17) | N5.2 | Must |
 | REQ-08 | Cobertura de testes | ≥80% (pytest+coverage) (req_1.0.md:23) | N6.1 | Must |
 | REQ-09 | UAT | 100% fluxos criticos, zero defeitos criticos/bloqueantes (req_1.0.md:24) | N6.2 | Must |
 | REQ-10 | Ferramentas da qualidade (PDCA+Ishikawa 6M) | 12 PDCAs + diagrama (req_1.0.md:25) | N6.3 | Should |
@@ -156,13 +156,13 @@ Colisao de IDs: RF-01..10 possuem CONTEUDOS DIFERENTES nos 3 corpora com MESMOS 
 
 ### B.3 Contradicoes entre fontes
 
-| ID | Contradicao | Resoldoc-arch-0006-uc-v1ao proposta (Art. 2 — constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:25) |
+| ID | Contradicao | Resolucao proposta (Art. 2 — constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:25) |
 |---|---|---|
 | C-01 | REQ-02 = 5 regimes (req_1.0.md:12) vs legado 2 modalidades, rejeitando dia/semana (review:17; qwen:19) | Canonico prevalece: 5 regimes; RN-02/RF-04 legados = `legacy-contradicts` |
 | C-02 | IN = USD/EUR (plano-escopo.md:71; PDF Tabela 40:2197+) vs legado inclui GBP (qwen:19; deepseek:39,48; review:30) | GBP/JPY/CHF = OUT (Tabela 1:71) |
 | C-03 | Legado auth/multiusuario core (qwen:16-18; deepseek:29-32; review:27-28) vs OUT "Cadastro multiusuario ou autenticacao" (plano-escopo.md:72) | OUT — rejeitado (OS-01) |
-| C-04 | Legado PostgreSQL+Redis+Sequence (qwen:35,38; deepseek:49,58; review:47) vs OUT PostgreSQL e IN SQLite (plano-escopo.md:76; REQ-07) | SQLite prevalece; numeracao unica de invoice precisa soldoc-arch-0006-uc-v1ao sem PostgreSQL Sequence (GAP-04/06, ver doc-user-story-0017-us-017) |
-| C-05 | Formula: DEDUCAO (qwen:44; review:16) vs MULTIPLICACAO (1+spread)(1+IOF) (deepseek:50) | Gap financeiro real (GAP-03); proposta tecnica = deddoc-arch-0006-uc-v1ao (correcao historica review:75), DECISAO = CCB/PO |
+| C-04 | Legado PostgreSQL+Redis+Sequence (qwen:35,38; deepseek:49,58; review:47) vs OUT PostgreSQL e IN SQLite (plano-escopo.md:76; REQ-07) | SQLite prevalece; numeracao unica de invoice precisa solucao sem PostgreSQL Sequence (GAP-04/06, ver doc-user-story-0017-us-017) |
+| C-05 | Formula: DEDUCAO (qwen:44; review:16) vs MULTIPLICACAO (1+spread)(1+IOF) (deepseek:50) | Gap financeiro real (GAP-03); proposta tecnica = deducao (correcao historica review:75), DECISAO = CCB/PO |
 | C-06 | WIP ≤3 total (constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:60) vs 3/pessoa ≤9 (PDF:1677,1817-1818) | Ja registrada: AUD-2610-03.md:66 (F-08); emenda E-08 pendente CCB |
 | C-07 | Latencia cotação ≤2s (REQ-01) vs aplicacao ≤3s P95 (REQ-05) — camadas nao explicitadas | Leitura provavel: 2s=chamada API, 3s=E2E; requer explicitacao na spec (nao contradicao, ambiguidade) |
 | C-08 | Capacidade: legado "equipe de 2 pessoas" (qwen:3; deepseek:5) vs Tabela 32 "3×3 pessoas" (PDF:1817) | Legado desatualizado; capacidade regida por plano vigente |
@@ -180,15 +180,15 @@ Colisao de IDs: RF-01..10 possuem CONTEUDOS DIFERENTES nos 3 corpora com MESMOS 
 | OS-06 | App mobile nativo | Tabela 1 OUT (plano-escopo.md:75) |
 | OS-07 | Testes de carga/estresse 20 usuarios k6/Locust (qwen:33; review:45) | Tabela 1 OUT (plano-escopo.md:77) |
 | OS-08 | Hospedagem publica + keep-alive /health 14min (deepseek:83; review:48) | Infra = "ambiente local/homologacao (sem cloud paga)" (PDF:~2530 Tabela 44, via spec-001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-round-1-proposta.spec.md:160-162); P-02 veta nuvem (constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:30) |
-| OS-09 | Graficos de evoldoc-arch-0006-uc-v1ao cambial, export DOCX, comparador de plataformas, painel admin (deepseek:19) | Fora do Art. 1.2; YAGNI (E-04 pendente, mas Tabela 1 OUT por analogia — KG-R-03) |
+| OS-09 | Graficos de evolucao cambial, export DOCX, comparador de plataformas, painel admin (deepseek:19) | Fora do Art. 1.2; YAGNI (E-04 pendente, mas Tabela 1 OUT por analogia — KG-R-03) |
 | OS-10 | Regime de jornada "por ano" (rejeitado ja no legado qwen:19) | Art. 1.2/REQ-02 enumeram 5 regimes sem "ano" (req_1.0.md:12) |
 
-Nenhum destes itens entra em story; entrada futura exige emenda constitdoc-arch-0006-uc-v1ional previa (Art. 1.3).
+Nenhum destes itens entra em story; entrada futura exige emenda constitucional previa (Art. 1.3).
 
 ## C. USER STORIES CANDIDATAS
 
 **NOTA OBRIGATORIA (Art. 5.1, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:53):** estas stories sao CANDIDATAS de backlog.
-Nao constituem compromisso de escopo, ordem de execdoc-arch-0006-uc-v1ao ou entregaveis garantidos. O Humano
+Nao constituem compromisso de escopo, ordem de execucao ou entregaveis garantidos. O Humano
 (GP/PO) decide via CCB e refinement semanal (plano-escopo.md:57,110). YAGNI: cada story nasce
 de requisito citado; nenhuma capacidade especulativa foi criada. Cobertura REQ→US: 15/15.
 
@@ -217,7 +217,7 @@ de requisito citado; nenhuma capacidade especulativa foi criada. Cobertura REQ�
 |---|---|---|---|---|
 | doc-user-story-0007-us-007 api-failure-fallback | review_rf_rfn.md:31 (RF-05); qwen:20; corrobora REQ-07 | Como usuario, quero fallback para a ultima cotaçao valida com aviso de defasagem quando a API externa falhar, para continuar operando. | Given API externa indisponivel; When tento simular; Then a ultima cotaçao valida e exibida com aviso visual "dados com defasagem". | KG-R-02: comportamento ausente do canonico; PO/CCB ratifica antes de Ready |
 | doc-user-story-0016-us-016 invoice-lifecycle-draft-finalize | review_rf_rfn.md:34 (RF-08) | Como prestador, quero invoice com estados Rascunho (editavel) e Finalizada (somente leitura), para garantir imutabilidade do documento emitido. | Given invoice em Rascunho; When finalizo; Then todos os campos ficam travados e ediçao e bloqueada. | KG-R-03: "emissao de invoice PDF" (Art. 1.2) implica criacao, mas ciclo de estados nao esta na Tabela 1 IN; CCB decide |
-| doc-user-story-0017-us-017 invoice-clone-new-number | review_rf_rfn.md:35 (RF-09) | Como prestador, quero clonar uma invoice finalizada em novo rascunho com novo numero unico, para corrigir sem violar a imutabilidade. | Given invoice Finalizada; When clono; Then novo rascunho com numero unico (soldoc-arch-0006-uc-v1ao sem PostgreSQL Sequence — C-04) e data de emissao atual. | Depende de doc-user-story-0016-us-016 ratificada; KG-R-03 |
+| doc-user-story-0017-us-017 invoice-clone-new-number | review_rf_rfn.md:35 (RF-09) | Como prestador, quero clonar uma invoice finalizada em novo rascunho com novo numero unico, para corrigir sem violar a imutabilidade. | Given invoice Finalizada; When clono; Then novo rascunho com numero unico (solucao sem PostgreSQL Sequence — C-04) e data de emissao atual. | Depende de doc-user-story-0016-us-016 ratificada; KG-R-03 |
 
 **Notas:** doc-user-story-0012-us-012 permanece BLOCKED (gate E). Warmup do WeasyPrint (deepseek:70) entra como
 criterio opcional de doc-user-story-0004-us-004, marcado legacy-input, se CCB ratificar. Regra RN-03 legada

@@ -41,7 +41,7 @@ workflow:
 **Versão:** 1.0  
 **Status:** Proposto | Em Análise | Aprovado | Rejeitado | Obsoleto  
 **Data:** 14/11/2026  
-**Autor:** Leonardo Setti (Proddoc-arch-0006-uc-v1t Owner / Tech Lead)  
+**Autor:** Leonardo Setti (Product Owner / Tech Lead)  
 **Avaliadores:** CCB (Change Control Board) — FATEC Taquaritinga ADS  
 **Prazo para Decisão:** 20/11/2026  
 **Prioridade:** P2 (Backlog — Pós-MVP)  
@@ -61,14 +61,14 @@ Criar uma **página pública de Quality Board** no aplicativo COBECO que exiba m
 ### 2.1 Problema / Oportunidade
 - A **spec-010** já define baseline de qualidade: 12 PDCAs, 3 diagramas Ishikawa 6M, métricas verificadas, quality gates, RACI onda 6.
 - Não existe **visualização pública** dessas métricas no aplicativo — ficam apenas em docs internos (`.ai/specs/`, `docs/operacao/`, CI logs).
-- **Transparência técnica** é diferencial competitivo e eddoc-arch-0006-uc-v1acional: mostra maturidade de SDD, CI/CD, testes, governança.
+- **Transparência técnica** é diferencial competitivo e educacional: mostra maturidade de SDD, CI/CD, testes, governança.
 - Alinhado com **RD08** (Quality Board Público) do PRD — atualmente no backlog pós-MVP.
 
 ### 2.2 Por que Agora?
 - MVP (18 RFs) está **concluído e validado** (Gate 3 passado em 27/10/2026).
 - Infraestrutura de métricas **já existe**: CI/CD (GitHub Actions), cobertura pytest, Test Plan, RAID Log, spec-010.
 - Implementação **baixo risco** — página somente leitura, consome dados já coletados.
-- Valor **eddoc-arch-0006-uc-v1acional e de portfólio** para a equipe e instituição (FATEC).
+- Valor **educacional e de portfólio** para a equipe e instituição (FATEC).
 
 ---
 

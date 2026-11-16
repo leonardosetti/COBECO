@@ -2,7 +2,7 @@
 
 **Versão:** 1.0  
 **Data:** DD/MM/AAAA  
-**Responsável:** Proddoc-arch-0006-uc-v1t Owner  
+**Responsável:** Product Owner  
 **Aprovação:** CCB (Gate 1)  
 **Frequência de Revisão:** A cada mudança de escopo ou equipe
 

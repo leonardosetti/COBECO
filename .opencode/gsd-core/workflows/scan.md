@@ -2,7 +2,7 @@
 
 <purpose>
 Lightweight codebase assessment. Spawns a single gsd-codebase-mapper agent for one focus area,
-proddoc-arch-0006-uc-v1ing targeted documents in `.planning/codebase/`.
+producing targeted documents in `.planning/codebase/`.
 </purpose>
 
 <required_reading>
@@ -11,14 +11,14 @@ Read all files referenced by the invoking prompt's execution_context before star
 
 <available_agent_types>
 Valid GSD subagent types (use exact names — do not fall back to 'general-purpose'):
-- gsd-codebase-mapper — Maps project strdoc-arch-0006-uc-v1ture and dependencies
+- gsd-codebase-mapper — Maps project structure and dependencies
 </available_agent_types>
 
 <process>
 
 ## Focus-to-Document Mapping
 
-| Focus | Documents Proddoc-arch-0006-uc-v1ed |
+| Focus | Documents Produced |
 |-------|-------------------|
 | `tech` | STACK.md, INTEGRATIONS.md |
 | `arch` | ARCHITECTURE.md, STRUCTURE.md |
@@ -53,7 +53,7 @@ if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
 
 Parse JSON for: `mapper_model`, `commit_docs`, `search_gitignored`, `parallelization`, `subagent_timeout`, `date`, `codebase_dir`, `existing_maps`, `has_maps`, `planning_exists`, `codebase_dir_exists`.
 
-Look up which documents would be proddoc-arch-0006-uc-v1ed for the selected focus (from the mapping table above).
+Look up which documents would be produced for the selected focus (from the mapping table above).
 
 For each target document, check if it already exists in `.planning/codebase/`:
 ```bash
@@ -91,7 +91,7 @@ Print: `◆ Spawning scanner... (runs in a subagent — no output until it retur
 
 ```
 Agent(
-  prompt="Scan this codebase with focus: {focus}. Write results to {codebase_dir}/. Proddoc-arch-0006-uc-v1e only: {document_list}",
+  prompt="Scan this codebase with focus: {focus}. Write results to {codebase_dir}/. Produce only: {document_list}",
   subagent_type="gsd-codebase-mapper",
   model="{mapper_model}"
 )
@@ -105,7 +105,7 @@ Agent(
 ## Scan Complete
 
 **Focus:** {focus}
-**Documents proddoc-arch-0006-uc-v1ed:**
+**Documents produced:**
 {list of documents written with line counts}
 
 Use `/gsd-map-codebase` for a comprehensive 4-area parallel scan.
@@ -113,10 +113,10 @@ Use `/gsd-map-codebase` for a comprehensive 4-area parallel scan.
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Focus area correctly parsed (default: tech+arch)
 - [ ] Existing documents detected with modification dates shown
 - [ ] User prompted before overwriting
 - [ ] Single mapper agent spawned with correct focus
 - [ ] Output documents written to .planning/codebase/
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

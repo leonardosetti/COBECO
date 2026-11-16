@@ -16,7 +16,7 @@
 ```xml
 <task type="checkpoint:human-action">
   <action>Deploy to Vercel</action>
-  <instrdoc-arch-0006-uc-v1tions>Visit vercel.com, import repo, click deploy...</instrdoc-arch-0006-uc-v1tions>
+  <instructions>Visit vercel.com, import repo, click deploy...</instructions>
 </task>
 ```
 
@@ -85,18 +85,18 @@ A plan should not interleave multiple checkpoint types with implementation tasks
 </context>
 ```
 
-## Scope Reddoc-arch-0006-uc-v1tion Anti-Patterns
+## Scope Reduction Anti-Patterns
 
 **Prohibited language in task actions:**
 - "v1", "v2", "simplified version", "static for now", "hardcoded for now"
 - "future enhancement", "placeholder", "basic version", "minimal implementation"
 - "will be wired later", "dynamic in future phase", "skip for now"
 
-If a decision from CONTEXT.md says "display cost calculated from billing table in impulses", the plan must deliver exactly that. Not "static label /min" as a "v1". If the phase is too complex, recommend a phase split instead of silently reddoc-arch-0006-uc-v1ing scope.
+If a decision from CONTEXT.md says "display cost calculated from billing table in impulses", the plan must deliver exactly that. Not "static label /min" as a "v1". If the phase is too complex, recommend a phase split instead of silently reducing scope.
 
 ## Comment-Text Discipline (HARD GATE)
 
-> Enforced at plan-write time by `verify.plan-strdoc-arch-0006-uc-v1ture` (the `validate_plan` step). Issue #429.
+> Enforced at plan-write time by `verify.plan-structure` (the `validate_plan` step). Issue #429.
 
 When an `<acceptance_criteria>` or `<verify>` block uses a **negative grep** — `grep -c 'LITERAL' file == 0`, meaning "this literal must NOT appear in the file" — that same `LITERAL` must not appear verbatim anywhere in an `<action>` body. Verbatim code blocks, JSDoc samples, head-comment references, and "what NOT to do" illustrations get echoed into the file the executor writes, so the executor's commit-time gate fails on the *comment text*, not on a real code regression. The work is correct; the gate output is semantically wrong; the executor wastes cycles and learns to distrust the gate.
 
@@ -107,7 +107,7 @@ When an `<acceptance_criteria>` or `<verify>` block uses a **negative grep** —
 ```xml
 <task>
   <action>
-    Add a `?from=` query param to the share link. Do NOT reintroddoc-arch-0006-uc-v1e the old
+    Add a `?from=` query param to the share link. Do NOT reintroduce the old
     `?from=` referrer hack the JSDoc warned about.   <!-- echoes ?from= -->
   </action>
   <verify><automated>grep -c '?from=' src/animal-detail.tsx == 0</automated></verify>
@@ -119,7 +119,7 @@ When an `<acceptance_criteria>` or `<verify>` block uses a **negative grep** —
 ```xml
 <task>
   <action>
-    Add the share-link query param. Do NOT reintroddoc-arch-0006-uc-v1e the legacy referrer hack.
+    Add the share-link query param. Do NOT reintroduce the legacy referrer hack.
   </action>
   <verify><automated>grep -c '?from=' src/animal-detail.tsx == 0</automated></verify>
 </task>
@@ -137,14 +137,14 @@ One marker per literal. The marker exempts only the exact literal it names.
 
 ## Region-Scoped Negative Gates
 
-> Surfaced at plan-write time by `verify.plan-strdoc-arch-0006-uc-v1ture` (the `validate_plan` step), WARN-level. Issue #968.
+> Surfaced at plan-write time by `verify.plan-structure` (the `validate_plan` step), WARN-level. Issue #968.
 
-A **negative grep** — `! grep -Eq 'PAT' file` or `grep -c 'PAT' file == 0` — asserts a constrdoc-arch-0006-uc-v1t is absent. `grep` is file-scoped by nature: it has no notion of function or region. This breaks down when a phase splits one file across parallel tasks with legitimately opposite needs for the same constrdoc-arch-0006-uc-v1t in different regions:
+A **negative grep** — `! grep -Eq 'PAT' file` or `grep -c 'PAT' file == 0` — asserts a construct is absent. `grep` is file-scoped by nature: it has no notion of function or region. This breaks down when a phase splits one file across parallel tasks with legitimately opposite needs for the same construct in different regions:
 
-- **Task A** bans the constrdoc-arch-0006-uc-v1t file-wide — a synchronous factory must not block on a refresh: `! grep -Eq 'await .*refresh' app/page.py`.
+- **Task A** bans the construct file-wide — a synchronous factory must not block on a refresh: `! grep -Eq 'await .*refresh' app/page.py`.
 - **Task B** legitimately requires it elsewhere in the same file — a post-reindex handler must `await bridge.refresh()` to repopulate state.
 
-Both occurrences are real, correct proddoc-arch-0006-uc-v1tion code in different functions of one file. A file-wide negative grep cannot say "absent in function X, present in function Y", so the two gates are mutually unsatisfiable with a direct call — the executor is pushed into an indirection whose only purpose is to relocate the matched string out of the file (pure gate-appeasement, zero behaviour change). This is distinct from Comment-Text Discipline (#429): there is no comment echo and no allowlist helps — the constrdoc-arch-0006-uc-v1t must genuinely be present in one region and absent in another.
+Both occurrences are real, correct production code in different functions of one file. A file-wide negative grep cannot say "absent in function X, present in function Y", so the two gates are mutually unsatisfiable with a direct call — the executor is pushed into an indirection whose only purpose is to relocate the matched string out of the file (pure gate-appeasement, zero behaviour change). This is distinct from Comment-Text Discipline (#429): there is no comment echo and no allowlist helps — the construct must genuinely be present in one region and absent in another.
 
 **The fix:** region-scope the negative gate so "absent in region X" stops implying "absent file-wide."
 
@@ -169,7 +169,7 @@ Task B writing `await bridge.refresh()` trips Task A's file-wide gate, though bo
 <verify><automated>! sed -n '12,40p' app/page.py | grep -Eq 'await .*refresh'</automated></verify>
 ```
 
-The factory region is asserted clean; the reindex handler elsewhere in the same file keeps its required `await bridge.refresh()`. Both gates pass with no code restrdoc-arch-0006-uc-v1turing. Prefer an AST/strdoc-arch-0006-uc-v1tural check or a focused unit test where region extraction is fragile.
+The factory region is asserted clean; the reindex handler elsewhere in the same file keeps its required `await bridge.refresh()`. Both gates pass with no code restructuring. Prefer an AST/structural check or a focused unit test where region extraction is fragile.
 
 ### When the split is intentional and unavoidable
 

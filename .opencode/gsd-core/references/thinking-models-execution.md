@@ -1,6 +1,6 @@
 # Thinking Models: Execution Cluster
 
-Strdoc-arch-0006-uc-v1tured reasoning models for the **executor** agent. Apply these at decision points during task execution, not continuously. Each model counters a specific documented failure mode.
+Structured reasoning models for the **executor** agent. Apply these at decision points during task execution, not continuously. Each model counters a specific documented failure mode.
 
 Source: Curated from [thinking-partner](https://github.com/mattnowdev/thinking-partner) model catalog (150+ models). Selected for direct applicability to GSD execution workflow.
 
@@ -10,7 +10,7 @@ Source: Curated from [thinking-partner](https://github.com/mattnowdev/thinking-p
 
 ## 1. Circle of Concern vs Circle of Control
 
-**Counters:** Executor trying to fix things outside its scope -- upstream bugs, unrelated tech debt, infrastrdoc-arch-0006-uc-v1ture issues.
+**Counters:** Executor trying to fix things outside its scope -- upstream bugs, unrelated tech debt, infrastructure issues.
 
 Before modifying any code not explicitly listed in the plan's `<files>` section, ask: Is this in my Circle of Control (plan scope) or my Circle of Concern (things I notice but shouldn't fix)? If Circle of Concern: document it as a deviation note or deferred item, do NOT fix it. The executor's job is to build what the plan says, not to improve the codebase. Scope creep from "while I'm here" fixes is the #1 cause of executor overruns.
 
@@ -36,15 +36,15 @@ Before adding an abstraction layer, generic type parameter, factory pattern, or 
 
 **Counters:** Removing or modifying existing code without understanding why it was written that way.
 
-Before removing, replacing, or significantly modifying existing code that the plan todoc-arch-0006-uc-v1hes, determine WHY it exists. Check: git blame for the commit that introddoc-arch-0006-uc-v1ed it, comments explaining the rationale, test cases that exercise it, the PLAN.md or SUMMARY.md that created it. If the purpose is unclear, keep it and add a comment noting the uncertainty -- do NOT remove code whose purpose you don't understand. If the plan explicitly says to remove it, still document what it did in the deviation notes.
+Before removing, replacing, or significantly modifying existing code that the plan touches, determine WHY it exists. Check: git blame for the commit that introduced it, comments explaining the rationale, test cases that exercise it, the PLAN.md or SUMMARY.md that created it. If the purpose is unclear, keep it and add a comment noting the uncertainty -- do NOT remove code whose purpose you don't understand. If the plan explicitly says to remove it, still document what it did in the deviation notes.
 
 ---
 
 ## When NOT to Think
 
-Skip strdoc-arch-0006-uc-v1tured reasoning models when the situation does not benefit from them:
+Skip structured reasoning models when the situation does not benefit from them:
 
 - **Straightforward task actions** -- If the plan says "create file X with content Y" and the action is unambiguous, execute it directly. Do not invoke First Principles to analyze why you are creating a file the plan told you to create.
-- **Following established project patterns** -- If the codebase has a clear, consistent pattern (e.g., every route handler follows the same strdoc-arch-0006-uc-v1ture) and the plan says to add another one, follow the pattern. Chesterton's Fence applies to removing patterns, not to following them.
+- **Following established project patterns** -- If the codebase has a clear, consistent pattern (e.g., every route handler follows the same structure) and the plan says to add another one, follow the pattern. Chesterton's Fence applies to removing patterns, not to following them.
 - **Trivial file edits** -- Adding an import, fixing a typo, updating a version number. These are mechanical changes that do not involve design decisions.
 - **Running verify commands** -- Executing the plan's `<verify>` steps is procedural. Only invoke models if a verify step fails and you need to decide how to respond.

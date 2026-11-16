@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # ============================================================
 FROM base AS runtime
 
-COPY requirements.txt .
+COPY config-python-0001-requirements-v1.0.txt requirements.txt
 RUN pip install --no-warn-script-location -r requirements.txt
 ENV PATH=/usr/local/bin:$PATH
 
