@@ -146,6 +146,7 @@ class ListaRepositoryImpl(ListaRepository):
         return [item.to_domain() for item in listas], total or 0
 
     async def atualizar(self, lista: Lista) -> Lista:
+        assert lista.id is not None  # id da entidade persistida
         model = await self._buscar_model(lista.id, lista.usuario_id)
         if not model:
             raise ListaNaoEncontrada
@@ -282,7 +283,7 @@ async def listar_minhas_listas(
 
     items = [
         ListaResumoResponse(
-            id=lista.id,
+            id=lista.id,  # type: ignore[arg-type]  # id da entidade persistida
             nome=lista.nome,
             total_itens=len(lista.itens),
             criado_em=lista.criado_em.isoformat(),

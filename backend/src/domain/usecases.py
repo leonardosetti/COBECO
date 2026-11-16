@@ -121,9 +121,7 @@ class ComparacaoInput:
 class CadastrarUsuarioUseCase:
     """UC09 / RF01 — Cadastrar Usuário"""
 
-    def __init__(
-        self, repo: UsuarioRepository, hash_senha_fn: Callable[[str], str]
-    ) -> None:
+    def __init__(self, repo: UsuarioRepository, hash_senha_fn: Callable[[str], str]) -> None:
         self.repo = repo
         self.hash_senha = hash_senha_fn
 
