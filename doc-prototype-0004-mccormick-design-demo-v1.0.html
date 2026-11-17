@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COBECO — McCormick Design Demo v3.2</title>
+<style>
+/* ============================================================
+   COBECO — McCormick-inspired Design System (CSS Custom Props)
+   ============================================================ */
+:root {
+  /* Brand — McCormick Red Cap / Announcement Blue */
+  --brand-red: #C41E3A;
+  --brand-red-dark: #A0182F;
+  --brand-red-light: #FCECEE;
+  --brand-blue: #00529D;
+  --brand-blue-light: #E8F1FA;
+
+  /* Semantic */
+  --success: #1E7D32;
+  --success-light: #E8F5E9;
+  --warning: #F57F17;
+  --warning-light: #FFF8E1;
+  --error: #C62828;
+  --error-light: #FDEDEC;
+
+  /* Neutral */
+  --neutral-900: #1A1A2E;
+  --neutral-700: #374151;
+  --neutral-500: #6B7280;
+  --neutral-300: #D1D5DB;
+  --neutral-100: #F3F4F6;
+  --neutral-0: #FFFFFF;
+
+  /* Layout */
+  --header-height: 72px;
+  --announcement-height: 40px;
+  --container-max: 1280px;
+  --container-padding: 24px;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 28px rgba(0,0,0,0.12);
+  --shadow-xl: 0 20px 40px rgba(0,0,0,0.15);
+
+  /* Transitions */
+  --transition-fast: 0.1s ease;
+  --transition-base: 0.15s ease;
+  --transition-slow: 0.2s ease;
+
+  /* Typography */
+  --font-heading: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --fs-display: clamp(32px, 5vw, 48px);
+  --fs-h1: 28px;
+  --fs-h2: 22px;
+  --fs-h3: 18px;
+  --fs-body-lg: 16px;
+  --fs-body: 14px;
+  --fs-sm: 12px;
+  --fs-xs: 11px;
+}
+
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  color: var(--neutral-700);
+  background: var(--neutral-100);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); color: var(--neutral-900); font-weight: 700; line-height: 1.2; }
+h1 { font-size: var(--fs-h1); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); }
+a { color: var(--brand-blue); text-decoration: none; font-weight: 600; }
+a:hover { text-decoration: underline; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, select, textarea { font-family: inherit; font-size: var(--fs-body); }
+:focus-visible { outline: 2px solid var(--brand-blue); outline-offset: 2px; border-radius: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+img { max-width: 100%; height: auto; display: block; }
+
+/* ============================================================
+   Layout Helpers
+   ============================================================ */
+.container { max-width: var(--container-max); margin: 0 auto; padding: 0 var(--container-padding); width: 100%; }
+.page { padding: 32px 0 64px; }
+.page-head { margin-bottom: 24px; }
+.kicker { font-family: var(--font-heading); font-size: var(--fs-xs); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--brand-red); margin-bottom: 8px; }
+.card { background: var(--neutral-0); border: 1px solid var(--neutral-300); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); transition: box-shadow var(--transition-base), border-color var(--transition-base); }
+.card:hover { box-shadow: var(--shadow-md); border-color: var(--brand-blue); }
+.card--selected { border-color: var(--success); box-shadow: 0 0 0 3px var(--success-light); }
+.card--disabled { opacity: 0.55; pointer-events: none; }
+.card-pad { padding: 24px; }
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+.row-between { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.muted { color: var(--neutral-500); }
+.small { font-size: var(--fs-sm); }
+.mb { margin-bottom: 16px; }
+.mt { margin-top: 16px; }
+
+/* ============================================================
+   Announcement Bar (McCormick Signature)
+   ============================================================ */
+.announcement-bar {
+  height: var(--announcement-height);
+  background: var(--brand-blue);
+  color: var(--neutral-0);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-heading); font-size: var(--fs-sm); font-weight: 600;
+  overflow: hidden; position: relative; white-space: nowrap;
+}
+.announcement-bar__slider { display: flex; gap: 48px; animation: scroll 20s linear infinite; }
+@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ============================================================
+   Header
+   ============================================================ */
+.header {
+  position: sticky; top: 0; z-index: 50;
+  height: var(--header-height);
+  background: var(--neutral-0);
+  border-bottom: 1px solid var(--neutral-300);
+  box-shadow: var(--shadow-sm);
+}
+.header__inner { max-width: var(--container-max); margin: 0 auto; padding: 0 var(--container-padding); height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.header__logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.header__logo-mark { width: 40px; height: 40px; border-radius: var(--radius-md); background: var(--brand-red); color: var(--neutral-0); display: flex; align-items: center; justify-content: center; font: var(--fs-h2) var(--font-heading); font-weight: 800; }
+.header__logo-text { font-family: var(--font-heading); font-size: var(--fs-h2); font-weight: 800; color: var(--neutral-900); }
+.header__nav { display: flex; gap: 4px; }
+.header__nav-link { padding: 8px 14px; border-radius: var(--radius-md); color: var(--neutral-700); text-decoration: none; font: var(--fs-body) var(--font-heading); font-weight: 600; transition: all var(--transition-fast); }
+.header__nav-link:hover { background: var(--neutral-100); color: var(--neutral-900); text-decoration: none; }
+.header__nav-link.active { background: var(--brand-red-light); color: var(--brand-red); }
+.header__auth { display: flex; align-items: center; gap: 10px; }
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: var(--radius-md); font-family: var(--font-heading); font-size: var(--fs-body); font-weight: 600; padding: 12px 24px; transition: all var(--transition-fast); white-space: nowrap; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn--primary { background: var(--brand-red); color: var(--neutral-0); border: none; }
+.btn--primary:hover:not(:disabled) { background: var(--brand-red-dark); }
+.btn--primary:active:not(:disabled) { transform: translateY(1px); }
+.btn--secondary { background: transparent; color: var(--brand-blue); border: 2px solid var(--brand-blue); }
+.btn--secondary:hover:not(:disabled) { background: var(--brand-blue-light); }
+.btn--ghost { background: transparent; color: var(--neutral-700); border: 1px solid var(--neutral-300); }
+.btn--ghost:hover:not(:disabled) { background: var(--neutral-100); }
+.btn--danger { background: transparent; color: var(--error); border: 1px solid var(--error); }
+.btn--danger:hover:not(:disabled) { background: var(--error-light); }
+.btn--callout { width: 100%; padding: 14px 24px; font-size: var(--fs-body-lg); }
+.btn--sm { padding: 8px 16px; font-size: var(--fs-sm); }
+.btn--lg { padding: 16px 28px; font-size: var(--fs-body-lg); }
+
+/* ============================================================
+   Inputs & Form
+   ============================================================ */
+.field { margin-bottom: 16px; }
+.field__label { display: block; font-family: var(--font-heading); font-size: var(--fs-sm); font-weight: 600; color: var(--neutral-700); margin-bottom: 6px; }
+.field__label .req { color: var(--error); }
+.input { width: 100%; height: 44px; padding: 0 14px; border: 1px solid var(--neutral-300); border-radius: var(--radius-md); background: var(--neutral-0); color: var(--neutral-900); font: var(--fs-body) var(--font-body); transition: border-color var(--transition-fast), box-shadow var(--transition-fast); }
+.input:focus { outline: none; border-color: var(--brand-blue); box-shadow: 0 0 0 3px var(--brand-blue-light); }
+.input--error { border-color: var(--error); }
+.input--error:focus { box-shadow: 0 0 0 3px var(--error-light); }
+.input[readonly] { background: var(--neutral-100); color: var(--neutral-500); }
+.field__error { font-size: var(--fs-xs); color: var(--error); margin-top: 4px; display: none; }
+.field--invalid .field__error { display: block; }
+.field--invalid .input { border-color: var(--error); }
+.counter { font-size: var(--fs-xs); color: var(--neutral-500); text-align: right; margin-top: 4px; }
+
+/* ============================================================
+   Badges & Chips
+   ============================================================ */
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--radius-full); font-family: var(--font-heading); font-size: var(--fs-xs); font-weight: 700; }
+.badge--success { background: var(--success-light); color: var(--success); }
+.badge--warning { background: var(--warning-light); color: var(--warning); }
+.badge--error { background: var(--error-light); color: var(--error); }
+.badge--info { background: var(--brand-blue-light); color: var(--brand-blue); }
+.badge--brand { background: var(--brand-red-light); color: var(--brand-red); }
+
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: var(--radius-full); font-family: var(--font-heading); font-size: var(--fs-sm); font-weight: 700; border: 1px solid var(--neutral-300); background: var(--neutral-0); color: var(--neutral-500); }
+.chip--active { border-color: var(--success); background: var(--success-light); color: var(--success); }
+
+/* ============================================================
+   Stepper (McCormick-style)
+   ============================================================ */
+.stepper { display: flex; gap: 0; margin: 16px 0 24px; }
+.step { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; }
+.step::before { content: ''; position: absolute; top: 16px; left: -50%; width: 100%; height: 2px; background: var(--neutral-300); z-index: 0; }
+.step:first-child::before { display: none; }
+.step--completed::before { background: var(--success); }
+.step__dot { width: 32px; height: 32px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-size: var(--fs-sm); font-weight: 700; background: var(--neutral-300); color: var(--neutral-500); border: 2px solid transparent; z-index: 1; transition: all var(--transition-base); }
+.step--active .step__dot { background: var(--brand-red); color: var(--neutral-0); border-color: var(--brand-red-light); box-shadow: 0 0 0 4px var(--brand-red-light); }
+.step--completed .step__dot { background: var(--success); color: var(--neutral-0); border-color: var(--success-light); }
+.step__label { font-family: var(--font-heading); font-size: var(--fs-xs); font-weight: 600; color: var(--neutral-500); text-align: center; }
+.step--active .step__label { color: var(--brand-red); }
+.step--completed .step__label { color: var(--success); }
+
+/* ============================================================
+   Mega Nav Pattern (Category Selection)
+   ============================================================ */
+.meganav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.meganav__item { display: flex; flex-direction: column; align-items: center; text-align: center; text-decoration: none; color: inherit; gap: 10px; padding: 16px; border: 2px solid var(--neutral-300); border-radius: var(--radius-lg); transition: all var(--transition-fast); background: var(--neutral-0); }
+.meganav__item:hover { border-color: var(--brand-blue); background: var(--brand-blue-light); }
+.meganav__item--selected { border-color: var(--brand-red); background: var(--brand-red-light); }
+.meganav__item--selected .meganav__item-title { color: var(--brand-red); }
+.meganav__item-image { width: 72px; height: 72px; border-radius: var(--radius-md); background: var(--neutral-100); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+.meganav__item-title { font-family: var(--font-heading); font-size: var(--fs-body); font-weight: 600; color: var(--neutral-900); }
+.meganav__item-count { font-size: var(--fs-xs); color: var(--neutral-500); }
+.meganav__shop-all { grid-column: 1 / -1; justify-self: start; margin-top: 8px; }
+
+/* ============================================================
+   Category Grid (Alternative to Mega Nav)
+   ============================================================ */
+.cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.cat-card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 2px solid var(--neutral-300); border-radius: var(--radius-lg); background: var(--neutral-0); cursor: pointer; transition: all var(--transition-fast); user-select: none; }
+.cat-card:hover { border-color: var(--brand-blue); background: var(--brand-blue-light); }
+.cat-card--selected { border-color: var(--brand-red); background: var(--brand-red-light); }
+.cat-card__icon { font-size: 22px; }
+.cat-card__name { font-family: var(--font-heading); font-size: var(--fs-body); font-weight: 700; line-height: 1.25; color: var(--neutral-900); }
+.cat-card__count { font-size: var(--fs-xs); color: var(--neutral-500); margin-top: 2px; }
+
+/* ============================================================
+   Provider/Supplier Cards
+   ============================================================ */
+.provider-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.provider-card { border: 2px solid var(--neutral-300); border-radius: var(--radius-lg); padding: 16px; background: var(--neutral-0); cursor: pointer; transition: all var(--transition-fast); }
+.provider-card:hover { border-color: var(--brand-blue); box-shadow: var(--shadow-md); }
+.provider-card--selected { border-color: var(--brand-red); background: var(--brand-red-light); box-shadow: 0 0 0 3px var(--brand-red-light); }
+.provider-card--disabled { opacity: 0.55; pointer-events: none; }
+.provider-card__header { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+.provider-card__avatar { width: 44px; height: 44px; border-radius: var(--radius-md); background: linear-gradient(135deg, var(--brand-red), var(--brand-red-dark)); color: var(--neutral-0); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-size: var(--fs-h2); font-weight: 800; }
+.provider-card__name { font-family: var(--font-heading); font-size: var(--fs-body); font-weight: 700; color: var(--neutral-900); }
+.provider-card__coverage { font-size: var(--fs-xs); font-weight: 700; border-radius: var(--radius-full); padding: 3px 9px; white-space: nowrap; }
+.provider-card__coverage--high { background: var(--success-light); color: var(--success); }
+.provider-card__coverage--mid { background: var(--warning-light); color: var(--warning); }
+.provider-card__coverage--low { background: var(--neutral-100); color: var(--neutral-500); }
+.provider-card__cats { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.mini-tag { font-size: var(--fs-xs); font-weight: 700; background: var(--neutral-100); color: var(--neutral-700); border-radius: var(--radius-sm); padding: 3px 8px; }
+.provider-card__checkbox-row { display: flex; align-items: flex-start; gap: 10px; }
+.provider-card__checkbox { margin-top: 3px; accent-color: var(--brand-red); width: 18px; height: 18px; flex-shrink: 0; }
+
+/* ============================================================
+   Slider (Availability Filter)
+   ============================================================ */
+.slider-box { padding: 18px 20px; margin-bottom: 18px; background: var(--neutral-0); border: 1px solid var(--neutral-300); border-radius: var(--radius-lg); }
+.slider-box__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.slider-box__label { font-family: var(--font-heading); font-size: var(--fs-sm); font-weight: 600; color: var(--neutral-700); }
+.slider-box__value { font-family: var(--font-heading); font-weight: 800; color: var(--brand-red); background: var(--brand-red-light); border-radius: var(--radius-md); padding: 4px 10px; font-size: var(--fs-sm); }
+input[type="range"] { width: 100%; accent-color: var(--brand-red); height: 6px; border-radius: 3px; }
+.slider-scale { display: flex; justify-content: space-between; font-size: var(--fs-xs); color: var(--neutral-500); margin-top: 8px; }
+
+/* ============================================================
+   Table
+   ============================================================ */
+.table { width: 100%; border-collapse: collapse; font-size: var(--fs-body); }
+.table th, .table td { padding: 12px 14px; border-bottom: 1px solid var(--neutral-300); text-align: left; vertical-align: middle; }
+.table th { color: var(--neutral-500); background: var(--neutral-100); font-family: var(--font-heading); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; }
+.table tr:last-child td { border-bottom: none; }
+.table--sticky thead th { position: sticky; top: 0; z-index: 10; }
+.table__coverage-bar { width: 110px; height: 7px; border-radius: var(--radius-full); background: var(--neutral-300); overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; }
+.table__coverage-bar-fill { display: block; height: 100%; border-radius: var(--radius-full); background: var(--brand-red); transition: width 0.3s ease; }
+.table__row--winner { background: var(--success-light); }
+.table__row--winner td:first-child { border-left: 4px solid var(--success); }
+
+/* ============================================================
+   Quantity Control
+   ============================================================ */
+.qty { display: inline-flex; align-items: center; border: 1px solid var(--neutral-300); border-radius: var(--radius-md); overflow: hidden; }
+.qty__btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--neutral-100); font-family: var(--font-heading); font-weight: 800; font-size: var(--fs-body); color: var(--neutral-700); transition: background var(--transition-fast); }
+.qty__btn:hover { background: var(--brand-red-light); color: var(--brand-red); }
+.qty__input { width: 56px; height: 36px; border: none; text-align: center; font-family: var(--font-heading); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--neutral-900); background: var(--neutral-0); -moz-appearance: textfield; }
+.qty__input::-webkit-outer-spin-button, .qty__input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* ============================================================
+   Icon Button
+   ============================================================ */
+.icon-btn { width: 36px; height: 36px; border-radius: var(--radius-md); border: 1px solid var(--neutral-300); background: var(--neutral-0); display: flex; align-items: center; justify-content: center; color: var(--neutral-500); font-size: var(--fs-body); transition: all var(--transition-fast); }
+.icon-btn:hover { background: var(--error-light); color: var(--error); border-color: var(--error); }
+
+/* ============================================================
+   Tooltip
+   ============================================================ */
+.tooltip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border: 1px solid var(--neutral-300); border-radius: 50%; font-size: var(--fs-xs); color: var(--neutral-500); cursor: help; }
+.tooltip::after { content: attr(data-tip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); min-width: 200px; max-width: 280px; background: var(--neutral-900); color: var(--neutral-0); padding: 8px 10px; border-radius: var(--radius-md); font-size: var(--fs-xs); line-height: 1.4; z-index: 20; white-space: normal; opacity: 0; visibility: hidden; transition: opacity var(--transition-fast), visibility var(--transition-fast); pointer-events: none; }
+.tooltip:hover::after { opacity: 1; visibility: visible; }
+
+/* ============================================================
+   Alert / Banner
+   ============================================================ */
+.alert { display: flex; gap: 10px; align-items: flex-start; padding: 12px 16px; border-radius: var(--radius-md); font-size: var(--fs-sm); line-height: 1.4; }
+.alert--warning { background: var(--warning-light); border: 1px solid var(--warning); color: #7A4D00; }
+.alert--error { background: var(--error-light); border: 1px solid var(--error); color: var(--error); }
+.alert--success { background: var(--success-light); border: 1px solid var(--success); color: var(--success); }
+.alert--info { background: var(--brand-blue-light); border: 1px solid var(--brand-blue); color: var(--brand-blue); }
+.alert__icon { flex-shrink: 0; font-size: var(--fs-body); }
+
+/* ============================================================
+   Modal
+   ============================================================ */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 24px; animation: fadeIn 0.15s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal { background: var(--neutral-0); border-radius: var(--radius-xl); box-shadow: var(--shadow-xl); max-width: 520px; width: 100%; padding: 28px; position: relative; max-height: 90vh; overflow: auto; animation: pop 0.18s ease; }
+@keyframes pop { from { transform: scale(0.96); opacity: 0.4; } to { transform: scale(1); opacity: 1; } }
+.modal--wide { max-width: 880px; }
+.modal__close { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: var(--radius-md); background: var(--neutral-100); border: none; color: var(--neutral-500); font-size: var(--fs-body); display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); }
+.modal__close:hover { background: var(--neutral-300); color: var(--neutral-900); }
+.modal__title { font-size: var(--fs-h2); margin-bottom: 8px; }
+.modal__subtitle { color: var(--neutral-500); font-size: var(--fs-body); margin-bottom: 20px; }
+.modal__actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; flex-wrap: wrap; }
+
+/* ============================================================
+   Toast
+   ============================================================ */
+.toast-container { position: fixed; top: calc(var(--header-height) + var(--announcement-height) + 16px); right: 16px; z-index: 200; display: flex; flex-direction: column; gap: 10px; max-width: 380px; }
+.toast { display: flex; gap: 10px; align-items: flex-start; background: var(--neutral-0); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: 13px 16px; font-size: var(--fs-sm); border-left: 4px solid var(--brand-blue); animation: slideIn 0.2s ease; }
+.toast--success { border-left-color: var(--success); }
+.toast--error { border-left-color: var(--error); }
+.toast--warning { border-left-color: var(--warning); }
+@keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ============================================================
+   Journey Panel (Right Sidebar)
+   ============================================================ */
+.journey { position: fixed; right: 18px; bottom: 18px; z-index: 90; width: 340px; }
+.journey__card { background: var(--neutral-0); border: 1px solid var(--neutral-300); border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); overflow: hidden; }
+.journey__header { display: flex; gap: 10px; align-items: center; padding: 12px 14px; background: linear-gradient(135deg, var(--brand-red), var(--brand-red-dark)); color: var(--neutral-0); cursor: pointer; }
+.journey__avatar { font-size: 24px; }
+.journey__title { font-family: var(--font-heading); font-size: var(--fs-sm); font-weight: 700; display: block; }
+.journey__subtitle { font-size: var(--fs-xs); opacity: 0.85; }
+.journey__toggle { margin-left: auto; background: rgba(255,255,255,0.18); border: none; color: var(--neutral-0); border-radius: var(--radius-sm); padding: 4px 9px; font-size: var(--fs-xs); }
+.journey__body { padding: 12px 14px; max-height: 320px; overflow: auto; }
+.journey__step { display: flex; gap: 9px; padding: 6px 0; font-size: var(--fs-sm); color: var(--neutral-500); align-items: flex-start; }
+.journey__step--done { color: var(--neutral-700); }
+.journey__step--done .journey__step-dot { background: var(--success-light); color: var(--success); }
+.journey__step--current { color: var(--neutral-900); font-weight: 700; }
+.journey__step--current .journey__step-dot { background: var(--brand-red); color: var(--neutral-0); }
+.journey__step-dot { width: 20px; height: 20px; border-radius: 50%; background: var(--neutral-300); color: var(--neutral-500); font-size: var(--fs-xs); font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.journey__desc { font-size: var(--fs-xs); color: var(--neutral-500); padding: 8px 0 4px; border-top: 1px dashed var(--neutral-300); margin-top: 6px; }
+.journey__next { width: 100%; margin-top: 8px; }
+.journey--min .journey__body { display: none; }
+
+/* ============================================================
+   KPI Cards
+   ============================================================ */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+.kpi-card { padding: 16px 18px; background: var(--neutral-0); border: 1px solid var(--neutral-300); border-radius: var(--radius-lg); }
+.kpi-card--winner { border-color: var(--success); background: var(--success-light); }
+.kpi-card__label { font-family: var(--font-heading); font-size: var(--fs-xs); font-weight: 700; color: var(--neutral-500); text-transform: uppercase; letter-spacing: 0.5px; }
+.kpi-card__value { font-family: var(--font-heading); font-size: var(--fs-h2); font-weight: 800; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.kpi-card--winner .kpi-card__value { color: var(--success); }
+.kpi-card__sub { font-size: var(--fs-xs); color: var(--neutral-500); margin-top: 2px; }
+
+/* ============================================================
+   A4 Sheet (PDF Preview / Print)
+   ============================================================ */
+.a4-sheet { background: var(--neutral-0); color: #111; border: 1px solid var(--neutral-300); box-shadow: var(--shadow-sm); padding: 40px 44px; font-size: 13.5px; line-height: 1.55; }
+.a4-head { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid var(--neutral-900); padding-bottom: 14px; margin-bottom: 16px; }
+.a4-head__brand { font-family: var(--font-heading); font-size: 22px; font-weight: 800; letter-spacing: 0.5px; }
+.a4-head__brand small { display: block; font-family: var(--font-heading); font-size: 10.5px; font-weight: 600; color: #666; letter-spacing: 1.2px; }
+.a4-head__doc { text-align: right; font-size: 11.5px; color: #444; }
+.a4-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; font-size: 12.5px; margin-bottom: 16px; color: #333; }
+.a4-meta b { color: #000; }
+.a4-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+.a4-table th { background: #f1f2f4; text-align: left; font-family: var(--font-heading); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 10px; border: 1px solid #d5d9de; }
+.a4-table td { padding: 8px 10px; border: 1px solid #d5d9de; font-size: 12.5px; }
+.a4-table td.num, .a4-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.a4-total { display: flex; justify-content: flex-end; gap: 14px; align-items: center; font-size: 15px; padding: 10px; border: 2px solid var(--neutral-900); border-radius: 6px; margin-bottom: 14px; }
+.a4-total__label { font-family: var(--font-heading); font-size: 13px; font-weight: 800; letter-spacing: 0.8px; color: var(--neutral-500); text-transform: uppercase; }
+.a4-total__value { font-family: var(--font-heading); font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.a4-foot { font-size: 10.5px; color: #666; border-top: 1px solid #d5d9de; padding-top: 10px; display: flex; justify-content: space-between; }
+@media print {
+  .header, .announcement-bar, .journey, .toast-container, .modal-overlay, .no-print { display: none !important; }
+  body { background: #fff; }
+  .a4-sheet { border: none; box-shadow: none; padding: 0; }
+  @page { size: A4; margin: 13mm; }
+}
+
+/* ============================================================
+   Screen Management
+   ============================================================ */
+.screen { display: none; }
+.screen--active { display: block; }
+.hidden { display: none !important; }
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 1023px) {
+  .meganav { grid-template-columns: repeat(2, 1fr); }
+  .cat-grid { grid-template-columns: repeat(2, 1fr); }
+  .provider-grid { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .header__nav { display: none; }
+  .journey { display: none; }
+  :root { --container-padding: 16px; }
+}
+</style>
+</head>
+<body>
+<noscript><p style="padding:20px">Este protótipo requer JavaScript.</p></noscript>
+
+<!-- Announcement Bar -->
+<div class="announcement-bar" aria-live="polite">
+  <div class="announcement-bar__slider">
+    <span>Frete grátis em compras acima de R$ 150</span>
+    <span>Cadastre-se e ganhe 10% de desconto na primeira lista</span>
+    <span>Frete grátis em compras acima de R$ 150</span>
+    <span>Cadastre-se e ganhe 10% de desconto na primeira lista</span>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="header" role="banner">
+  <div class="header__inner">
+    <a class="header__logo" href="#" data-action="nav-home" aria-label="COBECO - Início">
+      <span class="header__logo-mark">C</span>
+      <span class="header__logo-text">COBECO</span>
+    </a>
+    <nav class="header__nav" aria-label="Navegação principal">
+      <a class="header__nav-link active" href="#" data-action="nav-home">Início</a>
+      <a class="header__nav-link" href="#" data-action="nav-nova">Nova lista</a>
+      <a class="header__nav-link" href="#" data-action="nav-listas" id="nav-listas" style="display:none">Minhas listas</a>
+      <a class="header__nav-link" href="#" data-action="nav-perfil" id="nav-perfil" style="display:none">Perfil</a>
+    </nav>
+    <div class="header__auth" id="auth-area">
+      <button class="btn btn--ghost btn--sm" data-action="page-login">Entrar</button>
+      <button class="btn btn--primary btn--sm" data-action="page-cadastro">Criar conta</button>
+    </div>
+  </div>
+</header>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+<!-- Main Content -->
+<main id="main" role="main"></main>
+
+<!-- Footer -->
+<footer class="footer no-print" style="border-top:1px solid var(--neutral-300); background:var(--neutral-0); padding:18px 0; margin-top:32px;">
+  <div class="container row-between" style="font-size:var(--fs-sm); color:var(--neutral-500);">
+    <span>© 2026 COBECO · MVP acadêmico v3.2 · Design inspirado no McCormick.com</span>
+    <span>🔒 JWT stateless · 📄 PDF via ReportLab · ⚡ ACID garantido</span>
+  </div>
+</footer>
+
+<!-- Modal Root -->
+<div id="modal-root"></div>
+
+<!-- Journey Panel -->
+<div class="journey" id="journey"></div>
+
+<!-- Print Area -->
+<div id="print-area" style="display:none"></div>
+
+<!-- ============================================================
+   TEMPLATE: Home / Landing
+   ============================================================ -->
+<template id="tpl-home">
+<div class="screen screen--active" id="screen-home">
+  <div class="container page">
+    <!-- Hero -->
+    <section class="card" style="border-radius:var(--radius-xl); overflow:hidden; background:linear-gradient(135deg,#1A1A2E 0%,#2D2D4A 55%,var(--brand-red) 100%); color:var(--neutral-0); box-shadow:var(--shadow-lg);">
+      <div style="padding:48px; display:grid; grid-template-columns:1.15fr .85fr; gap:40px; align-items:center;">
+        <div>
+          <span class="badge badge--info" style="margin-bottom:16px; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25);">Comparador inteligente · MVP v3.2</span>
+          <h1 style="font-size:var(--fs-display); line-height:1.1; margin-bottom:14px; font-weight:800;">Compras mais inteligentes,<br>economia de verdade.</h1>
+          <p style="color:rgba(255,255,255,.75); font-size:var(--fs-body-lg); margin-bottom:26px; max-width:520px;">Crie sua lista, filtre fornecedores por categoria, compare preço e disponibilidade em uma única tela — e exporte a lista vencedora em PDF. Sem cadastro obrigatório.</p>
+          <div class="cta-row" style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn btn--primary btn--lg" data-action="nav-nova" style="background:var(--neutral-0); color:var(--brand-red-dark);">Criar minha lista →</button>
+            <button class="btn btn--ghost btn--lg" data-action="page-login" style="color:var(--neutral-0); border-color:rgba(255,255,255,.45);">Entrar na minha conta</button>
+          </div>
+        </div>
+        <div class="mini-compare" style="background:var(--neutral-0); color:var(--neutral-900); border-radius:var(--radius-xl); padding:20px; box-shadow:0 18px 40px rgba(0,0,0,.28); min-width:360px; margin-left:auto;">
+          <h4 style="font-size:var(--fs-sm); color:var(--neutral-500); margin-bottom:12px; font-weight:700;">Comparação da sua lista · 6 produtos · 3 fornecedores</h4>
+          <div class="mini-row" style="display:flex; justify-content:space-between; align-items:center; padding:9px 10px; border-radius:var(--radius-md); font-size:var(--fs-sm); margin-bottom:6px; border:1px solid var(--neutral-300); background:var(--success-light); border-color:var(--success);">
+            <span>🏆 Carrefour · 100% disponível</span>
+            <b style="font-variant-numeric:tabular-nums;">R$ 158,47</b>
+          </div>
+          <div class="mini-row" style="display:flex; justify-content:space-between; align-items:center; padding:9px 10px; border-radius:var(--radius-md); font-size:var(--fs-sm); margin-bottom:6px; border:1px solid var(--neutral-300);">
+            <span>Pão de Açúcar · 100% disponível</span>
+            <b style="font-variant-numeric:tabular-nums;">R$ 173,80</b>
+          </div>
+          <div class="mini-row" style="display:flex; justify-content:space-between; align-items:center; padding:9px 10px; border-radius:var(--radius-md); font-size:var(--fs-sm); margin-bottom:6px; border:1px solid var(--neutral-300);">
+            <span>Extra · 83% disponível ⚠ 1 ausente</span>
+            <b style="font-variant-numeric:tabular-nums;">R$ 118,95</b>
+          </div>
+          <div class="mini-foot" style="font-size:var(--fs-xs); color:var(--neutral-500); margin-top:10px; display:flex; justify-content:space-between;">
+            <span>Melhor oferta = maior cobertura</span>
+            <span>desempate: menor total</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Value Props -->
+    <section class="value-cards" style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:26px;">
+      <div class="card card-pad vcard"><div class="vcard__icon" style="width:44px; height:44px; border-radius:var(--radius-md); background:var(--brand-red-light); display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:12px; color:var(--brand-red);">🏷️</div><h3 style="font-size:var(--fs-h3); margin-bottom:6px;">Pré-filtro por categorias</h3><p style="font-size:var(--fs-sm); color:var(--neutral-500);">Escolha entre 11 categorias macro para ver apenas fornecedores relevantes (RF12).</p></div>
+      <div class="card card-pad vcard"><div class="vcard__icon" style="width:44px; height:44px; border-radius:var(--radius-md); background:var(--brand-blue-light); display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:12px; color:var(--brand-blue);">📊</div><h3 style="font-size:var(--fs-h3); margin-bottom:6px;">Comparação clara</h3><p style="font-size:var(--fs-sm); color:var(--neutral-500);">Tabela flat por fornecedor: preço total, % de cobertura e itens ausentes. Melhor oferta destacada (RF15/RF16).</p></div>
+      <div class="card card-pad vcard"><div class="vcard__icon" style="width:44px; height:44px; border-radius:var(--radius-md); background:var(--warning-light); display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:12px; color:var(--warning);">📄</div><h3 style="font-size:var(--fs-h3); margin-bottom:6px;">PDF da lista vencedora</h3><p style="font-size:var(--fs-sm); color:var(--neutral-500);">Exporte a lista do fornecedor campeão com itens precificados e total consolidado (RF17). Funciona sem login.</p></div>
+    </section>
+
+    <!-- How it works -->
+    <section class="card card-pad mt"><div class="row-between mb"><h2 style="font-size:var(--fs-h2)">Como funciona</h2><span class="muted small">Fluxo principal · visitante percorre tudo sem autenticação</span></div>
+      <div class="howto" style="display:flex; gap:0; margin-top:18px; align-items:stretch;">
+        <div class="how" style="flex:1; text-align:center; padding:16px 10px; position:relative;"><div class="how__number" style="width:32px; height:32px; margin:0 auto 8px; border-radius:50%; background:var(--brand-red-light); color:var(--brand-red); font-weight:800; display:flex; align-items:center; justify-content:center; font-size:var(--fs-sm);">1</div><b style="font-size:var(--fs-sm);">Categorias</b><span style="font-size:var(--fs-xs); color:var(--neutral-500); display:block;">Pré-filtro</span></div>
+        <div class="how" style="flex:1; text-align:center; padding:16px 10px; position:relative;"><div class="how__number" style="width:32px; height:32px; margin:0 auto 8px; border-radius:50%; background:var(--neutral-300); color:var(--neutral-500); font-weight:800; display:flex; align-items:center; justify-content:center; font-size:var(--fs-sm);">2</div><b style="font-size:var(--fs-sm);">Lista</b><span style="font-size:var(--fs-xs); color:var(--neutral-500); display:block;">Produtos + qtd</span></div>
+        <div class="how" style="flex:1; text-align:center; padding:16px 10px; position:relative;"><div class="how__number" style="width:32px; height:32px; margin:0 auto 8px; border-radius:50%; background:var(--neutral-300); color:var(--neutral-500); font-weight:800; display:flex; align-items:center; justify-content:center; font-size:var(--fs-sm);">3</div><b style="font-size:var(--fs-sm);">Fornecedores</b><span style="font-size:var(--fs-xs); color:var(--neutral-500); display:block;">Seleção 2–10</span></div>
+        <div class="how" style="flex:1; text-align:center; padding:16px 10px; position:relative;"><div class="how__number" style="width:32px; height:32px; margin:0 auto 8px; border-radius:50%; background:var(--neutral-300); color:var(--neutral-500); font-weight:800; display:flex; align-items:center; justify-content:center; font-size:var(--fs-sm);">4</div><b style="font-size:var(--fs-sm);">Comparar</b><span style="font-size:var(--fs-xs); color:var(--neutral-500); display:block;">Tabela flat</span></div>
+        <div class="how" style="flex:1; text-align:center; padding:16px 10px; position:relative;"><div class="how__number" style="width:32px; height:32px; margin:0 auto 8px; border-radius:50%; background:var(--neutral-300); color:var(--neutral-500); font-weight:800; display:flex; align-items:center; justify-content:center; font-size:var(--fs-sm);">5</div><b style="font-size:var(--fs-sm);">Exportar</b><span style="font-size:var(--fs-xs); color:var(--neutral-500); display:block;">PDF / Imprimir</span></div>
+      </div>
+    </section>
+
+    <!-- Persona -->
+    <section class="card" style="margin-top:26px; background:var(--warning-light); border-color:var(--warning); border-radius:var(--radius-lg); overflow:hidden;">
+      <div style="display:flex; gap:16px; align-items:center; padding:20px 24px;">
+        <span class="persona__avatar" style="font-size:36px;">👩‍🍳</span>
+        <div style="flex:1"><b style="font-size:var(--fs-body);">Conheça Mariana Duarte, 34 — dona do restaurante "Tempero da Mari" (Taquaritinga/SP)</b>
+        <p style="font-size:var(--fs-sm); color:#7A4D00; margin-top:4px;">Compra semanal de insumos em 3 mercados. Sem o COBECO: planilha, telefone e risco de escolher o "mais barato" incompleto. Acompanhe a jornada dela no painel ao lado →</p></div>
+        <button class="btn btn--primary" data-action="nav-nova">Iniciar jornada →</button>
+      </div>
+    </section>
+  </div>
+</div>
+</template>
+
+<!-- ============================================================
+   TEMPLATE: Passo 1 - Categorias (Mega Nav Style)
+   ============================================================ -->
+<template id="tpl-categorias">
+<div class="screen" id="screen-categorias">
+  <div class="container page">
+    <div class="page-head"><span class="kicker">Passo 1 de 5 · Pré-filtro</span><h1>Selecione as categorias</h1><p class="muted">Escolha uma ou mais categorias macro para filtrar os fornecedores (RF12). A seleção fica apenas em memória (transitória).</p></div>
+    <div class="stepper" aria-label="Progresso do fluxo">
+      <div class="step step--active"><div class="step__dot">1</div><div class="step__label">Categorias</div></div>
+      <div class="step"><div class="step__dot">2</div><div class="step__label">Lista</div></div>
+      <div class="step"><div class="step__dot">3</div><div class="step__label">Fornecedores</div></div>
+      <div class="step"><div class="step__dot">4</div><div class="step__label">Comparação</div></div>
+      <div class="step"><div class="step__dot">5</div><div class="step__label">Lista vencedora</div></div>
+    </div>
+    <div class="card card-pad">
+      <div class="toolbar">
+        <span class="chip" id="cat-count">0 categoria(s) selecionada(s) · 11 disponíveis</span>
+        <div><button class="btn btn--ghost btn--sm" data-action="cat-all">Selecionar todas</button><button class="btn btn--ghost btn--sm" data-action="cat-none">Limpar</button></div>
+      </div>
+      <div class="meganav" role="group" aria-label="Categorias macro" id="category-meganav">
+        <!-- Populated by JS -->
+      </div>
+      <div class="alert alert--info mt" style="font-size:var(--fs-sm);"><span class="alert__icon">ℹ️</span><strong>Como funciona:</strong> os fornecedores da próxima etapa pertencem às categorias selecionadas. Ex.: "Mercado" + "Eletrodomésticos" → Carrefour, Extra, Pão de Açúcar, Magazine Luiza, Casas Bahia…</div>
+      <div class="row-between mt">
+        <button class="btn btn--ghost" data-action="nav-home">← Voltar</button>
+        <div><button class="btn btn--primary btn--lg" id="btn-to-lista" data-action="to-lista" disabled>Continuar para a lista →</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+</template>
+
+<!-- ============================================================
+   TEMPLATE: Passo 2 - Lista
+   ============================================================ -->
+<template id="tpl-lista">
+<div class="screen" id="screen-lista">
+  <div class="container page">
+    <div class="page-head"><span class="kicker">Passo 2 de 5 · Lista de compras</span><h1>Monte sua lista</h1><p class="muted">Adicione produtos do catálogo e ajuste quantidades (1–9999). Armazenamento: <b style="color:var(--warning);">em memória / sessionStorage</b> até salvar.</p></div>
+    <div class="stepper" aria-label="Progresso do fluxo">
+      <div class="step step--completed"><div class="step__dot">✓</div><div class="step__label">Categorias</div></div>
+      <div class="step step--active"><div class="step__dot">2</div><div class="step__label">Lista</div></div>
+      <div class="step"><div class="step__dot">3</div><div class="step__label">Fornecedores</div></div>
+      <div class="step"><div class="step__dot">4</div><div class="step__label">Comparação</div></div>
+      <div class="step"><div class="step__dot">5</div><div class="step__label">Lista vencedora</div></div>
+    </div>
+    <div class="two-col" style="display:grid; grid-template-columns:1fr 340px; gap:24px; align-items:start;">
+      <div class="card card-pad">
+        <div class="row-between mb">
+          <span class="chip chip--active" id="storage-mode">⚠ MODO EFÊMERO (visitante)</span>
+          <button class="btn btn--ghost btn--sm" data-action="demo-lista">⚡ Preencher demo (lista da Mariana)</button>
+        </div>
+        <div class="field" id="f-nome">
+          <label class="field__label">Nome da lista <span class="req">*</span></label>
+          <input type="text" id="nome-lista" maxlength="100" value="Compras do Mês" placeholder="Ex.: Compras do Mês" class="input" autocomplete="off">
+          <div class="counter"><span id="nome-count">15</span>/100</div>
+          <div class="field__error">Informe um nome para a lista.</div>
+        </div>
+        <div class="field">
+          <label class="field__label">Adicionar produto — autocomplete (mín. 2 caracteres)</label>
+          <div class="searchbox" style="position:relative;">
+            <input type="text" id="busca" placeholder="Digite para buscar no catálogo… ex.: arroz" class="input" autocomplete="off" role="combobox" aria-expanded="false">
+            <div id="sug-box" class="sug" style="position:absolute; top:calc(100% + 6px); left:0; right:0; background:var(--neutral-0); border:1px solid var(--neutral-300); border-radius:var(--radius-lg); box-shadow:var(--shadow-lg); z-index:30; overflow:hidden; display:none;"></div>
+          </div>
+        </div>
+        <h3 style="font-size:var(--fs-h3); margin:8px 0 10px;">Itens da lista</h3>
+        <div id="itens-box"></div>
+      </div>
+      <aside class="card card-pad" style="position:sticky; top:calc(var(--header-height) + var(--announcement-height) + 24px);">
+        <h3 style="font-size:var(--fs-h3); margin-bottom:14px;">Resumo</h3>
+        <div style="display:flex; justify-content:space-between; font-size:var(--fs-sm); padding:8px 0; border-bottom:1px dashed var(--neutral-300);"><span class="muted">Produtos</span><b id="r-prod" style="font-variant-numeric:tabular-nums;">6</b></div>
+        <div style="display:flex; justify-content:space-between; font-size:var(--fs-sm); padding:8px 0; border-bottom:1px dashed var(--neutral-300);"><span class="muted">Unidades totais</span><b id="r-un" style="font-variant-numeric:tabular-nums;">17</b></div>
+        <div style="display:flex; justify-content:space-between; font-size:var(--fs-sm); padding:8px 0; border-bottom:1px dashed var(--neutral-300);"><span class="muted">Categorias filtradas</span><b id="r-cats" style="color:var(--success);">1</b></div>
+        <div style="display:flex; justify-content:space-between; font-size:var(--fs-sm); padding:8px 0; border-bottom:1px dashed var(--neutral-300);"><span class="muted">Modo</span><span id="r-mode" class="chip">Efêmero</span></div>
+        <div style="display:flex; flex-direction:column; gap:10px; margin-top:16px;">
+          <button class="btn btn--primary btn--lg" id="btn-to-forn" data-action="to-fornecedores" style="width:100%;">Comparar preços →</button>
+          <button class="btn btn--ghost" data-action="salvar-lista" style="width:100%;">💾 Salvar lista 🔒</button>
+          <button class="btn btn--ghost" data-action="export-pdf" style="width:100%;">📄 Exportar PDF</button>
+        </div>
+        <div class="alert alert--info mt" style="font-size:var(--fs-xs);"><span class="alert__icon">💡</span>Visitantes podem comparar e exportar sem conta. A autenticação é exigida <b>apenas para salvar</b> (RF08) — o rascunho é preservado durante o login.</div>
+      </aside>
+    </div>
+  </div>
+</div>
+</template>
+
+<!-- ============================================================
+   TEMPLATE: Passo 3 - Fornecedores
+   ============================================================ -->
+<template id="tpl-fornecedores">
+<div class="screen" id="screen-fornecedores">
+  <div class="container page">
+    <div class="page-head"><span class="kicker">Passo 3 de 5 · Fornecedores</span><h1>Escolha os fornecedores</h1><p class="muted">Selecione de <b>2 a 10</b> fornecedores (RF13). Apenas fornecedores das categorias escolhidas são exibidos. O % indica a cobertura da sua lista.</p></div>
+    <div class="stepper" aria-label="Progresso do fluxo">
+      <div class="step step--completed"><div class="step__dot">✓</div><div class="step__label">Categorias</div></div>
+      <div class="step step--completed"><div class="step__dot">✓</div><div class="step__label">Lista</div></div>
+      <div class="step step--active"><div class="step__dot">3</div><div class="step__label">Fornecedores</div></div>
+      <div class="step"><div class="step__dot">4</div><div class="step__label">Comparação</div></div>
+      <div class="step"><div class="step__dot">5</div><div class="step__label">Lista vencedora</div></div>
+    </div>
+    <div class="card slider-box">
+      <div class="slider-box__head">
+        <label class="slider-box__label"><b>Filtro de disponibilidade (UC05)</b> — mostrar apenas fornecedores com cobertura mínima da lista</label>
+        <output class="slider-box__value" id="slider-out">0%</output>
+      </div>
+      <input type="range" id="slider-disp" min="0" max="100" step="5" value="0" aria-label="Disponibilidade mínima">
+      <div class="slider-scale"><span>0% (todos)</span><span>50%</span><span>100%</span></div>
+    </div>
+    <div class="card card-pad">
+      <div class="toolbar">
+        <span class="chip chip--active" id="forn-count">0 selecionado(s) · mín 2 · máx 10</span>
+        <div><button class="btn btn--ghost btn--sm" data-action="forn-all">Selecionar todos</button><button class="btn btn--ghost btn--sm" data-action="forn-clear">Limpar</button></div>
+      </div>
+      <div class="provider-grid" id="provider-grid"></div>
+      <div class="row-between mt">
+        <button class="btn btn--ghost" data-action="goto-step" data-step="lista">← Voltar à lista</button>
+        <div><button class="btn btn--primary btn--lg" id="btn-calc" data-action="calcular" disabled>Calcular orçamento →</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+</template>
+
+<!-- ============================================================
+   TEMPLATE: Passo 4 - Comparação
+   ============================================================ -->
+<template id="tpl-comparacao">
+<div class="screen" id="screen-comparacao">
+  <div class="container page">
+    <div class="page-head"><span class="kicker">Passo 4 de 5 · Resultados</span><h1>Comparação de preços</h1><p class="muted">Lista "Compras do Mês" · 6 itens · 3 fornecedores. Ordenado pelo menor total (RF15); melhor oferta destacada (RF16).</p></div>
+    <div class="stepper" aria-label="Progresso do fluxo">
+      <div class="step step--completed"><div class="step__dot">✓</div><div class="step__label">Categorias</div></div>
+      <div class="step step--completed"><div class="step__dot">✓</div><div class="step__label">Lista</div></div>
+      <div class="step step--completed"><div class="step__dot">✓</div><div class="step__label">Fornecedores</div></div>
+      <div class="step step--active"><div class="step__dot">4</div><div class="step__label">Comparação</div></div>
+      <div class="step"><div class="step__dot">5</div><div class="step__label">Lista vencedora</div></div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-card--winner"><div class="kpi-card__label">🏆 Melhor oferta</div><div class="kpi-card__value">Carrefour</div><div class="kpi-card__sub">R$ 158,47 · 100% da lista</div></div>
+      <div class="kpi-card"><div class="kpi-card__label">💰 Menor preço</div><div class="kpi-card__value">R$ 118,95</div><div class="kpi-card__sub">pode ter itens ausentes</div></div>
+      <div class="kpi-card"><div class="kpi-card__label">📊 Economia potencial</div><div class="kpi-card__value">R$ 15,33</div><div class="kpi-card__sub">vs. maior total cotado</div></div>
+      <div class="kpi-card"><div class="kpi-card__label">Disponibilidade média</div><div class="kpi-card__value">94%</div><div class="kpi-card__sub">3 fornecedores comparados</div></div>
+    </div>
+    <div class="card" style="overflow:auto;">
+      <table class="table table--sticky">
+        <thead><tr><th style="width:44px">#</th><th>Fornecedor</th><th>Cobertura</th><th>Itens</th><th>Ausentes</th><th style="text-align:right">Preço total</th></tr></thead>
+        <tbody>
+          <tr><td class="muted">1</td><td><b>Extra</b> <span class="badge badge--warning">💰 Menor preço</span></td><td><div class="table__coverage-bar"><div class="table__coverage-bar-fill" style="width:83%"></div></div>83%</td><td>5 de 6</td><td><span class="badge badge--warning" title="Café Torrado e Moído 500g">⚠ 1 item(ns)</span></td><td style="text-align:right;font-weight:800;font-variant-numeric:tabular-nums"><b>R$ 118,95</b> <span class="badge badge--info">parcial</span></td></tr>
+          <tr class="table__row--winner"><td class="muted">2</td><td><b>Carrefour</b> <span class="badge badge--success">🏆 Melhor oferta</span></td><td><div class="table__coverage-bar"><div class="table__coverage-bar-fill" style="width:100%"></div></div>100%</td><td>6 de 6</td><td class="muted">—</td><td style="text-align:right;font-weight:800;font-variant-numeric:tabular-nums"><b>R$ 158,47</b></td></tr>
+          <tr><td class="muted">3</td><td><b>Pão de Açúcar</b></td><td><div class="table__coverage-bar"><div class="table__coverage-bar-fill" style="width:100%"></div></div>100%</td><td>6 de 6</td><td class="muted">—</td><td style="text-align:right;font-weight:800;font-variant-numeric:tabular-nums"><b>R$ 173,80</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="alert alert--warning mt"><span class="alert__icon">⚠️</span><strong>Atenção:</strong> o menor preço pode não incluir todos os itens da sua lista. A melhor oferta considera a <b>maior cobertura</b>; em caso de empate, vence o <b>menor total</b> — verifique a coluna "Ausentes" (passe o mouse no badge).</div>
+    <div class="row-between mt">
+      <button class="btn btn--ghost" data-action="goto-step" data-step="fornecedores">← Editar fornecedores</button>
+      <div style="display:flex; gap:10px; flex-wrap:wrap">
+        <button class="btn btn--ghost" data-action="print-a4">🖨️ Imprimir (A4)</button>
+        <button class="btn btn--ghost" data-action="export-pdf">📄 Exportar PDF</button>
+        <button class="btn btn--primary btn--lg" data-action="ver-vencedora" style="background:var(--success); border:none;">🏆 Ver lista vencedora →</button>
+      </div>
+    </div>
+    <p class="rule-note muted small mt">Regra da melhor oferta (monografia/RF16): maior percentual de cobertura da lista; empate → menor custo total. A comparação não é persistida (YAGNI).</p>
+  </div>
+</div>
+</template>
+
+<!-- ============================================================
+   TEMPLATE: Passo 5 - Lista Vencedora
+   ============================================================ -->
+<template id="tpl-vencedora">
+<div class="screen" id="screen-vencedora">
+  <div class="container page">
+    <div class="page-head"><span class="kicker">Passo 5 de 5 · Exportação</span><h1>Lista vencedora</h1><p class="muted">Conteúdo da sua lista <b>precificado pelo fornecedor campeão</b>, com total consolidado. É este documento que o PDF exporta (RF17) — nunca a tabela comparativa.</p></div>
+    <div class="stepper" aria-label="Progresso do fluxo">
+      <div class="step step--completed"><div class="step__dot">✓</div><div class="step__label">Categorias</div></div>
+      <div class="step step--completed"><div class="step__dot">✓</div><div class="step__label">Lista</div></div>
+      <div class="step step--completed"><div class="step__dot">✓</div><div class="step__label">Fornecedores</div></div>
+      <div class="step step--completed"><div class="step__dot">✓</div><div class="step__label">Comparação</div></div>
+      <div class="step step--active"><div class="step__dot">5</div><div class="step__label">Lista vencedora</div></div>
+    </div>
+    <div class="card" style="border:2px solid var(--success); background:var(--success-light); border-radius:var(--radius-xl); margin-bottom:20px; padding:24px 28px; display:flex; justify-content:space-between; gap:20px; align-items:center; flex-wrap:wrap;">
+      <div><span class="badge badge--success" style="margin-bottom:8px; font-size:var(--fs-sm);">🏆 MELHOR OFERTA · 100% DA LISTA</span><h2 style="font-size:var(--fs-h2); margin-bottom:4px;">Carrefour</h2><div class="muted small">CNPJ 99.000.111/0001-22 · cotação de 18/09/2026 · lista "Compras do Mês"</div></div>
+      <div style="text-align:right"><div class="muted small">Total consolidado</div><div style="font-size:32px; font-weight:800; font-variant-numeric:tabular-nums; color:var(--success);">R$ 158,47</div><span class="badge badge--success" style="margin-top:8px;">todos os itens disponíveis</span></div>
+    </div>
+    <div class="card" style="overflow:auto;"><table class="table"><thead><tr><th>Produto</th><th>Un.</th><th style="width:90px">Qtd.</th><th style="text-align:right">Preço unitário</th><th style="text-align:right">Subtotal</th></tr></thead><tbody>
+      <tr><td><b>Arroz Tipo 1 5kg</b></td><td class="muted">un</td><td>2</td><td style="text-align:right">R$ 24,90</td><td style="text-align:right;font-weight:700;font-variant-numeric:tabular-nums">R$ 49,80</td></tr>
+      <tr><td><b>Feijão Preto 1kg</b></td><td class="muted">un</td><td>2</td><td style="text-align:right">R$ 7,66</td><td style="text-align:right;font-weight:700;font-variant-numeric:tabular-nums">R$ 15,32</td></tr>
+      <tr><td><b>Óleo de Soja 900ml</b></td><td class="muted">un</td><td>3</td><td style="text-align:right">R$ 6,79</td><td style="text-align:right;font-weight:700;font-variant-numeric:tabular-nums">R$ 20,37</td></tr>
+      <tr><td><b>Café Torrado e Moído 500g</b></td><td class="muted">un</td><td>2</td><td style="text-align:right">R$ 16,90</td><td style="text-align:right;font-weight:700;font-variant-numeric:tabular-nums">R$ 33,80</td></tr>
+      <tr><td><b>Açúcar Refinado 1kg</b></td><td class="muted">un</td><td>2</td><td style="text-align:right">R$ 4,29</td><td style="text-align:right;font-weight:700;font-variant-numeric:tabular-nums">R$ 8,58</td></tr>
+      <tr><td><b>Leite Integral UHT 1L</b></td><td class="muted">un</td><td>6</td><td style="text-align:right">R$ 5,10</td><td style="text-align:right;font-weight:700;font-variant-numeric:tabular-nums">R$ 30,60</td></tr>
+    </tbody></table></div>
+    <div style="display:flex; justify-content:flex-end; gap:14px; align-items:center; font-size:15px; padding:10px; border:2px solid var(--neutral-900); border-radius:6px; margin:16px 0; background:var(--neutral-0);"><span class="a4-total__label">Total consolidado da compra (6 itens · 17 unidades)</span><b class="a4-total__value" style="color:var(--success);">R$ 158,47</b></div>
+    <div class="alert alert--info"><span class="alert__icon">ℹ️</span>O arquivo <b>lista_20260918.pdf</b> (A4, gerado no servidor via ReportLab) contém exatamente este documento: itens, preços unitários, subtotais e total consolidado.</div>
+    <div class="row-between mt">
+      <button class="btn btn--ghost" data-action="goto-step" data-step="comparacao">← Voltar aos resultados</button>
+      <div style="display:flex; gap:10px; flex-wrap:wrap"><button class="btn btn--ghost btn--lg" data-action="print-a4">🖨️ Imprimir A4</button><button class="btn btn--primary btn--lg" data-action="export-pdf" style="background:var(--success); border:none;">⬇ Exportar PDF — lista_20260918.pdf</button></div>
+    </div>
+  </div>
+</div>
+</template>
+
+<!-- ============================================================
+   TEMPLATE: Modal PDF Preview
+   ============================================================ -->
+<template id="tpl-modal-pdf">
+<div class="modal-overlay" data-action="overlay-click">
+  <div class="modal modal--wide">
+    <button class="modal__close" data-action="close-modal" aria-label="Fechar">✕</button>
+    <h3 class="modal__title">📄 PDF gerado com sucesso</h3>
+    <p class="modal__subtitle muted small">Pré-visualização de <b>lista_20260918.pdf</b> — lista vencedora precificada + total consolidado (RF17/RNF11: <5s).</p>
+    <div style="max-height:56vh; overflow:auto; border:1px solid var(--neutral-300); border-radius:var(--radius-md); background:var(--neutral-100); padding:16px;">
+      <div class="a4-sheet" id="a4-sheet-preview"></div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" data-action="close-modal">Fechar</button>
+      <button class="btn btn--primary" data-action="baixar-pdf">⬇ Baixar lista_20260918.pdf</button>
+    </div>
+  </div>
+</div>
+</template>
+
+<!-- ============================================================
+   TEMPLATE: Login
+   ============================================================ -->
+<template id="tpl-login">
+<div class="screen" id="screen-login">
+  <div class="container page" style="min-height:60vh; display:flex; align-items:center; justify-content:center;">
+    <div class="auth-wrap" style="max-width:460px; width:100%;">
+      <div class="card auth-card card-pad">
+        <span class="kicker">Autenticação</span>
+        <h1 style="margin-bottom:6px;">Entre na sua conta</h1>
+        <p class="muted" style="margin-bottom:22px;">Acesse suas listas salvas. A autenticação só é exigida para <b>salvar</b> listas.</p>
+        <div class="alert alert--info" style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;"><span>🎬 <b>Demo:</b> mariana / Comida123!</span><button class="linklike" data-action="demo-login-fill" type="button" style="font-size:var(--fs-sm);">preencher</button></div>
+        <form id="form-login" novalidate>
+          <div class="field" id="fl-u"><label class="field__label">Nome de usuário</label><input type="text" id="l-user" autocomplete="username" class="input"><div class="field__error">Informe o nome de usuário.</div></div>
+          <div class="field" id="fl-p"><label class="field__label">Senha</label><input type="password" id="l-pass" autocomplete="current-password" class="input"><div class="field__error">Informe a senha.</div></div>
+          <button class="btn btn--primary btn--lg" style="width:100%" data-primary>Entrar</button>
+          <p class="muted small mt" style="text-align:center">6 tentativas consecutivas → bloqueio de 15 min · mensagem sempre genérica (segurança)</p>
+        </form>
+        <div class="auth-foot" style="margin-top:18px; text-align:center; font-size:var(--fs-sm); color:var(--neutral-500);"><a href="#" data-action="page-recuperar">Esqueci minha senha</a> · Ainda não possui conta? <a href="#" data-action="page-cadastro">Criar conta</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+</template>
+
+<!-- ============================================================
+   TEMPLATE: Cadastro
+   ============================================================ -->
+<template id="tpl-cadastro">
+<div class="screen" id="screen-cadastro">
+  <div class="container page" style="min-height:60vh; display:flex; align-items:center; justify-content:center;">
+    <div class="auth-wrap" style="max-width:520px; width:100%;">
+      <div class="card auth-card card-pad">
+        <span class="kicker">Cadastro · UC09</span>
+        <h1 style="margin-bottom:6px;">Criar conta</h1>
+        <p class="muted" style="margin-bottom:22px;">Preencha seus dados para salvar listas. Leva menos de um minuto.</p>
+        <form id="form-cad" novalidate>
+          <div class="field" id="fc-u"><label class="field__label">Username <span class="req">*</span></label><input type="text" id="c-user" placeholder="3–30 caracteres alfanuméricos, único" minlength="3" maxlength="30" class="input"><div class="field__error">Username inválido (3–30 alfanuméricos) ou já cadastrado.</div></div>
+          <div class="field" id="fc-n"><label class="field__label">Nome completo <span class="req">*</span></label><input type="text" id="c-nome" placeholder="2–100 caracteres" required class="input"><div class="field__error">Nome deve ter de 2 a 100 caracteres.</div></div>
+          <div class="field" id="fc-e"><label class="field__label">Email <span class="req">*</span></label><input type="email" id="c-email" placeholder="voce@exemplo.com" required class="input"><div class="field__error">Email inválido ou já cadastrado.</div></div>
+          <div class="field" id="fc-s"><label class="field__label">Senha <span class="req">*</span></label><input type="password" id="c-senha" placeholder="Mín. 8 · 1 maiúscula · 1 número · 1 especial" minlength="8" required class="input"><div class="muted small mt">Mín. 8 chars · 1 maiúscula · 1 número · 1 especial</div><div class="field__error">Senha fraca: mín. 8, 1 maiúscula, 1 número e 1 caractere especial.</div></div>
+          <div class="field" id="fc-c"><label class="field__label">Confirmar senha <span class="req">*</span></label><input type="password" id="c-conf" required class="input"><div class="field__error">As senhas não coincidem.</div></div>
+          <div class="field" id="fc-p"><label class="field__label">Pergunta de segurança <span class="req">*</span></label><select id="c-perg" required class="input"><option value="">Selecione…</option><option>Qual era o nome do seu primeiro animal de estimação?</option><option>Qual é o nome da sua cidade natal?</option><option>Qual era o nome da sua escola de infância?</option></select><div class="field__error">Selecione uma pergunta (usada na recuperação de senha).</div></div>
+          <div class="field" id="fc-r"><label class="field__label">Resposta <span class="req">*</span></label><input type="text" id="c-resp" placeholder="mín. 3 caracteres" minlength="3" required class="input"><div class="field__error">Resposta muito curta (mín. 3).</div></div>
+          <button class="btn btn--primary btn--lg" style="width:100%" data-primary>Criar conta</button>
+          <p class="muted small mt" style="text-align:center">Validação inline · mensagens genéricas para duplicados · senha com hash bcrypt (simulado)</p>
+        </form>
+        <div class="auth-foot" style="margin-top:18px; text-align:center; font-size:var(--fs-sm); color:var(--neutral-500);">Já tenho conta · <a href="#" data-action="page-login">Entrar</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+</template>
+
+<!-- ============================================================
+   TEMPLATE: Dashboard (Minhas Listas)
+   ============================================================ -->
+<template id="tpl-dashboard">
+<div class="screen" id="screen-dashboard">
+  <div class="container page">
+    <div class="page-head row-between"><div><span class="kicker">Área logada · UC15</span><h1>Minhas listas</h1><p class="muted">Listas salvas de <b>Mariana Duarte</b>, ordenadas da mais recente para a mais antiga · paginação de 20 (demo com 3).</p></div><button class="btn btn--primary" data-action="nav-nova">+ Nova lista</button></div>
+    <div class="card card-pad">
+      <div class="toolbar"><input type="text" id="dash-q" placeholder="🔍 Buscar por nome…" class="input" style="min-width:300px; max-width:400px;" aria-label="Buscar listas por nome"><span class="chip">3 lista(s)</span></div>
+      <div style="overflow:auto;">
+        <table class="table">
+          <thead><tr><th>Nome</th><th style="text-align:center">Itens</th><th>Categorias</th><th>Criada em</th><th style="width:220px">Ações</th></tr></thead>
+          <tbody>
+            <tr><td><b>Compras do Mês</b></td><td style="text-align:center">6 produtos</td><td><span class="mini-tag">Mercado</span></td><td class="muted">14/09/2026 · 10:32</td><td style="text-align:right"><button class="btn btn--ghost btn--sm" data-action="editar-lista">✏️ Editar</button><button class="btn btn--danger btn--sm" data-action="excluir-lista">🗑 Excluir</button></td></tr>
+            <tr><td><b>Reforma da casa</b></td><td style="text-align:center">23 produtos</td><td><span class="mini-tag">Ferramentas</span> <span class="mini-tag">Decoração</span></td><td class="muted">10/09/2026 · 14:15</td><td style="text-align:right"><button class="btn btn--ghost btn--sm" data-action="editar-lista">✏️ Editar</button><button class="btn btn--danger btn--sm" data-action="excluir-lista">🗑 Excluir</button></td></tr>
+            <tr><td><b>Enxoval</b></td><td style="text-align:center">45 produtos</td><td><span class="mini-tag">Vestuário</span> <span class="mini-tag">Móveis</span></td><td class="muted">02/09/2026 · 09:47</td><td style="text-align:right"><button class="btn btn--ghost btn--sm" data-action="editar-lista">✏️ Editar</button><button class="btn btn--danger btn--sm" data-action="excluir-lista">🗑 Excluir</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted small mt">Mostrando 3 de 3 listas · « 1 » · exclusão é lógica (soft delete)</p>
+    </div>
+  </div>
+</div>
+</template>
+
+<!-- ============================================================
+   TEMPLATE: Perfil
+   ============================================================ -->
+<template id="tpl-perfil">
+<div class="screen" id="screen-perfil">
+  <div class="container page">
+    <div class="page-head"><span class="kicker">Perfil · UC18/UC16</span><h1>Meu perfil</h1><p class="muted">Visualize seus dados e edite nome, email ou senha — qualquer alteração exige a senha atual (RF06).</p></div>
+    <div class="card card-pad">
+      <div style="display:flex; justify-content:space-between; font-size:var(--fs-sm); padding:8px 0; border-bottom:1px dashed var(--neutral-300);"><span class="muted">Username</span><b>🔒 mariana_duarte <span class="badge badge--info">read-only</span></b></div>
+      <div style="display:flex; justify-content:space-between; font-size:var(--fs-sm); padding:8px 0; border-bottom:1px dashed var(--neutral-300);"><span class="muted">Nome completo</span><b>Mariana Duarte</b></div>
+      <div style="display:flex; justify-content:space-between; font-size:var(--fs-sm); padding:8px 0; border-bottom:1px dashed var(--neutral-300);"><span class="muted">Email</span><b>mariana@temperodamari.com.br</b></div>
+      <div style="display:flex; justify-content:space-between; font-size:var(--fs-sm); padding:8px 0; border-bottom:1px dashed var(--neutral-300);"><span class="muted">Conta criada em</span><b>15/08/2026</b></div>
+      <div class="row-between mt"><button class="btn btn--ghost" data-action="logout">🚪 Sair</button><button class="btn btn--primary" data-action="perfil-editar" data-primary>✏️ Editar perfil</button></div>
+    </div>
+  </div>
+</div>
+</template>
+
+<script>
+/* ============================================================
+   SEED DATA (v3.2 - McCormick aligned)
+   ============================================================ */
+const CATEGORIES = [
+  {id:1,nome:"Mercado",icon:"🛒",fornecedores:3},{id:2,nome:"Vestuário",icon:"👕",fornecedores:3},
+  {id:3,nome:"Automotivos",icon:"🚗",fornecedores:1},{id:4,nome:"Informática",icon:"💻",fornecedores:2},
+  {id:5,nome:"Decoração",icon:"🖼️",fornecedores:2},{id:6,nome:"Móveis",icon:"🛋️",fornecedores:2},
+  {id:7,nome:"Materiais de Construção e Ferragens",icon:"🧱",fornecedores:1},{id:8,nome:"Ferramentas",icon:"🔧",fornecedores:1},
+  {id:9,nome:"Livros",icon:"📚",fornecedores:1},{id:10,nome:"Jardinagem",icon:"🪴",fornecedores:1},
+  {id:11,nome:"Eletrodomésticos",icon:"🔌",fornecedores:3}
+];
+
+const SUPPLIERS = [
+  {id:1,nome:"Carrefour",categorias:[1,2,3,5,11,4],disponibilidade:97,avatar:"C"},
+  {id:2,nome:"Extra",categorias:[1,2,11],disponibilidade:84,avatar:"E"},
+  {id:3,nome:"Pão de Açúcar",categorias:[1],disponibilidade:100,avatar:"P"},
+  {id:4,nome:"Magazine Luiza",categorias:[11,4,6],disponibilidade:95,avatar:"M"},
+  {id:5,nome:"Casas Bahia",categorias:[11,4,6],disponibilidade:91,avatar:"C"},
+  {id:6,nome:"Leroy Merlin",categorias:[7,8,10,5],disponibilidade:78,avatar:"L"},
+  {id:7,nome:"Etna",categorias:[5,6],disponibilidade:65,avatar:"E"},
+  {id:8,nome:"C&A",categorias:[2],disponibilidade:88,avatar:"C"},
+  {id:9,nome:"Renner",categorias:[2],disponibilidade:92,avatar:"R"},
+  {id:10,nome:"Hering",categorias:[2],disponibilidade:85,avatar:"H"}
+];
+
+const PRODUCTS = [
+  {id:1,nome:"Arroz Tipo 1 5kg",un:"un",base:25.9},{id:2,nome:"Feijão Preto 1kg",un:"un",base:8.2},
+  {id:3,nome:"Óleo de Soja 900ml",un:"un",base:6.9},{id:4,nome:"Café Torrado e Moído 500g",un:"un",base:17.5},
+  {id:5,nome:"Açúcar Refinado 1kg",un:"un",base:4.4},{id:6,nome:"Leite Integral UHT 1L",un:"un",base:5.1},
+  {id:7,nome:"Macarrão Espaguete 500g",un:"un",base:4.8},{id:8,nome:"Molho de Tomate 340g",un:"un",base:3.9},
+  {id:9,nome:"Farinha de Trigo 1kg",un:"un",base:5.5},{id:10,nome:"Ovos Brancos (dúzia)",un:"dz",base:9.9},
+  {id:11,nome:"Detergente Neutro 500ml",un:"un",base:2.9},{id:12,nome:"Papel Toalha 2 rolos",un:"un",base:6.5},
+  {id:13,nome:"Liquidificador 2 Velocidades",un:"un",base:129.9},{id:14,nome:"Notebook i5 8GB",un:"un",base:2899.0},
+  {id:15,nome:"Martelo de Unha 25mm",un:"un",base:32.9},{id:16,nome:"Parafuso Philips 5mm (cx)",un:"cx",base:12.5},
+  {id:17,nome:"Camiseta Algodão M",un:"un",base:39.9},{id:18,nome:"Calça Jeans 40",un:"un",base:119.9},
+  {id:19,nome:"Vaso de Barro 20cm",un:"un",base:45.9},{id:20,nome:"Cadeira de Escritório",un:"un",base:449.9}
+];
+
+const CATALOG = {
+  1:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,17,18],
+  2:[1,2,3,5,6,7,8,9,10,11,12,13,17],
+  3:[1,2,3,4,5,6,7,8,9,10,11,12],
+  4:[13,14,20],5:[13,14,20],
+  6:[15,16,19,20],7:[19,20],8:[17,18],9:[17,18],10:[17]
+};
+const FACTOR = {1:.99,2:.93,3:1.14,4:.96,5:1.05,6:.97,7:1.10,8:.95,9:1.00,10:1.04};
+const hasOffer = (f,p)=>CATALOG[f].includes(p);
+const price = (f,p)=>{const pr=PRODUCTS.find(x=>x.id===p);const jit=Math.sin(f*997+p*131)*0.03;return Math.round(pr.base*FACTOR[f]*(1+jit)*100)/100;};
+const BRL = v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const today = ()=>new Date().toLocaleDateString("pt-BR");
+const stamp = ()=>{const d=new Date();return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}`;};
+const norm = s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const state = {
+  view:"home", user:null, categorias:[], lista:{nome:"Compras do Mês",itens:[]},
+  listaEditId:null, fornecedores:[], filtroDisp:0, resultado:null,
+  busca:"", recStep:1, recUser:null, perfilEdit:false,
+  flags:{pdf:false,saved:false,done:false}, attempts:0, lockedUntil:0
+};
+const USERS = [{nome_usuario:"mariana",nome:"Mariana Duarte",email:"mariana@temperodamari.com.br",senha:"Comida123!",pergunta:"pet",resposta:"Thor",criado_em:"15/08/2026"}];
+const LISTAS = {mariana:[{id:101,nome:"Compras da semana passada",criado_em:"11/09/2026",categorias:[1],itens:[{pid:1,qtd:2},{pid:6,qtd:4},{pid:8,qtd:3}]}]};
+let listSeq = 200;
+
+/* sessionStorage efêmera */
+function persistEph(){try{sessionStorage.setItem("cobeco_eph",JSON.stringify({lista:state.lista,categorias:state.categorias}));}catch(e){}}
+function loadEph(){try{const raw=sessionStorage.getItem("cobeco_eph");if(!raw)return;const d=JSON.parse(raw);if(d.lista&&d.lista.itens&&d.lista.itens.length){state.lista=d.lista;state.categorias=d.categorias||[];setTimeout(()=>toast("Lista efêmera recuperada da sessão: “"+state.lista.nome+"” ("+state.lista.itens.length+" itens).","success"),600);} }catch(e){}}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function toast(msg,type="info"){
+  const box=document.createElement("div");
+  box.className="toast "+(type==="success"?"toast--success":type==="error"?"toast--error":type==="warning"?"toast--warning":"");
+  box.innerHTML=`<span>${msg}</span>`;
+  document.getElementById("toast-container").appendChild(box);
+  setTimeout(()=>{box.style.opacity="0";box.style.transition="opacity .4s";setTimeout(()=>box.remove(),420);},4200);
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+function openModal(html){document.getElementById("modal-root").innerHTML=`<div class="modal-overlay" data-action="overlay-click"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;}
+function closeModal(){document.getElementById("modal-root").innerHTML="";}
+
+/* ============================================================
+   JOURNEY PANEL
+   ============================================================ */
+const JOURNEY=[
+  {t:"Mariana descobre o COBECO",d:"Dona do restaurante “Tempero da Mari”: precisa cotar a compra da semana em vários mercados sem perder a manhã. Clique em “Criar minha lista”."},
+  {t:"Pré-filtro por categorias (UC03)",d:"Ela marca “Mercado” — só fornecedores relevantes aparecem depois (RF12). Mínimo 1 categoria."},
+  {t:"Monta a lista (UC01/UC02)",d:"Nome da lista + 6 produtos do catálogo com quantidades (RF07). Tudo em memória, sem cadastro obrigatório. Dica: use “⚡ Preencher demo”."},
+  {t:"Escolhe os fornecedores (UC04/UC05)",d:"Marca os 3 mercados elegíveis (2–10, RF13). O slider filtra por disponibilidade mínima (RF14)."},
+  {t:"Compara orçamentos (UC06/UC07)",d:"Tabela flat: cobertura, itens ausentes e total por fornecedor. A melhor oferta é destacada (RF15/RF16)."},
+  {t:"Abre a lista vencedora",d:"Vencedor = maior cobertura; empate → menor total. Itens precificados pelo fornecedor campeão."},
+  {t:"Exporta o PDF (UC08/RF17)",d:"O PDF contém a LISTA VENCEDORA com itens precificados + total consolidado — nunca a “lista de listas”."},
+  {t:"Salva na conta (UC14/UC17)",d:"Só agora a autenticação é exigida (RF08): modal de login + promoção da lista efêmera. Demo: mariana / Comida123!"},
+  {t:"Confere Minhas Listas (UC15)",d:"Lista persistida no “banco” simulado: busca, ordenação e ações (RF09–RF11). Jornada concluída! 🎉"}
+];
+function journeyIndex(){
+  if(state.flags.done)return 8;
+  if(state.flags.saved)return 8;
+  if(state.flags.pdf)return 7;
+  switch(state.view){
+    case"home":return 0;case"categorias":return 1;case"lista":return 2;
+    case"fornecedores":return 3;case"comparacao":return 4;case"vencedora":return 5;
+    case"dashboard":return 8;default:return state.flags.pdf?7:0;}
+}
+function renderJourney(){
+  const j=document.getElementById("journey");const idx=journeyIndex();
+  j.innerHTML=`<div class="journey__card"><div class="journey__header" data-action="journey-toggle"><span class="journey__avatar">👩‍🍳</span><div><span class="journey__title">Jornada de Mariana</span><span class="journey__subtitle">Persona · dona de restaurante · passo ${Math.min(idx+1,9)}/9</span></div><button class="journey__toggle" aria-label="Recolher painel">▾</button></div><div class="journey__body">${JOURNEY.map((s,i)=>`<div class="journey__step ${i<idx?"journey__step--done":i===idx?"journey__step--current":""}"><span class="journey__step-dot">${i<idx?"✓":i+1}</span><span>${s.t}</span></div>`).join("")}<div class="journey__desc">💡 ${JOURNEY[Math.min(idx,8)].d}</div><button class="btn btn--primary btn--sm journey__next" data-action="journey-next">🎯 Destacar próxima ação</button></div></div>`;
+}
+
+/* ============================================================
+   NAVIGATION & RENDER
+   ============================================================ */
+function navHTML(){
+  const v=state.view;const logged=!!state.user;
+  return `<a class="header__logo" href="#" data-action="nav-home"><span class="header__logo-mark">C</span><span class="header__logo-text">COBECO</span></a><nav class="header__nav" aria-label="Navegação principal"><a class="header__nav-link ${v==="home"?"active":""}" href="#" data-action="nav-home">Início</a><a class="header__nav-link ${["categorias","lista","fornecedores","comparacao","vencedora"].includes(v)?"active":""}" href="#" data-action="nav-nova">Nova lista</a>${logged?`<a class="header__nav-link ${v==="dashboard"?"active":""}" href="#" data-action="nav-listas">Minhas listas</a><a class="header__nav-link ${v==="perfil"?"active":""}" href="#" data-action="nav-perfil">Perfil</a>`:""}</nav><div class="header__auth">${logged?`<span style="display:flex; align-items:center; gap:8px; background:var(--success-light); border:1px solid var(--success); color:var(--success); border-radius:var(--radius-full); padding:6px 12px; font-weight:700; font-size:var(--fs-sm);">🟢 ${state.user} · sessão ativa</span><button class="btn btn--ghost btn--sm" data-action="logout">Sair</button>`:`<button class="btn btn--ghost btn--sm" data-action="page-login">Entrar</button><button class="btn btn--primary btn--sm" data-action="page-cadastro">Criar conta</button>`}</div>`;
+}
+function stepperHTML(step){
+  const steps=[["1","Categorias","categorias"],["2","Lista","lista"],["3","Fornecedores","fornecedores"],["4","Comparação","comparacao"],["5","Lista vencedora","vencedora"]];
+  return `<div class="stepper" aria-label="Progresso do fluxo">`+steps.map((s,i)=>{const n=i+1;const cls=n<step?"step--completed":n===step?"step--active":"";return `${i>0?`<div class="step__bar ${n<=step?"step__bar--done":""}"></div>`:""}<div class="step ${cls}" ${n<step?`data-action="goto-step" data-step="${s[2]}" title="Voltar para ${s[1]}"`:""}><div class="step__dot">${n<step?"✓":n}</div><div class="step__label">${s[1]}</div></div>`;}).join("")+`</div>`;
+}
+
+/* ---- Views ---- */
+function vHome(){return document.getElementById("tpl-home").content.firstElementChild.outerHTML;}
+function vCategorias(){
+  return `<div class="screen" id="screen-categorias"><div class="container page"><div class="page-head"><span class="kicker">Passo 1 de 5 · Pré-filtro</span><h1>Selecione as categorias</h1><p class="muted">Escolha uma ou mais categorias macro para filtrar os fornecedores (RF12). A seleção fica apenas em memória (transitória).</p></div>${stepperHTML(1)}<div class="card card-pad"><div class="toolbar"><span class="chip ${state.categorias.length?"chip--active":""}" id="cat-count">${state.categorias.length} categoria(s) selecionada(s) · 11 disponíveis</span><div><button class="btn btn--ghost btn--sm" data-action="cat-all">Selecionar todas</button><button class="btn btn--ghost btn--sm" data-action="cat-none">Limpar</button></div></div><div class="meganav" role="group" aria-label="Categorias macro" id="category-meganav">${CATEGORIES.map(c=>`<button class="meganav__item ${state.categorias.includes(c.id)?"meganav__item--selected":""}" data-action="toggle-category" data-cat="${c.id}"><div class="meganav__item-image">${c.icon}</div><span class="meganav__item-title">${c.nome}</span><span class="meganav__item-count">${c.fornecedores} fornecedor(es)</span></button>`).join("")}</div><div class="alert alert--info mt" style="font-size:var(--fs-sm);"><span class="alert__icon">ℹ️</span><strong>Como funciona:</strong> os fornecedores da próxima etapa pertencem às categorias selecionadas. Ex.: "Mercado" + "Eletrodomésticos" → Carrefour, Extra, Pão de Açúcar, Magazine Luiza, Casas Bahia…</div><div class="row-between mt"><button class="btn btn--ghost" data-action="nav-home">← Voltar</button><div><button class="btn btn--primary btn--lg" id="btn-to-lista" data-action="to-lista" ${state.categorias.length?"":"disabled"}>Continuar para a lista →</button></div></div></div></div>`;
+}
+function vLista(){
+  const un=state.lista.itens.reduce((s,i)=>s+i.qtd,0);
+  const logged=!!state.user;
+  return `<div class="screen" id="screen-lista"><div class="container page"><div class="page-head"><span class="kicker">Passo 2 de 5 · Lista de compras</span><h1>Monte sua lista</h1><p class="muted">Adicione produtos do catálogo e ajuste quantidades (1–9999). Armazenamento: <b style="color:var(--warning);">${logged?"Conta (persistente)":"em memória / sessionStorage"}</b> até salvar.</p></div>${stepperHTML(2)}<div class="two-col" style="display:grid; grid-template-columns:1fr 340px; gap:24px; align-items:start;"><div class="card card-pad"><div class="row-between mb"><span class="chip ${logged?"chip--active":""}" id="storage-mode">${logged?"🔒 CONTA: "+state.user:"⚠ MODO EFÊMERO (visitante)"}</span><button class="btn btn--ghost btn--sm" data-action="demo-lista">⚡ Preencher demo (lista da Mariana)</button></div><div class="field" id="f-nome"><label class="field__label">Nome da lista <span class="req">*</span></label><input type="text" id="nome-lista" maxlength="100" value="${state.lista.nome}" placeholder="Ex.: Compras do Mês" class="input" autocomplete="off"><div class="counter"><span id="nome-count">${state.lista.nome.length}</span>/100</div><div class="field__error">Informe um nome para a lista.</div></div><div class="field"><label class="field__label">Adicionar produto — autocomplete (mín. 2 caracteres)</label><div class="searchbox" style="position:relative;"><input type="text" id="busca" value="${state.busca}" placeholder="Digite para buscar no catálogo… ex.: arroz" class="input" autocomplete="off" role="combobox" aria-expanded="false"><div id="sug-box" class="sug" style="position:absolute; top:calc(100% + 6px); left:0; right:0; background:var(--neutral-0); border:1px solid var(--neutral-300); border-radius:var(--radius-lg); box-shadow:var(--shadow-lg); z-index:30; overflow:hidden; display:none;"></div></div></div><h3 style="font-size:var(--fs-h3); margin:8px 0 10px;">Itens da lista</h3><div id="itens-box">${itensTableHTML()}</div></div><aside class="card card-pad" style="position:sticky; top:calc(var(--header-height) + var(--announcement-height) + 24px);"><h3 style="font-size:var(--fs-h3); margin-bottom:14px;">Resumo</h3><div style="display:flex; justify-content:space-between; font-size:var(--fs-sm); padding:8px 0; border-bottom:1px dashed var(--neutral-300);"><span class="muted">Produtos</span><b id="r-prod" style="font-variant-numeric:tabular-nums;">${state.lista.itens.length}</b></div><div style="display:flex; justify-content:space-between; font-size:var(--fs-sm); padding:8px 0; border-bottom:1px dashed var(--neutral-300);"><span class="muted">Unidades totais</span><b id="r-un" style="font-variant-numeric:tabular-nums;">${un}</b></div><div style="display:flex; justify-content:space-between; font-size:var(--fs-sm); padding:8px 0; border-bottom:1px dashed var(--neutral-300);"><span class="muted">Categorias filtradas</span><b id="r-cats" style="color:var(--success);">${state.categorias.length}</b></div><div style="display:flex; justify-content:space-between; font-size:var(--fs-sm); padding:8px 0; border-bottom:1px dashed var(--neutral-300);"><span class="muted">Modo</span><span id="r-mode" class="chip ${logged?"chip--active":""}">${logged?"Conta":"Efêmero"}</span></div><div style="display:flex; flex-direction:column; gap:10px; margin-top:16px;"><button class="btn btn--primary btn--lg" id="btn-to-forn" data-action="to-fornecedores" style="width:100%;" ${state.lista.itens.length?"":"disabled"}>Comparar preços →</button>${!state.lista.itens.length?'<div style="font-size:var(--fs-xs); color:var(--neutral-500); text-align:center;">Adicione ao menos 1 item para comparar.</div>':''}<button class="btn btn--ghost" data-action="salvar-lista" style="width:100%;">${logged?"💾 Salvar lista":"💾 Salvar lista 🔒"}</button><button class="btn btn--ghost" data-action="export-pdf" style="width:100%;">📄 Exportar PDF</button></div><div class="alert alert--info mt" style="font-size:var(--fs-xs);"><span class="alert__icon">💡</span>Visitantes podem comparar e exportar sem conta. A autenticação é exigida <b>apenas para salvar</b> (RF08) — o rascunho é preservado durante o login.</div></aside></div></div>`;
+}
+function itensTableHTML(){
+  if(!state.lista.itens.length)return `<div style="text-align:center; padding:48px 20px; color:var(--neutral-500);"><div style="font-size:40px; margin-bottom:10px;">🧺</div>Nenhum produto adicionado. Use a busca acima.</div>`;
+  return `<table class="table"><thead><tr><th>Produto</th><th style="width:130px">Qtd.</th><th style="width:70px">Un.</th><th style="width:44px"></th></tr></thead><tbody>${state.lista.itens.map((i,ix)=>{const p=PRODUCTS.find(x=>x.id===i.pid);return `<tr><td><b>${p.nome}</b></td><td><span class="qty"><button class="qty__btn" data-action="dec" data-ix="${ix}" aria-label="Diminuir">−</button><input type="text" class="qty__input" inputmode="numeric" value="${i.qtd}" data-qtdix="${ix}" aria-label="Quantidade"><button class="qty__btn" data-action="inc" data-ix="${ix}" aria-label="Aumentar">+</button></span></td><td class="muted">${p.un}</td><td><button class="icon-btn" data-action="del-item" data-ix="${ix}" title="Remover item" aria-label="Remover ${p.nome}">✕</button></td></tr>`;}).join("")}</tbody></table>`;
+}
+function refreshListaUI(){document.getElementById("itens-box").innerHTML=itensTableHTML();const un=state.lista.itens.reduce((s,i)=>s+i.qtd,0);document.getElementById("r-prod").textContent=state.lista.itens.length;document.getElementById("r-un").textContent=un;document.getElementById("r-cats").textContent=state.categorias.length;const b=document.getElementById("btn-to-forn");if(b){b.disabled=!state.lista.itens.length;}}
+function vFornecedores(){
+  const eleg=fornecedoresElegiveis();
+  return `<div class="screen" id="screen-fornecedores"><div class="container page"><div class="page-head"><span class="kicker">Passo 3 de 5 · Fornecedores</span><h1>Escolha os fornecedores</h1><p class="muted">Selecione de <b>2 a 10</b> fornecedores (RF13). Apenas fornecedores das categorias escolhidas (${state.categorias.map(c=>CATEGORIES.find(x=>x.id===c).nome).join(", ")}) são exibidos. O % indica a cobertura da sua lista.</p></div>${stepperHTML(3)}<div class="card slider-box"><div class="slider-box__head"><label class="slider-box__label"><b>Filtro de disponibilidade (UC05)</b> — mostrar apenas fornecedores com cobertura mínima da lista</label><output class="slider-box__value" id="slider-out">${state.filtroDisp}%</output></div><input type="range" id="slider-disp" min="0" max="100" step="5" value="${state.filtroDisp}" aria-label="Disponibilidade mínima"><div class="slider-scale"><span>0% (todos)</span><span>50%</span><span>100%</span></div></div><div class="card card-pad"><div class="toolbar"><span class="chip ${state.fornecedores.length>=2?"chip--active":""}" id="forn-count">${state.fornecedores.length} selecionado(s) · mín 2 · máx 10</span><div><button class="btn btn--ghost btn--sm" data-action="forn-all">Selecionar todos</button><button class="btn btn--ghost btn--sm" data-action="forn-clear">Limpar</button></div></div><div class="provider-grid" id="provider-grid">${eleg.map(f=>{const cov=Math.round(coberturaDe(f.id)*100);const passa=cov>=state.filtroDisp;const sel=state.fornecedores.includes(f.id);const cls=cov>=80?"provider-card__coverage--high":cov>=40?"provider-card__coverage--mid":"provider-card__coverage--low";return `<label class="provider-card ${sel?"provider-card--selected":""} ${passa?"":"provider-card--disabled"}" data-forn="${f.id}"><div class="provider-card__header"><div style="display:flex; align-items:center; gap:10px; flex:1;"><div class="provider-card__avatar">${f.avatar}</div><div><div class="provider-card__name">${f.nome}</div><span class="provider-card__coverage ${cls}">${cov}% da lista</span></div></div><input type="checkbox" class="provider-card__checkbox" value="${f.id}" ${sel?"checked":""} ${passa?"":"disabled"}></div><div class="provider-card__cats">${f.categorias.filter(c=>state.categorias.includes(c)).map(c=>`<span class="mini-tag">${CATEGORIES.find(x=>x.id===c).nome}</span>`).join("")}${cov===0?'<div style="font-size:var(--fs-xs); color:var(--neutral-500); margin-top:6px;">⚠ Não possui itens da sua lista</div>':''}</label>`;}).join("")||'<div style="grid-column:1/-1; text-align:center; padding:48px 20px; color:var(--neutral-500);"><div style="font-size:40px; margin-bottom:10px;">🔎</div>Nenhum fornecedor disponível nas categorias selecionadas.<br>Tente incluir outras categorias.</div>'}</div><div class="row-between mt"><button class="btn btn--ghost" data-action="goto-step" data-step="lista">← Voltar à lista</button><div><button class="btn btn--primary btn--lg" id="btn-calc" data-action="calcular" ${state.fornecedores.length>=2?"":"disabled"}>Calcular orçamento →</button></div></div></div></div>`;
+}
+function vComparacao(){
+  if(!state.resultado)return vFornecedores();
+  const R=state.resultado;const W=R.winner;
+  const avg=Math.round(R.rows.reduce((s,r)=>s+r.cobertura,0)/R.rows.length*100);
+  const eco=R.maxTotal-W.total;
+  return `<div class="screen" id="screen-comparacao"><div class="container page"><div class="page-head"><span class="kicker">Passo 4 de 5 · Resultados</span><h1>Comparação de preços</h1><p class="muted">Lista “${state.lista.nome||"(sem nome)"}” · ${state.lista.itens.length} itens · ${R.rows.length} fornecedores. Ordenado pelo menor total (RF15); melhor oferta destacada (RF16).</p></div>${stepperHTML(4)}<div class="kpi-grid"><div class="kpi-card kpi-card--winner"><div class="kpi-card__label">🏆 Melhor oferta</div><div class="kpi-card__value">${W.nome}</div><div class="kpi-card__sub">${BRL(W.total)} · ${Math.round(W.cobertura*100)}% da lista</div></div><div class="kpi-card"><div class="kpi-card__label">💰 Menor preço</div><div class="kpi-card__value">${BRL(R.minTotal)}</div><div class="kpi-card__sub">pode ter itens ausentes</div></div><div class="kpi-card"><div class="kpi-card__label">📊 Economia potencial</div><div class="kpi-card__value">${BRL(eco>0?eco:0)}</div><div class="kpi-card__sub">vs. maior total cotado</div></div><div class="kpi-card"><div class="kpi-card__label">Disponibilidade média</div><div class="kpi-card__value">${avg}%</div><div class="kpi-card__sub">${R.rows.length} fornecedores comparados</div></div></div><div class="card" style="overflow:auto;"><table class="table table--sticky"><thead><tr><th style="width:44px">#</th><th>Fornecedor</th><th>Cobertura</th><th>Itens</th><th>Ausentes</th><th style="text-align:right">Preço total</th></tr></thead><tbody>${R.rows.map((r,i)=>{const isW=r.fid===W.fid,isMin=r.total===R.minTotal;return `<tr class="${isW?"table__row--winner":""}"><td class="muted">${i+1}</td><td><b>${r.nome}</b> ${isW?'<span class="badge badge--success">🏆 Melhor oferta</span>':""} ${isMin&&!isW?'<span class="badge badge--warning">💰 Menor preço</span>':""}</td><td><div class="table__coverage-bar"><div class="table__coverage-bar-fill" style="width:${Math.round(r.cobertura*100)}%"></div></div>${Math.round(r.cobertura*100)}%</td><td>${r.nDisp} de ${state.lista.itens.length}</td><td>${r.parcial?`<span class="badge badge--warning" title="${r.ausentes.map(a=>PRODUCTS.find(p=>p.id===a.pid).nome).join("; ")}">⚠ ${r.ausentes.length} item(ns)</span>`:'<span class="muted">—</span>'}</td><td style="text-align:right;font-weight:800;font-variant-numeric:tabular-nums">${BRL(r.total)}${r.parcial?' <span class="badge badge--info">parcial</span>':""}</td></tr>`;}).join("")}</tbody></table></div><div class="alert alert--warning mt"><span class="alert__icon">⚠️</span><strong>Atenção:</strong> o menor preço pode não incluir todos os itens da sua lista. A melhor oferta considera a <b>maior cobertura</b>; em caso de empate, vence o <b>menor total</b> — verifique a coluna "Ausentes" (passe o mouse no badge).</div><div class="row-between mt"><button class="btn btn--ghost" data-action="goto-step" data-step="fornecedores">← Editar fornecedores</button><div style="display:flex; gap:10px; flex-wrap:wrap"><button class="btn btn--ghost" data-action="print-a4">🖨️ Imprimir (A4)</button><button class="btn btn--ghost" data-action="export-pdf">📄 Exportar PDF</button><button class="btn btn--primary btn--lg" data-action="ver-vencedora" style="background:var(--success); border:none;">🏆 Ver lista vencedora →</button></div></div><p class="muted small mt">Regra da melhor oferta (monografia/RF16): maior percentual de cobertura da lista; empate → menor custo total. A comparação não é persistida (YAGNI).</p></div></div>`;
+}
+function vVencedora(){
+  if(!state.resultado)return vComparacao();
+  const W=state.resultado.winner;
+  return `<div class="screen" id="screen-vencedora"><div class="container page"><div class="page-head"><span class="kicker">Passo 5 de 5 · Exportação</span><h1>Lista vencedora</h1><p class="muted">Conteúdo da sua lista <b>precificado pelo fornecedor campeão</b>, com total consolidado. É este documento que o PDF exporta (RF17) — nunca a tabela comparativa.</p></div>${stepperHTML(5)}<div class="card" style="border:2px solid var(--success); background:var(--success-light); border-radius:var(--radius-xl); margin-bottom:20px; padding:24px 28px; display:flex; justify-content:space-between; gap:20px; align-items:center; flex-wrap:wrap;"><div><span class="badge badge--success" style="margin-bottom:8px; font-size:var(--fs-sm);">🏆 MELHOR OFERTA · ${Math.round(W.cobertura*100)}% DA LISTA</span><h2>${W.nome}</h2><div class="muted small">CNPJ ${W.cnpj} · cotação de ${today()} · lista “${state.lista.nome||"(sem nome)"}”</div></div><div style="text-align:right"><div class="muted small">Total consolidado</div><div style="font-size:32px; font-weight:800; font-variant-numeric:tabular-nums; color:var(--success);">${BRL(W.total)}</div>${W.parcial?'<span class="badge badge--warning" style="margin-top:8px;">total parcial — há itens indisponíveis</span>':'<span class="badge badge--success" style="margin-top:8px;">todos os itens disponíveis</span>'}</div></div><div class="card" style="overflow:auto;"><table class="table"><thead><tr><th>Produto</th><th>Un.</th><th style="width:90px">Qtd.</th><th style="text-align:right">Preço unitário</th><th style="text-align:right">Subtotal</th></tr></thead><tbody>${state.lista.itens.map(i=>{const p=PRODUCTS.find(x=>x.id===i.pid);const tem=hasOffer(W.fid,i.pid);return tem?`<tr><td><b>${p.nome}</b></td><td class="muted">${p.un}</td><td>${i.qtd}</td><td style="text-align:right">${BRL(price(W.fid,i.pid))}</td><td style="text-align:right;font-weight:700;font-variant-numeric:tabular-nums">${BRL(price(W.fid,i.pid)*i.qtd)}</td></tr>`:`<tr style="opacity:.55"><td>${p.nome}</td><td class="muted">${p.un}</td><td>${i.qtd}</td><td colspan="2" style="text-align:right"><span class="badge badge--warning">⚠ Indisponível neste fornecedor</span></td></tr>`;}).join("")}</tbody></table></div><div style="display:flex; justify-content:flex-end; gap:14px; align-items:center; font-size:15px; padding:10px; border:2px solid var(--neutral-900); border-radius:6px; margin:16px 0; background:var(--neutral-0);"><span class="a4-total__label">Total consolidado da compra (${state.lista.itens.length} itens · ${state.lista.itens.reduce((s,i)=>s+i.qtd,0)} unidades)</span><b class="a4-total__value" style="color:var(--success);">${BRL(W.total)}</b></div><div class="alert alert--info"><span class="alert__icon">ℹ️</span>O arquivo <b>lista_${stamp()}.pdf</b> (A4, gerado no servidor via ReportLab) contém exatamente este documento: itens, preços unitários, subtotais e total consolidado.</div><div class="row-between mt"><button class="btn btn--ghost" data-action="goto-step" data-step="comparacao">← Voltar aos resultados</button><div style="display:flex; gap:10px; flex-wrap:wrap"><button class="btn btn--ghost btn--lg" data-action="print-a4">🖨️ Imprimir A4</button><button class="btn btn--primary btn--lg" data-action="export-pdf" style="background:var(--success); border:none;">⬇ Exportar PDF — lista_${stamp()}.pdf</button></div></div></div></div>`;
+}
+
+/* ============================================================
+   COMPARAÇÃO LOGIC
+   ============================================================ */
+function fornecedoresElegiveis(){return SUPPLIERS.filter(f=>f.categorias.some(c=>state.categorias.includes(c)));}
+function coberturaDe(fid){const it=state.lista.itens;if(!it.length)return 0;return it.filter(i=>hasOffer(fid,i.pid)).length/it.length;}
+function calcularResultado(){
+  const itens=state.lista.itens;
+  const rows=state.fornecedores.map(fid=>{const f=SUPPLIERS.find(x=>x.id===fid);const disp=itens.filter(i=>hasOffer(fid,i.pid));const aus=itens.filter(i=>!hasOffer(fid,i.pid));const cobertura=disp.length/itens.length;const total=disp.reduce((s,i)=>s+price(fid,i.pid)*i.qtd,0);return{fid,nome:f.nome,cnpj:`${String(f.id).padStart(2,'0')}.${String(f.id*111).padStart(3,'0')}.${String(f.id*222).padStart(3,'0')}/${String(f.id*11).padStart(4,'0')}-${String(f.id*11).padStart(2,'0')}`,cobertura,nDisp:disp.length,ausentes:aus,total,parcial:aus.length>0};}).sort((a,b)=>a.total-b.total);
+  const winner=rows.slice().sort((a,b)=>b.cobertura-a.cobertura||a.total-b.total)[0];
+  state.resultado={rows,winner,minTotal:Math.min(...rows.map(r=>r.total)),maxTotal:Math.max(...rows.map(r=>r.total))};
+}
+
+/* ============================================================
+   PDF / PRINT
+   ============================================================ */
+function sheetHTML(){
+  const W=state.resultado.winner;
+  const rows=state.lista.itens.map(i=>{const p=PRODUCTS.find(x=>x.id===i.pid);const tem=hasOffer(W.fid,i.pid);return{nome:p.nome,un:p.un,qtd:i.qtd,preco:tem?price(W.fid,i.pid):null};});
+  return `<div class="a4-sheet" id="a4-sheet"><div class="a4-head"><div class="a4-head__brand">🛒 COBECO<small>COTAÇÃO DE BENS DE CONSUMO</small></div><div class="a4-head__doc"><b>LISTA VENCEDORA — COTAÇÃO</b><br>Arquivo: lista_${stamp()}.pdf<br>Formato A4 · ${today()}</div></div><div class="a4-meta"><span>Lista: <b>${state.lista.nome||"(sem nome)"}</b></span><span>Fornecedor vencedor: <b>${W.nome}</b> (CNPJ ${W.cnpj})</span><span>Itens: <b>${state.lista.itens.length}</b> · Unidades: <b>${rows.reduce((s,r)=>s+r.qtd,0)}</b></span><span>Cobertura da lista: <b>${Math.round(W.cobertura*100)}%</b>${W.parcial?" (total parcial)":""}</span></div><table class="a4-table"><thead><tr><th style="width:34px">#</th><th>Produto</th><th style="width:50px">Un.</th><th class="num" style="width:60px">Qtd.</th><th class="num" style="width:110px">Preço unitário</th><th class="num" style="width:110px">Subtotal</th></tr></thead><tbody>${rows.map((r,ix)=>`<tr><td>${ix+1}</td><td>${r.nome}</td><td>${r.un}</td><td class="num">${r.qtd}</td><td class="num">${r.preco!=null?BRL(r.preco):"—"}</td><td class="num">${r.preco!=null?BRL(r.preco*r.qtd):"⚠ indisponível"}</td></tr>`).join("")}</tbody></table><div class="a4-total"><span class="a4-total__label">TOTAL CONSOLIDADO DA COMPRA — preços de ${W.nome}</span><b class="a4-total__value">${BRL(W.total)}</b></div>${W.parcial?`<p style="font-size:11px;color:#7A4D00;margin-bottom:10px">⚠ Itens indisponíveis no vencedor: ${W.ausentes.map(a=>PRODUCTS.find(p=>p.id===a.pid).nome).join("; ")}. Total calculado sobre itens disponíveis.</p>`:""}<div class="a4-foot"><span>Gerado por COBECO · protótipo MVP v3.2 · PDF server-side simulado (ReportLab)</span><span>Documento de cotação — sem valor fiscal</span></div></div>`;
+}
+function exportPDF(){
+  if(!state.resultado){toast("Compare os preços antes de exportar.","warning");return;}
+  toast("⏳ Gerando PDF no servidor (ReportLab)…","info");
+  setTimeout(()=>{state.flags.pdf=true;openModal(document.getElementById("tpl-modal-pdf").content.firstElementChild.outerHTML);document.getElementById("a4-sheet-preview").innerHTML=sheetHTML();renderJourney();},900);}
+function printWinner(){
+  if(!state.resultado){toast("Compare os preços antes de imprimir.","warning");return;}
+  document.getElementById("print-area").innerHTML=sheetHTML();
+  setTimeout(()=>window.print(),60);
+}
+
+/* ============================================================
+   AUTOCOMPLETE
+   ============================================================ */
+let sugTimer=null;
+function updateSugestoes(){
+  const box=document.getElementById("sug-box");if(!box)return;
+  const q=norm(state.busca);
+  if(q.length<2){box.innerHTML="";box.style.display="none";return;}
+  box.innerHTML=`<div style="padding:12px 14px; color:var(--neutral-500); font-size:var(--fs-sm);">🔎 Buscando no catálogo…</div>`;box.style.display="block";
+  clearTimeout(sugTimer);
+  sugTimer=setTimeout(()=>{
+    const hits=PRODUCTS.filter(p=>norm(p.nome).includes(q)).slice(0,6);
+    box.innerHTML=hits.length?hits.map(p=>`<div style="display:flex; justify-content:space-between; gap:10px; padding:11px 14px; cursor:pointer; font-size:var(--fs-body); border-bottom:1px solid var(--neutral-100);" data-action-add="${p.id}" role="option"><span>${p.nome}</span><span class="muted" style="font-size:var(--fs-xs);">por unidade: ${p.un}</span></div>`).join(""):`<div style="padding:12px 14px; color:var(--neutral-500); font-size:var(--fs-sm);">Nenhum produto encontrado — tente outro termo.</div>`;
+  },280);
+}
+
+/* ============================================================
+   EVENT DELEGATION
+   ============================================================ */
+document.addEventListener("click",e=>{
+  const el=e.target.closest("[data-action]");if(!el)return;
+  const a=el.dataset.action;e.preventDefault();
+  switch(a){
+    case"overlay-click":if(e.target===el)closeModal();break;
+    case"close-modal":closeModal();break;
+    case"nav-home":go("home");break;
+    case"nav-nova":go(state.categorias.length?"lista":"categorias");break;
+    case"nav-listas":state.user?go("dashboard"):(go("login"),toast("Entre para acessar suas listas.","warning"));break;
+    case"nav-perfil":state.user?go("perfil"):go("login");break;
+    case"page-login":go("login");break;
+    case"page-cadastro":go("cadastro");break;
+    case"page-recuperar":state.recStep=1;go("recuperar");break;
+    case"logout":{const hadEph=state.lista.itens.length>0;state.user=null;state.perfilEdit=false;toast(`Sessão encerrada. ${hadEph?"Rascunho da aba preservado (RF03).":""}`,"info");go("home");break;}
+    case"toggle-category":{const id=+el.dataset.cat;state.categorias=state.categorias.includes(id)?state.categorias.filter(x=>x!==id):[...state.categorias,id];render();break;}
+    case"cat-all":state.categorias=CATEGORIES.map(c=>c.id);render();break;
+    case"cat-none":state.categorias=[];render();break;
+    case"to-lista":if(!state.categorias.length){toast("Selecione ao menos 1 categoria.","error");break;}go("lista");break;
+    case"goto-step":{const s=el.dataset.step;if(s==="lista"&&!state.categorias.length){go("categorias");break;}if((s==="fornecedores"||s==="comparacao")&&!state.lista.itens.length){go("lista");break;}if(s==="comparacao"&&!state.resultado){go("fornecedores");break;}go(s);break;}
+    case"demo-lista":state.lista={nome:"Compras do Mês",itens:[{pid:1,qtd:2},{pid:2,qtd:2},{pid:3,qtd:3},{pid:4,qtd:2},{pid:5,qtd:2},{pid:6,qtd:6}]};if(!state.categorias.length)state.categorias=[1];persistEph();render();toast("⚡ Lista da Mariana preenchida: 6 produtos de mercado.","success");break;
+    case"inc":case"dec":{const ix=+el.dataset.ix;const it=state.lista.itens[ix];it.qtd=Math.min(9999,Math.max(1,it.qtd+(a==="inc"?1:-1)));persistEph();refreshListaUI();break;}
+    case"del-item":state.lista.itens.splice(+el.dataset.ix,1);persistEph();refreshListaUI();break;
+    case"to-fornecedores":if(!state.lista.itens.length){toast("Adicione ao menos 1 item.","error");break;}go("fornecedores");break;
+    case"forn-all":state.fornecedores=fornecedoresElegiveis().filter(f=>coberturaDe(f.id)*100>=state.filtroDisp).map(f=>f.id).slice(0,10);render();break;
+    case"forn-clear":state.fornecedores=[];render();break;
+    case"calcular":{if(state.fornecedores.length<2){toast("Selecione ao menos 2 fornecedores.","error");break;}const btn=el;btn.disabled=true;btn.textContent="⏳ Calculando orçamento…";setTimeout(()=>{calcularResultado();go("comparacao");toast(`✅ Comparação concluída em ~180ms (meta p95 <500ms). Melhor oferta: ${state.resultado.winner.nome}.`,"success");},700);break;}
+    case"ver-vencedora":go("vencedora");break;
+    case"export-pdf":exportPDF();break;
+    case"print-a4":printWinner();break;
+    case"baixar-pdf":toast("🖨️ Abrindo destino de impressão — escolha “Salvar como PDF” (protótipo simula o download server-side).","info");document.getElementById("print-area").innerHTML=sheetHTML();setTimeout(()=>window.print(),80);break;
+    case"salvar-lista":{if(!state.user){openModal(`<div class="modal-overlay" data-action="overlay-click"><div class="modal" role="dialog" aria-modal="true"><button class="modal__close" data-action="close-modal" aria-label="Fechar">✕</button><h3 class="modal__title">🔒 Entre para salvar sua lista</h3><p class="modal__subtitle muted small">Sua lista permanece aqui enquanto você entra (RF08 — rascunho preservado).</p><div class="alert alert--info" style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;"><span>🎬 <b>Demo:</b> mariana / Comida123!</span><button class="linklike" type="button" data-action="demo-modal-fill" style="font-size:var(--fs-sm);">preencher</button></div><form id="form-login-modal" novalidate><div class="field"><label class="field__label">Nome de usuário</label><input type="text" id="m-user" class="input"></div><div class="field"><label class="field__label">Senha</label><input type="password" id="m-pass" class="input"></div><button class="btn btn--primary btn--lg" style="width:100%" data-primary>Entrar e salvar</button></form><div class="auth-foot" style="margin-top:18px; text-align:center; font-size:var(--fs-sm); color:var(--neutral-500);"><a href="#" data-action="close-modal">Cancelar</a> · <a href="#" data-action="goto-cad-from-modal">Criar conta</a></div></div></div>`);}else{if(salvarListaCore())go("dashboard");}break;}
+    case"goto-cad-from-modal":closeModal();go("cadastro");break;
+    case"demo-modal-fill":document.getElementById("m-user").value="mariana";document.getElementById("m-pass").value="Comida123!";break;
+    case"demo-login-fill":document.getElementById("l-user").value="mariana";document.getElementById("l-pass").value="Comida123!";break;
+    case"promote-yes":closeModal();if(salvarListaCore())go("dashboard");break;
+    case"promote-no":closeModal();toast("Lista mantida em memória (efêmera).","info");go("dashboard");break;
+    case"editar-lista":{const l=(LISTAS[state.user]||[]).find(x=>x.id===+el.dataset.id);if(!l)break;state.listaEditId=l.id;state.lista={nome:l.nome,itens:l.itens.map(i=>({...i}))};state.categorias=[...(l.categorias||[])];persistEph();go("lista");toast("✏️ Editando “"+l.nome+"”. Ao salvar, os dados serão atualizados (UC13).","info");break;}
+    case"excluir-lista":{const id=+el.dataset.id;const l=(LISTAS[state.user]||[]).find(x=>x.id===id);openModal(`<div class="modal-overlay" data-action="overlay-click"><div class="modal" role="dialog" aria-modal="true"><button class="modal__close" data-action="close-modal" aria-label="Fechar">✕</button><h3 class="modal__title">🗑️ Confirmar exclusão</h3><p class="modal__subtitle muted small">Esta ação não pode ser desfeita (na demo). Digite o nome da lista para confirmar (RF11):</p><div class="field"><label class="field__label">“${l.nome}”</label><input type="text" id="excl-nome" placeholder="digite o nome exato" autocomplete="off" class="input"></div><div class="modal__actions"><button class="btn btn--ghost" data-action="close-modal">Cancelar</button><button class="btn btn--danger" id="btn-excl" data-action="confirmar-exclusao" data-id="${id}" disabled>Excluir permanentemente</button></div></div></div>`);break;}
+    case"confirmar-exclusao":{const id=+el.dataset.id;const db=LISTAS[state.user]||[];const ix=db.findIndex(x=>x.id===id);if(ix>=0){db.splice(ix,1);}closeModal();toast("🗑 Lista excluída (soft delete simulado — deletado_em).","success");render();break;}
+    case"perfil-editar":state.perfilEdit=true;render();break;
+    case"journey-toggle":document.getElementById("journey").classList.toggle("journey--min");break;
+    case"journey-next":{const p=document.querySelector("[data-primary]");if(p){p.scrollIntoView({behavior:"smooth",block:"center"});p.classList.remove("pulse");void p.offsetWidth;p.classList.add("pulse");p.focus({preventScroll:true});}else toast("Nenhuma ação disponível neste ponto.","info");break;}
+  }
+});
+
+/* Form submits */
+document.addEventListener("submit",e=>{
+  const id=e.target.id;if(!id)return;e.preventDefault();
+  const val=x=>{const n=document.getElementById(x);return n?n.value.trim():"";};
+  const bad=fid=>{const f=document.getElementById(fid);if(f)f.classList.add("field--invalid");};
+  const clear=fid=>{const f=document.getElementById(fid);if(f)f.classList.remove("field--invalid");};
+  if(id==="form-login"||id==="form-login-modal"){
+    const u=id==="form-login"?val("l-user"):val("m-user"),p=id==="form-login"?val("l-pass"):val("m-pass");
+    if(!u||!p){toast("Informe usuário e senha.","error");return;}
+    if(loginCore(u,p)){closeModal();afterLogin();}else if(id==="form-login")render();
+  }else if(id==="form-cad"){let ok=true;["fc-u","fc-n","fc-e","fc-s","fc-c","fc-p","fc-r"].forEach(clear);const u=val("c-user"),n=val("c-nome"),em=val("c-email"),s=val("c-senha"),c=val("c-conf"),pg=val("c-perg"),r=val("c-resp");if(!/^[a-zA-Z0-9]{3,30}$/.test(u)||USERS.some(x=>x.nome_usuario===u)){bad("fc-u");ok=false;}if(n.length<2||n.length>100){bad("fc-n");ok=false;}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)||USERS.some(x=>x.email===em)){bad("fc-e");ok=false;}if(!(s.length>=8&&/[A-Z]/.test(s)&&/\d/.test(s)&&/[^A-Za-z0-9]/.test(s))){bad("fc-s");ok=false;}if(c!==s){bad("fc-c");ok=false;}if(!pg){bad("fc-p");ok=false;}if(r.length<3){bad("fc-r");ok=false;}if(!ok){toast("Verifique os campos destacados.","error");return;}USERS.push({nome_usuario:u,nome:n,email:em,senha:s,pergunta:pg,resposta:r,criado_em:today()});toast("✅ Conta criada com sucesso! Agora faça login.","success");go("login");}
+});
+
+/* Inputs */
+document.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.id==="nome-lista"){state.lista.nome=t.value;persistEph();const c=document.getElementById("nome-count");if(c)c.textContent=t.value.length;}
+  else if(t.id==="busca"){state.busca=t.value;updateSugestoes();}
+  else if(t.id==="slider-disp"){state.filtroDisp=+t.value;document.getElementById("slider-out").textContent=t.value+"%";const removed=state.fornecedores.filter(f=>coberturaDe(f)*100<state.filtroDisp);if(removed.length){state.fornecedores=state.fornecedores.filter(f=>coberturaDe(f)*100>=state.filtroDisp);toast(`${removed.length} fornecedor(es) removidos da seleção pelo filtro (UC05).`,"warning");}render();}
+  else if(t.id==="dash-q"){state.dashQ=t.value;render();}
+  else if(t.id==="excl-nome"){const id=+document.getElementById("btn-excl").dataset.id;const l=(LISTAS[state.user]||[]).find(x=>x.id===id);document.getElementById("btn-excl").disabled=t.value.trim()!==l.nome;}
+  else if(t.dataset.qtdix!==undefined){const ix=+t.dataset.qtdix;let v=parseInt(t.value,10);if(isNaN(v))v=1;v=Math.min(9999,Math.max(1,v));state.lista.itens[ix].qtd=v;persistEph();}
+});
+
+document.addEventListener("change",e=>{
+  const t=e.target;
+  if(t.dataset.actionAdd){const pid=+t.dataset.actionAdd;const ex=state.lista.itens.find(i=>i.pid===pid);if(ex)ex.qtd=Math.min(9999,ex.qtd+1);else state.lista.itens.push({pid,qtd:1});state.busca="";const b=document.getElementById("busca");if(b)b.value="";document.getElementById("sug-box").innerHTML="";document.getElementById("sug-box").style.display="none";persistEph();refreshListaUI();const p=PRODUCTS.find(x=>x.id===pid);toast(`➕ ${p.nome} adicionado${ex?" (quantidade somada)":""}.`,"success");}
+});
+
+/* Auth core */
+function loginCore(user,pass){
+  if(Date.now()<state.lockedUntil){toast("🔒 Conta bloqueada temporariamente (6 tentativas).","error");return false;}
+  const u=USERS.find(x=>x.nome_usuario===user);
+  if(!u||u.senha!==pass){state.attempts++;if(state.attempts>=6){state.lockedUntil=Date.now()+15*60*1000;state.attempts=0;toast("🔒 6 tentativas falhas — bloqueio de 15 minutos (RF02).","error");}else toast(`Credenciais inválidas. (mensagem genérica · tentativa ${state.attempts}/6)`,"error");return false;}
+  state.attempts=0;state.user=u.nome_usuario;
+  toast(`✅ Bem-vinda(o), ${u.nome.split(" ")[0]}! Sessão ativa — token em memória, cookie httpOnly simulado.`,"success");
+  return true;
+}
+function afterLogin(){
+  const hasEph=state.lista.itens.length>0;
+  if(hasEph){openModal(`<div class="modal-overlay" data-action="overlay-click"><div class="modal" role="dialog" aria-modal="true"><button class="modal__close" data-action="close-modal" aria-label="Fechar">✕</button><h3 class="modal__title">💾 Salvar lista efêmera?</h3><p class="modal__subtitle muted small">Você tem uma lista ativa na sessão: <b>“${state.lista.nome||"(sem nome)"}” · ${state.lista.itens.length} itens</b>. Deseja salvá-la permanentemente na sua conta? (UC17 — Promover Lista Efêmera)</p><div class="alert alert--warning" style="margin:10px 0"><span class="alert__icon">⚠️</span><span>Se escolher “Não”, a lista permanece em memória e será perdida ao fechar a aba.</span></p><div class="modal__actions"><button class="btn btn--ghost" data-action="promote-no">Não, manter efêmera</button><button class="btn btn--primary" data-action="promote-yes" style="background:var(--success); border:none;">Sim, salvar lista</button></div></div></div>`);}
+  else go("dashboard");
+}
+function salvarListaCore(){
+  if(!state.lista.nome.trim()){toast("Informe um nome para a lista.","error");return false;}
+  if(!state.lista.itens.length){toast("A lista precisa de ao menos 1 item.","error");return false;}
+  if(!state.categorias.length){toast("Selecione ao menos 1 categoria antes de salvar (UC03).","error");return false;}
+  const db=LISTAS[state.user]=LISTAS[state.user]||[];
+  const snap={nome:state.lista.nome,itens:state.lista.itens.map(i=>({...i})),categorias:[...state.categorias]};
+  if(state.listaEditId){const l=db.find(x=>x.id===state.listaEditId);Object.assign(l,snap);toast("✅ Lista atualizada (transação ACID simulada).","success");}
+  else{db.push({id:++listSeq,criado_em:today(),...snap});state.listaEditId=listSeq;state.flags.saved=true;toast("✅ Lista salva com sucesso! Persistida no banco (simulado).","success");}
+  persistEph();renderJourney();return true;
+}
+
+/* Navigation */
+function go(view){state.view=view;render();window.scrollTo({top:0});}
+function render(){
+  document.querySelector("header .header__inner").innerHTML=navHTML();
+  const M={home:vHome,categorias:vCategorias,lista:vLista,fornecedores:vFornecedores,comparacao:vComparacao,vencedora:vVencedora,login:vLogin,cadastro:vCadastro,recuperar:()=>`<div class="screen"><div class="container page" style="min-height:60vh; display:flex; align-items:center; justify-content:center;"><div class="auth-wrap" style="max-width:460px;"><div class="card auth-card card-pad"><span class="kicker">Recuperação · passo ${state.recStep} de 3</span><h1>Recuperar senha</h1><p class="muted" style="margin-bottom:22px;">Via pergunta de segurança (contexto acadêmico, sem envio de email).</p>${state.recStep===1?`<form id="form-rec1" novalidate><div class="field" id="fr-u"><label class="field__label">Nome de usuário</label><input type="text" id="r-user" placeholder="seu username" class="input"><div class="field__error">Usuário não encontrado.</div></div><button class="btn btn--primary btn--lg" style="width:100%" data-primary>Continuar →</button></form><p class="muted small mt">⚠️ Máx. 3 tentativas por etapa · 3 solicitações/hora (rate limit). Modo dev: token também seria logado no stdout (RECOVERY_MODE=log).</p>`:state.recStep===2?`<p class="muted small mb">Responda para gerar o token de reset (uso único · 15 min):</p><form id="form-rec2" novalidate><div class="field" id="fr-r"><label class="field__label">${USERS.find(x=>x.nome_usuario===state.recUser).pergunta==="pet"?"Qual era o nome do seu primeiro animal de estimação?":USERS.find(x=>x.nome_usuario===state.recUser).pergunta==="cidade"?"Qual é o nome da sua cidade natal?":"Qual era o nome da sua escola de infância?"}</label><input type="text" id="r-resp" placeholder="sua resposta (demo: Thor)" class="input"><div class="field__error">Resposta incorreta. Tentativas restantes serão limitadas (3).</div></div><button class="btn btn--primary btn--lg" style="width:100%" data-primary>Validar resposta →</button></form>`:`<p class="muted small mb">Token válido ✔ (uso único, 15 min). Defina a nova senha — regras do RF01 e diferente da atual.</p><form id="form-rec3" novalidate><div class="field" id="fr-s"><label class="field__label">Nova senha</label><input type="password" id="r-senha" class="input"><div class="field__error">Senha fraca ou igual à anterior.</div></div><div class="field" id="fr-c"><label class="field__label">Confirmar nova senha</label><input type="password" id="r-conf" class="input"><div class="field__error">As senhas não coincidem.</div></div><button class="btn btn--primary btn--lg" style="width:100%" data-primary>Redefinir senha</button></form>`}<div class="auth-foot" style="margin-top:18px; text-align:center; font-size:var(--fs-sm); color:var(--neutral-500);"><a href="#" data-action="page-login">← Voltar ao login</a></div></div></div></div>`},dashboard:vDashboard,perfil:vPerfil};
+  document.getElementById("main").innerHTML=(M[state.view]||vHome)();
+  renderJourney();
+}
+
+/* Boot */
+loadEph();
+render();
+</script>
+</body>
+</html>

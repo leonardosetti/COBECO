@@ -277,6 +277,17 @@ async def calcular_orcamento(
     current_user=Depends(get_current_user),
     repo: ComparacaoRepository = Depends(get_comparacao_repo),
 ):
+    # Segurança: lista só pode ser comparada pelo seu proprietário
+    lista_result = await repo.session.execute(
+        select(ListaModel).where(
+            ListaModel.id == request.lista_id,
+            ListaModel.usuario_id == current_user.id,
+            ListaModel.deletado_em.is_(None),
+        )
+    )
+    if lista_result.scalar_one_or_none() is None:
+        raise HTTPException(status_code=404, detail="Lista não encontrada")
+
     usecase = CalcularOrcamentoUseCase(repo)
     try:
         result = await usecase.executar(
@@ -333,6 +344,17 @@ async def visualizar_resultados(
     current_user=Depends(get_current_user),
     repo: ComparacaoRepository = Depends(get_comparacao_repo),
 ):
+    # Segurança: lista só pode ser visualizada pelo seu proprietário
+    lista_result = await repo.session.execute(
+        select(ListaModel).where(
+            ListaModel.id == lista_id,
+            ListaModel.usuario_id == current_user.id,
+            ListaModel.deletado_em.is_(None),
+        )
+    )
+    if lista_result.scalar_one_or_none() is None:
+        raise HTTPException(status_code=404, detail="Lista não encontrada")
+
     fornecedor_ids = [int(f) for f in fornecedores.split(",")]
 
     usecase = CalcularOrcamentoUseCase(repo)

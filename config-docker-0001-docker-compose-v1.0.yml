@@ -23,6 +23,10 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - data
+    # Porta exposta apenas para desenvolvimento local (testes de integração
+    # rodam contra localhost:3306 — conftest). Não expor em produção.
+    ports:
+      - "3306:3306"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
       interval: 5s

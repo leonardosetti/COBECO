@@ -118,12 +118,12 @@ npx playwright test --project=chromium
 | ID | Requisito | Status |
 |----|-----------|--------|
 | RF01 | Cadastrar Usuário | ✅ |
-| RF02 | Login (JWT + Refresh) | ✅ |
+| RF02 | Login (JWT + Refresh, lockout 6/15min) | ✅ |
 | RF03 | Logout | ✅ |
 | RF04 | Recuperar Senha | ✅ |
 | RF05 | Visualizar Perfil | ✅ |
 | RF06 | Editar Perfil | ✅ |
-| RF07 | Criar Lista + Autocomplete | ✅ |
+| RF07 | Criar Lista (memória + autocomplete) | ✅ |
 | RF08 | Salvar/Promover Lista | ✅ |
 | RF09 | Listar Minhas Listas | ✅ |
 | RF10 | Editar Lista | ✅ |
@@ -132,9 +132,14 @@ npx playwright test --project=chromium
 | RF13 | Selecionar Fornecedores | ✅ |
 | RF14 | Filtrar Disponibilidade | ✅ |
 | RF15 | Calcular Orçamento | ✅ |
-| RF16 | Visualizar Resultados | ✅ |
-| RF17 | Exportar PDF (Lista + Comparação) | ✅ |
+| RF16 | Visualizar Resultados (melhor oferta: maior cobertura; empate → menor total) | ✅ |
+| RF17 | Exportar PDF (Lista Vencedora — todos, sem login) | ✅ |
 | RF18 | Impressão @media print | ✅ |
+
+### Fluxo de visitante (Autenticação Tardia — SPECS §7)
+O visitante percorre **todos** os passos sem login: Categorias → Lista (em `sessionStorage`) → Fornecedores → Comparação → Lista Vencedora → PDF. O login é exigido apenas para **salvar** a lista na conta (RF08). Endpoints públicos:
+- `POST /v1/comparacao/calcular-efemera` — orçamento a partir de itens em memória (sem auth)
+- `POST /v1/export/pdf/vencedora` — PDF da Lista Vencedora (sem auth, itens inline)
 
 ---
 

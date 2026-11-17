@@ -595,7 +595,18 @@ async def exportar_pdf(
     current_user=Depends(get_current_user),
     export_repo: ExportacaoRepository = Depends(get_exportacao_repo),
 ):
-    """PDF da lista salva (dado do usuário — requer auth)."""
+    """PDF da lista salva (dado do usuário — requer auth e propriedade)."""
+    # Segurança: lista só pode ser exportada pelo seu proprietário
+    lista_result = await export_repo.session.execute(
+        select(ListaModel).where(
+            ListaModel.id == lista_id,
+            ListaModel.usuario_id == current_user.id,
+            ListaModel.deletado_em.is_(None),
+        )
+    )
+    if lista_result.scalar_one_or_none() is None:
+        raise HTTPException(status_code=404, detail="Lista não encontrada")
+
     try:
         pdf_bytes = await export_repo.gerar_pdf_lista(lista_id)
     except HTTPException:
