@@ -173,7 +173,14 @@ class ListaRepositoryImpl(ListaRepository):
             )
         await self.session.flush()
 
-        return model.to_domain()
+        # Recarrega com itens eager-loaded para evitar MissingGreenlet
+        # (relacao itens foi modificada; to_domain precisa dela carregada)
+        result = await self.session.execute(
+            select(ListaModel)
+            .options(selectinload(ListaModel.itens))
+            .where(ListaModel.id == model.id)
+        )
+        return result.scalar_one().to_domain()
 
     async def soft_delete(self, lista_id: int, usuario_id: int, confirmacao_nome: str) -> bool:
         model = await self.buscar_por_id(lista_id, usuario_id)

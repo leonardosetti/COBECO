@@ -250,7 +250,7 @@ async def listar_fornecedores(
             FornecedorResponse(
                 id=fornecedor.id or 0,
                 nome=fornecedor.nome,
-                cnpj=fornecedor.cnpj.valor,
+                cnpj=fornecedor.cnpj,
                 categorias=[CategoriaResponse.model_validate(c) for c in cats],
             )
         )
