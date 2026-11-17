@@ -61,6 +61,7 @@ class ListaResumoResponse(BaseModel):
     id: int
     nome: str
     total_itens: int
+    categorias: list[int] = []
     criado_em: str
 
 
@@ -303,6 +304,7 @@ async def listar_minhas_listas(
             id=lista.id,  # type: ignore[arg-type]  # id da entidade persistida
             nome=lista.nome,
             total_itens=len(lista.itens),
+            categorias=getattr(lista, "categorias", []),
             criado_em=lista.criado_em.isoformat(),
         )
         for lista in listas
@@ -347,6 +349,7 @@ async def promover_lista_efemera(
         id=lista.id,  # type: ignore[arg-type]  # id definido no flush do repo
         nome=lista.nome,
         itens=itens_resposta,
+        categorias=getattr(lista, "categorias", []),
         criado_em=lista.criado_em.isoformat(),
         atualizado_em=lista.atualizado_em.isoformat(),
     )
@@ -382,6 +385,7 @@ async def buscar_lista(
         id=lista.id,  # type: ignore[arg-type]  # id definido no flush do repo
         nome=lista.nome,
         itens=itens_resposta,
+        categorias=getattr(lista, "categorias", []),
         criado_em=lista.criado_em.isoformat(),
         atualizado_em=lista.atualizado_em.isoformat(),
     )
@@ -430,6 +434,7 @@ async def editar_lista(
         id=lista.id,  # type: ignore[arg-type]  # id definido no flush do repo
         nome=lista.nome,
         itens=itens_resposta,
+        categorias=getattr(lista, "categorias", []),
         criado_em=lista.criado_em.isoformat(),
         atualizado_em=lista.atualizado_em.isoformat(),
     )
