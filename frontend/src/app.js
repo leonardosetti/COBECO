@@ -355,6 +355,7 @@ const State = {
   ephemeralList: null,
   ultimaComparacao: null,
   loginAttempts: 0,
+  flags: {},
   currentView: 'home',
 
   init() {
