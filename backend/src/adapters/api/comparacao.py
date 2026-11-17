@@ -57,6 +57,18 @@ class CalcularOrcamentoRequest(BaseModel):
     disponibilidade_minima: float = Field(0.0, ge=0.0, le=100.0)
 
 
+class ItemEfemeroRequest(BaseModel):
+    produto_id: int = Field(..., gt=0)
+    quantidade: int = Field(..., ge=1, le=9999)
+
+
+class CalcularOrcamentoEfemeroRequest(BaseModel):
+    itens: list[ItemEfemeroRequest] = Field(..., min_length=1)
+    fornecedor_ids: list[int] = Field(..., min_length=2)
+    disponibilidade_minima: float = Field(0.0, ge=0.0, le=100.0)
+    lista_nome: str = Field("Lista", max_length=100)
+
+
 class OrcamentoResponse(BaseModel):
     lista_id: int
     lista_nome: str
@@ -89,6 +101,34 @@ class ComparacaoRepositoryImpl(ComparacaoRepository):
             select(ItemListaModel).where(ItemListaModel.lista_id == lista_id)
         )
         itens_lista = list(itens_result.scalars().all())
+        if not itens_lista:
+            raise HTTPException(status_code=400, detail="Lista vazia")
+
+        return await self.calcular_orcamento_itens(
+            [{"produto_id": i.produto_id, "quantidade": i.quantidade} for i in itens_lista],
+            fornecedor_ids,
+            disponibilidade_minima,
+            lista_nome=lista.nome,
+            lista_id=lista.id,
+        )
+
+    async def calcular_orcamento_itens(
+        self,
+        itens: list[dict],
+        fornecedor_ids: list[int],
+        disponibilidade_minima: float = 0.0,
+        lista_nome: str = "Lista",
+        lista_id: int = 0,
+    ):
+        """Núcleo do cálculo (RF15/RF16) — recebe itens em memória (lista efêmera
+        ou persistida). Regra da Melhor Oferta: maior cobertura; empate → menor total."""
+
+        class _Item:  # duck-type de ItemListaModel para o loop abaixo
+            def __init__(self, produto_id: int, quantidade: int):
+                self.produto_id = produto_id
+                self.quantidade = quantidade
+
+        itens_lista = [_Item(int(i["produto_id"]), int(i["quantidade"])) for i in itens]
         if not itens_lista:
             raise HTTPException(status_code=400, detail="Lista vazia")
 
@@ -182,19 +222,23 @@ class ComparacaoRepositoryImpl(ComparacaoRepository):
                 )
             )
 
-        # 5. Ordena por preço total ASC (RF15)
+        # 5. Ordena exibição por preço total ASC (RF15)
         fornecedores_comparacao.sort(key=lambda f: f.preco_total)
 
-        # Marca melhor oferta
+        # Melhor Oferta (RF16): maior % cobertura; empate → menor custo total
         if fornecedores_comparacao:
-            fornecedores_comparacao[0].eh_melhor = True
-            melhor_id = fornecedores_comparacao[0].fornecedor_id
+            melhor = max(
+                fornecedores_comparacao,
+                key=lambda f: (f.percentual_disponibilidade, -f.preco_total),
+            )
+            melhor.eh_melhor = True
+            melhor_id = melhor.fornecedor_id
         else:
             melhor_id = None
 
         return OrcamentoResponse(
-            lista_id=lista.id,
-            lista_nome=lista.nome,
+            lista_id=lista_id,
+            lista_nome=lista_nome,
             melhor_fornecedor_id=melhor_id,
             fornecedores=fornecedores_comparacao,
         )
@@ -250,6 +294,31 @@ async def calcular_orcamento(
         raise HTTPException(status_code=400, detail=str(e))
 
     return result
+
+
+@router.post(
+    "/calcular-efemera",
+    response_model=OrcamentoResponse,
+    summary="UC06/RF15 - Calcular Orçamento (Lista Efêmera — sem login)",
+)
+async def calcular_orcamento_efemera(
+    request: CalcularOrcamentoEfemeroRequest,
+    repo: ComparacaoRepository = Depends(get_comparacao_repo),
+):
+    """Autenticação Tardia (SPECS §7): visitante compara sem login, itens em memória."""
+    try:
+        return await repo.calcular_orcamento_itens(
+            [item.model_dump() for item in request.itens],
+            request.fornecedor_ids,
+            request.disponibilidade_minima,
+            lista_nome=request.lista_nome,
+        )
+    except FornecedoresInsuficientes:
+        raise HTTPException(status_code=400, detail="Selecione pelo menos 2 fornecedores")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.get(

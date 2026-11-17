@@ -19,6 +19,7 @@ def mock_repo():
 def hash_senha_fn():
     def hash_fn(senha: str) -> str:
         return f"hashed_{senha}"
+
     return hash_fn
 
 
@@ -26,6 +27,7 @@ def hash_senha_fn():
 def verificar_senha_fn():
     def verify_fn(senha: str, hash_: str) -> bool:
         return hash_ == f"hashed_{senha}"
+
     return verify_fn
 
 
@@ -129,7 +131,9 @@ class TestGerenciarPerfilUseCase:
             )
 
     @pytest.mark.asyncio
-    async def test_atualizar_senha_com_sucesso(self, usecase, mock_repo, usuario_exemplo, hash_senha_fn):
+    async def test_atualizar_senha_com_sucesso(
+        self, usecase, mock_repo, usuario_exemplo, hash_senha_fn
+    ):
         mock_repo.buscar_por_id = AsyncMock(return_value=usuario_exemplo)
         mock_repo.atualizar = AsyncMock(
             return_value=Usuario(

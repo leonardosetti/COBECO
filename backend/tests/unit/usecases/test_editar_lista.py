@@ -55,7 +55,9 @@ class TestEditarListaUseCase:
     """Testes para EditarListaUseCase (UC13/RF10)"""
 
     @pytest.mark.asyncio
-    async def test_executar_atualizar_nome(self, usecase, mock_lista_repo, mock_produto_repo, lista_existente, produtos_exemplo):
+    async def test_executar_atualizar_nome(
+        self, usecase, mock_lista_repo, mock_produto_repo, lista_existente, produtos_exemplo
+    ):
         mock_lista_repo.buscar_por_id = AsyncMock(return_value=lista_existente)
         mock_produto_repo.buscar_por_ids = AsyncMock(return_value=produtos_exemplo[:2])
         mock_lista_repo.atualizar = AsyncMock(
@@ -82,7 +84,9 @@ class TestEditarListaUseCase:
         mock_lista_repo.atualizar.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_executar_adicionar_item(self, usecase, mock_lista_repo, mock_produto_repo, lista_existente, produtos_exemplo):
+    async def test_executar_adicionar_item(
+        self, usecase, mock_lista_repo, mock_produto_repo, lista_existente, produtos_exemplo
+    ):
         mock_lista_repo.buscar_por_id = AsyncMock(return_value=lista_existente)
         mock_produto_repo.buscar_por_ids = AsyncMock(return_value=produtos_exemplo)
         mock_lista_repo.atualizar = AsyncMock(
@@ -114,7 +118,9 @@ class TestEditarListaUseCase:
         assert any(item.produto_id == 3 for item in result.itens)
 
     @pytest.mark.asyncio
-    async def test_executar_remover_item(self, usecase, mock_lista_repo, mock_produto_repo, lista_existente, produtos_exemplo):
+    async def test_executar_remover_item(
+        self, usecase, mock_lista_repo, mock_produto_repo, lista_existente, produtos_exemplo
+    ):
         mock_lista_repo.buscar_por_id = AsyncMock(return_value=lista_existente)
         mock_produto_repo.buscar_por_ids = AsyncMock(return_value=[produtos_exemplo[0]])
         mock_lista_repo.atualizar = AsyncMock(
@@ -165,7 +171,9 @@ class TestEditarListaUseCase:
             await usecase.executar(lista_id=1, usuario_id=1, input=input_data)
 
     @pytest.mark.asyncio
-    async def test_executar_produto_nao_existe(self, usecase, mock_lista_repo, mock_produto_repo, lista_existente):
+    async def test_executar_produto_nao_existe(
+        self, usecase, mock_lista_repo, mock_produto_repo, lista_existente
+    ):
         mock_lista_repo.buscar_por_id = AsyncMock(return_value=lista_existente)
         mock_produto_repo.buscar_por_ids = AsyncMock(return_value=[])  # Produto não encontrado
 
@@ -178,7 +186,9 @@ class TestEditarListaUseCase:
             await usecase.executar(lista_id=1, usuario_id=1, input=input_data)
 
     @pytest.mark.asyncio
-    async def test_executar_lista_vazia(self, usecase, mock_lista_repo, mock_produto_repo, lista_existente):
+    async def test_executar_lista_vazia(
+        self, usecase, mock_lista_repo, mock_produto_repo, lista_existente
+    ):
         """EditarListaUseCase não valida lista vazia (diferente de SalvarListaUseCase).
         Esta validação ocorre no repositório/DB via constraint unique.
         """

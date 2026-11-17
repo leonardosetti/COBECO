@@ -165,8 +165,8 @@ class ApiClient {
       credentials: 'include', // Importante para cookies httpOnly
     });
 
-    if (response.status === 401) {
-      // Tenta refresh token
+    if (response.status === 401 && !endpoint.startsWith('/auth/')) {
+      // Tenta refresh token (exceto endpoints de auth — evita loop no login)
       const refreshed = await this.refreshToken();
       if (refreshed) {
         // Re-tenta requisição original
@@ -174,7 +174,7 @@ class ApiClient {
       }
       // Refresh falhou - logout
       this.clearTokens();
-      window.location.href = '/login';
+      window.location.hash = '#/login';
       throw new Error('Sessão expirada');
     }
 
@@ -295,6 +295,13 @@ class ApiClient {
     });
   }
 
+  static calcularOrcamentoEfemera(data) {
+    return this.request('/comparacao/calcular-efemera', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
   // Exportação
   static exportarPDF(listaId) {
     return fetch(`${API_BASE}/export/pdf?lista_id=${listaId}`, {
@@ -320,6 +327,21 @@ class ApiClient {
       body: JSON.stringify(data),
     }).then(r => {
       if (!r.ok) throw new Error('Erro ao gerar PDF da comparação');
+      return r.blob();
+    });
+  }
+
+  static exportarPDFVencedora(data) {
+    return fetch(`${API_BASE}/export/pdf/vencedora`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.getToken()}`,
+      },
+      credentials: 'include',
+      body: JSON.stringify(data),
+    }).then(r => {
+      if (!r.ok) throw new Error('Erro ao gerar PDF da lista vencedora');
       return r.blob();
     });
   }
@@ -756,7 +778,7 @@ const Views = {
 
               ${listasUsuario.length > 0 ? `
                 <div class="border-t pt-4 mt-4">
-                  <h4 class="font-medium text-gray-700 mb-3">Minhas Listas Salvas</div>
+                  <h4 class="font-medium text-gray-700 mb-3">Minhas Listas Salvas</h4>
                   <div class="space-y-2 max-h-60 overflow-y-auto">
                     ${listasUsuario.map(l => `
                       <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
@@ -1118,17 +1140,31 @@ const AuthViews = {
             `,
           });
 
-          modal.close = () => {
-            const action = document.querySelector('[data-action]')?.dataset.action;
-            if (action === 'salvar') {
-              ApiClient.promoverEfemera(State.ephemeralList).then(() => {
-                showToast('Lista salva com sucesso!', 'success');
-                State.clearEphemeralList();
-              }).catch(e => showToast('Erro: ' + e.message, 'error'));
-            } else {
-              State.clearEphemeralList();
-            }
+          const btnManter = $('#modal-container [data-action="manter"]');
+          const btnSalvar = $('#modal-container [data-action="salvar"]');
+          btnManter.onclick = () => {
             $('#modal-container').classList.add('hidden');
+            $('#modal-container').innerHTML = '';
+            document.body.style.overflow = '';
+            // Mantém efêmera no sessionStorage; vai dashboard
+            State.navigate('home');
+          };
+          btnSalvar.onclick = async () => {
+            btnSalvar.disabled = true;
+            btnSalvar.innerHTML = '<span class="spinner"></span> Salvando...';
+            try {
+              await ApiClient.salvarLista({
+                nome: State.ephemeralList.nome,
+                itens: State.ephemeralList.itens,
+              });
+              showToast('Lista salva na sua conta!', 'success');
+              State.clearEphemeralList();
+              State.navigate('minhas-listas');
+            } catch (e) {
+              showToast('Erro ao salvar: ' + e.message, 'error');
+              btnSalvar.disabled = false;
+              btnSalvar.textContent = 'Salvar na Conta';
+            }
           };
         }
 
@@ -1318,6 +1354,7 @@ const ListaViews = {
 
     let itens = State.ephemeralList?.itens || [];
     let debounceTimer;
+    let unidadeSelecionada = 'un';
 
     const renderItens = () => {
       tbody.innerHTML = itens.map((item, idx) => `
@@ -1340,6 +1377,7 @@ const ListaViews = {
         btn.onclick = () => {
           itens.splice(parseInt(btn.dataset.remove), 1);
           renderItens();
+          gravarEfemera();
         };
       });
     };
@@ -1372,6 +1410,7 @@ const ListaViews = {
               produtoIdInput.value = btn.dataset.id;
               qtdInput.focus();
               autocompleteResults.classList.add('hidden');
+              unidadeSelecionada = btn.dataset.unidade || 'un';
               addBtn.disabled = !qtdInput.value;
             };
           });
@@ -1392,7 +1431,7 @@ const ListaViews = {
     addBtn.onclick = () => {
       const produtoId = parseInt(produtoIdInput.value);
       const produtoNome = produtoInput.value;
-      const unidade = 'un'; // TODO: buscar do produto
+      const unidade = unidadeSelecionada;
       const quantidade = parseInt(qtdInput.value);
 
       if (!produtoId || !quantidade) return;
@@ -1433,7 +1472,10 @@ const ListaViews = {
         if (State.user) {
           await ApiClient.salvarLista({ nome, itens });
         } else {
-          await ApiClient.promoverEfemera({ nome, itens });
+          // Visitante: pede login antes de persistir (Autenticação Tardia)
+          showToast('Faça login para salvar esta lista na sua conta', 'info');
+          State.navigate('login');
+          return;
         }
         showToast('Lista salva com sucesso!', 'success');
         State.clearEphemeralList();
@@ -1447,6 +1489,28 @@ const ListaViews = {
         saveBtn.disabled = false;
         saveBtn.textContent = 'Salvar Lista';
       }
+    };
+
+    // Grava lista efêmera no sessionStorage (recuperável ao reabrir aba)
+    const gravarEfemera = () => {
+      State.setEphemeralList({
+        nome: nomeInput.value.trim() || 'Lista sem nome',
+        itens: itens.map(i => ({ ...i })),
+      });
+    };
+
+    // Add item
+    const addOriginal = addBtn.onclick;
+    addBtn.onclick = () => {
+      addOriginal();
+      gravarEfemera();
+    };
+
+    // Clear
+    const clearOriginal = clearBtn.onclick;
+    clearBtn.onclick = () => {
+      clearOriginal();
+      gravarEfemera();
     };
 
     // Initial render
@@ -1541,6 +1605,7 @@ const ListaViews = {
 
     let itens = [];
     let debounceTimer;
+    let unidadeSelecionada = 'un';
 
     // Carrega lista existente
     const loadLista = async () => {
@@ -1612,6 +1677,7 @@ const ListaViews = {
               produtoIdInput.value = btn.dataset.id;
               qtdInput.focus();
               autocompleteResults.classList.add('hidden');
+              unidadeSelecionada = btn.dataset.unidade || 'un';
               addBtn.disabled = !qtdInput.value;
             };
           });
@@ -1631,7 +1697,7 @@ const ListaViews = {
     addBtn.onclick = () => {
       const produtoId = parseInt(produtoIdInput.value);
       const produtoNome = produtoInput.value;
-      const unidade = 'un';
+      const unidade = unidadeSelecionada;
       const quantidade = parseInt(qtdInput.value);
 
       if (!produtoId || !quantidade) return;
@@ -1702,6 +1768,7 @@ const ComparacaoViews = {
     let fornecedoresSelecionados = [];
     let listaSelecionada = null;
     let produtoIdsSelecionados = [];
+    let itensEfemera = [];
 
     // Step 0: Selecionar Lista (novo passo)
     const listaRadios = $$('input[name="lista-selecionada"]');
@@ -1729,6 +1796,7 @@ const ComparacaoViews = {
           return;
         }
         listaSelecionada = { id: 0, nome: efemera.nome || 'Lista Efêmera' };
+        itensEfemera = efemera.itens.map(i => ({ ...i }));
         produtoIdsSelecionados = efemera.itens.map(i => i.produto_id);
       } else {
         // Lista salva - busca no backend
@@ -1842,11 +1910,22 @@ const ComparacaoViews = {
       btnCalc.innerHTML = '<span class="spinner"></span> Calculando...';
 
       try {
-        const result = await ApiClient.calcularOrcamento({
-          lista_id: listaSelecionada?.id || 0,
-          fornecedor_ids: fornecedoresSelecionados,
-          disponibilidade_minima: parseFloat(slider.value),
-        });
+        let result;
+        if (listaSelecionada?.id === 0) {
+          // Lista efêmera: envia itens inline (sem login)
+          result = await ApiClient.calcularOrcamentoEfemera({
+            itens: itensEfemera,
+            fornecedor_ids: fornecedoresSelecionados,
+            disponibilidade_minima: parseFloat(slider.value),
+            lista_nome: listaSelecionada?.nome || 'Lista Efêmera',
+          });
+        } else {
+          result = await ApiClient.calcularOrcamento({
+            lista_id: listaSelecionada?.id || 0,
+            fornecedor_ids: fornecedoresSelecionados,
+            disponibilidade_minima: parseFloat(slider.value),
+          });
+        }
         renderResultado(result);
         stepForn.classList.add('hidden');
         stepRes.classList.remove('hidden');
@@ -1988,19 +2067,29 @@ function renderResultado(data) {
       const fornecedorIds = fornecedoresSelecionados;
       const disponibilidadeMinima = parseFloat(slider.value);
 
-      const blob = await ApiClient.exportarPDFComparacao({
-        lista_id: listaId,
-        fornecedor_ids: fornecedorIds,
-        disponibilidade_minima: disponibilidadeMinima,
-      });
+      let blob;
+      let filename;
+      if (listaSelecionada?.id === 0) {
+        // Lista efêmera: PDF da lista vencedora (RF17), sem login
+        blob = await ApiClient.exportarPDFVencedora({
+          itens: itensEfemera,
+          fornecedor_ids: fornecedorIds,
+          disponibilidade_minima: disponibilidadeMinima,
+          lista_nome: listaSelecionada?.nome || 'Lista Efêmera',
+        });
+        filename = `lista_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.pdf`;
+      } else {
+        blob = await ApiClient.exportarPDF(listaId);
+        filename = `lista_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.pdf`;
+      }
 
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `comparacao_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.pdf`;
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
-      showToast('PDF da comparação baixado!', 'success');
+      showToast('PDF baixado!', 'success');
     } catch (e) {
       showToast('Erro ao gerar PDF: ' + e.message, 'error');
     } finally {

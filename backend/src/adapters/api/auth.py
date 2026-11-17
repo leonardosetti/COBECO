@@ -407,6 +407,19 @@ async def get_current_user(
     return usuario
 
 
+async def get_current_user_optional(
+    token: str = Depends(oauth2_scheme),
+    session: AsyncSession = Depends(get_db),
+):
+    """Retorna usuário autenticado ou None — permite fluxo de visitante (RF17)."""
+    if not token:
+        return None
+    try:
+        return await get_current_user(token, session)
+    except HTTPException:
+        return None
+
+
 # Rate limiting simples em memória (produção: Redis)
 _tentativas_login: dict[str, list[float]] = {}
 _tentativas_recovery: dict[str, list[float]] = {}

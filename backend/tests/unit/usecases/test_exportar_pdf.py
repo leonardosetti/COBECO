@@ -35,7 +35,10 @@ class TestExportarPDFUseCase:
     @pytest.mark.asyncio
     async def test_executar_propaga_erro_lista_nao_encontrada(self, usecase, mock_repo):
         from src.adapters.api.exportacao import HTTPException
-        mock_repo.gerar_pdf_lista = AsyncMock(side_effect=HTTPException(status_code=404, detail="Lista não encontrada"))
+
+        mock_repo.gerar_pdf_lista = AsyncMock(
+            side_effect=HTTPException(status_code=404, detail="Lista não encontrada")
+        )
 
         with pytest.raises(HTTPException) as exc_info:
             await usecase.executar(lista_id=999)
@@ -45,7 +48,10 @@ class TestExportarPDFUseCase:
     @pytest.mark.asyncio
     async def test_executar_propaga_erro_lista_vazia(self, usecase, mock_repo):
         from src.adapters.api.exportacao import HTTPException
-        mock_repo.gerar_pdf_lista = AsyncMock(side_effect=HTTPException(status_code=400, detail="Lista vazia"))
+
+        mock_repo.gerar_pdf_lista = AsyncMock(
+            side_effect=HTTPException(status_code=400, detail="Lista vazia")
+        )
 
         with pytest.raises(HTTPException) as exc_info:
             await usecase.executar(lista_id=1)

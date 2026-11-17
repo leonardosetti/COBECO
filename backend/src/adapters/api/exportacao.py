@@ -9,7 +9,7 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.adapters.api.auth import get_current_user
+from src.adapters.api.auth import get_current_user, get_current_user_optional
 from src.adapters.db.database import get_db
 from src.adapters.db.models import ItemListaModel, ListaModel, ProdutoModel
 from src.domain.repositories import ExportacaoRepository
@@ -25,7 +25,7 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
         self.session = session
 
     async def gerar_pdf_lista(self, lista_id: int) -> bytes:
-        """Gera PDF da lista (RF17) - ReportLab server-side"""
+        """Gera PDF da lista salva (ReportLab server-side)"""
         from reportlab.lib.colors import HexColor, grey, white
         from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
         from reportlab.lib.pagesizes import A4
@@ -64,6 +64,7 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
         try:
             from src.adapters.api.comparacao import ComparacaoRepositoryImpl
             from src.adapters.db.models import FornecedorModel
+
             comp_repo = ComparacaoRepositoryImpl(self.session)
             # Buscar todos os fornecedores ativos para comparação
             fornecedores_result = await self.session.execute(
@@ -71,9 +72,7 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
             )
             fornecedor_ids = [f.id for f in fornecedores_result.scalars().all()]
             if len(fornecedor_ids) >= 2:
-                orcamento = await comp_repo.calcular_orcamento(
-                    lista_id, fornecedor_ids, 0.0
-                )
+                orcamento = await comp_repo.calcular_orcamento(lista_id, fornecedor_ids, 0.0)
         except Exception:
             orcamento = None  # Sem comparação se falhar
 
@@ -216,7 +215,7 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
         story.append(Spacer(1, 16))
 
         # --- Tabela de Comparação (se houver fornecedores) ---
-        if orcamento.fornecedores:
+        if orcamento and orcamento.fornecedores:
             story.append(Paragraph("Comparação de Fornecedores", styles["SectionHeader"]))
 
             headers_comp = [
@@ -319,8 +318,9 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
         buffer.seek(0)
         return buffer.read()
 
-    async def gerar_pdf_comparacao(self, orcamento) -> bytes:
-        """Gera PDF do resultado da comparação"""
+    async def gerar_pdf_vencedora(self, orcamento) -> bytes:
+        """RF17: PDF da LISTA VENCEDORA — apenas itens precificados do fornecedor
+        campeão (maior cobertura; empate → menor total). Nunca a tabela comparativa."""
         from reportlab.lib.colors import HexColor, grey, white
         from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
         from reportlab.lib.pagesizes import A4
@@ -333,6 +333,23 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
             Table,
             TableStyle,
         )
+
+        vencedor = next((f for f in orcamento.fornecedores if f.eh_melhor), None)
+        if vencedor is None and orcamento.fornecedores:
+            vencedor = orcamento.fornecedores[0]
+        if vencedor is None:
+            raise HTTPException(status_code=400, detail="Nenhum fornecedor na comparação")
+
+        cnpj_txt = "—"
+        try:
+            from src.adapters.db.models import FornecedorModel
+
+            res = await self.session.execute(
+                select(FornecedorModel.cnpj).where(FornecedorModel.id == vencedor.fornecedor_id)
+            )
+            cnpj_txt = res.scalar_one_or_none() or "—"
+        except Exception:
+            cnpj_txt = "—"
 
         buffer = io.BytesIO()
         doc = SimpleDocTemplate(
@@ -360,35 +377,16 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
                 name="CustomSubtitle",
                 parent=styles["Normal"],
                 fontSize=11,
-                spaceAfter=12,
+                spaceAfter=4,
                 alignment=TA_CENTER,
                 textColor=HexColor("#444"),
             )
         )
         styles.add(
             ParagraphStyle(
-                name="SectionHeader",
-                parent=styles["Heading2"],
-                fontSize=13,
-                spaceBefore=16,
-                spaceAfter=8,
-                textColor=HexColor("#1a1a2e"),
-            )
-        )
-        styles.add(
-            ParagraphStyle(
-                name="TableHeader",
-                parent=styles["Normal"],
-                fontSize=9,
-                textColor=white,
-                alignment=TA_CENTER,
-            )
-        )
-        styles.add(
-            ParagraphStyle(
                 name="TableCell",
                 parent=styles["Normal"],
-                fontSize=8,
+                fontSize=9,
                 alignment=TA_LEFT,
             )
         )
@@ -396,7 +394,7 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
             ParagraphStyle(
                 name="TableCellCenter",
                 parent=styles["Normal"],
-                fontSize=8,
+                fontSize=9,
                 alignment=TA_CENTER,
             )
         )
@@ -404,7 +402,7 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
             ParagraphStyle(
                 name="TableCellRight",
                 parent=styles["Normal"],
-                fontSize=8,
+                fontSize=9,
                 alignment=TA_RIGHT,
             )
         )
@@ -412,54 +410,61 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
         story = []
 
         # --- Header ---
-        story.append(Paragraph("COBECO — Resultado da Comparação", styles["CustomTitle"]))
+        story.append(Paragraph("COBECO — LISTA VENCEDORA — COTAÇÃO", styles["CustomTitle"]))
         story.append(Paragraph(f"Lista: {orcamento.lista_nome}", styles["CustomSubtitle"]))
         story.append(
             Paragraph(
+                f"Melhor oferta: {vencedor.fornecedor_nome} — CNPJ {cnpj_txt}",
+                styles["CustomSubtitle"],
+            )
+        )
+        story.append(
+            Paragraph(
+                f"Cobertura: {vencedor.percentual_disponibilidade:.1f}% · "
                 f"Gerado em: {datetime.now().strftime('%d/%m/%Y %H:%M')}",
                 styles["CustomSubtitle"],
             )
         )
-        story.append(Spacer(1, 12))
+        story.append(Spacer(1, 10))
 
-        # --- Tabela de Comparação ---
-        story.append(Paragraph("Comparação de Fornecedores", styles["SectionHeader"]))
+        # --- Tabela de Itens Precificados ---
+        headers = ["#", "Produto", "Un.", "Qtd", "Preço unit.", "Subtotal"]
+        col_widths = [1 * cm, 6.5 * cm, 1.5 * cm, 1.5 * cm, 2.75 * cm, 2.75 * cm]
 
-        headers_comp = [
-            "Fornecedor",
-            "Disponíveis",
-            "Ausentes",
-            "% Disp.",
-            "Total (R$)",
-        ]
-        col_widths_comp = [6 * cm, 2.5 * cm, 2.5 * cm, 2 * cm, 3.5 * cm]
-
-        table_data_comp = [headers_comp]
-        for f in orcamento.fornecedores:
-            destaque = " ⭐ MELHOR" if f.eh_melhor else ""
-            table_data_comp.append(
+        table_data = [headers]
+        ausentes = []
+        for idx, item in enumerate(vencedor.itens, start=1):
+            if item.disponivel:
+                preco_unit = (
+                    f"R$ {item.preco_unitario:,.2f}".replace(",", "X")
+                    .replace(".", ",")
+                    .replace("X", ".")
+                )
+                subtotal = (
+                    f"R$ {item.preco_total:,.2f}".replace(",", "X")
+                    .replace(".", ",")
+                    .replace("X", ".")
+                )
+            else:
+                preco_unit = "N/D"
+                subtotal = "N/D"
+                ausentes.append(item.produto_nome)
+            table_data.append(
                 [
-                    Paragraph(f"{f.fornecedor_nome}{destaque}", styles["TableCell"]),
-                    Paragraph(str(f.itens_disponiveis), styles["TableCellCenter"]),
-                    Paragraph(str(f.itens_ausentes), styles["TableCellCenter"]),
-                    Paragraph(
-                        f"{f.percentual_disponibilidade:.1f}%",
-                        styles["TableCellCenter"],
-                    ),
-                    Paragraph(
-                        f"R$ {f.preco_total:,.2f}".replace(",", "X")
-                        .replace(".", ",")
-                        .replace("X", "."),
-                        styles["TableCellRight"],
-                    ),
+                    Paragraph(str(idx), styles["TableCellCenter"]),
+                    Paragraph(item.produto_nome, styles["TableCell"]),
+                    Paragraph(item.unidade, styles["TableCellCenter"]),
+                    Paragraph(str(item.quantidade), styles["TableCellCenter"]),
+                    Paragraph(preco_unit, styles["TableCellRight"]),
+                    Paragraph(subtotal, styles["TableCellRight"]),
                 ]
             )
 
-        tabela_comp = Table(table_data_comp, colWidths=col_widths_comp, repeatRows=1)
-        tabela_comp.setStyle(
+        tabela = Table(table_data, colWidths=col_widths, repeatRows=1)
+        tabela.setStyle(
             TableStyle(
                 [
-                    ("BACKGROUND", (0, 0), (-1, 0), HexColor("#2d5a27")),
+                    ("BACKGROUND", (0, 0), (-1, 0), HexColor("#1a1a2e")),
                     ("TEXTCOLOR", (0, 0), (-1, 0), white),
                     ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
                     ("FONTSIZE", (0, 0), (-1, 0), 9),
@@ -471,106 +476,79 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
                     ("TOPPADDING", (0, 1), (-1, -1), 6),
                     ("GRID", (0, 0), (-1, -1), 0.5, HexColor("#ddd")),
                     ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                    (
-                        "ROWBACKGROUNDS",
-                        (0, 1),
-                        (-1, -1),
-                        [white, HexColor("#f0f8f0")],
-                    ),
-                    # Highlight best
-                    (
-                        "BACKGROUND",
-                        (0, 1),
-                        (-1, 1),
-                        (
-                            HexColor("#e8f5e9")
-                            if orcamento.fornecedores and orcamento.fornecedores[0].eh_melhor
-                            else HexColor("#f0f8f0")
-                        ),
-                    ),
+                    ("ROWBACKGROUNDS", (0, 1), (-1, -1), [white, HexColor("#f9f9f9")]),
                 ]
             )
         )
-        story.append(tabela_comp)
+        story.append(tabela)
+        story.append(Spacer(1, 12))
 
-        # --- Detalhes por Item ---
-        story.append(Spacer(1, 16))
-        story.append(Paragraph("Detalhamento por Item", styles["SectionHeader"]))
-
-        for f in orcamento.fornecedores:
-            story.append(Spacer(1, 8))
-            destaque = " ⭐ MELHOR" if f.eh_melhor else ""
+        if ausentes:
             story.append(
                 Paragraph(
-                    f"{f.fornecedor_nome}{destaque} — Total: R$ {f.preco_total:,.2f}".replace(
-                        ",", "X"
-                    )
-                    .replace(".", ",")
-                    .replace("X", "."),
-                    styles["TableCell"],
+                    "⚠ Itens indisponíveis neste fornecedor: " + ", ".join(ausentes),
+                    ParagraphStyle(
+                        "Ausentes",
+                        parent=styles["Normal"],
+                        fontSize=8,
+                        textColor=HexColor("#F57F17"),
+                    ),
                 )
             )
+            story.append(Spacer(1, 8))
 
-            headers_items = ["Produto", "Un.", "Qtd", "Preço Unit.", "Total"]
-            col_widths_items = [7 * cm, 1.5 * cm, 1.5 * cm, 3 * cm, 3 * cm]
-
-            table_data_items = [headers_items]
-            for item in f.itens:
-                table_data_items.append(
-                    [
-                        Paragraph(item.produto_nome, styles["TableCell"]),
-                        Paragraph(item.unidade, styles["TableCellCenter"]),
-                        Paragraph(str(item.quantidade), styles["TableCellCenter"]),
-                        Paragraph(
-                            (
-                                f"R$ {item.preco_unitario:,.2f}".replace(",", "X")
-                                .replace(".", ",")
-                                .replace("X", ".")
-                                if item.preco_unitario is not None
-                                else "N/D"
-                            ),
-                            styles["TableCellRight"],
+        # --- Total consolidado ---
+        total_unidades = sum(i.quantidade for i in vencedor.itens)
+        total_txt = (
+            f"R$ {vencedor.preco_total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        )
+        total_box = Table(
+            [
+                [
+                    Paragraph(
+                        f"Total consolidado da compra "
+                        f"({vencedor.itens_disponiveis} itens · {total_unidades} unidades)",
+                        ParagraphStyle(
+                            "TotalLabel",
+                            parent=styles["Normal"],
+                            fontSize=10,
+                            alignment=TA_LEFT,
+                            textColor=white,
                         ),
-                        Paragraph(
-                            (
-                                f"R$ {item.preco_total:,.2f}".replace(",", "X")
-                                .replace(".", ",")
-                                .replace("X", ".")
-                                if item.preco_total is not None
-                                else "N/D"
-                            ),
-                            styles["TableCellRight"],
+                    ),
+                    Paragraph(
+                        total_txt,
+                        ParagraphStyle(
+                            "TotalValue",
+                            parent=styles["Normal"],
+                            fontSize=16,
+                            alignment=TA_RIGHT,
+                            textColor=white,
                         ),
-                    ]
-                )
-
-            tabela_items = Table(table_data_items, colWidths=col_widths_items, repeatRows=1)
-            tabela_items.setStyle(
-                TableStyle(
-                    [
-                        ("BACKGROUND", (0, 0), (-1, 0), HexColor("#1a1a2e")),
-                        ("TEXTCOLOR", (0, 0), (-1, 0), white),
-                        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-                        ("FONTSIZE", (0, 0), (-1, 0), 8),
-                        ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
-                        ("TOPPADDING", (0, 0), (-1, 0), 6),
-                        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
-                        ("FONTSIZE", (0, 1), (-1, -1), 7),
-                        ("BOTTOMPADDING", (0, 1), (-1, -1), 4),
-                        ("TOPPADDING", (0, 1), (-1, -1), 4),
-                        ("GRID", (0, 0), (-1, -1), 0.5, HexColor("#ddd")),
-                        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [white, HexColor("#f9f9f9")]),
-                    ]
-                )
+                    ),
+                ]
+            ],
+            colWidths=[11 * cm, 5 * cm],
+        )
+        total_box.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, -1), HexColor("#1E7D32")),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ("TOPPADDING", (0, 0), (-1, -1), 12),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 12),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 14),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 14),
+                ]
             )
-            story.append(tabela_items)
+        )
+        story.append(total_box)
 
         # --- Footer ---
         story.append(Spacer(1, 24))
         story.append(
             Paragraph(
-                "COBECO MVP — FATEC Taquaritinga — Análise e Desenvolvimento de Sistemas",
+                "Documento gerado por COBECO — sem valor fiscal",
                 ParagraphStyle(
                     "Footer",
                     parent=styles["Normal"],
@@ -610,14 +588,14 @@ def get_exportacao_repo(
 # ============================================================
 @router.post(
     "/pdf",
-    summary="UC08/RF17 - Exportar Lista em PDF",
+    summary="UC08/RF17 - Exportar Lista Salva em PDF",
 )
 async def exportar_pdf(
     lista_id: int,
     current_user=Depends(get_current_user),
     export_repo: ExportacaoRepository = Depends(get_exportacao_repo),
 ):
-    """Gera PDF da lista (funciona para visitantes - sem auth obrigatório)"""
+    """PDF da lista salva (dado do usuário — requer auth)."""
     try:
         pdf_bytes = await export_repo.gerar_pdf_lista(lista_id)
     except HTTPException:
@@ -638,36 +616,44 @@ async def exportar_pdf(
 
 
 @router.post(
-    "/pdf/comparacao",
-    summary="Exportar Resultado de Comparação em PDF",
+    "/pdf/vencedora",
+    summary="UC08/RF17 - Exportar Lista Vencedora em PDF (visitante ou autenticado)",
 )
-async def exportar_pdf_comparacao(
+async def exportar_pdf_vencedora(
     request: dict,
-    current_user=Depends(get_current_user),
+    current_user=Depends(get_current_user_optional),
     export_repo: ExportacaoRepository = Depends(get_exportacao_repo),
 ):
-    """Gera PDF do resultado da comparação"""
+    """RF17: funciona para TODOS (sem login) quando itens vêm inline (lista efêmera).
+    Fluxo com lista salva exige auth — lista é dado do usuário."""
     from src.adapters.api.comparacao import ComparacaoRepositoryImpl
 
+    # Fluxo com lista salva exige auth — lista é dado do usuário
+    if not request.get("itens") and current_user is None:
+        raise HTTPException(status_code=401, detail="Autenticação necessária")
+
     try:
-        lista_id = request.get("lista_id")
-        fornecedor_ids = request.get("fornecedor_ids", [])
-        disponibilidade_minima = request.get("disponibilidade_minima", 0.0)
-
-        # Busca dados da comparação
         comp_repo = ComparacaoRepositoryImpl(export_repo.session)
-        orcamento = await comp_repo.calcular_orcamento(
-            lista_id, fornecedor_ids, disponibilidade_minima
-        )
-
-        # Gera PDF usando o mesmo método mas com dados da comparação
-        pdf_bytes = await export_repo.gerar_pdf_comparacao(orcamento)
+        if request.get("itens"):
+            orcamento = await comp_repo.calcular_orcamento_itens(
+                request["itens"],
+                request.get("fornecedor_ids", []),
+                request.get("disponibilidade_minima", 0.0),
+                lista_nome=request.get("lista_nome") or "Lista",
+            )
+        else:
+            orcamento = await comp_repo.calcular_orcamento(
+                request.get("lista_id"),
+                request.get("fornecedor_ids", []),
+                request.get("disponibilidade_minima", 0.0),
+            )
+        pdf_bytes = await export_repo.gerar_pdf_vencedora(orcamento)
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao gerar PDF: {str(e)}")
 
-    filename = f"comparacao_{datetime.now().strftime('%Y%m%d')}.pdf"
+    filename = f"lista_{datetime.now().strftime('%Y%m%d')}.pdf"
 
     return StreamingResponse(
         io.BytesIO(pdf_bytes),

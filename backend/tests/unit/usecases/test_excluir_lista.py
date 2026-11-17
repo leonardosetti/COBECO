@@ -43,7 +43,9 @@ class TestExcluirListaUseCase:
         mock_repo.buscar_por_id = AsyncMock(return_value=lista_exemplo)
         mock_repo.soft_delete = AsyncMock(return_value=True)
 
-        result = await usecase.executar(lista_id=1, usuario_id=1, confirmacao_nome="Lista para Excluir")
+        result = await usecase.executar(
+            lista_id=1, usuario_id=1, confirmacao_nome="Lista para Excluir"
+        )
 
         assert result is True
         mock_repo.soft_delete.assert_called_once_with(1, 1, "Lista para Excluir")
@@ -82,6 +84,8 @@ class TestExcluirListaUseCase:
         mock_repo.buscar_por_id = AsyncMock(return_value=lista_exemplo)
         mock_repo.soft_delete = AsyncMock(return_value=False)
 
-        result = await usecase.executar(lista_id=1, usuario_id=1, confirmacao_nome="Lista para Excluir")
+        result = await usecase.executar(
+            lista_id=1, usuario_id=1, confirmacao_nome="Lista para Excluir"
+        )
 
         assert result is False

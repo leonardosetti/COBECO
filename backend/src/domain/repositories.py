@@ -170,6 +170,21 @@ class ComparacaoRepository(ABC):
         ...
 
     @abstractmethod
+    async def calcular_orcamento_itens(
+        self,
+        itens: list[dict],
+        fornecedor_ids: list[int],
+        disponibilidade_minima: float = 0.0,
+        lista_nome: str = "Lista",
+    ) -> OrcamentoComparacao:
+        """
+        Calcula orçamento a partir de itens em memória (RF15, lista efêmera).
+        Não exige lista persistida — suporta visitante (Autenticação Tardia).
+        itens: [{"produto_id": int, "quantidade": int}, ...]
+        """
+        ...
+
+    @abstractmethod
     async def buscar_precos_para_comparacao(
         self,
         produto_ids: list[int],
@@ -196,11 +211,13 @@ class ExportacaoRepository(ABC):
         ...
 
     @abstractmethod
-    async def gerar_pdf_comparacao(self, orcamento) -> bytes:
+    async def gerar_pdf_vencedora(self, orcamento) -> bytes:
         """
-        Gera PDF do resultado da comparação
-        - Server-side com ReportLab
-        - Formato A4 com tabela comparativa
+        Gera PDF da LISTA VENCEDORA (RF17)
+        - Server-side com ReportLab, A4
+        - Exporta APENAS a lista do fornecedor campeão precificada
+          (nunca a tabela comparativa)
+        - Nome: lista_YYYYMMDD.pdf
         """
         ...
 

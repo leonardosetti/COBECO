@@ -2,7 +2,12 @@
 
 import pytest
 from unittest.mock import AsyncMock, MagicMock
-from src.domain.usecases import PromoverListaEfemeraUseCase, SalvarListaUseCase, CriarListaInput, DomainError
+from src.domain.usecases import (
+    PromoverListaEfemeraUseCase,
+    SalvarListaUseCase,
+    CriarListaInput,
+    DomainError,
+)
 from src.domain.entities import Lista, ItemLista, Produto
 from datetime import datetime
 
@@ -49,7 +54,9 @@ class TestPromoverListaEfemeraUseCase:
     """Testes para PromoverListaEfemeraUseCase (UC17/RF08)"""
 
     @pytest.mark.asyncio
-    async def test_executar_sucesso(self, usecase, mock_lista_repo, mock_produto_repo, lista_efemera, produtos_exemplo):
+    async def test_executar_sucesso(
+        self, usecase, mock_lista_repo, mock_produto_repo, lista_efemera, produtos_exemplo
+    ):
         mock_produto_repo.buscar_por_ids = AsyncMock(return_value=produtos_exemplo)
         mock_lista_repo.criar = AsyncMock(
             return_value=Lista(
