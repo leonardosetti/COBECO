@@ -106,6 +106,7 @@ class RecuperarSenhaInput:
 class CriarListaInput:
     nome: str
     itens: list[dict]  # [{"produto_id": int, "quantidade": int}, ...]
+    categorias: list[int]  # IDs das categorias selecionadas (RF12, regra RF08)
 
 
 @dataclass
@@ -347,6 +348,10 @@ class SalvarListaUseCase:
         if not input.itens:
             raise ValueError("Lista deve ter pelo menos 1 item")
 
+        # Validação de categorias (RF08 / regra de negócio: ≥1 categoria selecionada)
+        if not input.categorias or len(input.categorias) == 0:
+            raise ValueError("Selecione ao menos 1 categoria antes de salvar a lista (UC03)")
+
         # Validar produtos existem
         produto_ids = [item["produto_id"] for item in input.itens]
         produtos = await self.produto_repo.buscar_por_ids(produto_ids)
@@ -397,6 +402,7 @@ class PromoverListaEfemeraUseCase:
         input = CriarListaInput(
             nome=lista_memoria["nome"],
             itens=lista_memoria["itens"],
+            categorias=lista_memoria.get("categorias", []),
         )
         return await SalvarListaUseCase(self.repo, self.produto_repo).executar(usuario_id, input)
 

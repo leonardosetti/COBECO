@@ -38,12 +38,17 @@ class ItemListaRequest(BaseModel):
 class CriarListaRequest(BaseModel):
     nome: str = Field(..., min_length=1, max_length=100)
     itens: list[ItemListaRequest] = Field(..., min_length=1)
+    categorias: list[int] = Field(
+        default=[],
+        description="IDs das categorias selecionadas (RF12/RF08). Validação de negório: ≥1 categoria exigida no salvamento.",
+    )
 
 
 class ListaResponse(BaseModel):
     id: int
     nome: str
     itens: list[dict]
+    categorias: list[int] = []
     criado_em: str
     atualizado_em: str
 
@@ -240,6 +245,7 @@ async def salvar_lista(
             CriarListaInput(
                 nome=request.nome,
                 itens=[item.model_dump() for item in request.itens],
+                categorias=request.categorias,
             ),
         )
     except Exception as e:
@@ -261,6 +267,7 @@ async def salvar_lista(
         id=lista.id,  # type: ignore[arg-type]  # id definido no flush do repo
         nome=lista.nome,
         itens=itens_resposta,
+        categorias=getattr(lista, "categorias", []),
         criado_em=lista.criado_em.isoformat(),
         atualizado_em=lista.atualizado_em.isoformat(),
     )
@@ -390,6 +397,7 @@ async def editar_lista(
             CriarListaInput(
                 nome=request.nome,
                 itens=[item.model_dump() for item in request.itens],
+                categorias=request.categorias,
             ),
         )
     except ListaNaoEncontrada:

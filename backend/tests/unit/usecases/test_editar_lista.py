@@ -77,6 +77,7 @@ class TestEditarListaUseCase:
         input_data = CriarListaInput(
             nome="Novo Nome",
             itens=[{"produto_id": 1, "quantidade": 2}, {"produto_id": 2, "quantidade": 1}],
+            categorias=[1],
         )
         result = await usecase.executar(lista_id=1, usuario_id=1, input=input_data)
 
@@ -111,6 +112,7 @@ class TestEditarListaUseCase:
                 {"produto_id": 2, "quantidade": 1},
                 {"produto_id": 3, "quantidade": 3},
             ],
+            categorias=[1],
         )
         result = await usecase.executar(lista_id=1, usuario_id=1, input=input_data)
 
@@ -137,6 +139,7 @@ class TestEditarListaUseCase:
         input_data = CriarListaInput(
             nome="Lista Original",
             itens=[{"produto_id": 1, "quantidade": 2}],
+            categorias=[1],
         )
         result = await usecase.executar(lista_id=1, usuario_id=1, input=input_data)
 
@@ -147,7 +150,9 @@ class TestEditarListaUseCase:
     async def test_executar_lista_nao_encontrada(self, usecase, mock_lista_repo):
         mock_lista_repo.buscar_por_id = AsyncMock(return_value=None)
 
-        input_data = CriarListaInput(nome="Teste", itens=[{"produto_id": 1, "quantidade": 1}])
+        input_data = CriarListaInput(
+            nome="Teste", itens=[{"produto_id": 1, "quantidade": 1}], categorias=[1]
+        )
 
         with pytest.raises(ListaNaoEncontrada):
             await usecase.executar(lista_id=999, usuario_id=1, input=input_data)
@@ -165,7 +170,9 @@ class TestEditarListaUseCase:
         )
         mock_lista_repo.buscar_por_id = AsyncMock(return_value=None)  # Não encontra para usuário 1
 
-        input_data = CriarListaInput(nome="Teste", itens=[{"produto_id": 1, "quantidade": 1}])
+        input_data = CriarListaInput(
+            nome="Teste", itens=[{"produto_id": 1, "quantidade": 1}], categorias=[1]
+        )
 
         with pytest.raises(ListaNaoEncontrada):
             await usecase.executar(lista_id=1, usuario_id=1, input=input_data)
@@ -180,6 +187,7 @@ class TestEditarListaUseCase:
         input_data = CriarListaInput(
             nome="Lista",
             itens=[{"produto_id": 999, "quantidade": 1}],
+            categorias=[1],
         )
 
         with pytest.raises(DomainError, match="Um ou mais produtos não existem"):
@@ -205,7 +213,7 @@ class TestEditarListaUseCase:
             )
         )
 
-        input_data = CriarListaInput(nome="Lista", itens=[])
+        input_data = CriarListaInput(nome="Lista", itens=[], categorias=[1])
         result = await usecase.executar(lista_id=1, usuario_id=1, input=input_data)
 
         assert len(result.itens) == 0

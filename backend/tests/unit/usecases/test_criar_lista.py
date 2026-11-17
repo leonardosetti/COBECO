@@ -55,6 +55,7 @@ class TestSalvarListaUseCase:
                 {"produto_id": 1, "quantidade": 2},
                 {"produto_id": 2, "quantidade": 1},
             ],
+            categorias=[1],
         )
 
         result = await usecase.executar(usuario_id=1, input=input_data)
@@ -83,6 +84,7 @@ class TestSalvarListaUseCase:
                 {"produto_id": 1, "quantidade": 1},
                 {"produto_id": 999, "quantidade": 1},  # inexistente
             ],
+            categorias=[1],
         )
 
         with pytest.raises(DomainError, match="Um ou mais produtos não existem"):
@@ -95,6 +97,7 @@ class TestSalvarListaUseCase:
         input_data = CriarListaInput(
             nome="Lista Vazia",
             itens=[],
+            categorias=[1],
         )
 
         with pytest.raises(ValueError, match="Lista deve ter pelo menos 1 item"):
@@ -108,6 +111,7 @@ class TestSalvarListaUseCase:
         input_data = CriarListaInput(
             nome="Lista",
             itens=[{"produto_id": 1, "quantidade": 0}],  # inválido
+            categorias=[1],
         )
 
         with pytest.raises(ValueError, match="quantidade deve ser entre 1 e 9999"):
@@ -121,6 +125,7 @@ class TestSalvarListaUseCase:
         input_data = CriarListaInput(
             nome="",  # inválido
             itens=[{"produto_id": 1, "quantidade": 1}],
+            categorias=[1],
         )
 
         with pytest.raises(ValueError, match="nome da lista deve ter 1-100 caracteres"):

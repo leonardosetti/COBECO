@@ -39,6 +39,7 @@ def lista_efemera():
             {"produto_id": 1, "quantidade": 2},
             {"produto_id": 2, "quantidade": 1},
         ],
+        "categorias": [1],
     }
 
 
@@ -91,7 +92,7 @@ class TestPromoverListaEfemeraUseCase:
 
     @pytest.mark.asyncio
     async def test_executar_lista_vazia(self, usecase, mock_produto_repo):
-        lista_vazia = {"nome": "Vazia", "itens": []}
+        lista_vazia = {"nome": "Vazia", "itens": [], "categorias": [1]}
         mock_produto_repo.buscar_por_ids = AsyncMock(return_value=[])
 
         with pytest.raises(ValueError, match="Lista deve ter pelo menos 1 item"):
@@ -99,7 +100,11 @@ class TestPromoverListaEfemeraUseCase:
 
     @pytest.mark.asyncio
     async def test_executar_nome_invalido(self, usecase, mock_produto_repo, produtos_exemplo):
-        lista_nome_longo = {"nome": "A" * 101, "itens": [{"produto_id": 1, "quantidade": 1}]}
+        lista_nome_longo = {
+            "nome": "A" * 101,
+            "itens": [{"produto_id": 1, "quantidade": 1}],
+            "categorias": [1],
+        }
         mock_produto_repo.buscar_por_ids = AsyncMock(return_value=produtos_exemplo[:1])
 
         with pytest.raises(ValueError, match="nome da lista deve ter 1-100 caracteres"):

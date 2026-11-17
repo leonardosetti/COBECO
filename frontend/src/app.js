@@ -353,6 +353,7 @@ class ApiClient {
 const State = {
   user: null,
   ephemeralList: null,
+  ultimaComparacao: null,
   currentView: 'home',
 
   init() {
@@ -374,6 +375,10 @@ const State = {
     localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
     localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
     this.updateAuthUI();
+  },
+
+  setComparacao(resultado) {
+    this.ultimaComparacao = resultado;
   },
 
   clearUser() {
@@ -955,6 +960,95 @@ const Views = {
     `;
   },
 
+  // Lista Vencedora (Passo 5)
+  async vencedora() {
+    const data = State.ultimaComparacao;
+    if (!data || !data.fornecedores || data.fornecedores.length === 0) {
+      showToast('Nenhuma comparação disponível. Compare os preços primeiro.', 'warning');
+      State.navigate('comparar');
+      return '';
+    }
+    const vencedor = data.fornecedores.find(f => f.eh_melhor) || data.fornecedores[0];
+    const itensDisp = vencedor.itens_disponiveis;
+    const totalUnidades = (vencedor.itens || []).reduce((s, i) => s + i.quantidade, 0);
+    const parcial = vencedor.itens_ausentes > 0;
+    const ausentes = (vencedor.itens || []).filter(i => !i.disponivel).map(i => i.produto_nome);
+    const cnpj = '99.000.111/0001-65'; // CNPJ do fornecedor do seed (Carrefour como exemplo)
+
+    return `
+      <div class="max-w-4xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+          <a href="#/comparar" class="text-primary-600 hover:underline text-sm" data-link>← Voltar aos resultados</a>
+          <div>
+            <span class="badge badge-success">🏆 MELHOR OFERTA · ${Math.round(vencedor.percentual_disponibilidade)}% DA LISTA</span>
+          </div>
+        </div>
+
+        <div class="card mb-6" style="border:2px solid var(--brand-red); background:var(--brand-red-light); border-radius:var(--radius-xl); padding:24px 28px; display:flex; justify-content:space-between; gap:20px; align-items:center; flex-wrap:wrap;">
+          <div>
+            <h2 class="text-2xl font-bold mb-2">${escapeHtml(vencedor.fornecedor_nome)}</h2>
+            <div class="text-sm text-gray-600">CNPJ ${cnpj} · cotação de ${formatDate(new Date().toISOString())} · lista "${escapeHtml(data.lista_nome)}"</div>
+          </div>
+          <div style="text-align:right">
+            <div class="text-sm text-gray-500">Total consolidado</div>
+            <div class="text-3xl font-bold text-brand-red">${formatCurrency(vencedor.preco_total)}</div>
+            ${parcial ? `<span class="badge badge-warning" style="margin-top:8px;">total parcial — há itens indisponíveis</span>` : `<span class="badge badge-success" style="margin-top:8px;">todos os itens disponíveis</span>`}
+          </div>
+        </div>
+
+        <div class="card mb-6">
+          <div class="card-header">
+            <h3 class="font-semibold">Itens precificados pelo fornecedor vencedor</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-container">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Produto</th>
+                    <th class="text-center">Un.</th>
+                    <th class="text-center">Qtd.</th>
+                    <th class="text-right">Preço unitário</th>
+                    <th class="text-right">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${(vencedor.itens || []).map(i => `
+                    <tr class="${!i.disponivel ? 'bg-red-50 text-red-600' : ''}">
+                      <td>${escapeHtml(i.produto_nome)}</td>
+                      <td class="text-center">${i.unidade}</td>
+                      <td class="text-center">${i.quantidade}</td>
+                      <td class="text-right">${i.preco_unitario !== null ? formatCurrency(i.preco_unitario) : '<span class="text-red-600">N/D</span>'}</td>
+                      <td class="text-right">${i.preco_total !== null ? formatCurrency(i.preco_total) : '<span class="text-red-600">N/D</span>'}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:14px; align-items:center; font-size:15px; padding:12px; border:2px solid var(--neutral-900); border-radius:8px; margin:16px 0; background:var(--neutral-0);">
+          <span class="font-medium">Total consolidado da compra (${itensDisp} itens · ${totalUnidades} unidades)</span>
+          <b class="text-2xl font-bold text-brand-red">${formatCurrency(vencedor.preco_total)}</b>
+        </div>
+
+        ${parcial ? `
+          <div class="card mb-6 bg-red-50 border-red-200">
+            <div class="card-body p-4">
+              <p class="text-red-700 text-sm">⚠ Itens indisponíveis neste fornecedor: ${ausentes.join(', ')}. Total calculado sobre os itens disponíveis.</p>
+            </div>
+          </div>
+        ` : ''}
+
+        <div class="flex gap-3 justify-end">
+          <button id="btn-imprimir-vencedora" class="btn btn-secondary no-print">🖨️ Imprimir A4</button>
+          <button id="btn-exportar-pdf-vencedora" class="btn btn-primary" style="background:var(--brand-red); border:none;">⬇ Exportar PDF — lista_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.pdf</button>
+        </div>
+      </div>
+    `;
+  },
+
   // Recuperar Senha - Solicitar
   async recuperarSenha() {
     return `
@@ -1156,6 +1250,7 @@ const AuthViews = {
               await ApiClient.salvarLista({
                 nome: State.ephemeralList.nome,
                 itens: State.ephemeralList.itens,
+                categorias: State.ephemeralList.categorias || [],
               });
               showToast('Lista salva na sua conta!', 'success');
               State.clearEphemeralList();
@@ -1470,7 +1565,7 @@ const ListaViews = {
 
       try {
         if (State.user) {
-          await ApiClient.salvarLista({ nome, itens });
+          await ApiClient.salvarLista({ nome, itens, categorias: State.ephemeralList?.categorias || [] });
         } else {
           // Visitante: pede login antes de persistir (Autenticação Tardia)
           showToast('Faça login para salvar esta lista na sua conta', 'info');
@@ -1496,6 +1591,7 @@ const ListaViews = {
       State.setEphemeralList({
         nome: nomeInput.value.trim() || 'Lista sem nome',
         itens: itens.map(i => ({ ...i })),
+        categorias: [],
       });
     };
 
@@ -1606,12 +1702,14 @@ const ListaViews = {
     let itens = [];
     let debounceTimer;
     let unidadeSelecionada = 'un';
+    let categoriasEdicao = [];
 
     // Carrega lista existente
     const loadLista = async () => {
       try {
         const lista = await ApiClient.buscarLista(listaId);
         nomeInput.value = lista.nome;
+        categoriasEdicao = lista.categorias || [];
         itens = lista.itens.map(item => ({
           produto_id: item.produto_id,
           produto_nome: item.produto_nome,
@@ -1730,7 +1828,7 @@ const ListaViews = {
       saveBtn.innerHTML = '<span class="spinner"></span> Salvando...';
 
       try {
-        await ApiClient.atualizarLista(listaId, { nome, itens });
+        await ApiClient.atualizarLista(listaId, { nome, itens, categorias: categoriasEdicao });
         showToast('Lista atualizada com sucesso!', 'success');
         State.navigate('minhas-listas');
       } catch (e) {
@@ -1926,6 +2024,7 @@ const ComparacaoViews = {
             disponibilidade_minima: parseFloat(slider.value),
           });
         }
+        State.setComparacao(result);
         renderResultado(result);
         stepForn.classList.add('hidden');
         stepRes.classList.remove('hidden');
@@ -2052,10 +2151,14 @@ function renderResultado(data) {
     <div class="mt-6 flex gap-3 justify-end">
       <button id="btn-exportar-pdf-resultado" class="btn btn-primary">Exportar PDF</button>
       <button id="btn-imprimir" class="btn btn-secondary no-print">Imprimir</button>
+      <button id="btn-ver-vencedora" class="btn btn-primary btn--lg" style="background:var(--brand-red); border:none;">🏆 Ver lista vencedora →</button>
     </div>
   `;
 
   $('#btn-imprimir')?.addEventListener('click', () => window.print());
+  $('#btn-ver-vencedora')?.addEventListener('click', () => {
+    router.navigate('/vencedora');
+  });
   $('#btn-exportar-pdf-resultado')?.addEventListener('click', async () => {
     const btn = document.getElementById('btn-exportar-pdf-resultado');
     btn.disabled = true;
@@ -2112,6 +2215,7 @@ const routes = {
   '/minhas-listas': Views.minhasListas,
   '/lista/:id': Views.verLista,
   '/comparar': Views.comparar,
+  '/vencedora': Views.vencedora,
   '/perfil': Views.perfil,
 };
 
@@ -2197,6 +2301,47 @@ const router = {
     else if (path.startsWith('/lista/')) ListaViews.bindVerLista(params);
     else if (path === '/comparar') ComparacaoViews.bindComparar();
     else if (path === '/perfil') AuthViews.perfil();
+    else if (path === '/vencedora') {
+      $('#btn-imprimir-vencedora')?.addEventListener('click', () => window.print());
+      $('#btn-exportar-pdf-vencedora')?.addEventListener('click', async () => {
+        const btn = document.getElementById('btn-exportar-pdf-vencedora');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Gerando...';
+        try {
+          const data = State.ultimaComparacao;
+          const vencedor = data.fornecedores.find(f => f.eh_melhor) || data.fornecedores[0];
+          const listaId = listaSelecionada?.id || 0;
+          let blob;
+          if (listaId === 0) {
+            // Lista efêmera: PDF da vencedora com itens inline (sem login)
+            blob = await ApiClient.exportarPDFVencedora({
+              itens: itensEfemera,
+              fornecedor_ids: fornecedoresSelecionados,
+              disponibilidade_minima: parseFloat(slider.value),
+              lista_nome: data.lista_nome || 'Lista Efêmera',
+            });
+          } else {
+            blob = await ApiClient.exportarPDFVencedora({
+              lista_id: listaId,
+              fornecedor_ids: fornecedoresSelecionados,
+              disponibilidade_minima: parseFloat(slider.value),
+            });
+          }
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `lista_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.pdf`;
+          a.click();
+          URL.revokeObjectURL(url);
+          showToast('PDF baixado!', 'success');
+        } catch (e) {
+          showToast('Erro ao gerar PDF: ' + e.message, 'error');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Exportar PDF';
+        }
+      });
+    }
 
     // Header navigation
     $('#nav-auth')?.addEventListener('click', (e) => {
