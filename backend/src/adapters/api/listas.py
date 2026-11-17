@@ -1,6 +1,7 @@
 # COBECO Backend — Listas Router (FastAPI)
 # Endpoints CRUD de listas: POST/GET/PUT/DELETE /v1/listas
 
+import json
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -94,6 +95,7 @@ class ListaRepositoryImpl(ListaRepository):
         model = ListaModel(
             usuario_id=lista.usuario_id,
             nome=lista.nome,
+            categorias=json.dumps(lista.categorias) if lista.categorias else None,
         )
         self.session.add(model)
         await self.session.flush()
@@ -156,6 +158,7 @@ class ListaRepositoryImpl(ListaRepository):
         if not model:
             raise ListaNaoEncontrada
         model.nome = lista.nome
+        model.categorias = json.dumps(lista.categorias) if lista.categorias else None
         model.atualizado_em = datetime.now()
 
         # Remove itens antigos (delete-orphan) antes de inserir os novos

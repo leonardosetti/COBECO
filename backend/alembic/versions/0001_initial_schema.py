@@ -1,20 +1,20 @@
-# COBECO Backend — Initial Schema Migration
-# Cria as 8 tabelas PT-BR conforme doc-arch-0001-camada-de-dados-canon.md v3.2
+"""Esquema inicial — 8 tabelas PT-BR
 
+Revision ID: 0001
+Revises:
+Create Date: 2026-11-13
+"""
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import mysql
 
-revision = '20261113_000001'
+revision = '0001'
 down_revision = None
 branch_labels = None
 depends_on = None
 
 
 def upgrade() -> None:
-    # ============================================================
-    # Tabela: categorias (11 categorias MACRO)
-    # ============================================================
     op.create_table(
         'categorias',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -28,9 +28,6 @@ def upgrade() -> None:
     )
     op.create_index('ix_categoria_nome', 'categorias', ['nome'])
 
-    # ============================================================
-    # Tabela: fornecedores (10 fornecedores)
-    # ============================================================
     op.create_table(
         'fornecedores',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -47,9 +44,6 @@ def upgrade() -> None:
     op.create_index('ix_fornecedor_nome', 'fornecedores', ['nome'])
     op.create_index('ix_fornecedor_cnpj', 'fornecedores', ['cnpj'])
 
-    # ============================================================
-    # Tabela: fornecedores_categorias (Pivô N:N)
-    # ============================================================
     op.create_table(
         'fornecedores_categorias',
         sa.Column('fornecedor_id', sa.Integer(), nullable=False),
@@ -70,54 +64,6 @@ def upgrade() -> None:
     op.create_index('ix_fc_fornecedor', 'fornecedores_categorias', ['fornecedor_id'])
     op.create_index('ix_fc_categoria', 'fornecedores_categorias', ['categoria_id'])
 
-    # ============================================================
-    # Tabela: produtos (50 produtos agnósticos à categoria)
-    # ============================================================
-    op.create_table(
-        'produtos',
-        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column('nome', sa.String(200), nullable=False),
-        sa.Column('unidade', sa.String(10), nullable=False),
-        sa.Column('ativo', sa.Boolean(), nullable=False, server_default=sa.text('TRUE')),
-        sa.Column('criado_em', sa.DateTime(), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
-        sa.PrimaryKeyConstraint('id', name='pk_produtos'),
-        mysql_charset='utf8mb4',
-        mysql_collate='utf8mb4_unicode_ci',
-        mysql_engine='InnoDB',
-    )
-    op.create_index('ix_produto_nome', 'produtos', ['nome'])
-
-    # ============================================================
-    # Tabela: fornecedores_produtos (Preços e Estoque ~300)
-    # ============================================================
-    op.create_table(
-        'fornecedores_produtos',
-        sa.Column('fornecedor_id', sa.Integer(), nullable=False),
-        sa.Column('produto_id', sa.Integer(), nullable=False),
-        sa.Column('preco', sa.DECIMAL(10, 2), nullable=False),
-        sa.Column('estoque', sa.Integer(), nullable=False, server_default=sa.text('0')),
-        sa.Column('ativo', sa.Boolean(), nullable=False, server_default=sa.text('TRUE')),
-        sa.ForeignKeyConstraint(
-            ['fornecedor_id'], ['fornecedores.id'],
-            name='fk_fp_fornecedor', ondelete='CASCADE'
-        ),
-        sa.ForeignKeyConstraint(
-            ['produto_id'], ['produtos.id'],
-            name='fk_fp_produto', ondelete='RESTRICT'
-        ),
-        sa.PrimaryKeyConstraint('fornecedor_id', 'produto_id', name='pk_fornecedores_produtos'),
-        sa.CheckConstraint('preco >= 0', name='ck_fp_preco_positivo'),
-        sa.CheckConstraint('estoque >= 0', name='ck_fp_estoque_positivo'),
-        mysql_charset='utf8mb4',
-        mysql_collate='utf8mb4_unicode_ci',
-        mysql_engine='InnoDB',
-    )
-    op.create_index('ix_fp_fornecedor', 'fornecedores_produtos', ['fornecedor_id'])
-    op.create_index('ix_fp_produto', 'fornecedores_produtos', ['produto_id'])
-
-    # ============================================================
-    # Tabela: usuarios (Auth)
-    # ============================================================
     op.create_table(
         'usuarios',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -141,14 +87,12 @@ def upgrade() -> None:
     )
     op.create_index('ix_usuario_criado_em', 'usuarios', ['criado_em'])
 
-    # ============================================================
-    # Tabela: listas (Listas de compras)
-    # ============================================================
     op.create_table(
         'listas',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.Column('usuario_id', sa.Integer(), nullable=False),
         sa.Column('nome', sa.String(100), nullable=False),
+        sa.Column('categorias', sa.String(200), nullable=True),
         sa.Column('criado_em', sa.DateTime(), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
         sa.Column('atualizado_em', sa.DateTime(), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')),
         sa.Column('deletado_em', sa.DateTime(), nullable=True),
@@ -158,41 +102,12 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint('id', name='pk_listas'),
         sa.CheckConstraint("LENGTH(nome) BETWEEN 1 AND 100", name='ck_lista_nome_len'),
+        sa.Index('ix_lista_usuario_criado', 'usuario_id', 'criado_em'),
         mysql_charset='utf8mb4',
         mysql_collate='utf8mb4_unicode_ci',
         mysql_engine='InnoDB',
     )
-    op.create_index('ix_lista_usuario_criado', 'listas', ['usuario_id', 'criado_em'])
 
-    # ============================================================
-    # Tabela: sessoes (Refresh Tokens / Session Management)
-    # ============================================================
-    op.create_table(
-        'sessoes',
-        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column('usuario_id', sa.Integer(), nullable=False),
-        sa.Column('refresh_token_hash', sa.String(255), nullable=False),
-        sa.Column('user_agent', sa.Text(), nullable=True),
-        sa.Column('ip', sa.String(45), nullable=True),
-        sa.Column('criado_em', sa.DateTime(), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
-        sa.Column('expira_em', sa.DateTime(), nullable=False),
-        sa.Column('revogada_em', sa.DateTime(), nullable=True),
-        sa.ForeignKeyConstraint(
-            ['usuario_id'], ['usuarios.id'],
-            name='fk_sessoes_usuario', ondelete='CASCADE'
-        ),
-        sa.PrimaryKeyConstraint('id', name='pk_sessoes'),
-        sa.UniqueConstraint('refresh_token_hash', name='uq_sessoes_refresh_token_hash'),
-        mysql_charset='utf8mb4',
-        mysql_collate='utf8mb4_unicode_ci',
-        mysql_engine='InnoDB',
-    )
-    op.create_index('ix_sessoes_usuario_expira', 'sessoes', ['usuario_id', 'expira_em'])
-    op.create_index('ix_sessoes_token_hash', 'sessoes', ['refresh_token_hash'])
-
-    # ============================================================
-    # Tabela: itens_lista (Itens de cada lista)
-    # ============================================================
     op.create_table(
         'itens_lista',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -216,9 +131,70 @@ def upgrade() -> None:
         mysql_engine='InnoDB',
     )
 
+    op.create_table(
+        'produtos',
+        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('nome', sa.String(200), nullable=False),
+        sa.Column('unidade', sa.String(10), nullable=False),
+        sa.Column('ativo', sa.Boolean(), nullable=False, server_default=sa.text('TRUE')),
+        sa.Column('criado_em', sa.DateTime(), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
+        sa.PrimaryKeyConstraint('id', name='pk_produtos'),
+        mysql_charset='utf8mb4',
+        mysql_collate='utf8mb4_unicode_ci',
+        mysql_engine='InnoDB',
+    )
+    op.create_index('ix_produto_nome', 'produtos', ['nome'])
+
+    op.create_table(
+        'fornecedores_produtos',
+        sa.Column('fornecedor_id', sa.Integer(), nullable=False),
+        sa.Column('produto_id', sa.Integer(), nullable=False),
+        sa.Column('preco', sa.DECIMAL(10, 2), nullable=False),
+        sa.Column('estoque', sa.Integer(), nullable=False, server_default=sa.text('0')),
+        sa.Column('ativo', sa.Boolean(), nullable=False, server_default=sa.text('TRUE')),
+        sa.ForeignKeyConstraint(
+            ['fornecedor_id'], ['fornecedores.id'],
+            name='fk_fp_fornecedor', ondelete='CASCADE'
+        ),
+        sa.ForeignKeyConstraint(
+            ['produto_id'], ['produtos.id'],
+            name='fk_fp_produto', ondelete='RESTRICT'
+        ),
+        sa.PrimaryKeyConstraint('fornecedor_id', 'produto_id', name='pk_fornecedores_produtos'),
+        sa.CheckConstraint('preco >= 0', name='ck_fp_preco_positivo'),
+        sa.CheckConstraint('estoque >= 0', name='ck_fp_estoque_positivo'),
+        sa.Index('ix_fp_fornecedor', 'fornecedores_produtos', ['fornecedor_id']),
+        sa.Index('ix_fp_produto', 'fornecedores_produtos', ['produto_id']),
+        mysql_charset='utf8mb4',
+        mysql_collate='utf8mb4_unicode_ci',
+        mysql_engine='InnoDB',
+    )
+
+    op.create_table(
+        'sessoes',
+        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('usuario_id', sa.Integer(), nullable=False),
+        sa.Column('refresh_token_hash', sa.String(255), nullable=False),
+        sa.Column('user_agent', sa.Text(), nullable=True),
+        sa.Column('ip', sa.String(45), nullable=True),
+        sa.Column('criado_em', sa.DateTime(), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
+        sa.Column('expira_em', sa.DateTime(), nullable=False),
+        sa.Column('revogada_em', sa.DateTime(), nullable=True),
+        sa.ForeignKeyConstraint(
+            ['usuario_id'], ['usuarios.id'],
+            name='fk_sessoes_usuario', ondelete='CASCADE'
+        ),
+        sa.PrimaryKeyConstraint('id', name='pk_sessoes'),
+        sa.UniqueConstraint('refresh_token_hash', name='uq_sessoes_refresh_token_hash'),
+        sa.Index('ix_sessoes_usuario_expira', 'sessoes', ['usuario_id', 'expira_em']),
+        sa.Index('ix_sessoes_token_hash', 'sessoes', ['refresh_token_hash']),
+        mysql_charset='utf8mb4',
+        mysql_collate='utf8mb4_unicode_ci',
+        mysql_engine='InnoDB',
+    )
+
 
 def downgrade() -> None:
-    # Drop na ordem inversa (respeita FKs)
     op.drop_table('itens_lista')
     op.drop_table('listas')
     op.drop_table('sessoes')

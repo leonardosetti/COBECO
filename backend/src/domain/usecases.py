@@ -358,10 +358,11 @@ class SalvarListaUseCase:
         if len(produtos) != len(produto_ids):
             raise DomainError("PRODUTO_NAO_ENCONTRADO", "Um ou mais produtos não existem")
 
-        # Criar entidade Lista com itens
+        # Criar entidade Lista com itens e categorias
         lista = Lista(
             usuario_id=usuario_id,
             nome=input.nome,
+            categorias=input.categorias,
             itens=[
                 ItemLista(
                     produto_id=item["produto_id"],

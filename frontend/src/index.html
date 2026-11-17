@@ -31,10 +31,23 @@
   <!-- Toast Container -->
   <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2" aria-live="polite"></div>
 
+  <!-- Aviso Desktop-Only (RNF04) -->
+  <div id="desktop-warning" class="fixed inset-0 z-50 bg-gray-900/90 text-white flex flex-col items-center justify-center hidden md:block p-6 text-center">
+    <div class="text-4xl mb-4">🖥️</div>
+    <h2 class="text-2xl font-bold mb-2">COBECO otimizado para desktop (≥1024px)</h2>
+    <p class="text-gray-300 max-w-md">
+      Esta aplicação foi desenvolvida para telas de desktop (largura mínima 1024px). Em dispositivos menores, a experiência pode não estar completa.
+    </p>
+    <button id="desktop-warning-close" class="mt-6 btn btn-primary">Entendido</button>
+  </div>
+
   <!-- Main Content -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-8" id="main-content">
     <!-- Conteúdo dinâmico renderizado pelo router JS -->
   </main>
+
+  <!-- Journey Panel — Painel da Jornada de Mariana (desktop ≥1024px) -->
+  <div id="journey-panel" class="fixed bottom-4 right-4 z-40 hidden md:block w-72"></div>
 
   <!-- Footer -->
   <footer class="bg-gray-50 border-t border-gray-200 py-6 no-print" id="footer">

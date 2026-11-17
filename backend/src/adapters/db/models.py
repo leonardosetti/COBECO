@@ -2,6 +2,7 @@
 # Mapeamento ORM para as 8 tabelas PT-BR (doc-arch-0001-camada-de-dados-canon.md v3.2)
 # Clean Architecture: Adapters não vazam para Domain
 
+import json
 from datetime import datetime
 from decimal import Decimal
 from typing import TYPE_CHECKING
@@ -100,6 +101,9 @@ class ListaModel(Base):
         index=True,
     )
     nome: Mapped[str] = mapped_column(String(100), nullable=False)
+    categorias: Mapped[str | None] = mapped_column(
+        String(200), nullable=True, comment="IDs das categorias selecionadas (RF12/RF08), JSON texto"
+    )
     criado_em: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
     atualizado_em: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=func.now(), onupdate=func.now()
@@ -125,6 +129,7 @@ class ListaModel(Base):
             id=self.id,
             usuario_id=self.usuario_id,
             nome=self.nome,
+            categorias=json.loads(self.categorias) if self.categorias else [],
             criado_em=self.criado_em,
             atualizado_em=self.atualizado_em,
             deletado_em=self.deletado_em,

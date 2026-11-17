@@ -1,6 +1,9 @@
 # COBECO Backend — Comparação Router (FastAPI)
 # Endpoints: POST /v1/comparacao/calcular (RF15, RF16)
+# RF15: cache 5min + timeout 10s no cálculo de orçamento
 
+import asyncio
+import time
 from decimal import Decimal
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -25,6 +28,32 @@ from src.domain.usecases import (
 )
 
 router = APIRouter(tags=["Comparação"])
+
+# ============================================================
+# Cache de orçamento (RF15: cache 5min)
+# ============================================================
+_ORCAMENTO_CACHE: dict[str, tuple[float, object]] = {}
+_CACHE_TTL_SECONDS = 300  # 5 minutos
+
+
+def _cache_key(lista_id: int, fornecedor_ids: list[int], disponibilidade_minima: float) -> str:
+    fids = ",".join(map(str, sorted(fornecedor_ids)))
+    return f"{lista_id}:{fids}:{disponibilidade_minima}"
+
+
+def _cache_get(key: str):
+    entry = _ORCAMENTO_CACHE.get(key)
+    if not entry:
+        return None
+    ts, value = entry
+    if time.time() - ts > _CACHE_TTL_SECONDS:
+        _ORCAMENTO_CACHE.pop(key, None)
+        return None
+    return value
+
+
+def _cache_set(key: str, value: object) -> None:
+    _ORCAMENTO_CACHE[key] = (time.time(), value)
 
 
 # ============================================================
@@ -122,6 +151,12 @@ class ComparacaoRepositoryImpl(ComparacaoRepository):
     ):
         """Núcleo do cálculo (RF15/RF16) — recebe itens em memória (lista efêmera
         ou persistida). Regra da Melhor Oferta: maior cobertura; empate → menor total."""
+
+        # RF15: cache 5min
+        key = _cache_key(lista_id, fornecedor_ids, disponibilidade_minima)
+        cached = _cache_get(key)
+        if cached is not None:
+            return cached
 
         class _Item:  # duck-type de ItemListaModel para o loop abaixo
             def __init__(self, produto_id: int, quantidade: int):
@@ -236,12 +271,14 @@ class ComparacaoRepositoryImpl(ComparacaoRepository):
         else:
             melhor_id = None
 
-        return OrcamentoResponse(
+        result = OrcamentoResponse(
             lista_id=lista_id,
             lista_nome=lista_nome,
             melhor_fornecedor_id=melhor_id,
             fornecedores=fornecedores_comparacao,
         )
+        _cache_set(key, result)
+        return result
 
     async def buscar_precos_para_comparacao(
         self,
@@ -290,13 +327,19 @@ async def calcular_orcamento(
 
     usecase = CalcularOrcamentoUseCase(repo)
     try:
-        result = await usecase.executar(
-            ComparacaoInput(
-                lista_id=request.lista_id,
-                fornecedor_ids=request.fornecedor_ids,
-                disponibilidade_minima=request.disponibilidade_minima,
-            )
+        # RF15: timeout 10s no cálculo de orçamento
+        result = await asyncio.wait_for(
+            usecase.executar(
+                ComparacaoInput(
+                    lista_id=request.lista_id,
+                    fornecedor_ids=request.fornecedor_ids,
+                    disponibilidade_minima=request.disponibilidade_minima,
+                )
+            ),
+            timeout=10.0,
         )
+    except TimeoutError:
+        raise HTTPException(status_code=504, detail="Cálculo de orçamento excedeu o tempo limite (10s)")
     except FornecedoresInsuficientes:
         raise HTTPException(status_code=400, detail="Selecione pelo menos 2 fornecedores")
     except HTTPException:
@@ -318,12 +361,18 @@ async def calcular_orcamento_efemera(
 ):
     """Autenticação Tardia (SPECS §7): visitante compara sem login, itens em memória."""
     try:
-        return await repo.calcular_orcamento_itens(
-            [item.model_dump() for item in request.itens],
-            request.fornecedor_ids,
-            request.disponibilidade_minima,
-            lista_nome=request.lista_nome,
+        # RF15: timeout 10s no cálculo de orçamento
+        return await asyncio.wait_for(
+            repo.calcular_orcamento_itens(
+                [item.model_dump() for item in request.itens],
+                request.fornecedor_ids,
+                request.disponibilidade_minima,
+                lista_nome=request.lista_nome,
+            ),
+            timeout=10.0,
         )
+    except TimeoutError:
+        raise HTTPException(status_code=504, detail="Cálculo de orçamento excedeu o tempo limite (10s)")
     except FornecedoresInsuficientes:
         raise HTTPException(status_code=400, detail="Selecione pelo menos 2 fornecedores")
     except HTTPException:

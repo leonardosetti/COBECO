@@ -159,6 +159,7 @@ class Lista:
     id: int | None = None
     usuario_id: int = 0
     nome: str = ""
+    categorias: list[int] = field(default_factory=list)
     criado_em: datetime = field(default_factory=datetime.now)
     atualizado_em: datetime = field(default_factory=datetime.now)
     deletado_em: datetime | None = None

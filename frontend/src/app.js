@@ -354,6 +354,7 @@ const State = {
   user: null,
   ephemeralList: null,
   ultimaComparacao: null,
+  loginAttempts: 0,
   currentView: 'home',
 
   init() {
@@ -490,6 +491,9 @@ const Views = {
                 <input type="password" id="login-senha" name="senha" class="input" required autocomplete="current-password">
               </div>
               <button type="submit" class="btn btn-primary w-full">Entrar</button>
+              <div id="login-attempts" class="text-center text-xs text-red-600 font-medium mt-2 hidden">
+                Tentativas: <span id="login-attempts-count">0</span>/6
+              </div>
             </form>
             <p class="text-center text-sm text-gray-600 mt-6">
               Não tem conta? <a href="#/cadastrar" class="text-primary-600 hover:underline" data-link>Cadastre-se</a>
@@ -1210,6 +1214,10 @@ const AuthViews = {
 
       try {
         const response = await ApiClient.login(data);
+        // Reset contador de tentativas
+        State.loginAttempts = 0;
+        const attemptsEl = $('#login-attempts');
+        if (attemptsEl) attemptsEl.classList.add('hidden');
         State.setUser({
           id: response.user_id,
           nome_usuario: data.nome_usuario,
@@ -1265,7 +1273,16 @@ const AuthViews = {
 
         State.navigate('home');
       } catch (e) {
-        showToast(e.message, 'error');
+        // IN-15: contador visual de tentativas de login
+        State.loginAttempts++;
+        const attemptsEl = $('#login-attempts');
+        const countEl = $('#login-attempts-count');
+        if (attemptsEl) attemptsEl.classList.remove('hidden');
+        if (countEl) countEl.textContent = String(State.loginAttempts);
+        if (State.loginAttempts >= 6) {
+          btn.disabled = true;
+          showToast('Limite de 6 tentativas excedido. Tente novamente em 15 minutos.', 'error');
+        }
         btn.disabled = false;
         btn.textContent = 'Entrar';
       }
@@ -1961,6 +1978,7 @@ const ComparacaoViews = {
     async function updateDisponibilidade() {
       const minDisp = parseFloat(slider.value);
       const visibleCheckboxes = fornCheckboxes.filter(cb => cb.closest('label').style.display !== 'none');
+      let removidos = 0;
 
       // Buscar disponibilidade real para todos os fornecedores visíveis em paralelo
       const disponibilidadePromises = visibleCheckboxes.map(async (cb) => {
@@ -1974,6 +1992,7 @@ const ComparacaoViews = {
           badge.className = 'badge ' + (disponibilidade >= minDisp ? 'badge-success' : 'badge-warning');
 
           if (disponibilidade < minDisp) {
+            if (cb.checked) removidos++;
             cb.checked = false;
             cb.disabled = true;
             cb.closest('label').classList.add('opacity-50');
@@ -1990,6 +2009,9 @@ const ComparacaoViews = {
 
       await Promise.all(disponibilidadePromises);
       updateCalcButton();
+      if (removidos > 0) {
+        showToast(`${removidos} fornecedor(es) removido(s) pelo filtro de disponibilidade mínima (${minDisp}%).`, 'warning');
+      }
     }
 
     // Fornecedores checkboxes
@@ -2073,13 +2095,35 @@ function renderResultado(data) {
     return;
   }
 
+  const melhor = data.fornecedores.find(f => f.eh_melhor) || data.fornecedores[0];
+  const menor = data.fornecedores.reduce((a, b) => a.preco_total < b.preco_total ? a : b);
+  const maiorTotal = Math.max(...data.fornecedores.map(f => f.preco_total));
+  const economia = maiorTotal - melhor.preco_total;
+  const avgDisp = Math.round(data.fornecedores.reduce((s, f) => s + f.percentual_disponibilidade, 0) / data.fornecedores.length * 10) / 10;
+
   container.innerHTML = `
     <div class="mb-6">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="badge badge-success">Lista: ${escapeHtml(data.lista_nome)}</span>
-        ${data.melhor_fornecedor_id ? `
-          <span class="badge badge-success">🏆 Melhor: Fornecedor #${data.melhor_fornecedor_id}</span>
-        ` : ''}
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="card card-pad border-l-4 border-l-green-500">
+          <div class="text-sm text-gray-500 uppercase tracking-wider mb-1">🏆 Melhor oferta</div>
+          <div class="text-xl font-bold">${escapeHtml(melhor.fornecedor_nome)}</div>
+          <div class="text-sm text-gray-600">${formatCurrency(melhor.preco_total)} · ${melhor.percentual_disponibilidade.toFixed(1)}% da lista</div>
+        </div>
+        <div class="card card-pad border-l-4 border-l-blue-500">
+          <div class="text-sm text-gray-500 uppercase tracking-wider mb-1">💰 Menor preço</div>
+          <div class="text-xl font-bold">${formatCurrency(menor.preco_total)}</div>
+          <div class="text-sm text-gray-600">${menor.fornecedor_nome} · ${menor.percentual_disponibilidade.toFixed(1)}% cobertura</div>
+        </div>
+        <div class="card card-pad border-l-4 border-l-yellow-500">
+          <div class="text-sm text-gray-500 uppercase tracking-wider mb-1">📊 Economia potencial</div>
+          <div class="text-xl font-bold">${formatCurrency(economia > 0 ? economia : 0)}</div>
+          <div class="text-sm text-gray-600">vs. maior total cotado (${formatCurrency(maiorTotal)})</div>
+        </div>
+        <div class="card card-pad border-l-4 border-l-indigo-500">
+          <div class="text-sm text-gray-500 uppercase tracking-wider mb-1">Disponibilidade média</div>
+          <div class="text-xl font-bold">${avgDisp}%</div>
+          <div class="text-sm text-gray-600">${data.fornecedores.length} fornecedores comparados</div>
+        </div>
       </div>
     </div>
 
@@ -2088,22 +2132,33 @@ function renderResultado(data) {
         <thead>
           <tr>
             <th>Fornecedor</th>
-            <th class="text-center">Disponíveis</th>
+            <th class="text-center">Cobertura</th>
+            <th class="text-center">Itens</th>
             <th class="text-center">Ausentes</th>
-            <th class="text-center">% Disp.</th>
-            <th class="text-right">Total</th>
+            <th class="text-right">Preço total</th>
           </tr>
         </thead>
         <tbody>
-          ${data.fornecedores.map(f => `
-            <tr class="${f.eh_melhor ? 'bg-green-50' : ''}">
-              <td class="font-medium">${escapeHtml(f.fornecedor_nome)} ${f.eh_melhor ? '<span class="badge badge-success ml-2">MELHOR</span>' : ''}</td>
-              <td class="text-center">${f.itens_disponiveis}</td>
-              <td class="text-center text-red-600">${f.itens_ausentes}</td>
-              <td class="text-center">${f.percentual_disponibilidade.toFixed(1)}%</td>
+          ${data.fornecedores.map(f => {
+            const disponiveis = f.itens.filter(i => i.disponivel).length;
+            const ausentesNomes = f.itens.filter(i => !i.disponivel).map(i => escapeHtml(i.produto_nome)).join(', ');
+            const ausentesHtml = f.itens_ausentes > 0
+              ? `<span class="badge badge-warning" title="${ausentesNomes}">⚠ ${f.itens_ausentes} item(es)</span>`
+              : '<span class="badge badge-success">—</span>';
+            return `
+            <tr class="${f.eh_melhor ? 'bg-green-50' : ''} ${f.percentual_disponibilidade === 0 ? 'opacity-50' : ''}">
+              <td class="font-medium">${escapeHtml(f.fornecedor_nome)} ${f.eh_melhor ? '<span class="badge badge-success ml-2">MELHOR OFERTA</span>' : ''}</td>
+              <td class="text-center">
+                <div class="w-16 h-2 bg-gray-200 rounded overflow-hidden mr-2 inline-block">
+                  <div class="h-full ${f.percentual_disponibilidade >= 80 ? 'bg-green-500' : f.percentual_disponibilidade >= 40 ? 'bg-yellow-500' : 'bg-red-500'}" style="width:${f.percentual_disponibilidade}%"></div>
+                </div>
+                ${f.percentual_disponibilidade.toFixed(1)}%
+              </td>
+              <td class="text-center">${disponiveis} de ${f.itens_disponiveis + f.itens_ausentes}</td>
+              <td class="text-center">${ausentesHtml}</td>
               <td class="text-right font-semibold ${f.eh_melhor ? 'text-green-700' : ''}">${formatCurrency(f.preco_total)}</td>
             </tr>
-          `).join('')}
+          `}).join('')}
         </tbody>
       </table>
     </div>
@@ -2203,6 +2258,97 @@ function renderResultado(data) {
 }
 
 // ============================================================
+// JOURNEY PANEL — Jornada de Mariana (SPECS §2.15)
+const JOURNEY = [
+  { t: "Mariana descobre o COBECO", d: "Dona do restaurante “Tempero da Mari”: precisa cotar a compra da semana em vários mercados sem perder a manhã. Clique em “Criar minha lista”." },
+  { t: "Pré-filtro por categorias (UC03)", d: "Ela marca “Mercado” — só fornecedores relevantes aparecem depois (RF12). Mínimo 1 categoria." },
+  { t: "Monta a lista (UC01/UC02)", d: "Nome da lista + produtos do catálogo com quantidades (RF07). Tudo em memória, sem cadastro obrigatório." },
+  { t: "Escolhe os fornecedores (UC04/UC05)", d: "Marca os fornecedores elegíveis (2–10, RF13). O slider filtra por disponibilidade mínima (RF14)." },
+  { t: "Compara orçamentos (UC06/UC07)", d: "Tabela flat: cobertura, itens ausentes e total por fornecedor. A melhor oferta é destacada (RF15/RF16)." },
+  { t: "Abre a lista vencedora", d: "Vencedor = maior cobertura; empate → menor total. Itens precificados pelo fornecedor campeão." },
+  { t: "Exporta o PDF (UC08/RF17)", d: "O PDF contém a LISTA VENCEDORA com itens precificados + total consolidado — nunca a “lista de listas”." },
+  { t: "Salva na conta (UC14/UC17)", d: "Só agora a autenticação é exigida (RF08): modal de login + promoção da lista efêmera." },
+  { t: "Confere Minhas Listas (UC15)", d: "Lista persistida: busca, ordenação e ações (RF09–RF11). Jornada concluída! 🎉" },
+];
+
+function renderJourney() {
+  const panel = $('#journey-panel');
+  if (!panel) return;
+
+  let idx;
+  if (State.flags.done || State.flags.saved) idx = 8;
+  else if (State.flags.pdf) idx = 7;
+  else {
+    const map = { home: 0, categorias: 1, lista: 2, fornecedores: 3, comparacao: 4, vencedora: 5, dashboard: 8, perfil: 6 };
+    idx = map[State.currentView] ?? 0;
+  }
+  if (idx === undefined) idx = 0;
+
+  const steps = JOURNEY.map((s, i) => `
+    <div class="journey-step ${i < idx ? 'journey-step--done' : i === idx ? 'journey-step--current' : ''}">
+      <span class="journey-step-dot">${i < idx ? '✓' : i === idx ? (i + 1) : (i + 1)}</span>
+      <span>${escapeHtml(s.t)}</span>
+    </div>
+  `).join('');
+
+  const desc = JOURNEY[Math.min(idx, 8)].d;
+
+  panel.innerHTML = `
+    <div class="card card-pad journey-card">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">👩‍🍳</span>
+          <div>
+            <div class="text-sm font-bold text-gray-900">Jornada de Mariana</div>
+            <div class="text-xs text-gray-500">Persona · passo ${Math.min(idx + 1, 9)}/9</div>
+          </div>
+        </div>
+        <button id="journey-toggle" class="text-gray-400 hover:text-gray-600" aria-label="Recolher painel">▾</button>
+      </div>
+      <div class="space-y-2">
+        ${steps}
+      </div>
+      <div class="mt-3 pt-3 border-t border-gray-200">
+        <div class="text-xs text-gray-600 mb-1">💡 ${escapeHtml(desc)}</div>
+        <button id="journey-next" class="w-full btn btn-primary btn-sm text-xs">🎯 Destacar próxima ação</button>
+      </div>
+    </div>
+    <style>
+      .journey-card { font-family: Inter, system-ui, -apple-system, sans-serif; }
+      .journey-step { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 0.85rem; }
+      .journey-step--done { color: var(--success, #15803d); }
+      .journey-step--current { color: var(--brand-red, #c41e3a); font-weight: 600; }
+      .journey-step-dot { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; font-weight: 700; font-size: 0.75rem; flex-shrink: 0; }
+      .journey-step--done .journey-step-dot { background: var(--success, #15803d); color: #fff; }
+      .journey-step--current .journey-step-dot { background: var(--brand-red, #c41e3a); color: #fff; box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.2); }
+    </style>
+  `;
+
+  $('#journey-toggle')?.addEventListener('click', () => {
+    const content = panel.querySelector('.space-y-2');
+    const btn = $('#journey-toggle');
+    if (content) {
+      const hidden = content.style.display === 'none';
+      content.style.display = hidden ? 'flex' : 'none';
+      btn.textContent = hidden ? '▴' : '▾';
+    }
+  });
+
+  $('#journey-next')?.addEventListener('click', () => {
+    const primary = document.querySelector('[data-primary], .btn-primary') || document.querySelector('button.btn-primary');
+    if (primary) {
+      primary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      primary.classList.remove('ring-2', 'ring-green-500');
+      void primary.offsetWidth;
+      primary.classList.add('ring-2', 'ring-green-500');
+      primary.focus({ preventScroll: true });
+    } else {
+      showToast('Nenhuma ação disponível neste ponto.', 'info');
+    }
+  });
+}
+
+// ============================================================
 // ROUTER — Navegação SPA
 const routes = {
   '/': Views.home,
@@ -2260,6 +2406,7 @@ const router = {
       const html = await matchedRoute(matchedParams);
       if (requestId !== this.requestId) return; // navegação mais recente assumiu
       main.innerHTML = html;
+      renderJourney();
       this.currentPath = target;
 
       // Mantém URL sincronizada com a rota renderizada
@@ -2371,6 +2518,16 @@ const router = {
 function initApp() {
   State.init();
   router.init();
+
+  // RNF04 — Desktop-only ≥1024px
+  const warning = $('#desktop-warning');
+  const closeBtn = $('#desktop-warning-close');
+  const updateWarning = () => {
+    if (warning) warning.style.display = window.innerWidth < 1024 ? 'flex' : 'none';
+  };
+  updateWarning();
+  window.addEventListener('resize', updateWarning);
+  closeBtn?.addEventListener('click', () => { if (warning) warning.style.display = 'none'; });
 }
 
 if (document.readyState === 'loading') {
