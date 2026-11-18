@@ -155,4 +155,4 @@ site/
 # ============================================================
 # Keep these directories (gitkeep)
 # ============================================================
-!**/.gitkeep
+!**/.gitkeepfrontend/tests/e2e/test-results/
