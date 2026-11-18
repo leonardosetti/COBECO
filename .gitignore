@@ -55,6 +55,10 @@ ENV/
 # Node.js / Frontend
 # ============================================================
 node_modules/
+
+# Artefatos de teste E2E (não commitar)
+frontend/tests/e2e/test-results/
+frontend/tests/e2e/playwright-report/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
