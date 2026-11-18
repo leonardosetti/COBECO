@@ -331,20 +331,6 @@ function journeyIndex() {
   }
 }
 function renderJourney() {
-  const j = document.getElementById('journey');
-  const idx = journeyIndex();
-  j.innerHTML = `<div class="j-card">
-    <div class="j-head" data-action="journey-toggle">
-      <span class="av">👩‍🍳</span>
-      <div><b>Jornada de Mariana</b><span>Persona · dona de restaurante · passo ${Math.min(idx + 1, 9)}/9</span></div>
-      <button class="tgl" aria-label="Recolher painel">▾</button>
-    </div>
-    <div class="j-body">
-     ${JOURNEY.map((s, i) => `<div class="j-step ${i < idx ? 'done' : i === idx ? 'cur' : ''}">
-       <span class="st">${i < idx ? '✓' : i + 1}</span><span>${esc(s.t)}</span></div>`).join('')}
-     <div class="j-desc">💡 ${esc(JOURNEY[Math.min(idx, 8)].d)}</div>
-     <button class="btn btn-pri btn-sm j-next" data-action="journey-next">🎯 Destacar próxima ação</button>
-    </div></div>`;
 }
 
 // ============================================================
@@ -399,8 +385,12 @@ function render() {
     resultados: vResultados, vencedora: vVencedora, login: vLogin, cadastro: vCadastro,
     recuperar: vRecuperar, dashboard: vDashboard, perfil: vPerfil,
   };
-  document.getElementById('main').innerHTML = (M[state.view] || vHome)();
-  renderJourney();
+  const viewFn = M[state.view] || vHome;
+  try {
+    document.getElementById('main').innerHTML = viewFn();
+  } catch(e) {
+    document.getElementById('main').innerHTML = '<div style="color:red">ERRO: ' + e.message + '</div>';
+  }
 }
 
 // ============================================================
@@ -838,7 +828,6 @@ function exportPDF() {
       <button class="btn btn-ghost" data-action="close-modal">Fechar</button>
       <button class="btn btn-pri" data-action="baixar-pdf" data-primary>⬇ Baixar lista_${stamp()}.pdf</button>
      </div>`);
-    renderJourney();
   }, 900);
 }
 
@@ -902,7 +891,6 @@ function salvarListaCore() {
     showToast('✅ Lista salva com sucesso! Persistida no banco (simulado).', 'ok');
   }
   persistEph();
-  renderJourney();
   return true;
 }
 
@@ -1220,6 +1208,4 @@ document.addEventListener('click', (e) => {
 
 // ============================================================
 // BOOT
-// ============================================================
-loadEph();
-render();
+// Inicializar após DOM carregadodocument.addEventListener("DOMContentLoaded", () => {  try {    render();  } catch(e) {    document.getElementById("main").innerHTML = "<div style="color:red\">Erro: " + e.message + "</div>";  }});
