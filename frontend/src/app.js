@@ -329,6 +329,9 @@ class ApiClient {
   static listarCategorias() {
     return this.request('/catalogo/categorias');
   }
+  static listarProdutos() {
+    return this.request('/catalogo/produtos');
+  }
   static listarFornecedores(categorias = []) {
     const query = categorias.length ? '?categorias=' + categorias.join(',') : '';
     return this.request('/catalogo/fornecedores' + query);
@@ -966,6 +969,16 @@ function salvarListaCore() {
 // AÇÕES — clique delegado
 // ============================================================
 document.addEventListener('click', (e) => {
+  const t = e.target;
+  // toggle fornecedor (checkbox sem data-action)
+  if (t.classList.contains('forn-cb')) {
+    const id = +t.value;
+    state.fornecedores = state.fornecedores.includes(id) ? state.fornecedores.filter(x => x !== id) : [...state.fornecedores, id];
+    const card = t.closest('[data-forncard]');
+    if (card) card.classList.toggle('sel', state.fornecedores.includes(id));
+    refreshFornecedores();
+    return;
+  }
   const el = e.target.closest('[data-action]');
   if (!el) return;
   const a = el.dataset.action;
@@ -1147,9 +1160,12 @@ document.addEventListener('submit', (e) => {
     if (!pg) { bad('fc-p'); ok = false; }
     if (r.length < 3) { bad('fc-r'); ok = false; }
     if (!ok) { showToast('Verifique os campos destacados.', 'err'); return; }
-    USERS.push({ nome_usuario: u, nome: n, email: em, senha: s, pergunta: pg, resposta: r, criado_em: hoje() });
-    showToast('✅ Conta criada com sucesso! Agora faça login. (201 Created)', 'ok');
-    go('login');
+    ApiClient.cadastrar({ nome_usuario: u, email: em, nome: n, senha: s, confirmar_senha: c, pergunta_seguranca: pg, resposta_seguranca: r })
+      .then(() => {
+        showToast('✅ Conta criada com sucesso! Agora faça login.', 'ok');
+        go('login');
+      })
+      .catch((e) => showToast('Erro ao criar conta: ' + (e.message || 'erro desconhecido'), 'err'));
   }
   else if (id === 'form-rec1') {
     const u = val('r-user'); clear('fr-u');
@@ -1257,7 +1273,7 @@ function updateSugestoes() {
   sugTimer = setTimeout(() => {
     const hits = state.produtos.filter(p => norm(p.nome).includes(q)).slice(0, 6);
     box.innerHTML = hits.length ? '<div class=sug role=listbox>' + hits.map(p =>
-      '<div class=sug-item data-action-add= + p.id +  role=option><span>' + esc(p.nome) + '</span><span class=un>por unidade de venda: ' + p.un + '</span></div>').join('') + '</div>'
+      '<div class="sug-item" data-action-add="${p.id}" role="option"><span>' + esc(p.nome) + '</span><span class=un>por unidade de venda: ' + p.un + '</span></div>').join('') + '</div>'
       : '<div class=sug><div class=sug-empty>Nenhum produto encontrado — tente outro termo.</div></div>';
   }, 280);
 }
@@ -1289,3 +1305,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("main").innerHTML = '<div style="color:red">Erro: ' + e.message + '</div>';
   }
 });
+
+// Expor estado e utilitários para depuração/testes E2E
+window.state = state;
+window.refreshFornecedores = refreshFornecedores;
+window.refreshListaUI = refreshListaUI;
