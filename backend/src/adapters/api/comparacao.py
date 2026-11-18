@@ -82,7 +82,7 @@ class FornecedorComparacaoResponse(BaseModel):
 
 class CalcularOrcamentoRequest(BaseModel):
     lista_id: int
-    fornecedor_ids: list[int] = Field(..., min_length=2)
+    fornecedor_ids: list[int] = Field(..., min_length=2, max_length=10)
     disponibilidade_minima: float = Field(0.0, ge=0.0, le=100.0)
 
 
@@ -93,7 +93,7 @@ class ItemEfemeroRequest(BaseModel):
 
 class CalcularOrcamentoEfemeroRequest(BaseModel):
     itens: list[ItemEfemeroRequest] = Field(..., min_length=1)
-    fornecedor_ids: list[int] = Field(..., min_length=2)
+    fornecedor_ids: list[int] = Field(..., min_length=2, max_length=10)
     disponibilidade_minima: float = Field(0.0, ge=0.0, le=100.0)
     lista_nome: str = Field("Lista", max_length=100)
 
@@ -141,7 +141,7 @@ class ComparacaoRepositoryImpl(ComparacaoRepository):
             lista_id=lista.id,
         )
 
-    async def calcular_orcamento_itens(
+    async def calcular_orcamento_itens(  # noqa: PLR0912
         self,
         itens: list[dict],
         fornecedor_ids: list[int],
@@ -152,8 +152,16 @@ class ComparacaoRepositoryImpl(ComparacaoRepository):
         """Núcleo do cálculo (RF15/RF16) — recebe itens em memória (lista efêmera
         ou persistida). Regra da Melhor Oferta: maior cobertura; empate → menor total."""
 
-        # RF15: cache 5min
-        key = _cache_key(lista_id, fornecedor_ids, disponibilidade_minima)
+        # RF15: cache 5min — para lista efémera (lista_id=0), inclui os itens
+        # na chave para não colidir entre visitantes diferentes
+        if lista_id == 0:
+            itens_key = ",".join(
+                f"{i['produto_id']}:{i['quantidade']}"
+                for i in sorted(itens, key=lambda x: x["produto_id"])
+            )
+            key = f"ephemeral:{itens_key}:{','.join(map(str, sorted(fornecedor_ids)))}:{disponibilidade_minima}"
+        else:
+            key = _cache_key(lista_id, fornecedor_ids, disponibilidade_minima)
         cached = _cache_get(key)
         if cached is not None:
             return cached

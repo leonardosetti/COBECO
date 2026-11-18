@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     pass
 
 import bcrypt
-from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt  # type: ignore[import-untyped]
 from jose.exceptions import ExpiredSignatureError, JWTError  # type: ignore[import-untyped]
@@ -425,21 +425,21 @@ _tentativas_login: dict[str, list[float]] = {}
 _tentativas_recovery: dict[str, list[float]] = {}
 
 
-async def rate_limiter_login(nome_usuario: str):
-    """6 tentativas/15min por username"""
+async def rate_limiter_login(nome_usuario: str, ip: str | None = None):
+    """6 tentativas/15min por IP + username (rate limiting híbrido)"""
     import time
 
     agora = time.time()
-    chave = f"login:{nome_usuario}"
+    chave = f"login:{ip or 'unknown'}:{nome_usuario}"
     if chave not in _tentativas_login:
         _tentativas_login[chave] = []
 
     # Limpa tentativas antigas (>15min)
     _tentativas_login[chave] = [t for t in _tentativas_login[chave] if agora - t < 900]
 
-    # Adiciona a tentativa atual e verifica limite (máx 5 tentativas = 6ª bloqueia)
+    # Adiciona a tentativa atual e verifica limite (6 tentativas -> lockout na 7ª)
     _tentativas_login[chave].append(agora)
-    if len(_tentativas_login[chave]) > 5:
+    if len(_tentativas_login[chave]) > 6:
         raise RateLimitExcedido(15)
 
 
@@ -503,11 +503,17 @@ async def cadastrar_usuario(
 )
 async def login(
     response: Response,
+    http_request: Request,
     request: LoginRequest,
     repo: UsuarioRepository = Depends(get_usuario_repo),
     sessao_repo: SessaoRepository = Depends(get_sessao_repo),
 ):
-    usecase = LoginUseCase(repo, verificar_senha, criar_token, rate_limiter_login)
+    async def _rate_limit(nome_usuario: str) -> None:
+        await rate_limiter_login(
+            nome_usuario, http_request.client.host if http_request.client else None
+        )
+
+    usecase = LoginUseCase(repo, verificar_senha, criar_token, _rate_limit)
     try:
         tokens = await usecase.executar(
             LoginInput(

@@ -10,6 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.adapters.api.auth import get_current_user, get_current_user_optional
+from src.adapters.api.comparacao import ComparacaoRepositoryImpl
 from src.adapters.db.database import get_db
 from src.adapters.db.models import ItemListaModel, ListaModel, ProdutoModel
 from src.domain.repositories import ExportacaoRepository
@@ -633,6 +634,7 @@ async def exportar_pdf_vencedora(
                 lista_nome=request.get("lista_nome") or "Lista",
             )
         else:
+            assert lista_id_val is not None
             orcamento = await comp_repo.calcular_orcamento(
                 int(lista_id_val),
                 request.get("fornecedor_ids", []),

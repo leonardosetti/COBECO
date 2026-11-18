@@ -456,6 +456,7 @@ class EditarListaUseCase:
             id=model.id,
             usuario_id=model.usuario_id,
             nome=input.nome,
+            categorias=input.categorias,
             itens=[
                 ItemLista(produto_id=item["produto_id"], quantidade=item["quantidade"])
                 for item in input.itens
