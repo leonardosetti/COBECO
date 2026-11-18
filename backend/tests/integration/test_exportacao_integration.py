@@ -25,10 +25,10 @@ async def auth_user(client):
         "pergunta_seguranca": "nome_mae",
         "resposta_seguranca": "Maria Silva",
     }
-    await client.post("/v1/auth/cadastrar", json=user_data)
+    await client.post("/auth/cadastrar", json=user_data)
 
     login_data = {"nome_usuario": "testuser_export", "senha": "Senha@123"}
-    response = await client.post("/v1/auth/login", json=login_data)
+    response = await client.post("/auth/login", json=login_data)
     tokens = response.json()
 
     return {"Authorization": f"Bearer {tokens['access_token']}"}
@@ -37,7 +37,7 @@ async def auth_user(client):
 @pytest.fixture
 async def lista_com_itens(client, auth_user):
     """Cria lista com itens para exportação"""
-    prod_resp = await client.get("/v1/produtos?limit=5")
+    prod_resp = await client.get("/produtos?limit=5")
     produtos = prod_resp.json()["items"]
 
     lista_data = {
@@ -48,7 +48,7 @@ async def lista_com_itens(client, auth_user):
             {"produto_id": produtos[2]["id"], "quantidade": 3},
         ],
     }
-    response = await client.post("/v1/listas", json=lista_data, headers=auth_user)
+    response = await client.post("/listas", json=lista_data, headers=auth_user)
     assert response.status_code == 201
     return response.json()
 
@@ -166,7 +166,7 @@ class TestExportacaoFormatos:
     async def test_pdf_com_lista_grande_10_itens(self, client, auth_user):
         """Teste de stress: lista com 10 itens (RNF11)"""
         # Cria lista com muitos itens (usa produtos do seed)
-        prod_resp = await client.get("/v1/produtos?limit=20")
+        prod_resp = await client.get("/produtos?limit=20")
         produtos = prod_resp.json()["items"]
 
         itens = []
@@ -179,7 +179,7 @@ class TestExportacaoFormatos:
         itens_100 = itens * 5
 
         lista_data = {"nome": "Lista Grande 100 Itens", "itens": itens_100}
-        create_resp = await client.post("/v1/listas", json=lista_data, headers=auth_user)
+        create_resp = await client.post("/listas", json=lista_data, headers=auth_user)
         assert create_resp.status_code == 201
         lista_id = create_resp.json()["id"]
 
@@ -207,9 +207,9 @@ class TestExportacaoFormatos:
             "pergunta_seguranca": "nome_mae",
             "resposta_seguranca": "Maria Silva",
         }
-        await client.post("/v1/auth/cadastrar", json=user_data)
+        await client.post("/auth/cadastrar", json=user_data)
         login = await client.post(
-            "/v1/auth/login",
+            "/auth/login",
             json={"nome_usuario": "testuser_export2", "senha": "Senha@123"},
         )
         auth2 = {"Authorization": f"Bearer {login.json()['access_token']}"}

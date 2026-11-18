@@ -26,11 +26,11 @@ async def auth_user(client):
         "pergunta_seguranca": "nome_mae",
         "resposta_seguranca": "Maria Silva",
     }
-    await client.post("/v1/auth/cadastrar", json=user_data)
+    await client.post("/auth/cadastrar", json=user_data)
 
     # Login
     login_data = {"nome_usuario": "testuser_listas", "senha": "Senha@123"}
-    response = await client.post("/v1/auth/login", json=login_data)
+    response = await client.post("/auth/login", json=login_data)
     tokens = response.json()
 
     return {"Authorization": f"Bearer {tokens['access_token']}"}
@@ -40,7 +40,7 @@ async def auth_user(client):
 async def sample_produtos(client):
     """Garante que existam produtos para testes"""
     # O seed já popula produtos, apenas verificamos
-    response = await client.get("/v1/catalogo/produtos?limit=5")
+    response = await client.get("/catalogo/produtos?limit=5")
     assert response.status_code == 200
     return response.json()["items"]
 
@@ -178,9 +178,9 @@ class TestListasIntegration:
             "pergunta_seguranca": "nome_mae",
             "resposta_seguranca": "Maria",
         }
-        await client.post("/v1/auth/cadastrar", json=other_user)
+        await client.post("/auth/cadastrar", json=other_user)
         login_resp = await client.post(
-            "/v1/auth/login", json={"nome_usuario": "outrouser", "senha": "Senha@123"}
+            "/auth/login", json={"nome_usuario": "outrouser", "senha": "Senha@123"}
         )
         other_auth = {"Authorization": f"Bearer {login_resp.json()['access_token']}"}
 
