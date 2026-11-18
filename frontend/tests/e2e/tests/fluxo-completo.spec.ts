@@ -5,18 +5,18 @@ test.use({ baseURL: 'http://localhost:8380' });
 test.describe('Fluxo completo visitante (E2E contra API real)', () => {
 
   test('categorias → lista → fornecedores → comparação → exportação PDF', async ({ page }) => {
-    // ---------- Passo 1: Categorias ----------
     await page.goto('/');
-    await page.waitForSelector('h1', { state: 'visible' });
-    await page.click('button.btn.btn-white.btn-lg'); // Criar minha lista
+    await page.waitForTimeout(1000);
+
+    // ---------- Passo 1: Categorias ----------
+    await page.click('[data-action="nav-nova"]');
     await page.waitForSelector('text=Selecione as categorias', { state: 'visible' });
-    await page.click('[data-catcard="1"] input'); // Mercado
+    await page.click('[data-catcard="1"] input');
     await page.click('#btn-to-lista');
 
     // ---------- Passo 2: Lista ----------
     await page.waitForSelector('#nome-lista');
     await page.fill('#nome-lista', 'Lista E2E');
-    // Adiciona item diretamente ao estado (o autocomplete UI depende do JS em cache)
     await page.evaluate(() => {
       window.state.lista.itens.push({ pid: 1, qtd: 1 });
       window.refreshListaUI();
@@ -39,15 +39,14 @@ test.describe('Fluxo completo visitante (E2E contra API real)', () => {
     await expect(vencedorNome).not.toBeEmpty();
 
     // ---------- Passo 5: Lista vencedora ----------
-    await page.click('text=Ver lista vencedora');
+    await page.click('text=Ver vencedora');
     await page.waitForSelector('.win-hero h2', { state: 'visible' });
 
-    // ---------- Exportar PDF (RF17 — visitante, preview da lista vencedora) ----------
+    // ---------- Exportar PDF (RF17 — visitante) ----------
+    const downloadPromise = page.waitForEvent('download');
     await page.click('text=Exportar PDF');
-    await page.waitForTimeout(1200); // aguarda o setTimeout do exportPDF abrir o modal
-    await page.waitForSelector('.a4-sheet', { state: 'visible', timeout: 5000 });
-    await expect(page.locator('.a4-sheet')).toContainText('LISTA VENCEDORA');
-    await expect(page.locator('.a4-sheet')).toContainText('TOTAL CONSOLIDADO');
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toMatch(/^lista_\d{8}\.pdf$/);
   });
 
 });

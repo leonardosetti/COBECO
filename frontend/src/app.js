@@ -5,6 +5,8 @@
 
 const API_BASE = '/v1';
 
+console.log('COBECO app.js loaded');
+
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
@@ -36,6 +38,7 @@ const showToast = (msg, type = 'info') => {
 };
 
 const openModal = (html) => {
+  console.log('openModal called');
   const container = document.getElementById('modal-root');
   container.innerHTML = `<div class="overlay"><div class="modal">${html}</div></div>`;
   container.classList.remove('hidden');
@@ -386,6 +389,12 @@ function vCadastro() {
 // ============================================================
 document.addEventListener('click', (e) => {
   const t = e.target;
+  if (t.classList.contains('cat-cb')) {
+    const id = +t.value;
+    state.categorias = state.categorias.includes(id) ? state.categorias.filter(x => x !== id) : [...state.categorias, id];
+    render();
+    return;
+  }
   if (t.classList.contains('forn-cb')) {
     const id = +t.value;
     state.fornecedores = state.fornecedores.includes(id) ? state.fornecedores.filter(x => x !== id) : [...state.fornecedores, id];
@@ -497,10 +506,15 @@ function refreshFornecedores() {
   const b = document.getElementById('btn-calc'); if (b) b.disabled = state.fornecedores.length < 2;
 }
 
+window.state = state;
+window.refreshFornecedores = refreshFornecedores;
+window.refreshListaUI = refreshListaUI;
+
 // ============================================================
 // BOOT
 // ============================================================
 document.addEventListener("DOMContentLoaded", async () => {
+  console.log('DOMContentLoaded fired');
   try {
     await carregarCategorias();
     await carregarProdutos();
