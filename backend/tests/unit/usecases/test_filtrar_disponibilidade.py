@@ -63,9 +63,15 @@ class TestFiltrarDisponibilidadeUseCase:
 
     @pytest.mark.asyncio
     async def test_executar_com_filtro_minimo(self, usecase, mock_repo, fornecedores_exemplo):
-        # O use case atual não filtra por disponibilidade (placeholder)
-        # Retorna todos os fornecedores buscados
         mock_repo.buscar_por_ids = AsyncMock(return_value=fornecedores_exemplo)
+        # F:1=100%, F:2=0%, F:3=50% → com min 50% passa F:1 e F:3
+        mock_repo.calcular_disponibilidade = AsyncMock(
+            side_effect=lambda f_id, p_ids: {
+                1: (2, 0, None),
+                2: (0, 2, None),
+                3: (1, 1, None),
+            }[f_id]
+        )
 
         result = await usecase.executar(
             fornecedor_ids=[1, 2, 3],
@@ -73,7 +79,8 @@ class TestFiltrarDisponibilidadeUseCase:
             min_disponibilidade=50.0,
         )
 
-        assert len(result) == 3
+        ids = sorted(f.id for f in result)
+        assert ids == [1, 3]
 
     @pytest.mark.asyncio
     async def test_executar_fornecedores_inexistentes(self, usecase, mock_repo):

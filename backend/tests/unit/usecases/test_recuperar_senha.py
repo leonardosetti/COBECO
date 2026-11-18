@@ -128,10 +128,12 @@ class TestRecuperarSenhaUseCase:
             mock_repo.buscar_por_nome_usuario = AsyncMock(return_value=usuario)
             mock_repo.atualizar = AsyncMock(return_value=usuario)
 
-            # Em modo log, aceita qualquer token (dev)
+            # Em modo log, token obtido via solicitar_reset (uso único, 15 min)
+            token = await usecase.solicitar_reset("usuarioteste")
+            assert token is not None
             result = await usecase.confirmar_reset(
                 "usuarioteste",
-                "qualquer_token",
+                token,
                 "NovaSenha@456",
             )
 

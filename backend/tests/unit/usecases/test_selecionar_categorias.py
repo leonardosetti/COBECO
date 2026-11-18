@@ -14,8 +14,15 @@ def mock_repo():
 
 
 @pytest.fixture
-def usecase(mock_repo):
-    return SelecionarCategoriasUseCase(mock_repo)
+def mock_fornecedor_repo():
+    repo = AsyncMock()
+    repo.listar_por_categorias = AsyncMock()
+    return repo
+
+
+@pytest.fixture
+def usecase(mock_repo, mock_fornecedor_repo):
+    return SelecionarCategoriasUseCase(mock_repo, mock_fornecedor_repo)
 
 
 @pytest.fixture
@@ -51,7 +58,11 @@ class TestSelecionarCategoriasUseCase:
         assert result == []
 
     @pytest.mark.asyncio
-    async def test_filtrar_fornecedores_placeholder(self, usecase, mock_repo):
-        # O método filtrar_fornecedores é um placeholder
+    async def test_filtrar_fornecedores(self, usecase, mock_fornecedor_repo):
+        esperados = [Categoria(id=1, nome="Mercado"), Categoria(id=2, nome="Vestuário")]
+        mock_fornecedor_repo.listar_por_categorias = AsyncMock(return_value=esperados)
+
         result = await usecase.filtrar_fornecedores(categoria_ids=[1, 2])
-        assert result == []
+
+        assert result == esperados
+        mock_fornecedor_repo.listar_por_categorias.assert_called_once_with([1, 2])

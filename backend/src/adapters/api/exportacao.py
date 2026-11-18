@@ -26,12 +26,12 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
 
     async def gerar_pdf_lista(self, lista_id: int) -> bytes:
         """Gera PDF da lista salva (ReportLab server-side)"""
-        from reportlab.lib.colors import HexColor, grey, white
-        from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
-        from reportlab.lib.pagesizes import A4
-        from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-        from reportlab.lib.units import cm
-        from reportlab.platypus import (
+        from reportlab.lib.colors import HexColor, grey, white  # type: ignore[import-untyped]
+        from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT  # type: ignore[import-untyped]
+        from reportlab.lib.pagesizes import A4  # type: ignore[import-untyped]
+        from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet  # type: ignore[import-untyped]
+        from reportlab.lib.units import cm  # type: ignore[import-untyped]
+        from reportlab.platypus import (  # type: ignore[import-untyped]
             Paragraph,
             SimpleDocTemplate,
             Spacer,
@@ -301,12 +301,12 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
     async def gerar_pdf_vencedora(self, orcamento) -> bytes:
         """RF17: PDF da LISTA VENCEDORA — apenas itens precificados do fornecedor
         campeão (maior cobertura; empate → menor total). Nunca a tabela comparativa."""
-        from reportlab.lib.colors import HexColor, grey, white
-        from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
-        from reportlab.lib.pagesizes import A4
-        from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-        from reportlab.lib.units import cm
-        from reportlab.platypus import (
+        from reportlab.lib.colors import HexColor, grey, white  # type: ignore[import-untyped]
+        from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT  # type: ignore[import-untyped]
+        from reportlab.lib.pagesizes import A4  # type: ignore[import-untyped]
+        from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet  # type: ignore[import-untyped]
+        from reportlab.lib.units import cm  # type: ignore[import-untyped]
+        from reportlab.platypus import (  # type: ignore[import-untyped]
             Paragraph,
             SimpleDocTemplate,
             Spacer,
@@ -617,11 +617,11 @@ async def exportar_pdf_vencedora(
 ):
     """RF17: funciona para TODOS (sem login) quando itens vêm inline (lista efêmera).
     Fluxo com lista salva exige auth — lista é dado do usuário."""
-    from src.adapters.api.comparacao import ComparacaoRepositoryImpl
-
-    # Fluxo com lista salva exige auth — lista é dado do usuário
+    lista_id_val = request.get("lista_id")
     if not request.get("itens") and current_user is None:
         raise HTTPException(status_code=401, detail="Autenticação necessária")
+    if not request.get("itens") and lista_id_val is None:
+        raise HTTPException(status_code=400, detail="lista_id é obrigatório")
 
     try:
         comp_repo = ComparacaoRepositoryImpl(export_repo.session)
@@ -634,7 +634,7 @@ async def exportar_pdf_vencedora(
             )
         else:
             orcamento = await comp_repo.calcular_orcamento(
-                request.get("lista_id"),
+                int(lista_id_val),
                 request.get("fornecedor_ids", []),
                 request.get("disponibilidade_minima", 0.0),
             )

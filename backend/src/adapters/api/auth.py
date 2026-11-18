@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 import bcrypt
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import jwt
-from jose.exceptions import ExpiredSignatureError, JWTError
+from jose import jwt  # type: ignore[import-untyped]
+from jose.exceptions import ExpiredSignatureError, JWTError  # type: ignore[import-untyped]
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -594,7 +594,8 @@ async def refresh_token(
     # Busca usuário
     usuario = await repo.buscar_por_id(sessao.usuario_id)
     if not usuario or not usuario.esta_ativo():
-        await sessao_repo.revogar(sessao.id)
+        if sessao.id is not None:
+            await sessao_repo.revogar(sessao.id)
         response.delete_cookie(key="refresh_token", path="/", httponly=True, samesite="strict")
         raise HTTPException(status_code=401, detail="Usuário não encontrado")
 

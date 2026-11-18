@@ -79,6 +79,14 @@ class TestSelecionarFornecedoresUseCase:
         assert result == []
 
     @pytest.mark.asyncio
-    async def test_buscar_disponibilidade_placeholder(self, usecase, mock_repo):
-        result = await usecase.buscar_disponibilidade(fornecedor_ids=[1, 2], produto_ids=[1, 2])
-        assert result == {}
+    async def test_buscar_disponibilidade(self, usecase, mock_repo):
+        mock_repo.calcular_disponibilidade = AsyncMock(
+            side_effect=lambda f_id, p_ids: (1, 1, None) if f_id == 1 else (0, 2, None)
+        )
+
+        result = await usecase.buscar_disponibilidade(
+            fornecedor_ids=[1, 2], produto_ids=[1, 2]
+        )
+
+        assert result == {1: 50.0, 2: 0.0}
+        assert mock_repo.calcular_disponibilidade.call_count == 2

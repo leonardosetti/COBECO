@@ -189,6 +189,13 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         )
         return list(result.scalars().all())
 
+    async def count_ativos(self) -> int:
+        from sqlalchemy import func
+        result = await self.session.execute(
+            select(func.count()).select_from(ProdutoModel).where(ProdutoModel.ativo)
+        )
+        return int(result.scalar_one())
+
 
 def get_categoria_repo(session: AsyncSession = Depends(get_db)) -> CategoriaRepository:
     return CategoriaRepositoryImpl(session)

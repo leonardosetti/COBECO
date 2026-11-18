@@ -18,6 +18,10 @@ from src.adapters.db.models import Base
 from src.config import settings
 from datetime import UTC
 
+# Seed SQL lido no nível do módulo (fora de async — evita ASYNC240)
+_SEED_PATH = Path("/app/seed.sql")
+_SEED_SQL = _SEED_PATH.read_text() if _SEED_PATH.exists() else ""
+
 
 # ============================================================
 # Fixtures
@@ -59,13 +63,11 @@ async def test_app():
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    # Carrega seed data
-    seed_path = Path("/app/seed.sql")
-    if seed_path.exists():
-        seed_sql = seed_path.read_text()
+    # Carrega seed data (conteúdo lido no nível do módulo)
+    if _SEED_SQL:
         async with test_engine.begin() as conn:
             # Split by semicolon and execute each non-empty, non-comment statement
-            for statement in seed_sql.split(";"):
+            for statement in _SEED_SQL.split(";"):
                 stmt = statement.strip()
                 # Remove comment lines
                 lines = [line for line in stmt.split("\n") if not line.strip().startswith("--")]

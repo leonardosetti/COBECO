@@ -4,7 +4,7 @@
 
 from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from src.config import settings
 from src.domain.entities import (
@@ -65,6 +65,31 @@ class ListaNaoEncontrada(DomainError):
 class FornecedoresInsuficientes(DomainError):
     def __init__(self) -> None:
         super().__init__("FORNECEDORES_INSUFICIENTES", "Selecione pelo menos 2 fornecedores")
+
+
+# ============================================================
+# Store temporário de tokens de recuperação (RF04, modo log/dev)
+# ============================================================
+_RECOVERY_TOKENS: dict[str, dict] = {}
+_TOKEN_TTL_SECONDS = 15 * 60  # 15 min
+
+def _armazenar_token_recuperacao(nome_usuario: str, token: str) -> None:
+    _RECOVERY_TOKENS[token] = {
+        "nome_usuario": nome_usuario,
+        "expira_em": datetime.now() + timedelta(seconds=_TOKEN_TTL_SECONDS),
+        "usado": False,
+    }
+
+def _validar_token_recuperacao(nome_usuario: str, token: str) -> bool:
+    entrada = _RECOVERY_TOKENS.get(token)
+    if not entrada or entrada["usado"]:
+        return False
+    if entrada["nome_usuario"] != nome_usuario:
+        return False
+    if datetime.now() > entrada["expira_em"]:
+        return False
+    entrada["usado"] = True  # uso único
+    return True
 
 
 # ============================================================
@@ -233,11 +258,11 @@ class RecuperarSenhaUseCase:
             # TODO: Implementar envio de email real
             return None
 
-        # Modo "log" (apenas desenvolvimento) - retorna token mas NÃO loga
+        # Modo "log" (apenas desenvolvimento) - armazena token temporário, NÃO loga
         import secrets
 
         token = secrets.token_urlsafe(32)
-        # SECURITY: NÃO logar token - usar store temporário em produção
+        _armazenar_token_recuperacao(nome_usuario, token)
         return token
 
     async def confirmar_reset(
@@ -251,9 +276,9 @@ class RecuperarSenhaUseCase:
             raise CredenciaisInvalidas
 
         if settings.RECOVERY_MODE == "log":
-            # Validar token (implementar store temporário)
-            # Em dev: aceita qualquer token por simplicidade
-            pass
+            # Validar token de recuperação (uso único, 15 min)
+            if not _validar_token_recuperacao(nome_usuario, resposta_ou_token):
+                raise CredenciaisInvalidas
         # Validar resposta da pergunta de segurança (bcrypt)
         elif not self.verificar_senha(resposta_ou_token, usuario.resposta_seguranca_hash.valor):
             raise CredenciaisInvalidas
@@ -468,15 +493,19 @@ class AutocompleteProdutosUseCase:
 class SelecionarCategoriasUseCase:
     """UC03 / RF12 — Selecionar Categorias (Pré-filtro)"""
 
-    def __init__(self, repo: CategoriaRepository):
+    def __init__(
+        self,
+        repo: CategoriaRepository,
+        fornecedor_repo: FornecedorRepository,
+    ) -> None:
         self.repo = repo
+        self.fornecedor_repo = fornecedor_repo
 
     async def listar_todas(self) -> list[Categoria]:
         return await self.repo.listar_todas()
 
     async def filtrar_fornecedores(self, categoria_ids: list[int]) -> list[Fornecedor]:
-        # Implementado no FornecedorRepository
-        return []
+        return await self.fornecedor_repo.listar_por_categorias(categoria_ids)
 
 
 class SelecionarFornecedoresUseCase:
@@ -491,8 +520,15 @@ class SelecionarFornecedoresUseCase:
     async def buscar_disponibilidade(
         self, fornecedor_ids: list[int], produto_ids: list[int]
     ) -> dict[int, float]:
-        """Placeholder: % de disponibilidade por fornecedor (UC04)"""
-        return {}
+        """% de disponibilidade por fornecedor (UC04)"""
+        resultado: dict[int, float] = {}
+        total = len(produto_ids) or 1
+        for fornecedor_id in fornecedor_ids:
+            disp, _aus, _preco = await self.repo.calcular_disponibilidade(
+                fornecedor_id, produto_ids
+            )
+            resultado[fornecedor_id] = round(disp / total * 100, 1)
+        return resultado
 
 
 class FiltrarDisponibilidadeUseCase:
@@ -508,9 +544,29 @@ class FiltrarDisponibilidadeUseCase:
         min_disponibilidade: float,
     ) -> list[Fornecedor]:
         fornecedores = await self.repo.buscar_por_ids(fornecedor_ids)
-        # Placeholder: % de disponibilidade ainda não calculada no domínio.
-        # Retorna todos; filtragem real chega com FornecedorRepository.calcular.
-        return list(fornecedores)
+        if not produto_ids or min_disponibilidade <= 0:
+            return list(fornecedores)
+        disponibilidade = await self.buscar_disponibilidade_fornecedores(
+            fornecedor_ids, produto_ids
+        )
+        return [
+            f
+            for f in fornecedores
+            if disponibilidade.get(f.id or 0, 0) >= min_disponibilidade
+        ]
+
+    async def buscar_disponibilidade_fornecedores(
+        self, fornecedor_ids: list[int], produto_ids: list[int]
+    ) -> dict[int, float]:
+        """% de disponibilidade por fornecedor para filtragem (UC05)"""
+        resultado: dict[int, float] = {}
+        total = len(produto_ids) or 1
+        for fornecedor_id in fornecedor_ids:
+            disp, _aus, _preco = await self.repo.calcular_disponibilidade(
+                fornecedor_id, produto_ids
+            )
+            resultado[fornecedor_id] = round(disp / total * 100, 1)
+        return resultado
 
 
 # ============================================================
