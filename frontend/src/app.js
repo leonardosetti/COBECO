@@ -117,6 +117,8 @@ const state = {
   view: 'home',
   user: null,
   categorias: [],
+  categoriasDisponiveis: [], // categorias vindas da API (RF12/UC03)
+  fornecedoresDisponiveis: [], // fornecedores vindos da API (RF13/UC04)
   lista: { nome: '', itens: [] },
   listaEditId: null,
   fornecedores: [],
@@ -167,6 +169,39 @@ function loadEph() {
 }
 
 // ============================================================
+// CARREGAMENTO DE DADOS MESTRES VIA API (remove hardcodes)
+// RF12/UC03 — categorias | RF13/UC04 — fornecedores
+// ============================================================
+async function carregarCategorias() {
+  try {
+    const cats = await ApiClient.listarCategorias();
+    if (cats && cats.length) {
+      state.categoriasDisponiveis = cats.map(c => ({ id: c.id, nome: c.nome, ic: '📂' }));
+      showToast(`Categorias carregadas do servidor (${cats.length}).`, 'ok');
+    }
+  } catch (e) {
+    // Fallback para hardcode se a API estiver indisponível
+  }
+}
+
+async function carregarFornecedores(categoriaIds = []) {
+  try {
+    const frns = await ApiClient.listarFornecedores(categoriaIds);
+    if (frns && frns.length) {
+      state.fornecedoresDisponiveis = frns.map(f => ({
+        id: f.id,
+        nome: f.nome,
+        cnpj: f.cnpj,
+        cats: (f.categorias || []).map(c => c.id),
+      }));
+      showToast(`Fornecedores carregados do servidor (${frns.length}).`, 'ok');
+    }
+  } catch (e) {
+    // Fallback para hardcode se a API estiver indisponível
+  }
+}
+
+// ============================================================
 // REGRAS DE COMPARAÇÃO (RF15/RF16) — espelho do backend
 // ============================================================
 function calcularResultado() {
@@ -194,7 +229,17 @@ function coberturaDe(fid) {
   return it.filter(i => temOferta(fid, i.pid)).length / it.length;
 }
 function fornecedoresElegiveis() {
-  return FORNECEDORES.filter(f => f.cats.some(c => state.categorias.includes(c)));
+  const base = state.fornecedoresDisponiveis.length ? state.fornecedoresDisponiveis : FORNECEDORES;
+  return base.filter(f => f.cats.some(c => state.categorias.includes(c)));
+}
+
+function totalCategorias() {
+  return state.categoriasDisponiveis.length ? state.categoriasDisponiveis.length : CATEGORIAS.length;
+}
+
+function nomeCategoria(id) {
+  const cat = (state.categoriasDisponiveis.length ? state.categoriasDisponiveis : CATEGORIAS).find(c => c.id === id);
+  return cat ? cat.nome : '';
 }
 
 // ============================================================
@@ -444,14 +489,14 @@ function vCategorias() {
   ${stepperHTML(1)}
   <div class="card card-pad">
    <div class="toolbar">
-    <span class="count-chip ${state.categorias.length ? 'ok' : ''}" id="cat-count">${state.categorias.length} categoria(s) selecionada(s) · 11 disponíveis</span>
+    <span class="count-chip ${state.categorias.length ? 'ok' : ''}" id="cat-count">${state.categorias.length} categoria(s) selecionada(s) · ${totalCategorias()}</span>
     <div><button class="btn btn-ghost btn-sm" data-action="cat-all">Selecionar todas</button>
     <button class="btn btn-ghost btn-sm" data-action="cat-none">Limpar</button></div>
    </div>
    <div class="cat-grid" role="group" aria-label="Categorias macro">
-    ${CATEGORIAS.map(c => `<label class="cat-card ${state.categorias.includes(c.id) ? 'sel' : ''}" data-catcard="${c.id}">
-      <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id) ? 'checked' : ''}>
-      <span class="ci">${c.ic}</span><span class="cn">${c.nome}</span></label>`).join('')}
+     ${(state.categoriasDisponiveis.length ? state.categoriasDisponiveis : CATEGORIAS).map(c => `<label class="cat-card ${state.categorias.includes(c.id) ? 'sel' : ''}" data-catcard="${c.id}">
+       <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id) ? 'checked' : ''}>
+       <span class="ci">${c.ic}</span><span class="cn">${c.nome}</span></label>`).join('')}
    </div>
    <div class="tip">ℹ️ <b>Como funciona:</b> os fornecedores exibidos na próxima etapa pertencem às categorias selecionadas. Ex.: “Mercado” + “Eletrodomésticos” → Carrefour, Extra, Pão de Açúcar, Magazine Luiza, Casas Bahia…</div>
    <div class="row-between mt">
@@ -538,7 +583,7 @@ function vFornecedores() {
   return `<div class="container page">
   <div class="page-head"><span class="kicker">Passo 3 de 5 · Fornecedores</span>
    <h1>Escolha os fornecedores</h1>
-   <p>Selecione de <b>2 a 10</b> fornecedores (RF13). Apenas fornecedores das categorias escolhidas (${state.categorias.map(c => CATEGORIAS.find(x => x.id === c).nome).join(', ')}) são exibidos. O % indica a cobertura da sua lista.</p></div>
+   <p>Selecione de <b>2 ou mais</b> fornecedores (RF13). Apenas fornecedores das categorias escolhidas (${state.categorias.map(nomeCategoria).join(', ')}) são exibidos. O % indica a cobertura da sua lista.</p></div>
   ${stepperHTML(3)}
   <div class="card card-pad slider-box">
    <div class="sl-head"><label for="slider-disp"><b>Filtro de disponibilidade (UC05)</b> — mostrar apenas fornecedores com cobertura mínima da lista</label>
@@ -548,7 +593,7 @@ function vFornecedores() {
   </div>
   <div class="card card-pad">
    <div class="toolbar">
-    <span class="count-chip ${state.fornecedores.length >= 2 ? 'ok' : ''}" id="forn-count">${state.fornecedores.length} selecionado(s) · mín 2 · máx 10</span>
+    <span class="count-chip ${state.fornecedores.length >= 2 ? 'ok' : ''}" id="forn-count">${state.fornecedores.length} selecionado(s) · mín 2</span>
     <div><button class="btn btn-ghost btn-sm" data-action="forn-all">Selecionar todos</button>
     <button class="btn btn-ghost btn-sm" data-action="forn-clear">Limpar</button></div>
    </div>
@@ -573,7 +618,7 @@ function fornCardsHTML() {
      <div class="forn-cb-row"><input type="checkbox" class="forn-cb" value="${f.id}" ${sel ? 'checked' : ''} ${passa ? '' : 'disabled'}>
      <div style="flex:1"><div class="forn-top"><b>${f.nome}</b>
        <span class="cov-badge ${cls}" title="Itens da sua lista disponíveis neste fornecedor">${cov}% da lista</span></div>
-      <div class="forn-cats">${f.cats.filter(c => state.categorias.includes(c)).map(c => `<span class="mini-tag">${CATEGORIAS.find(x => x.id === c).nome}</span>`).join('')}</div>
+      <div class="forn-cats">${(f.categorias || f.cats).filter(c => state.categorias.includes(typeof c === 'number' ? c : c.id)).map(c => `<span class="mini-tag">${typeof c === 'number' ? nomeCategoria(c) : c.nome}</span>`).join('')}</div>
      ${cov === 0 ? `<div class="small muted" style="margin-top:6px">⚠ Não possui itens da sua lista</div>` : ''}
     </div></div></label>`;
   }).join('');
@@ -582,7 +627,7 @@ function fornCardsHTML() {
 function refreshFornecedores() {
   document.getElementById('forn-grid').innerHTML = fornCardsHTML();
   const c = document.getElementById('forn-count');
-  c.textContent = `${state.fornecedores.length} selecionado(s) · mín 2 · máx 10`;
+  c.textContent = `${state.fornecedores.length} selecionado(s) · mín 2`;
   c.classList.toggle('ok', state.fornecedores.length >= 2);
   const b = document.getElementById('btn-calc');
   b.disabled = state.fornecedores.length < 2;
@@ -751,7 +796,7 @@ function vDashboard() {
     <span class="count-chip">${lists.length} lista(s)</span></div>
    ${lists.length ? `<table class="tbl"><thead><tr><th>Nome</th><th>Itens</th><th>Categorias</th><th>Criada em</th><th style="width:190px">Ações</th></tr></thead><tbody>
    ${lists.map(l => `<tr><td><b>${esc(l.nome)}</b></td><td>${l.itens.length} produtos</td>
-   <td>${(l.categorias || []).map(c => `<span class="mini-tag">${CATEGORIAS.find(x => x.id === c).nome}</span>`).join(' ') || '—'}</td>
+   <td>${(l.categorias || []).map(c => `<span class="mini-tag">${nomeCategoria(c)}</span>`).join(' ') || '—'}</td>
    <td class="muted">${l.criado_em}</td>
    <td><button class="btn btn-ghost btn-sm" data-action="editar-lista" data-id="${l.id}">✏️ Editar</button>
    <button class="btn btn-danger btn-sm" data-action="excluir-lista" data-id="${l.id}">🗑 Excluir</button></td></tr>`).join('')}
@@ -920,7 +965,7 @@ document.addEventListener('click', (e) => {
       go('home');
       break;
     }
-    case 'cat-all': state.categorias = CATEGORIAS.map(c => c.id); render(); break;
+    case 'cat-all': state.categorias = (state.categoriasDisponiveis.length ? state.categoriasDisponiveis : CATEGORIAS).map(c => c.id); render(); break;
     case 'cat-none': state.categorias = []; render(); break;
     case 'to-lista': if (!state.categorias.length) { showToast('Selecione ao menos 1 categoria.', 'err'); break; } go('lista'); break;
     case 'goto-step': {
@@ -948,10 +993,10 @@ document.addEventListener('click', (e) => {
     case 'del-item': state.lista.itens.splice(+el.dataset.ix, 1); persistEph(); refreshListaUI(); break;
     case 'to-fornecedores':
       if (!state.lista.itens.length) { showToast('Adicione ao menos 1 item.', 'err'); break; }
-      go('fornecedores');
+      carregarFornecedores(state.categorias).then(() => go('fornecedores'));
       break;
     case 'forn-all':
-      state.fornecedores = fornecedoresElegiveis().filter(f => coberturaDe(f.id) * 100 >= state.filtroDisp).map(f => f.id).slice(0, 10);
+      state.fornecedores = fornecedoresElegiveis().filter(f => coberturaDe(f.id) * 100 >= state.filtroDisp).map(f => f.id);
       refreshFornecedores();
       break;
     case 'forn-clear': state.fornecedores = []; refreshFornecedores(); break;
@@ -1208,4 +1253,12 @@ document.addEventListener('click', (e) => {
 
 // ============================================================
 // BOOT
-// Inicializar após DOM carregadodocument.addEventListener("DOMContentLoaded", () => {  try {    render();  } catch(e) {    document.getElementById("main").innerHTML = "<div style="color:red\">Erro: " + e.message + "</div>";  }});
+// Inicializar após DOM carregado: carrega categorias da API e render
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    await carregarCategorias();
+    render();
+  } catch(e) {
+    document.getElementById("main").innerHTML = '<div style="color:red">Erro: ' + e.message + '</div>';
+  }
+});

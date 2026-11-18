@@ -82,7 +82,7 @@ class FornecedorComparacaoResponse(BaseModel):
 
 class CalcularOrcamentoRequest(BaseModel):
     lista_id: int
-    fornecedor_ids: list[int] = Field(..., min_length=2, max_length=10)
+    fornecedor_ids: list[int] = Field(..., min_length=2)
     disponibilidade_minima: float = Field(0.0, ge=0.0, le=100.0)
 
 
@@ -93,7 +93,7 @@ class ItemEfemeroRequest(BaseModel):
 
 class CalcularOrcamentoEfemeroRequest(BaseModel):
     itens: list[ItemEfemeroRequest] = Field(..., min_length=1)
-    fornecedor_ids: list[int] = Field(..., min_length=2, max_length=10)
+    fornecedor_ids: list[int] = Field(..., min_length=2)
     disponibilidade_minima: float = Field(0.0, ge=0.0, le=100.0)
     lista_nome: str = Field("Lista", max_length=100)
 

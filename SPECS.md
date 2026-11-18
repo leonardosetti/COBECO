@@ -59,7 +59,7 @@ Visitante → [Categorias] → [Lista em Memória] → [Fornecedores] → [Compa
 | RF10 | Editar Lista Salva | Alterar nome, itens, quantidades | Valida propriedade (usuario_id). | P1 |
 | RF11 | Excluir Lista Salva | Soft delete | Confirmação digitando nome. Campo deletado_em. | P1 |
 | RF12 ⭐ | Selecionar Categorias | Pré-filtro de fornecedores | Mínimo 1 categoria. Checkboxes. Fornecedores filtrados dinamicamente. | P0 |
-| RF13 | Selecionar Fornecedores | Escolher 2-10 fornecedores | Checkboxes + % disponibilidade. Apenas das categorias (RF12). | P0 |
+| RF13 | Selecionar Fornecedores | Escolher 2 ou mais fornecedores (sem limite superior) | Checkboxes + % disponibilidade. Apenas das categorias (RF12). | P0 |
 | RF14 | Filtrar Disponibilidade | Slider 0-100% | Padrão 0%. Atualiza tempo real. Mantém seleção válida. | P1 |
 | RF15 | Calcular Orçamento | Tabela flat comparativa | Timeout 10s. Cache 5min. Disponíveis, ausentes, preço total. Ordena preço ASC. | P0 |
 | RF16 ⭐ | Visualizar Resultados | Melhor oferta destacada | **Maior % cobertura; empate → menor custo total.** % disponibilidade. Tooltip ausentes. | P0 |
