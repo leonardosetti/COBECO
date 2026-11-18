@@ -78,36 +78,10 @@ const FORNECEDORES = [
   {id:9,nome:"Renner",cnpj:"44.555.666/0001-77",cats:[2]},
   {id:10,nome:"Hering",cnpj:"55.666.777/0001-88",cats:[2]}];
 
-const PRODUTOS = [
-  {id:1,nome:"Arroz Tipo 1 5kg",un:"un",base:25.9},{id:2,nome:"Feijão Preto 1kg",un:"un",base:8.2},
-  {id:3,nome:"Óleo de Soja 900ml",un:"un",base:6.9},{id:4,nome:"Café Torrado e Moído 500g",un:"un",base:17.5},
-  {id:5,nome:"Açúcar Refinado 1kg",un:"un",base:4.4},{id:6,nome:"Leite Integral UHT 1L",un:"un",base:5.1},
-  {id:7,nome:"Macarrão Espaguete 500g",un:"un",base:4.8},{id:8,nome:"Molho de Tomate 340g",un:"un",base:3.9},
-  {id:9,nome:"Farinha de Trigo 1kg",un:"un",base:5.5},{id:10,nome:"Ovos Brancos (dúzia)",un:"dz",base:9.9},
-  {id:11,nome:"Detergente Neutro 500ml",un:"un",base:2.9},{id:12,nome:"Papel Toalha 2 rolos",un:"un",base:6.5},
-  {id:13,nome:"Liquidificador 2 Velocidades",un:"un",base:129.9},{id:14,nome:"Notebook i5 8GB",un:"un",base:2899.0},
-  {id:15,nome:"Martelo de Unha 25mm",un:"un",base:32.9},{id:16,nome:"Parafuso Philips 5mm (cx)",un:"cx",base:12.5},
-  {id:17,nome:"Camiseta Algodão M",un:"un",base:39.9},{id:18,nome:"Calça Jeans 40",un:"un",base:119.9},
-  {id:19,nome:"Vaso de Barro 20cm",un:"un",base:45.9},{id:20,nome:"Cadeira de Escritório",un:"un",base:449.9}];
-
-const CATALOGO = {
-  1:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,17,18],
-  2:[1,2,3,5,6,7,8,9,10,11,12,13,17],
-  3:[1,2,3,4,5,6,7,8,9,10,11,12],
-  4:[13,14,20],5:[13,14,20],
-  6:[15,16,19,20],7:[19,20],8:[17,18],9:[17,18],10:[17]};
-const FATOR = {1:.99,2:.93,3:1.14,4:.96,5:1.05,6:.97,7:1.10,8:.95,9:1.00,10:1.04};
 const PERGUNTAS = {
   pet:"Qual era o nome do seu primeiro animal de estimação?",
   cidade:"Qual é o nome da sua cidade natal?",
   escola:"Qual era o nome da sua escola de infância?",
-};
-
-const temOferta = (f, p) => CATALOGO[f].includes(p);
-const preco = (f, p) => {
-  const pr = PRODUTOS.find(x => x.id === p);
-  const jit = Math.sin(f * 997 + p * 131) * 0.03;
-  return Math.round(pr.base * FATOR[f] * (1 + jit) * 100) / 100;
 };
 
 // ============================================================
@@ -119,6 +93,7 @@ const state = {
   categorias: [],
   categoriasDisponiveis: [], // categorias vindas da API (RF12/UC03)
   fornecedoresDisponiveis: [], // fornecedores vindos da API (RF13/UC04)
+  produtos: [], // produtos reais da API (remove hardcode PRODUTOS)
   lista: { nome: '', itens: [] },
   listaEditId: null,
   fornecedores: [],
@@ -201,32 +176,73 @@ async function carregarFornecedores(categoriaIds = []) {
   }
 }
 
+async function carregarProdutos() {
+  try {
+    const prods = await ApiClient.listarProdutos();
+    if (prods && prods.length) {
+      state.produtos = prods.map(p => ({ id: p.id, nome: p.nome, un: p.unidade || 'un' }));
+      showToast(`Produtos carregados do servidor (${prods.length}).`, 'ok');
+    }
+  } catch (e) {
+    // Fallback para hardcode PRODUTOS se a API estiver indisponível
+  }
+}
+
 // ============================================================
-// REGRAS DE COMPARAÇÃO (RF15/RF16) — espelho do backend
+// REGRAS DE COMPARAÇÃO (RF15/RF16) — cálculo real via API
 // ============================================================
-function calcularResultado() {
+async function calcularResultado() {
   const itens = state.lista.itens;
-  const rows = state.fornecedores.map((fid) => {
-    const f = FORNECEDORES.find(x => x.id === fid);
-    const disp = itens.filter(i => temOferta(fid, i.pid));
-    const aus = itens.filter(i => !temOferta(fid, i.pid));
-    const cobertura = disp.length / itens.length;
-    const total = disp.reduce((s, i) => s + preco(fid, i.pid) * i.qtd, 0);
-    return { fid, nome: f.nome, cnpj: f.cnpj, cobertura, nDisp: disp.length, ausentes: aus, total, parcial: aus.length > 0 };
-  });
-  const winner = rows.slice().sort((a, b) => b.cobertura - a.cobertura || a.total - b.total)[0]; // monografia: maior cobertura; empate → menor total
-  const display = rows.slice().sort((a, b) => a.total - b.total); // RF15: ordem por preço ASC
-  state.resultado = {
-    rows: display,
-    winner,
-    minTotal: Math.min(...rows.map(r => r.total)),
-    maxTotal: Math.max(...rows.map(r => r.total)),
-  };
+  if (!itens.length) { state.resultado = null; return; }
+
+  const fornecedorIds = state.fornecedores;
+  if (fornecedorIds.length < 2) { state.resultado = null; return; }
+
+  try {
+    const data = await ApiClient.calcularOrcamentoEfemera({
+      itens: itens.map(i => ({ produto_id: i.pid, quantidade: i.qtd })),
+      fornecedor_ids: fornecedorIds,
+      disponibilidade_minima: state.filtroDisp,
+      lista_nome: state.lista.nome || 'Lista',
+    });
+
+    const fornecedores = (data.fornecedores || []).map(f => ({
+      fid: f.fornecedor_id,
+      nome: f.fornecedor_nome,
+      cnpj: '',
+      cobertura: f.percentual_disponibilidade / 100,
+      nDisp: f.itens_disponiveis,
+      ausentes: f.itens.filter(i => !i.disponivel).map(i => i.produto_id),
+      total: f.preco_total,
+      parcial: f.itens_ausentes > 0,
+      itens: f.itens.map(i => ({
+        pid: i.produto_id,
+        preco: i.preco_unitario || 0,
+        disponivel: i.disponivel,
+      })),
+    }));
+
+    const winner = fornecedores.slice().sort((a, b) => b.cobertura - a.cobertura || a.total - b.total)[0];
+    const display = fornecedores.slice().sort((a, b) => a.total - b.total);
+    state.resultado = {
+      rows: display,
+      winner,
+      minTotal: Math.min(...fornecedores.map(r => r.total)),
+      maxTotal: Math.max(...fornecedores.map(r => r.total)),
+    };
+  } catch (e) {
+    showToast('Erro ao calcular orçamento no servidor.', 'err');
+    state.resultado = null;
+  }
 }
 function coberturaDe(fid) {
-  const it = state.lista.itens;
-  if (!it.length) return 0;
-  return it.filter(i => temOferta(fid, i.pid)).length / it.length;
+  // Cobertura real vem do resultado do cálculo (API). Se não houver resultado,
+  // retorna 0 (será preenchido após clicar em "Calcular orçamento").
+  if (state.resultado) {
+    const row = state.resultado.rows.find(r => r.fid === fid);
+    return row ? row.cobertura : 0;
+  }
+  return 0;
 }
 function fornecedoresElegiveis() {
   const base = state.fornecedoresDisponiveis.length ? state.fornecedoresDisponiveis : FORNECEDORES;
@@ -240,6 +256,11 @@ function totalCategorias() {
 function nomeCategoria(id) {
   const cat = (state.categoriasDisponiveis.length ? state.categoriasDisponiveis : CATEGORIAS).find(c => c.id === id);
   return cat ? cat.nome : '';
+}
+
+function nomeProduto(id) {
+  const p = state.produtos.find(x => x.id === id);
+  return p ? p.nome : 'Desconhecido';
 }
 
 // ============================================================
@@ -554,7 +575,7 @@ function itensTableHTML() {
   if (!state.lista.itens.length) return `<div class="empty"><div class="big">🧺</div>Nenhum produto adicionado. Use a busca acima.</div>`;
   return `<table class="tbl"><thead><tr><th>Produto</th><th style="width:130px">Qtd.</th><th style="width:80px">Un.</th><th style="width:44px"></th></tr></thead><tbody>
    ${state.lista.itens.map((i, ix) => {
-    const p = PRODUTOS.find(x => x.id === i.pid);
+    const p = state.produtos.find(x => x.id === i.pid) || { nome: 'Desconhecido', un: 'un' };
     return `<tr>
      <td><b>${esc(p.nome)}</b></td>
      <td><span class="qty"><button data-action="dec" data-ix="${ix}" aria-label="Diminuir">−</button>
@@ -662,7 +683,7 @@ function vResultados() {
      <td><b>${r.nome}</b> ${isW ? `<span class="badge b-ok">🏆 Melhor oferta</span>` : ''} ${isMin && !isW ? `<span class="badge b-warn">💰 Menor preço</span>` : ''}</td>
      <td><span class="cov-bar"><i style="width:${Math.round(r.cobertura * 100)}%"></i></span>${Math.round(r.cobertura * 100)}%</td>
      <td>${r.nDisp} de ${state.lista.itens.length}</td>
-     <td>${r.parcial ? `<span class="badge b-warn" title="${r.ausentes.map(a => esc(PRODUTOS.find(p => p.id === a.pid).nome)).join('; ')}">⚠ ${r.ausentes.length} item(ns)</span>` : `<span class="muted">—</span>`}</td>
+     <td>${r.parcial ? `<span class="badge b-warn" title="${r.ausentes.map(a => esc(nomeProduto(a))).join('; ')}">⚠ ${r.ausentes.length} item(ns)</span>` : `<span class="muted">—</span>`}</td>
      <td style="text-align:right;font-weight:800;font-variant-numeric:tabular-nums">${BRL(r.total)}${r.parcial ? ` <span class="badge b-mut" title="Total parcial: considera apenas itens disponíveis">parcial</span>` : ''}</td></tr>`;
    }).join('')}
    </tbody></table>
@@ -698,12 +719,14 @@ function vVencedora() {
   <div class="card" style="overflow:auto"><table class="tbl">
    <thead><tr><th>Produto</th><th>Un.</th><th style="width:90px">Qtd.</th><th style="text-align:right">Preço unitário</th><th style="text-align:right">Subtotal</th></tr></thead><tbody>
    ${state.lista.itens.map(i => {
-    const p = PRODUTOS.find(x => x.id === i.pid);
-    const tem = temOferta(W.fid, i.pid);
-    return tem ? `<tr><td><b>${esc(p.nome)}</b></td><td class="muted">${p.un}</td><td>${i.qtd}</td>
-     <td style="text-align:right">${BRL(preco(W.fid, i.pid))}</td>
-     <td style="text-align:right;font-weight:700">${BRL(preco(W.fid, i.pid) * i.qtd)}</td></tr>`
-     : `<tr style="opacity:.55"><td>${esc(p.nome)}</td><td class="muted">${p.un}</td><td>${i.qtd}</td>
+     const p = state.produtos.find(x => x.id === i.pid) || { nome: 'Desconhecido', un: 'un' };
+     const itemWin = (W.itens || []).find(it => it.pid === i.pid);
+     if (itemWin && itemWin.disponivel) {
+      return `<tr><td><b>${esc(p.nome)}</b></td><td class="muted">${p.un}</td><td>${i.qtd}</td>
+       <td style="text-align:right">${BRL(itemWin.preco)}</td>
+       <td style="text-align:right;font-weight:700">${BRL(itemWin.preco * i.qtd)}</td></tr>`;
+     }
+     return `<tr style="opacity:.55"><td>${esc(p.nome)}</td><td class="muted">${p.un}</td><td>${i.qtd}</td>
      <td colspan="2" style="text-align:right"><span class="badge b-warn">⚠ Indisponível neste fornecedor</span></td></tr>`;
    }).join('')}
    </tbody></table></div>
@@ -837,9 +860,9 @@ function vPerfil() {
 function sheetHTML() {
   const W = state.resultado.winner;
   const rows = state.lista.itens.map(i => {
-    const p = PRODUTOS.find(x => x.id === i.pid);
-    const tem = temOferta(W.fid, i.pid);
-    return { nome: p.nome, un: p.un, qtd: i.qtd, preco: tem ? preco(W.fid, i.pid) : null };
+    const itemWin = (W.itens || []).find(it => it.pid === i.pid);
+    const p = state.produtos.find(x => x.id === i.pid) || { nome: 'Desconhecido', un: 'un' };
+    return { nome: p.nome, un: p.un, qtd: i.qtd, preco: itemWin && itemWin.disponivel ? itemWin.preco : null };
   });
   return `<div class="a4-sheet" id="a4-sheet">
    <div class="a4-head"><div class="brand">🛒 COBECO<small>COTAÇÃO DE BENS DE CONSUMO</small></div>
@@ -855,7 +878,7 @@ function sheetHTML() {
    <tbody>${rows.map((r, ix) => `<tr><td>${ix + 1}</td><td>${esc(r.nome)}</td><td>${r.un}</td><td class="num">${r.qtd}</td>
     <td class="num">${r.preco != null ? BRL(r.preco) : '—'}</td><td class="num">${r.preco != null ? BRL(r.preco * r.qtd) : '⚠ indisponível'}</td></tr>`).join('')}</tbody></table>
    <div class="a4-total"><span><b>TOTAL CONSOLIDADO DA COMPRA</b> — preços de ${W.nome}</span><b>${BRL(W.total)}</b></div>
-   ${W.parcial ? `<p style="font-size:11px;color:#7a4a00;margin-bottom:10px">⚠ Itens indisponíveis no vencedor: ${W.ausentes.map(a => esc(PRODUTOS.find(p => p.id === a.pid).nome)).join('; ')}. Total calculado sobre itens disponíveis.</p>` : ''}
+   ${W.parcial ? `<p style="font-size:11px;color:#7a4a00;margin-bottom:10px">⚠ Itens indisponíveis no vencedor: ${W.ausentes.map(a => esc(nomeProduto(a))).join('; ')}. Total calculado sobre itens disponíveis.</p>` : ''}
    <div class="a4-foot"><span>Gerado por COBECO · protótipo MVP v3.2 · PDF server-side simulado (ReportLab)</span><span>Documento de cotação — sem valor fiscal</span></div>
   </div>`;
 }
@@ -1005,11 +1028,15 @@ document.addEventListener('click', (e) => {
       const btn = el;
       btn.disabled = true;
       btn.textContent = '⏳ Calculando orçamento…';
-      setTimeout(() => {
-        calcularResultado();
+      calcularResultado().then(() => {
         go('resultados');
-        showToast('✅ Comparação concluída em ~180ms (meta p95 <500ms). Melhor oferta: ' + state.resultado.winner.nome + '.', 'ok');
-      }, 700);
+        showToast('✅ Comparação concluída. Melhor oferta: ' + (state.resultado?.winner?.nome || '—'), 'ok');
+        btn.disabled = false;
+        btn.textContent = 'Calcular orçamento →';
+      }).catch(() => {
+        btn.disabled = false;
+        btn.textContent = 'Calcular orçamento →';
+      });
       break;
     }
     case 'ver-vencedora': go('vencedora'); break;
@@ -1212,7 +1239,6 @@ document.addEventListener('change', (e) => {
   }
   else if (t.classList.contains('forn-cb')) {
     const id = +t.value;
-    if (state.fornecedores.length >= 10 && !state.fornecedores.includes(id)) { showToast('Máximo de 10 fornecedores (RF13).', 'warn'); t.checked = false; return; }
     state.fornecedores = state.fornecedores.includes(id) ? state.fornecedores.filter(x => x !== id) : [...state.fornecedores, id];
     const card = t.closest('[data-forncard]');
     if (card) card.classList.toggle('sel', state.fornecedores.includes(id));
@@ -1229,7 +1255,7 @@ function updateSugestoes() {
   box.innerHTML = '<div class=sug><div class=sug-empty>🔎 Buscando no catálogo…</div></div>';
   clearTimeout(sugTimer);
   sugTimer = setTimeout(() => {
-    const hits = PRODUTOS.filter(p => norm(p.nome).includes(q)).slice(0, 6);
+    const hits = state.produtos.filter(p => norm(p.nome).includes(q)).slice(0, 6);
     box.innerHTML = hits.length ? '<div class=sug role=listbox>' + hits.map(p =>
       '<div class=sug-item data-action-add= + p.id +  role=option><span>' + esc(p.nome) + '</span><span class=un>por unidade de venda: ' + p.un + '</span></div>').join('') + '</div>'
       : '<div class=sug><div class=sug-empty>Nenhum produto encontrado — tente outro termo.</div></div>';
@@ -1247,7 +1273,7 @@ document.addEventListener('click', (e) => {
   if (b) b.value = '';
   document.getElementById('sug-box').innerHTML = '';
   persistEph(); refreshListaUI();
-  const p = PRODUTOS.find(x => x.id === pid);
+  const p = state.produtos.find(x => x.id === pid) || { nome: 'Desconhecido' };
   showToast('➕ ' + p.nome + ' adicionado' + (ex ? ' (quantidade somada)' : '') + '.', 'ok');
 });
 
@@ -1257,6 +1283,7 @@ document.addEventListener('click', (e) => {
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     await carregarCategorias();
+    await carregarProdutos();
     render();
   } catch(e) {
     document.getElementById("main").innerHTML = '<div style="color:red">Erro: ' + e.message + '</div>';
