@@ -1,34 +1,32 @@
-// COBECO Frontend — Main Application (Vanilla JS ES6+)
-// Desktop-first, Clean Architecture inspired, no frameworks
+// COBECO Frontend — Protótipo Alta Fidelidade v3.2 (monolito)
+// Adequado ao protótipo canonico doc-prototype-0003.
+// Sem router hash: navegação por views (state.view). Autenticação tardia (só para salvar).
+// Todas as regras de negócio desenhadas pelo protótipo estão implementadas aqui.
 
-// ============================================================
-// CONFIGURAÇÃO & CONSTANTES
-// ============================================================
 const API_BASE = '/v1';
 const STORAGE_KEYS = {
-  AUTH_TOKEN: 'cobeco_access_token',
-  REFRESH_TOKEN: 'cobeco_refresh_token',
-  USER: 'cobeco_user',
-  EPHEMERAL_LIST: 'cobeco_ephemeral_list',
+  EPHEMERAL: 'cobeco_eph',
 };
 
 // ============================================================
 // UTILITÁRIOS
 // ============================================================
-const $ = (selector, root = document) => root.querySelector(selector);
-const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
-// SECURITY: Escape HTML para prevenir XSS
-const escapeHtml = (text) => {
-    if (text === null || text === undefined) return '';
-    const div = document.createElement('div');
-    div.textContent = String(text);
-    return div.innerHTML;
-};
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+}[c] || c));
 
-const formatCurrency = (value) => {
-  if (value === null || value === undefined) return 'N/D';
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+const norm = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+const BRL = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+const hoje = () => new Date().toLocaleDateString('pt-BR');
+
+const stamp = () => {
+  const d = new Date();
+  return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
 };
 
 const formatDate = (isoString) => {
@@ -38,2504 +36,1190 @@ const formatDate = (isoString) => {
   });
 };
 
-const showToast = (message, type = 'info') => {
-  const container = $('#toast-container');
-  const toast = document.createElement('div');
-  toast.className = `toast toast-${type} animate-slide-in`;
-  toast.setAttribute('role', 'alert');
-  toast.setAttribute('aria-live', 'polite');
-  toast.innerHTML = `
-    <span class="flex-1">${escapeHtml(message)}</span>
-    <button class="text-white/80 hover:text-white" aria-label="Fechar">&times;</button>
-  `;
-  toast.querySelector('button').onclick = () => toast.remove();
-  container.appendChild(toast);
-  setTimeout(() => toast.remove(), 5000);
+const showToast = (msg, type = 'info') => {
+  const box = document.createElement('div');
+  box.className = 'toast ' + (type === 'ok' ? 'ok' : type === 'err' ? 'err' : type === 'warn' ? 'warn' : '');
+  box.innerHTML = `<span>${esc(msg)}</span>`;
+  document.getElementById('toasts').appendChild(box);
+  setTimeout(() => {
+    box.style.opacity = '0';
+    box.style.transition = 'opacity .4s';
+    setTimeout(() => box.remove(), 420);
+  }, 4200);
 };
 
-const showConfirm = (message, options = {}) => {
-  return new Promise((resolve) => {
-    const container = $('#modal-container');
-    const title = options.title || 'Confirmação';
-    const confirmText = options.confirmText || 'Confirmar';
-    const cancelText = options.cancelText || 'Cancelar';
-    const confirmClass = options.confirmClass || 'btn-primary';
-    const cancelClass = options.cancelClass || 'btn-secondary';
-    const danger = options.danger || false;
-
-    container.innerHTML = `
-      <div class="modal-overlay" data-close-overlay>
-        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-          <div class="modal-header">
-            <h2 id="modal-title" class="text-lg font-semibold">${escapeHtml(title)}</h2>
-            <button class="text-gray-400 hover:text-gray-600" data-close-modal>&times;</button>
-          </div>
-          <div class="modal-body">
-            <p class="text-gray-700">${escapeHtml(message)}</p>
-          </div>
-          <div class="modal-footer">
-            <button class="btn ${cancelClass}" data-action="cancel">${escapeHtml(cancelText)}</button>
-            <button class="btn ${danger ? 'btn-danger' : confirmClass}" data-action="confirm">${escapeHtml(confirmText)}</button>
-          </div>
-        </div>
-      </div>
-    `;
-    container.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-
-    const close = (result) => {
-      container.classList.add('hidden');
-      container.innerHTML = '';
-      document.body.style.overflow = '';
-      resolve(result);
-    };
-
-    container.querySelector('[data-close-overlay]').onclick = (e) => {
-      if (e.target === e.currentTarget) close(false);
-    };
-    container.querySelectorAll('[data-close-modal]').forEach(btn => btn.onclick = () => close(false));
-    container.querySelector('[data-action="cancel"]').onclick = () => close(false);
-    container.querySelector('[data-action="confirm"]').onclick = () => close(true);
-    document.addEventListener('keydown', function esc(e) {
-      if (e.key === 'Escape') { close(false); document.removeEventListener('keydown', esc); }
-    });
-  });
+const openModal = (html) => {
+  document.getElementById('modal-root').innerHTML =
+    `<div class="overlay" data-action="overlay-click"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
 };
 
-const showModal = (content, options = {}) => {
-  const container = $('#modal-container');
-  container.innerHTML = `
-    <div class="modal-overlay" data-close-overlay>
-      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        ${options.title ? `<div class="modal-header"><h2 id="modal-title" class="text-lg font-semibold">${escapeHtml(options.title)}</h2><button class="text-gray-400 hover:text-gray-600" data-close-modal>&times;</button></div>` : ''}
-        <div class="modal-body">${content}</div>
-        ${options.footer ? `<div class="modal-footer">${options.footer}</div>` : ''}
-      </div>
-    </div>
-  `;
-  container.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-
-  const close = () => {
-    container.classList.add('hidden');
-    container.innerHTML = '';
-    document.body.style.overflow = '';
-  };
-
-  container.querySelector('[data-close-overlay]').onclick = (e) => {
-    if (e.target === e.currentTarget) close();
-  };
-  container.querySelectorAll('[data-close-modal]').forEach(btn => btn.onclick = close);
-  document.addEventListener('keydown', function esc(e) {
-    if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
-  });
-
-  return { close };
+const closeModal = () => {
+  document.getElementById('modal-root').innerHTML = '';
 };
 
 // ============================================================
-// API CLIENT
+// SEED (DOC-03) — dados determinísticos do protótipo
+// ============================================================
+const CATEGORIAS = [
+  {id:1,nome:"Mercado",ic:"🛒"},{id:2,nome:"Vestuário",ic:"👕"},{id:3,nome:"Automotivos",ic:"🚗"},
+  {id:4,nome:"Informática",ic:"💻"},{id:5,nome:"Decoração",ic:"🖼️"},{id:6,nome:"Móveis",ic:"🛋️"},
+  {id:7,nome:"Materiais de Construção e Ferragens",ic:"🧱"},{id:8,nome:"Ferramentas",ic:"🔧"},
+  {id:9,nome:"Livros",ic:"📚"},{id:10,nome:"Jardinagem",ic:"🪴"},{id:11,nome:"Eletrodomésticos",ic:"🔌"}];
+
+const FORNECEDORES = [
+  {id:1,nome:"Carrefour",cnpj:"99.000.111/0001-22",cats:[1,2,3,5,11,4]},
+  {id:2,nome:"Extra",cnpj:"00.111.222/0001-33",cats:[1,2,11]},
+  {id:3,nome:"Pão de Açúcar",cnpj:"66.777.888/0001-99",cats:[1]},
+  {id:4,nome:"Magazine Luiza",cnpj:"77.888.999/0001-00",cats:[11,4,6]},
+  {id:5,nome:"Casas Bahia",cnpj:"88.999.000/0001-11",cats:[11,4,6]},
+  {id:6,nome:"Leroy Merlin",cnpj:"11.222.333/0001-44",cats:[7,8,10,5]},
+  {id:7,nome:"Etna",cnpj:"22.333.444/0001-55",cats:[5,6]},
+  {id:8,nome:"C&A",cnpj:"33.444.555/0001-66",cats:[2]},
+  {id:9,nome:"Renner",cnpj:"44.555.666/0001-77",cats:[2]},
+  {id:10,nome:"Hering",cnpj:"55.666.777/0001-88",cats:[2]}];
+
+const PRODUTOS = [
+  {id:1,nome:"Arroz Tipo 1 5kg",un:"un",base:25.9},{id:2,nome:"Feijão Preto 1kg",un:"un",base:8.2},
+  {id:3,nome:"Óleo de Soja 900ml",un:"un",base:6.9},{id:4,nome:"Café Torrado e Moído 500g",un:"un",base:17.5},
+  {id:5,nome:"Açúcar Refinado 1kg",un:"un",base:4.4},{id:6,nome:"Leite Integral UHT 1L",un:"un",base:5.1},
+  {id:7,nome:"Macarrão Espaguete 500g",un:"un",base:4.8},{id:8,nome:"Molho de Tomate 340g",un:"un",base:3.9},
+  {id:9,nome:"Farinha de Trigo 1kg",un:"un",base:5.5},{id:10,nome:"Ovos Brancos (dúzia)",un:"dz",base:9.9},
+  {id:11,nome:"Detergente Neutro 500ml",un:"un",base:2.9},{id:12,nome:"Papel Toalha 2 rolos",un:"un",base:6.5},
+  {id:13,nome:"Liquidificador 2 Velocidades",un:"un",base:129.9},{id:14,nome:"Notebook i5 8GB",un:"un",base:2899.0},
+  {id:15,nome:"Martelo de Unha 25mm",un:"un",base:32.9},{id:16,nome:"Parafuso Philips 5mm (cx)",un:"cx",base:12.5},
+  {id:17,nome:"Camiseta Algodão M",un:"un",base:39.9},{id:18,nome:"Calça Jeans 40",un:"un",base:119.9},
+  {id:19,nome:"Vaso de Barro 20cm",un:"un",base:45.9},{id:20,nome:"Cadeira de Escritório",un:"un",base:449.9}];
+
+const CATALOGO = {
+  1:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,17,18],
+  2:[1,2,3,5,6,7,8,9,10,11,12,13,17],
+  3:[1,2,3,4,5,6,7,8,9,10,11,12],
+  4:[13,14,20],5:[13,14,20],
+  6:[15,16,19,20],7:[19,20],8:[17,18],9:[17,18],10:[17]};
+const FATOR = {1:.99,2:.93,3:1.14,4:.96,5:1.05,6:.97,7:1.10,8:.95,9:1.00,10:1.04};
+const PERGUNTAS = {
+  pet:"Qual era o nome do seu primeiro animal de estimação?",
+  cidade:"Qual é o nome da sua cidade natal?",
+  escola:"Qual era o nome da sua escola de infância?",
+};
+
+const temOferta = (f, p) => CATALOGO[f].includes(p);
+const preco = (f, p) => {
+  const pr = PRODUTOS.find(x => x.id === p);
+  const jit = Math.sin(f * 997 + p * 131) * 0.03;
+  return Math.round(pr.base * FATOR[f] * (1 + jit) * 100) / 100;
+};
+
+// ============================================================
+// ESTADO (espelha state do protótipo)
+// ============================================================
+const state = {
+  view: 'home',
+  user: null,
+  categorias: [],
+  lista: { nome: '', itens: [] },
+  listaEditId: null,
+  fornecedores: [],
+  filtroDisp: 0,
+  resultado: null,
+  busca: '',
+  recStep: 1,
+  recUser: null,
+  perfilEdit: false,
+  flags: { pdf: false, saved: false, done: false },
+  attempts: 0,
+  lockedUntil: 0,
+};
+
+const USERS = [{
+  nome_usuario: 'mariana',
+  nome: 'Mariana Duarte',
+  email: 'mariana@temperodamari.com.br',
+  senha: 'Comida123!',
+  pergunta: 'pet',
+  resposta: 'Thor',
+  criado_em: '15/08/2026',
+}];
+
+const LISTAS = {
+  mariana: [{ id: 101, nome: 'Compras da semana passada', criado_em: '11/09/2026', categorias: [1],
+    itens: [{ pid: 1, qtd: 2 }, { pid: 6, qtd: 4 }, { pid: 8, qtd: 3 }] }],
+};
+let listSeq = 200;
+
+// sessão efêmera: sessionStorage (RF07/UC01)
+function persistEph() {
+  try {
+    sessionStorage.setItem(STORAGE_KEYS.EPHEMERAL, JSON.stringify({ lista: state.lista, categorias: state.categorias }));
+  } catch (e) {}
+}
+function loadEph() {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEYS.EPHEMERAL);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d.lista && d.lista.itens && d.lista.itens.length) {
+      state.lista = d.lista;
+      state.categorias = d.categorias || [];
+      setTimeout(() => showToast('Lista efêmera recuperada da sessão: “' + state.lista.nome + '” (' + state.lista.itens.length + ' itens).', 'ok'), 600);
+    }
+  } catch (e) {}
+}
+
+// ============================================================
+// REGRAS DE COMPARAÇÃO (RF15/RF16) — espelho do backend
+// ============================================================
+function calcularResultado() {
+  const itens = state.lista.itens;
+  const rows = state.fornecedores.map((fid) => {
+    const f = FORNECEDORES.find(x => x.id === fid);
+    const disp = itens.filter(i => temOferta(fid, i.pid));
+    const aus = itens.filter(i => !temOferta(fid, i.pid));
+    const cobertura = disp.length / itens.length;
+    const total = disp.reduce((s, i) => s + preco(fid, i.pid) * i.qtd, 0);
+    return { fid, nome: f.nome, cnpj: f.cnpj, cobertura, nDisp: disp.length, ausentes: aus, total, parcial: aus.length > 0 };
+  });
+  const winner = rows.slice().sort((a, b) => b.cobertura - a.cobertura || a.total - b.total)[0]; // monografia: maior cobertura; empate → menor total
+  const display = rows.slice().sort((a, b) => a.total - b.total); // RF15: ordem por preço ASC
+  state.resultado = {
+    rows: display,
+    winner,
+    minTotal: Math.min(...rows.map(r => r.total)),
+    maxTotal: Math.max(...rows.map(r => r.total)),
+  };
+}
+function coberturaDe(fid) {
+  const it = state.lista.itens;
+  if (!it.length) return 0;
+  return it.filter(i => temOferta(fid, i.pid)).length / it.length;
+}
+function fornecedoresElegiveis() {
+  return FORNECEDORES.filter(f => f.cats.some(c => state.categorias.includes(c)));
+}
+
+// ============================================================
+// API CLIENT (adaptado: token em memória, auth tardia)
 // ============================================================
 class ApiClient {
-  static getToken() {
-    return localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
-  }
-
-  static setTokens(access, refresh) {
-    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, access);
-    // refresh token vem no cookie httpOnly
-  }
-
-  static clearTokens() {
-    localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-    localStorage.removeItem(STORAGE_KEYS.USER);
-  }
-
   static async request(endpoint, options = {}) {
-    const token = this.getToken();
-    const headers = {
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
-    };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const token = state.user ? 'mem-token' : null;
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    if (token) headers['Authorization'] = 'Bearer ' + token;
 
-    const response = await fetch(`${API_BASE}${endpoint}`, {
+    const response = await fetch(API_BASE + endpoint, {
       ...options,
       headers,
-      credentials: 'include', // Importante para cookies httpOnly
+      credentials: 'include',
     });
 
-    if (response.status === 401 && !endpoint.startsWith('/auth/')) {
-      // Tenta refresh token (exceto endpoints de auth — evita loop no login)
-      const refreshed = await this.refreshToken();
-      if (refreshed) {
-        // Re-tenta requisição original
-        return this.request(endpoint, options);
-      }
-      // Refresh falhou - logout
-      this.clearTokens();
-      window.location.hash = '#/login';
+    if (response.status === 401) {
+      state.user = null;
+      showToast('Sessão expirada. Entre novamente.', 'warn');
+      render();
       throw new Error('Sessão expirada');
     }
 
     const data = await response.json().catch(() => ({}));
-
     if (!response.ok) {
-      throw new Error(data.detail || `Erro ${response.status}`);
+      throw new Error(data.detail || 'Erro ' + response.status);
     }
-
     return data;
   }
 
-  static async refreshToken() {
-    try {
-      const response = await fetch(`${API_BASE}/auth/refresh`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-      if (response.ok) {
-        const data = await response.json();
-        this.setTokens(data.access_token, data.refresh_token);
-        return true;
-      }
-    } catch {}
-    return false;
-  }
-
-  // Auth
   static login(credentials) {
-    return this.request('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-    });
+    return this.request('/auth/login', { method: 'POST', body: JSON.stringify(credentials) });
   }
-
   static cadastrar(data) {
-    return this.request('/auth/cadastrar', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.request('/auth/cadastrar', { method: 'POST', body: JSON.stringify(data) });
   }
-
   static logout() {
     return this.request('/auth/logout', { method: 'POST' });
   }
-
   static getPerfil() {
     return this.request('/auth/perfil');
   }
-
   static atualizarPerfil(data) {
-    return this.request('/auth/perfil', {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return this.request('/auth/perfil', { method: 'PUT', body: JSON.stringify(data) });
   }
-
-  // Listas
   static salvarLista(data) {
-    return this.request('/listas', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.request('/listas', { method: 'POST', body: JSON.stringify(data) });
   }
-
   static listarListas(params = {}) {
     const query = new URLSearchParams(params).toString();
-    return this.request(`/listas?${query}`);
+    return this.request('/listas?' + query);
   }
-
   static buscarLista(id) {
-    return this.request(`/listas/${id}`);
+    return this.request('/listas/' + id);
   }
-
   static atualizarLista(id, data) {
-    return this.request(`/listas/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return this.request('/listas/' + id, { method: 'PUT', body: JSON.stringify(data) });
   }
-
   static excluirLista(id, confirmacaoNome) {
-    return this.request(`/listas/${id}?confirmacao_nome=${encodeURIComponent(confirmacaoNome)}`, {
-      method: 'DELETE',
-    });
+    return this.request('/listas/' + id + '?confirmacao_nome=' + encodeURIComponent(confirmacaoNome), { method: 'DELETE' });
   }
-
   static promoverEfemera(data) {
-    return this.request('/listas/promover-efemera', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.request('/listas/promover-efemera', { method: 'POST', body: JSON.stringify(data) });
   }
-
-  // Catálogo
   static listarCategorias() {
     return this.request('/catalogo/categorias');
   }
-
   static listarFornecedores(categorias = []) {
-    const query = categorias.length ? `?categorias=${categorias.join(',')}` : '';
-    return this.request(`/catalogo/fornecedores${query}`);
+    const query = categorias.length ? '?categorias=' + categorias.join(',') : '';
+    return this.request('/catalogo/fornecedores' + query);
   }
-
   static autocompleteProdutos(q, limit = 10) {
-    return this.request(`/catalogo/produtos/autocomplete?q=${encodeURIComponent(q)}&limit=${limit}`);
+    return this.request('/catalogo/produtos/autocomplete?q=' + encodeURIComponent(q) + '&limit=' + limit);
   }
-
   static calcularDisponibilidade(fornecedorId, produtoIds) {
-    return this.request(`/catalogo/fornecedores/${fornecedorId}/disponibilidade?produtos=${produtoIds.join(',')}`);
+    return this.request('/catalogo/fornecedores/' + fornecedorId + '/disponibilidade?produtos=' + produtoIds.join(','));
   }
-
-  // Comparação
   static calcularOrcamento(data) {
-    return this.request('/comparacao/calcular', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.request('/comparacao/calcular', { method: 'POST', body: JSON.stringify(data) });
   }
-
   static calcularOrcamentoEfemera(data) {
-    return this.request('/comparacao/calcular-efemera', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.request('/comparacao/calcular-efemera', { method: 'POST', body: JSON.stringify(data) });
   }
-
-  // Exportação
   static exportarPDF(listaId) {
-    return fetch(`${API_BASE}/export/pdf?lista_id=${listaId}`, {
+    return fetch(API_BASE + '/export/pdf?lista_id=' + listaId, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.getToken()}`,
-      },
+      headers: { 'Authorization': 'Bearer mem-token' },
       credentials: 'include',
-    }).then(r => {
+    }).then((r) => {
       if (!r.ok) throw new Error('Erro ao gerar PDF');
       return r.blob();
     });
   }
-
-  static exportarPDFComparacao(data) {
-    return fetch(`${API_BASE}/export/pdf/comparacao`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.getToken()}`,
-      },
-      credentials: 'include',
-      body: JSON.stringify(data),
-    }).then(r => {
-      if (!r.ok) throw new Error('Erro ao gerar PDF da comparação');
-      return r.blob();
-    });
-  }
-
   static exportarPDFVencedora(data) {
-    return fetch(`${API_BASE}/export/pdf/vencedora`, {
+    return fetch(API_BASE + '/export/pdf/vencedora', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.getToken()}`,
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer mem-token' },
       credentials: 'include',
       body: JSON.stringify(data),
-    }).then(r => {
+    }).then((r) => {
       if (!r.ok) throw new Error('Erro ao gerar PDF da lista vencedora');
       return r.blob();
     });
   }
 }
-
 // ============================================================
-// STATE MANAGEMENT (Simples, reativo)
+// PERSONA / JORNADA
 // ============================================================
-const State = {
-  user: null,
-  ephemeralList: null,
-  ultimaComparacao: null,
-  loginAttempts: 0,
-  flags: {},
-  currentView: 'home',
-
-  init() {
-    const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
-    const user = localStorage.getItem(STORAGE_KEYS.USER);
-    const ephemeral = sessionStorage.getItem(STORAGE_KEYS.EPHEMERAL_LIST);
-
-    if (token && user) {
-      this.user = JSON.parse(user);
-    }
-    if (ephemeral) {
-      this.ephemeralList = JSON.parse(ephemeral);
-    }
-    this.updateAuthUI();
-  },
-
-  setUser(user, token) {
-    this.user = user;
-    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
-    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
-    this.updateAuthUI();
-  },
-
-  setComparacao(resultado) {
-    this.ultimaComparacao = resultado;
-  },
-
-  clearUser() {
-    this.user = null;
-    localStorage.removeItem(STORAGE_KEYS.USER);
-    localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-    this.updateAuthUI();
-  },
-
-  setEphemeralList(list) {
-    this.ephemeralList = list;
-    sessionStorage.setItem(STORAGE_KEYS.EPHEMERAL_LIST, JSON.stringify(list));
-  },
-
-  clearEphemeralList() {
-    this.ephemeralList = null;
-    sessionStorage.removeItem(STORAGE_KEYS.EPHEMERAL_LIST);
-  },
-
-  updateAuthUI() {
-    const nav = $('#nav-auth');
-    if (this.user) {
-      nav.innerHTML = `
-        <span class="text-sm text-gray-600">${this.user.nome}</span>
-        <button id="btn-logout" class="btn btn-ghost text-sm">Sair</button>
-      `;
-      $('#btn-logout')?.addEventListener('click', () => AuthViews.logout());
-    } else {
-      nav.innerHTML = `
-        <a href="#/login" class="btn btn-ghost text-sm">Entrar</a>
-        <a href="#/cadastrar" class="btn btn-primary text-sm">Cadastrar</a>
-      `;
-    }
-  },
-
-  navigate(view, params = {}) {
-    this.currentView = view;
-    router.navigate(view, params);
-  },
-};
-
-// ============================================================
-// VIEWS — Cada tela da aplicação
-// ============================================================
-const Views = {
-  // Home / Landing
-  home() {
-    return `
-      <section class="text-center py-16">
-        <h2 class="text-4xl font-bold text-gray-900 mb-4">Compare preços e economize</h2>
-        <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Crie sua lista de compras, compare preços entre fornecedores e encontre o melhor orçamento.
-          Dados mockados para fins acadêmicos.
-        </p>
-        <div class="flex gap-4 justify-center">
-          <a href="#/criar-lista" class="btn btn-primary text-lg px-8" data-link>Criar Lista</a>
-          <a href="#/comparar" class="btn btn-secondary text-lg px-8" data-link>Comparar Preços</a>
-        </div>
-      </section>
-
-      <section class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="card">
-          <div class="card-body text-center">
-            <div class="w-12 h-12 mx-auto mb-4 bg-primary-100 rounded-xl flex items-center justify-center">
-              <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-            </div>
-            <h3 class="text-lg font-semibold mb-2">Crie sua Lista</h3>
-            <p class="text-gray-600">Adicione produtos com autocomplete e defina quantidades.</p>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-body text-center">
-            <div class="w-12 h-12 mx-auto mb-4 bg-primary-100 rounded-xl flex items-center justify-center">
-              <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-            </div>
-            <h3 class="text-lg font-semibold mb-2">Compare Fornecedores</h3>
-            <p class="text-gray-600">Filtre por categorias, selecione fornecedores e veja a tabela comparativa.</p>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-body text-center">
-            <div class="w-12 h-12 mx-auto mb-4 bg-primary-100 rounded-xl flex items-center justify-center">
-              <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-            </div>
-            <h3 class="text-lg font-semibold mb-2">Exporte e Imprima</h3>
-            <p class="text-gray-600">Gere PDF profissional ou imprima direto do navegador.</p>
-          </div>
-        </div>
-      </section>
-    `;
-  },
-
-  // Login
-  login() {
-    return `
-      <div class="max-w-md mx-auto">
-        <div class="card">
-          <div class="card-header">
-            <h2 class="text-xl font-semibold">Entrar na sua conta</h2>
-          </div>
-          <div class="card-body">
-            <form id="form-login" class="space-y-4">
-              <div class="form-group">
-                <label for="login-usuario" class="label">Nome de usuário</label>
-                <input type="text" id="login-usuario" name="nome_usuario" class="input" required autocomplete="username">
-              </div>
-              <div class="form-group">
-                <label for="login-senha" class="label">Senha</label>
-                <input type="password" id="login-senha" name="senha" class="input" required autocomplete="current-password">
-              </div>
-              <button type="submit" class="btn btn-primary w-full">Entrar</button>
-              <div id="login-attempts" class="text-center text-xs text-red-600 font-medium mt-2 hidden">
-                Tentativas: <span id="login-attempts-count">0</span>/6
-              </div>
-            </form>
-            <p class="text-center text-sm text-gray-600 mt-6">
-              Não tem conta? <a href="#/cadastrar" class="text-primary-600 hover:underline" data-link>Cadastre-se</a>
-            </p>
-            <p class="text-center text-sm text-gray-600 mt-2">
-              <a href="#/recuperar-senha" class="text-primary-600 hover:underline" data-link>Esqueci minha senha</a>
-            </p>
-          </div>
-        </div>
-      </div>
-    `;
-  },
-
-  // Cadastro
-  cadastrar() {
-    return `
-      <div class="max-w-md mx-auto">
-        <div class="card">
-          <div class="card-header">
-            <h2 class="text-xl font-semibold">Criar conta</h2>
-          </div>
-          <div class="card-body">
-            <form id="form-cadastro" class="space-y-4">
-              <div class="form-group">
-                <label for="cad-nome-usuario" class="label">Nome de usuário <span class="text-red-500">*</span></label>
-                <input type="text" id="cad-nome-usuario" name="nome_usuario" class="input" required
-                  minlength="3" maxlength="30" pattern="[a-zA-Z0-9]+" autocomplete="username">
-                <p class="text-xs text-gray-500 mt-1">3-30 caracteres, apenas letras e números</p>
-              </div>
-              <div class="form-group">
-                <label for="cad-email" class="label">Email <span class="text-red-500">*</span></label>
-                <input type="email" id="cad-email" name="email" class="input" required autocomplete="email">
-              </div>
-              <div class="form-group">
-                <label for="cad-nome" class="label">Nome completo <span class="text-red-500">*</span></label>
-                <input type="text" id="cad-nome" name="nome" class="input" required minlength="2" maxlength="100" autocomplete="name">
-              </div>
-              <div class="form-group">
-                <label for="cad-senha" class="label">Senha <span class="text-red-500">*</span></label>
-                <input type="password" id="cad-senha" name="senha" class="input" required minlength="8" autocomplete="new-password">
-                <p class="text-xs text-gray-500 mt-1">Mín. 8 chars: 1 maiúscula, 1 minúscula, 1 número, 1 especial</p>
-              </div>
-              <div class="form-group">
-                <label for="cad-confirmar-senha" class="label">Confirmar senha <span class="text-red-500">*</span></label>
-                <input type="password" id="cad-confirmar-senha" name="confirmar_senha" class="input" required autocomplete="new-password">
-              </div>
-              <div class="form-group">
-                <label for="cad-pergunta" class="label">Pergunta de segurança <span class="text-red-500">*</span></label>
-                <input type="text" id="cad-pergunta" name="pergunta_seguranca" class="input" required minlength="5" placeholder="Ex: Nome do seu primeiro animal de estimação?">
-              </div>
-              <div class="form-group">
-                <label for="cad-resposta" class="label">Resposta <span class="text-red-500">*</span></label>
-                <input type="text" id="cad-resposta" name="resposta_seguranca" class="input" required minlength="3">
-              </div>
-              <button type="submit" class="btn btn-primary w-full">Criar conta</button>
-            </form>
-            <p class="text-center text-sm text-gray-600 mt-6">
-              Já tem conta? <a href="#/login" class="text-primary-600 hover:underline" data-link>Entre</a>
-            </p>
-          </div>
-        </div>
-      </div>
-    `;
-  },
-
-  // Criar Lista (em memória)
-  criarLista() {
-    return `
-      <div class="max-w-4xl mx-auto">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold">Nova Lista de Compras</h2>
-          <span class="badge badge-info" id="badge-itens">0 itens</span>
-        </div>
-
-        <div class="card mb-6">
-          <div class="card-body">
-            <div class="form-group">
-              <label for="lista-nome" class="label">Nome da lista <span class="text-red-500">*</span></label>
-              <input type="text" id="lista-nome" class="input" placeholder="Ex: Compras da semana" maxlength="100">
-            </div>
-          </div>
-        </div>
-
-        <div class="card mb-6">
-          <div class="card-header flex items-center justify-between">
-            <h3 class="font-semibold">Adicionar Itens</h3>
-          </div>
-          <div class="card-body">
-            <div class="form-row mb-4">
-              <div class="form-group flex-1">
-                <label for="item-produto" class="label">Produto <span class="text-red-500">*</span></label>
-                <div class="relative">
-                  <input type="text" id="item-produto" class="input" placeholder="Digite para buscar..." autocomplete="off">
-                  <div id="autocomplete-results" class="absolute z-10 w-full mt-1 hidden bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"></div>
-                </div>
-                <input type="hidden" id="item-produto-id">
-              </div>
-              <div class="form-group w-32">
-                <label for="item-quantidade" class="label">Qtd <span class="text-red-500">*</span></label>
-                <input type="number" id="item-quantidade" class="input" value="1" min="1" max="9999">
-              </div>
-            </div>
-            <button type="button" id="btn-add-item" class="btn btn-primary" disabled>Adicionar à Lista</button>
-          </div>
-        </div>
-
-        <div class="card" id="card-itens-lista" style="display: none;">
-          <div class="card-header">
-            <h3 class="font-semibold">Itens da Lista (<span id="count-itens">0</span>)</h3>
-          </div>
-          <div class="card-body">
-            <div class="table-container">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th class="w-1/2">Produto</th>
-                    <th class="w-1/6">Un.</th>
-                    <th class="w-1/6">Qtd</th>
-                    <th class="w-1/6"></th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-itens"></tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card-footer flex justify-end gap-3">
-            <button type="button" id="btn-limpar-lista" class="btn btn-secondary">Limpar</button>
-            <button type="button" id="btn-salvar-lista" class="btn btn-primary">Salvar Lista</button>
-          </div>
-        </div>
-      </div>
-    `;
-  },
-
-  // Minhas Listas
-  async minhasListas() {
-    if (!State.user) {
-      State.navigate('login');
-      return '';
-    }
-
-    try {
-      const data = await ApiClient.listarListas({ pagina: 1, por_pagina: 20 });
-      const listas = data.items || [];
-
-      return `
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold">Minhas Listas</h2>
-          <a href="#/criar-lista" class="btn btn-primary" data-link>Nova Lista</a>
-        </div>
-
-        <div class="card">
-          <div class="card-body p-0">
-            ${listas.length === 0 ? `
-              <div class="p-12 text-center text-gray-500">
-                <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                <p class="text-lg">Nenhuma lista salva</p>
-                <p class="text-sm mt-1">Crie sua primeira lista de compras</p>
-                <a href="#/criar-lista" class="btn btn-primary mt-4 inline-block" data-link>Criar Lista</a>
-              </div>
-            ` : `
-              <div class="table-container">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Nome</th>
-                      <th>Itens</th>
-                      <th>Criada em</th>
-                      <th class="w-32"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${listas.map(l => `
-                      <tr>
-                        <td class="font-medium">${l.nome}</td>
-                        <td>${l.total_itens}</td>
-                        <td>${formatDate(l.criado_em)}</td>
-                        <td>
-                          <div class="flex items-center gap-2">
-                            <a href="#/lista/${l.id}" class="btn btn-ghost text-sm p-1.5" data-link title="Ver">👁</a>
-                            <button class="btn btn-danger text-sm p-1.5 btn-excluir" data-id="${l.id}" data-nome="${l.nome}" title="Excluir">🗑</button>
-                          </div>
-                        </td>
-                      </tr>
-                    `).join('')}
-                  </tbody>
-                </table>
-              </div>
-              ${data.total_paginas > 1 ? `
-                <div class="card-footer flex items-center justify-between">
-                  <span class="text-sm text-gray-500">Página ${data.pagina} de ${data.total_paginas} (${data.total} total)</span>
-                  <div class="flex gap-2">
-                    ${data.pagina > 1 ? `<button class="btn btn-secondary btn-pagina" data-pagina="${data.pagina - 1}">Anterior</button>` : ''}
-                    ${data.pagina < data.total_paginas ? `<button class="btn btn-primary btn-pagina" data-pagina="${data.pagina + 1}">Próxima</button>` : ''}
-                  </div>
-                </div>
-              ` : ''}
-            `}
-          </div>
-        </div>
-      `;
-    } catch (e) {
-      showToast('Erro ao carregar listas: ' + e.message, 'error');
-      return '<div class="card"><div class="card-body text-center text-red-600">Erro ao carregar listas</div></div>';
-    }
-  },
-
-  // Ver Lista
-  async verLista(params) {
-    if (!State.user) { State.navigate('login'); return ''; }
-
-    try {
-      const lista = await ApiClient.buscarLista(params.id);
-      return `
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <a href="#/minhas-listas" class="text-primary-600 hover:underline text-sm" data-link>← Voltar</a>
-            <h2 class="text-2xl font-bold mt-1">${lista.nome}</h2>
-          </div>
-          <div class="flex gap-2">
-            <button id="btn-editar-lista" class="btn btn-secondary" data-id="${lista.id}">Editar</button>
-            <button id="btn-excluir-lista" class="btn btn-danger" data-id="${lista.id}" data-nome="${lista.nome}">Excluir</button>
-            <button id="btn-exportar-pdf" class="btn btn-primary">Exportar PDF</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-body">
-            <div class="table-container">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Produto</th>
-                    <th>Un.</th>
-                    <th>Qtd</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${lista.itens.map(item => `
-                    <tr>
-                      <td>${item.produto_nome}</td>
-                      <td>${item.produto_nome.includes('Desconhecido') ? 'un' : 'un'}</td>
-                      <td>${item.quantidade}</td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      `;
-    } catch (e) {
-      showToast('Erro ao carregar lista: ' + e.message, 'error');
-      State.navigate('minhas-listas');
-      return '';
-    }
-  },
-
-  // Comparar (Pré-filtro + Seleção + Resultado)
-  async comparar() {
-    try {
-      const [categorias, fornecedores, listas] = await Promise.all([
-        ApiClient.listarCategorias(),
-        ApiClient.listarFornecedores(),
-        State.user ? ApiClient.listarListas({ pagina: 1, por_pagina: 50 }) : Promise.resolve({ items: [] }),
-      ]);
-
-      const listasUsuario = listas.items || [];
-
-      return `
-        <div class="max-w-6xl mx-auto">
-          <!-- Passo 0: Selecionar Lista -->
-          <section class="card mb-6" id="step-lista">
-            <div class="card-header">
-              <h2 class="text-xl font-semibold flex items-center gap-2">
-                <span class="badge badge-primary">1</span> Selecionar Lista para Comparar
-              </h2>
-            </div>
-            <div class="card-body">
-              <p class="text-gray-600 mb-4">Escolha uma lista salva ou use a lista efêmera atual.</p>
-
-              ${State.ephemeralList && State.ephemeralList.itens && State.ephemeralList.itens.length > 0 ? `
-                <label class="flex items-center gap-3 p-3 border border-primary-200 rounded-lg bg-primary-50 cursor-pointer transition mb-3">
-                  <input type="radio" name="lista-selecionada" value="efemera" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
-                  <div class="flex-1">
-                    <div class="font-medium text-primary-700">📋 Lista Efêmera Atual</div>
-                    <div class="text-sm text-gray-600">${State.ephemeralList.itens.length} item(s) • ${State.ephemeralList.nome || 'Sem nome'}</div>
-                  </div>
-                </label>
-              ` : ''}
-
-              ${listasUsuario.length > 0 ? `
-                <div class="border-t pt-4 mt-4">
-                  <h4 class="font-medium text-gray-700 mb-3">Minhas Listas Salvas</h4>
-                  <div class="space-y-2 max-h-60 overflow-y-auto">
-                    ${listasUsuario.map(l => `
-                      <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
-                        <input type="radio" name="lista-selecionada" value="${l.id}" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
-                        <div class="flex-1">
-                          <div class="font-medium">${l.nome}</div>
-                          <div class="text-xs text-gray-500">${l.total_itens} item(s) • ${formatDate(l.criado_em)}</div>
-                        </div>
-                      </label>
-                    `).join('')}
-                  </div>
-                </div>
-              ` : ''}
-
-              ${!State.ephemeralList && listasUsuario.length === 0 ? `
-                <div class="text-center py-8 text-gray-500">
-                  <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                  <p class="text-lg">Nenhuma lista disponível</p>
-                  <p class="text-sm mt-1">Crie uma lista primeiro</p>
-                  <a href="#/criar-lista" class="btn btn-primary mt-4 inline-block" data-link>Criar Lista</a>
-                </div>
-              ` : ''}
-
-              <div class="mt-4 flex justify-between">
-                <button id="btn-proximo-categorias" class="btn btn-primary" disabled>Próximo: Categorias →</button>
-              </div>
-            </div>
-          </section>
-
-          <!-- Passo 1: Selecionar Categorias -->
-          <section class="card mb-6 hidden" id="step-categorias">
-            <div class="card-header">
-              <h2 class="text-xl font-semibold flex items-center gap-2">
-                <span class="badge badge-primary">2</span> Selecionar Categorias
-              </h2>
-            </div>
-            <div class="card-body">
-              <p class="text-gray-600 mb-4">Escolha uma ou mais categorias para filtrar os fornecedores disponíveis.</p>
-              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" id="categorias-checkboxes">
-                ${categorias.map(c => `
-                  <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
-                    <input type="checkbox" name="categoria" value="${c.id}" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
-                    <span class="text-sm">${c.nome}</span>
-                  </label>
-                `).join('')}
-              </div>
-              <div class="mt-4 flex justify-between">
-                <button id="btn-voltar-lista" class="btn btn-secondary">← Voltar</button>
-                <button id="btn-proximo-fornecedores" class="btn btn-primary" disabled>Próximo: Fornecedores →</button>
-              </div>
-            </div>
-          </section>
-
-          <!-- Passo 2: Selecionar Fornecedores -->
-          <section class="card mb-6 hidden" id="step-fornecedores">
-            <div class="card-header">
-              <h2 class="text-xl font-semibold flex items-center gap-2">
-                <span class="badge badge-primary">3</span> Selecionar Fornecedores
-              </h2>
-            </div>
-            <div class="card-body">
-              <p class="text-gray-600 mb-4">Selecione pelo menos 2 fornecedores para comparar.</p>
-              <div class="mb-4">
-                <label class="label">Disponibilidade mínima</label>
-                <div class="flex items-center gap-4">
-                  <input type="range" id="slider-disponibilidade" min="0" max="100" value="0" class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none accent-primary-600">
-                  <span id="valor-disponibilidade" class="text-sm font-mono text-gray-600 w-16">0%</span>
-                </div>
-              </div>
-              <div id="fornecedores-checkboxes" class="space-y-2 max-h-80 overflow-y-auto">
-                ${fornecedores.map(f => `
-                  <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
-                    <input type="checkbox" name="fornecedor" value="${f.id}" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500" data-categorias='${JSON.stringify(f.categorias.map(c => c.id))}'>
-                    <div class="flex-1">
-                      <div class="font-medium">${f.nome}</div>
-                      <div class="text-xs text-gray-500">${f.categorias.map(c => c.nome).join(', ')}</div>
-                    </div>
-                    <span class="badge badge-info" id="disp-${f.id}">--%</span>
-                  </label>
-                `).join('')}
-              </div>
-              <div class="mt-4 flex justify-between">
-                <button id="btn-voltar-categorias" class="btn btn-secondary">← Voltar</button>
-                <button id="btn-calcular-orcamento" class="btn btn-primary" disabled>Calcular Orçamento →</button>
-              </div>
-            </div>
-          </section>
-
-          <!-- Passo 3: Resultado -->
-          <section class="card hidden" id="step-resultado">
-            <div class="card-header flex items-center justify-between">
-              <h2 class="text-xl font-semibold flex items-center gap-2">
-                <span class="badge badge-success">Resultado</span> Comparação de Preços
-              </h2>
-              <button id="btn-nova-comparacao" class="btn btn-ghost">Nova Comparação</button>
-            </div>
-            <div class="card-body" id="resultado-comparacao">
-              <!-- Preenchido via JS -->
-            </div>
-          </section>
-        </div>
-      `;
-    } catch (e) {
-      showToast('Erro ao carregar comparação: ' + e.message, 'error');
-      return '<div class="card"><div class="card-body text-center text-red-600">Erro ao carregar</div></div>';
-    }
-  },
-
-  // Perfil
-  async perfil() {
-    if (!State.user) { State.navigate('login'); return ''; }
-
-    return `
-      <div class="max-w-2xl mx-auto">
-        <h2 class="text-2xl font-bold mb-6">Meu Perfil</h2>
-
-        <div class="card mb-6">
-          <div class="card-header">
-            <h3 class="font-semibold">Dados Pessoais</h3>
-          </div>
-          <div class="card-body">
-            <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <dt class="text-sm text-gray-500">Nome de usuário</dt>
-                <dd class="font-medium">${State.user.nome_usuario}</dd>
-              </div>
-              <div>
-                <dt class="text-sm text-gray-500">Email</dt>
-                <dd class="font-medium">${State.user.email}</dd>
-              </div>
-              <div>
-                <dt class="text-sm text-gray-500">Nome</dt>
-                <dd class="font-medium">${State.user.nome}</dd>
-              </div>
-              <div>
-                <dt class="text-sm text-gray-500">Cadastrado em</dt>
-                <dd class="font-medium">${formatDate(State.user.criado_em)}</dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3 class="font-semibold">Editar Perfil</h3>
-          </div>
-          <div class="card-body">
-            <form id="form-perfil" class="space-y-4">
-              <div class="form-group">
-                <label for="perfil-email" class="label">Email</label>
-                <input type="email" id="perfil-email" name="email" class="input" value="${State.user.email}">
-              </div>
-              <div class="form-group">
-                <label for="perfil-nome" class="label">Nome</label>
-                <input type="text" id="perfil-nome" name="nome" class="input" value="${State.user.nome}" minlength="2" maxlength="100">
-              </div>
-              <div class="form-group">
-                <label for="perfil-senha-atual" class="label">Senha atual (para alterar)</label>
-                <input type="password" id="perfil-senha-atual" name="senha_atual" class="input" autocomplete="current-password">
-              </div>
-              <div class="form-group">
-                <label for="perfil-nova-senha" class="label">Nova senha</label>
-                <input type="password" id="perfil-nova-senha" name="nova_senha" class="input" minlength="8" autocomplete="new-password">
-              </div>
-              <div class="form-group">
-                <label for="perfil-confirmar-nova-senha" class="label">Confirmar nova senha</label>
-                <input type="password" id="perfil-confirmar-nova-senha" name="confirmar_nova_senha" class="input" autocomplete="new-password">
-              </div>
-              <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    `;
-  },
-
-  // Lista Vencedora (Passo 5)
-  async vencedora() {
-    const data = State.ultimaComparacao;
-    if (!data || !data.fornecedores || data.fornecedores.length === 0) {
-      showToast('Nenhuma comparação disponível. Compare os preços primeiro.', 'warning');
-      State.navigate('comparar');
-      return '';
-    }
-    const vencedor = data.fornecedores.find(f => f.eh_melhor) || data.fornecedores[0];
-    const itensDisp = vencedor.itens_disponiveis;
-    const totalUnidades = (vencedor.itens || []).reduce((s, i) => s + i.quantidade, 0);
-    const parcial = vencedor.itens_ausentes > 0;
-    const ausentes = (vencedor.itens || []).filter(i => !i.disponivel).map(i => i.produto_nome);
-    const cnpj = '99.000.111/0001-65'; // CNPJ do fornecedor do seed (Carrefour como exemplo)
-
-    return `
-      <div class="max-w-4xl mx-auto">
-        <div class="flex items-center justify-between mb-6">
-          <a href="#/comparar" class="text-primary-600 hover:underline text-sm" data-link>← Voltar aos resultados</a>
-          <div>
-            <span class="badge badge-success">🏆 MELHOR OFERTA · ${Math.round(vencedor.percentual_disponibilidade)}% DA LISTA</span>
-          </div>
-        </div>
-
-        <div class="card mb-6" style="border:2px solid var(--brand-red); background:var(--brand-red-light); border-radius:var(--radius-xl); padding:24px 28px; display:flex; justify-content:space-between; gap:20px; align-items:center; flex-wrap:wrap;">
-          <div>
-            <h2 class="text-2xl font-bold mb-2">${escapeHtml(vencedor.fornecedor_nome)}</h2>
-            <div class="text-sm text-gray-600">CNPJ ${cnpj} · cotação de ${formatDate(new Date().toISOString())} · lista "${escapeHtml(data.lista_nome)}"</div>
-          </div>
-          <div style="text-align:right">
-            <div class="text-sm text-gray-500">Total consolidado</div>
-            <div class="text-3xl font-bold text-brand-red">${formatCurrency(vencedor.preco_total)}</div>
-            ${parcial ? `<span class="badge badge-warning" style="margin-top:8px;">total parcial — há itens indisponíveis</span>` : `<span class="badge badge-success" style="margin-top:8px;">todos os itens disponíveis</span>`}
-          </div>
-        </div>
-
-        <div class="card mb-6">
-          <div class="card-header">
-            <h3 class="font-semibold">Itens precificados pelo fornecedor vencedor</h3>
-          </div>
-          <div class="card-body">
-            <div class="table-container">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Produto</th>
-                    <th class="text-center">Un.</th>
-                    <th class="text-center">Qtd.</th>
-                    <th class="text-right">Preço unitário</th>
-                    <th class="text-right">Subtotal</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${(vencedor.itens || []).map(i => `
-                    <tr class="${!i.disponivel ? 'bg-red-50 text-red-600' : ''}">
-                      <td>${escapeHtml(i.produto_nome)}</td>
-                      <td class="text-center">${i.unidade}</td>
-                      <td class="text-center">${i.quantidade}</td>
-                      <td class="text-right">${i.preco_unitario !== null ? formatCurrency(i.preco_unitario) : '<span class="text-red-600">N/D</span>'}</td>
-                      <td class="text-right">${i.preco_total !== null ? formatCurrency(i.preco_total) : '<span class="text-red-600">N/D</span>'}</td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div style="display:flex; justify-content:flex-end; gap:14px; align-items:center; font-size:15px; padding:12px; border:2px solid var(--neutral-900); border-radius:8px; margin:16px 0; background:var(--neutral-0);">
-          <span class="font-medium">Total consolidado da compra (${itensDisp} itens · ${totalUnidades} unidades)</span>
-          <b class="text-2xl font-bold text-brand-red">${formatCurrency(vencedor.preco_total)}</b>
-        </div>
-
-        ${parcial ? `
-          <div class="card mb-6 bg-red-50 border-red-200">
-            <div class="card-body p-4">
-              <p class="text-red-700 text-sm">⚠ Itens indisponíveis neste fornecedor: ${ausentes.join(', ')}. Total calculado sobre os itens disponíveis.</p>
-            </div>
-          </div>
-        ` : ''}
-
-        <div class="flex gap-3 justify-end">
-          <button id="btn-imprimir-vencedora" class="btn btn-secondary no-print">🖨️ Imprimir A4</button>
-          <button id="btn-exportar-pdf-vencedora" class="btn btn-primary" style="background:var(--brand-red); border:none;">⬇ Exportar PDF — lista_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.pdf</button>
-        </div>
-      </div>
-    `;
-  },
-
-  // Recuperar Senha - Solicitar
-  async recuperarSenha() {
-    return `
-      <div class="max-w-md mx-auto">
-        <div class="card">
-          <div class="card-header">
-            <h2 class="text-xl font-semibold">Recuperar Senha</h2>
-          </div>
-          <div class="card-body">
-            <p class="text-gray-600 mb-6">Digite seu nome de usuário para receber instruções de recuperação.</p>
-            <form id="form-recuperar-senha" class="space-y-4">
-              <div class="form-group">
-                <label for="rec-nome-usuario" class="label">Nome de usuário <span class="text-red-500">*</span></label>
-                <input type="text" id="rec-nome-usuario" name="nome_usuario" class="input" required autocomplete="username">
-              </div>
-              <button type="submit" class="btn btn-primary w-full">Solicitar Recuperação</button>
-            </form>
-            <p class="text-center text-sm text-gray-600 mt-6">
-              <a href="#/login" class="text-primary-600 hover:underline" data-link>← Voltar ao login</a>
-            </p>
-          </div>
-        </div>
-      </div>
-    `;
-  },
-
-  // Recuperar Senha - Confirmar (via pergunta de segurança)
-  async recuperarSenhaConfirmar() {
-    return `
-      <div class="max-w-md mx-auto">
-        <div class="card">
-          <div class="card-header">
-            <h2 class="text-xl font-semibold">Confirmar Recuperação</h2>
-          </div>
-          <div class="card-body">
-            <p class="text-gray-600 mb-6">Responda sua pergunta de segurança para definir uma nova senha.</p>
-            <form id="form-recuperar-senha-confirmar" class="space-y-4">
-              <div class="form-group">
-                <label for="rec-conf-nome-usuario" class="label">Nome de usuário <span class="text-red-500">*</span></label>
-                <input type="text" id="rec-conf-nome-usuario" name="nome_usuario" class="input" required autocomplete="username">
-              </div>
-              <div class="form-group">
-                <label for="rec-conf-resposta" class="label">Resposta da pergunta de segurança <span class="text-red-500">*</span></label>
-                <input type="text" id="rec-conf-resposta" name="resposta_seguranca" class="input" required minlength="3" autocomplete="off">
-              </div>
-              <div class="form-group">
-                <label for="rec-conf-nova-senha" class="label">Nova senha <span class="text-red-500">*</span></label>
-                <input type="password" id="rec-conf-nova-senha" name="nova_senha" class="input" required minlength="8" autocomplete="new-password">
-              </div>
-              <div class="form-group">
-                <label for="rec-conf-confirmar-nova-senha" class="label">Confirmar nova senha <span class="text-red-500">*</span></label>
-                <input type="password" id="rec-conf-confirmar-nova-senha" name="confirmar_nova_senha" class="input" required autocomplete="new-password">
-              </div>
-              <button type="submit" class="btn btn-primary w-full">Alterar Senha</button>
-            </form>
-            <p class="text-center text-sm text-gray-600 mt-6">
-              <a href="#/login" class="text-primary-600 hover:underline" data-link>← Voltar ao login</a>
-            </p>
-          </div>
-        </div>
-      </div>
-    `;
-  },
-
-  // Editar Lista
-  async editarLista(params) {
-    if (!State.user) { State.navigate('login'); return ''; }
-
-    try {
-      const lista = await ApiClient.buscarLista(params.id);
-      return `
-        <div class="max-w-4xl mx-auto">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold">Editar Lista: ${lista.nome}</h2>
-            <span class="badge badge-info" id="badge-itens">${lista.itens.length} itens</span>
-          </div>
-
-          <div class="card mb-6">
-            <div class="card-body">
-              <div class="form-group">
-                <label for="lista-nome" class="label">Nome da lista <span class="text-red-500">*</span></label>
-                <input type="text" id="lista-nome" class="input" value="${lista.nome}" maxlength="100">
-              </div>
-            </div>
-          </div>
-
-          <div class="card mb-6">
-            <div class="card-header flex items-center justify-between">
-              <h3 class="font-semibold">Itens da Lista (<span id="count-itens">${lista.itens.length}</span>)</h3>
-            </div>
-            <div class="card-body">
-              <div class="form-row mb-4">
-                <div class="form-group flex-1">
-                  <label for="item-produto" class="label">Adicionar Produto</label>
-                  <div class="relative">
-                    <input type="text" id="item-produto" class="input" placeholder="Digite para buscar..." autocomplete="off">
-                    <div id="autocomplete-results" class="absolute z-10 w-full mt-1 hidden bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"></div>
-                  </div>
-                  <input type="hidden" id="item-produto-id">
-                </div>
-                <div class="form-group w-32">
-                  <label for="item-quantidade" class="label">Qtd</label>
-                  <input type="number" id="item-quantidade" class="input" value="1" min="1" max="9999">
-                </div>
-              </div>
-              <button type="button" id="btn-add-item" class="btn btn-primary" disabled>Adicionar Item</button>
-            </div>
-          </div>
-
-          <div class="card" id="card-itens-lista">
-            <div class="card-body">
-              <div class="table-container">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th class="w-1/2">Produto</th>
-                      <th class="w-1/6">Un.</th>
-                      <th class="w-1/6">Qtd</th>
-                      <th class="w-1/6"></th>
-                    </tr>
-                  </thead>
-                  <tbody id="tbody-itens"></tbody>
-                </table>
-              </div>
-            </div>
-            <div class="card-footer flex justify-end gap-3">
-              <button type="button" id="btn-cancelar-edicao" class="btn btn-secondary">Cancelar</button>
-              <button type="button" id="btn-salvar-edicao" class="btn btn-primary">Salvar Alterações</button>
-            </div>
-          </div>
-        </div>
-      `;
-    } catch (e) {
-      showToast('Erro ao carregar lista: ' + e.message, 'error');
-      State.navigate('minhas-listas');
-      return '';
-    }
-  },
-};
-
-// ============================================================
-// AUTH VIEWS — Lógica de autenticação
-// ============================================================
-const AuthViews = {
-  async login() {
-    const form = $('#form-login');
-    if (!form) return;
-
-    form.onsubmit = async (e) => {
-      e.preventDefault();
-      const data = {
-        nome_usuario: form.nome_usuario.value,
-        senha: form.senha.value,
-      };
-
-      const btn = form.querySelector('button[type="submit"]');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Entrando...';
-
-      try {
-        const response = await ApiClient.login(data);
-        // Reset contador de tentativas
-        State.loginAttempts = 0;
-        const attemptsEl = $('#login-attempts');
-        if (attemptsEl) attemptsEl.classList.add('hidden');
-        State.setUser({
-          id: response.user_id,
-          nome_usuario: data.nome_usuario,
-          // Outros campos viriam do /auth/perfil
-        }, response.access_token);
-
-        // Busca perfil completo
-        const perfil = await ApiClient.getPerfil();
-        State.setUser(perfil, response.access_token);
-
-        showToast('Login realizado com sucesso!', 'success');
-
-        // Verifica lista efêmera
-        if (State.ephemeralList) {
-          const modal = showModal(`
-            <p>Você tem uma lista em memória. Deseja salvá-la na sua conta?</p>
-          `, {
-            title: 'Lista Efêmera Encontrada',
-            footer: `
-              <button class="btn btn-secondary" data-action="manter">Manter Efêmera</button>
-              <button class="btn btn-primary" data-action="salvar">Salvar na Conta</button>
-            `,
-          });
-
-          const btnManter = $('#modal-container [data-action="manter"]');
-          const btnSalvar = $('#modal-container [data-action="salvar"]');
-          btnManter.onclick = () => {
-            $('#modal-container').classList.add('hidden');
-            $('#modal-container').innerHTML = '';
-            document.body.style.overflow = '';
-            // Mantém efêmera no sessionStorage; vai dashboard
-            State.navigate('home');
-          };
-          btnSalvar.onclick = async () => {
-            btnSalvar.disabled = true;
-            btnSalvar.innerHTML = '<span class="spinner"></span> Salvando...';
-            try {
-              await ApiClient.salvarLista({
-                nome: State.ephemeralList.nome,
-                itens: State.ephemeralList.itens,
-                categorias: State.ephemeralList.categorias || [],
-              });
-              showToast('Lista salva na sua conta!', 'success');
-              State.clearEphemeralList();
-              State.navigate('minhas-listas');
-            } catch (e) {
-              showToast('Erro ao salvar: ' + e.message, 'error');
-              btnSalvar.disabled = false;
-              btnSalvar.textContent = 'Salvar na Conta';
-            }
-          };
-        }
-
-        State.navigate('home');
-      } catch (e) {
-        // IN-15: contador visual de tentativas de login
-        State.loginAttempts++;
-        const attemptsEl = $('#login-attempts');
-        const countEl = $('#login-attempts-count');
-        if (attemptsEl) attemptsEl.classList.remove('hidden');
-        if (countEl) countEl.textContent = String(State.loginAttempts);
-        if (State.loginAttempts >= 6) {
-          btn.disabled = true;
-          showToast('Limite de 6 tentativas excedido. Tente novamente em 15 minutos.', 'error');
-        }
-        btn.disabled = false;
-        btn.textContent = 'Entrar';
-      }
-    };
-  },
-
-  async cadastrar() {
-    const form = $('#form-cadastro');
-    if (!form) return;
-
-    form.onsubmit = async (e) => {
-      e.preventDefault();
-
-      // Validações
-      if (form.senha.value !== form.confirmar_senha.value) {
-        showToast('As senhas não coincidem', 'error');
-        return;
-      }
-
-      const data = {
-        nome_usuario: form.nome_usuario.value,
-        email: form.email.value,
-        nome: form.nome.value,
-        senha: form.senha.value,
-        confirmar_senha: form.confirmar_senha.value,
-        pergunta_seguranca: form.pergunta_seguranca.value,
-        resposta_seguranca: form.resposta_seguranca.value,
-      };
-
-      const btn = form.querySelector('button[type="submit"]');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Cadastrando...';
-
-      try {
-        await ApiClient.cadastrar(data);
-        showToast('Conta criada com sucesso! Redirecionando...', 'success');
-        setTimeout(() => State.navigate('login'), 1500);
-      } catch (e) {
-        showToast(e.message, 'error');
-        btn.disabled = false;
-        btn.textContent = 'Criar conta';
-      }
-    };
-  },
-
-  async logout() {
-    try {
-      await ApiClient.logout();
-    } catch {}
-    State.clearUser();
-    showToast('Logout realizado', 'success');
-    State.navigate('home');
-  },
-
-  async perfil() {
-    const form = $('#form-perfil');
-    if (!form) return;
-
-    form.onsubmit = async (e) => {
-      e.preventDefault();
-
-      if (form.nova_senha.value && form.nova_senha.value !== form.confirmar_nova_senha.value) {
-        showToast('As senhas não coincidem', 'error');
-        return;
-      }
-
-      const data = {};
-      if (form.email.value) data.email = form.email.value;
-      if (form.nome.value) data.nome = form.nome.value;
-      if (form.senha_atual.value) {
-        if (!form.nova_senha.value) {
-          showToast('Nova senha é obrigatória', 'error');
-          return;
-        }
-        data.senha_atual = form.senha_atual.value;
-        data.nova_senha = form.nova_senha.value;
-      }
-
-      try {
-        await ApiClient.atualizarPerfil(data);
-        showToast('Perfil atualizado!', 'success');
-        // Recarrega perfil
-        const perfil = await ApiClient.getPerfil();
-        State.setUser(perfil, ApiClient.getToken());
-      } catch (e) {
-        showToast(e.message, 'error');
-      }
-    };
-  },
-
-  async recuperarSenha() {
-    const form = $('#form-recuperar-senha');
-    if (!form) return;
-
-    form.onsubmit = async (e) => {
-      e.preventDefault();
-      const data = {
-        nome_usuario: form.nome_usuario.value,
-      };
-
-      const btn = form.querySelector('button[type="submit"]');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Enviando...';
-
-      try {
-        const response = await ApiClient.request('/auth/recuperar-senha/solicitar', {
-          method: 'POST',
-          body: JSON.stringify(data),
-        });
-
-        if (response.message && response.message.includes('logado no servidor')) {
-          showToast('Se o usuário existir, o token foi logado no servidor (veja console do backend)', 'info');
-        } else {
-          showToast('Se o usuário existir, instruções foram enviadas', 'success');
-        }
-        setTimeout(() => State.navigate('login'), 2000);
-      } catch (e) {
-        showToast(e.message, 'error');
-        btn.disabled = false;
-        btn.textContent = 'Solicitar Recuperação';
-      }
-    };
-  },
-
-  async recuperarSenhaConfirmar() {
-    const form = $('#form-recuperar-senha-confirmar');
-    if (!form) return;
-
-    form.onsubmit = async (e) => {
-      e.preventDefault();
-
-      if (form.nova_senha.value !== form.confirmar_nova_senha.value) {
-        showToast('As senhas não coincidem', 'error');
-        return;
-      }
-
-      const data = {
-        nome_usuario: form.nome_usuario.value,
-        resposta_seguranca: form.resposta_seguranca.value,
-        nova_senha: form.nova_senha.value,
-        confirmar_nova_senha: form.confirmar_nova_senha.value,
-      };
-
-      const btn = form.querySelector('button[type="submit"]');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Alterando...';
-
-      try {
-        await ApiClient.request('/auth/recuperar-senha/confirmar', {
-          method: 'POST',
-          body: JSON.stringify(data),
-        });
-        showToast('Senha alterada com sucesso!', 'success');
-        setTimeout(() => State.navigate('login'), 1500);
-      } catch (e) {
-        showToast(e.message, 'error');
-        btn.disabled = false;
-        btn.textContent = 'Alterar Senha';
-      }
-    };
-  },
-};
-
-// ============================================================
-// LISTA VIEWS — Lógica de listas
-// ============================================================
-const ListaViews = {
-  bindCriarLista() {
-    const produtoInput = $('#item-produto');
-    const produtoIdInput = $('#item-produto-id');
-    const autocompleteResults = $('#autocomplete-results');
-    const qtdInput = $('#item-quantidade');
-    const addBtn = $('#btn-add-item');
-    const tbody = $('#tbody-itens');
-    const countEl = $('#count-itens');
-    const badge = $('#badge-itens');
-    const cardItens = $('#card-itens-lista');
-    const clearBtn = $('#btn-limpar-lista');
-    const saveBtn = $('#btn-salvar-lista');
-    const nomeInput = $('#lista-nome');
-
-    let itens = State.ephemeralList?.itens || [];
-    let debounceTimer;
-    let unidadeSelecionada = 'un';
-
-    const renderItens = () => {
-      tbody.innerHTML = itens.map((item, idx) => `
-        <tr>
-          <td>${item.produto_nome}</td>
-          <td>${item.unidade}</td>
-          <td>${item.quantidade}</td>
-          <td><button class="text-red-600 hover:text-red-800" data-remove="${idx}">✕</button></td>
-        </tr>
-      `).join('');
-
-      countEl.textContent = itens.length;
-      badge.textContent = `${itens.length} itens`;
-      cardItens.style.display = itens.length ? 'block' : 'none';
-      addBtn.disabled = !produtoIdInput.value || !qtdInput.value;
-      saveBtn.disabled = itens.length === 0 || !nomeInput.value.trim();
-
-      // Bind remove
-      tbody.querySelectorAll('[data-remove]').forEach(btn => {
-        btn.onclick = () => {
-          itens.splice(parseInt(btn.dataset.remove), 1);
-          renderItens();
-          gravarEfemera();
-        };
-      });
-    };
-
-    // Autocomplete
-    produtoInput.addEventListener('input', () => {
-      clearTimeout(debounceTimer);
-      const q = produtoInput.value.trim();
-      if (q.length < 2) {
-        autocompleteResults.classList.add('hidden');
-        return;
-      }
-      debounceTimer = setTimeout(async () => {
-        try {
-          const produtos = await ApiClient.autocompleteProdutos(q, 10);
-          if (produtos.length === 0) {
-            autocompleteResults.classList.add('hidden');
-            return;
-          }
-          autocompleteResults.innerHTML = produtos.map(p => `
-            <button type="button" class="w-full px-3 py-2 text-left hover:bg-gray-100" data-id="${p.id}" data-nome="${p.nome}" data-unidade="${p.unidade}">
-              ${p.nome} <span class="text-gray-500">(${p.unidade})</span>
-            </button>
-          `).join('');
-          autocompleteResults.classList.remove('hidden');
-
-          autocompleteResults.querySelectorAll('button').forEach(btn => {
-            btn.onclick = () => {
-              produtoInput.value = btn.dataset.nome;
-              produtoIdInput.value = btn.dataset.id;
-              qtdInput.focus();
-              autocompleteResults.classList.add('hidden');
-              unidadeSelecionada = btn.dataset.unidade || 'un';
-              addBtn.disabled = !qtdInput.value;
-            };
-          });
-        } catch (e) {
-          console.error(e);
-        }
-      }, 300);
-    });
-
-    // Fecha autocomplete ao clicar fora
-    document.addEventListener('click', (e) => {
-      if (!autocompleteResults.contains(e.target) && e.target !== produtoInput) {
-        autocompleteResults.classList.add('hidden');
-      }
-    });
-
-    // Add item
-    addBtn.onclick = () => {
-      const produtoId = parseInt(produtoIdInput.value);
-      const produtoNome = produtoInput.value;
-      const unidade = unidadeSelecionada;
-      const quantidade = parseInt(qtdInput.value);
-
-      if (!produtoId || !quantidade) return;
-
-      // Verifica duplicata
-      const existing = itens.findIndex(i => i.produto_id === produtoId);
-      if (existing >= 0) {
-        itens[existing].quantidade += quantidade;
-      } else {
-        itens.push({ produto_id: produtoId, produto_nome: produtoNome, unidade, quantidade });
-      }
-
-      produtoInput.value = '';
-      produtoIdInput.value = '';
-      qtdInput.value = 1;
-      autocompleteResults.classList.add('hidden');
-      renderItens();
-    };
-
-    // Clear
-    clearBtn.onclick = () => {
-      if (confirm('Limpar toda a lista?')) {
-        itens = [];
-        nomeInput.value = '';
-        renderItens();
-      }
-    };
-
-    // Save
-    saveBtn.onclick = async () => {
-      const nome = nomeInput.value.trim();
-      if (!nome || itens.length === 0) return;
-
-      saveBtn.disabled = true;
-      saveBtn.innerHTML = '<span class="spinner"></span> Salvando...';
-
-      try {
-        if (State.user) {
-          await ApiClient.salvarLista({ nome, itens, categorias: State.ephemeralList?.categorias || [] });
-        } else {
-          // Visitante: pede login antes de persistir (Autenticação Tardia)
-          showToast('Faça login para salvar esta lista na sua conta', 'info');
-          State.navigate('login');
-          return;
-        }
-        showToast('Lista salva com sucesso!', 'success');
-        State.clearEphemeralList();
-        itens = [];
-        nomeInput.value = '';
-        renderItens();
-        State.navigate('minhas-listas');
-      } catch (e) {
-        showToast('Erro ao salvar: ' + e.message, 'error');
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = 'Salvar Lista';
-      }
-    };
-
-    // Grava lista efêmera no sessionStorage (recuperável ao reabrir aba)
-    const gravarEfemera = () => {
-      State.setEphemeralList({
-        nome: nomeInput.value.trim() || 'Lista sem nome',
-        itens: itens.map(i => ({ ...i })),
-        categorias: [],
-      });
-    };
-
-    // Add item
-    const addOriginal = addBtn.onclick;
-    addBtn.onclick = () => {
-      addOriginal();
-      gravarEfemera();
-    };
-
-    // Clear
-    const clearOriginal = clearBtn.onclick;
-    clearBtn.onclick = () => {
-      clearOriginal();
-      gravarEfemera();
-    };
-
-    // Initial render
-    renderItens();
-  },
-
-  bindMinhasListas() {
-    // Pagination
-    document.querySelectorAll('.btn-pagina').forEach(btn => {
-      btn.onclick = () => Views.minhasListas().then(html => {
-        $('#main-content').innerHTML = html;
-        ListaViews.bindMinhasListas();
-      });
-    });
-
-    // Delete
-    document.querySelectorAll('.btn-excluir').forEach(btn => {
-      btn.onclick = async () => {
-        const id = parseInt(btn.dataset.id);
-        const nome = btn.dataset.nome;
-        const confirmacao = prompt(`Digite o nome da lista para confirmar exclusão:\n"${nome}"`);
-        if (confirmacao !== nome) {
-          showToast('Nome de confirmação incorreto', 'error');
-          return;
-        }
-        try {
-          await ApiClient.excluirLista(id, nome);
-          showToast('Lista excluída', 'success');
-          State.navigate('minhas-listas');
-        } catch (e) {
-          showToast('Erro: ' + e.message, 'error');
-        }
-      };
-    });
-  },
-
-  bindVerLista(params) {
-    $('#btn-editar-lista')?.addEventListener('click', () => {
-      State.navigate('/editar-lista/' + params.id);
-    });
-
-    $('#btn-excluir-lista')?.addEventListener('click', async () => {
-      const id = parseInt(document.querySelector('#btn-excluir-lista').dataset.id);
-      const nome = document.querySelector('#btn-excluir-lista').dataset.nome;
-      const confirmacao = prompt(`Digite o nome da lista para confirmar exclusão:\n"${nome}"`);
-      if (confirmacao !== nome) return;
-      try {
-        await ApiClient.excluirLista(id, nome);
-        showToast('Lista excluída', 'success');
-        State.navigate('minhas-listas');
-      } catch (e) {
-        showToast('Erro: ' + e.message, 'error');
-      }
-    });
-
-    $('#btn-exportar-pdf')?.addEventListener('click', async () => {
-      const btn = document.querySelector('#btn-exportar-pdf');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Gerando...';
-      try {
-        const blob = await ApiClient.exportarPDF(params.id);
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `lista_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.pdf`;
-        a.click();
-        URL.revokeObjectURL(url);
-        showToast('PDF baixado!', 'success');
-      } catch (e) {
-        showToast('Erro ao gerar PDF: ' + e.message, 'error');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Exportar PDF';
-      }
-    });
-  },
-
-  async bindEditarLista(params) {
-    const listaId = parseInt(params.id);
-    const produtoInput = $('#item-produto');
-    const produtoIdInput = $('#item-produto-id');
-    const autocompleteResults = $('#autocomplete-results');
-    const qtdInput = $('#item-quantidade');
-    const addBtn = $('#btn-add-item');
-    const tbody = $('#tbody-itens');
-    const countEl = $('#count-itens');
-    const badge = $('#badge-itens');
-    const cardItens = $('#card-itens-lista');
-    const cancelBtn = $('#btn-cancelar-edicao');
-    const saveBtn = $('#btn-salvar-edicao');
-    const nomeInput = $('#lista-nome');
-
-    let itens = [];
-    let debounceTimer;
-    let unidadeSelecionada = 'un';
-    let categoriasEdicao = [];
-
-    // Carrega lista existente
-    const loadLista = async () => {
-      try {
-        const lista = await ApiClient.buscarLista(listaId);
-        nomeInput.value = lista.nome;
-        categoriasEdicao = lista.categorias || [];
-        itens = lista.itens.map(item => ({
-          produto_id: item.produto_id,
-          produto_nome: item.produto_nome,
-          unidade: item.unidade || 'un',
-          quantidade: item.quantidade,
-        }));
-        renderItens();
-      } catch (e) {
-        showToast('Erro ao carregar lista: ' + e.message, 'error');
-        State.navigate('minhas-listas');
-      }
-    };
-
-    const renderItens = () => {
-      tbody.innerHTML = itens.map((item, idx) => `
-        <tr>
-          <td>${item.produto_nome}</td>
-          <td>${item.unidade}</td>
-          <td>${item.quantidade}</td>
-          <td><button class="text-red-600 hover:text-red-800" data-remove="${idx}">✕</button></td>
-        </tr>
-      `).join('');
-
-      countEl.textContent = itens.length;
-      badge.textContent = `${itens.length} itens`;
-      cardItens.style.display = itens.length ? 'block' : 'none';
-      addBtn.disabled = !produtoIdInput.value || !qtdInput.value;
-      saveBtn.disabled = itens.length === 0 || !nomeInput.value.trim();
-
-      tbody.querySelectorAll('[data-remove]').forEach(btn => {
-        btn.onclick = () => {
-          itens.splice(parseInt(btn.dataset.remove), 1);
-          renderItens();
-        };
-      });
-    };
-
-    // Autocomplete
-    produtoInput.addEventListener('input', () => {
-      clearTimeout(debounceTimer);
-      const q = produtoInput.value.trim();
-      if (q.length < 2) {
-        autocompleteResults.classList.add('hidden');
-        return;
-      }
-      debounceTimer = setTimeout(async () => {
-        try {
-          const produtos = await ApiClient.autocompleteProdutos(q, 10);
-          if (produtos.length === 0) {
-            autocompleteResults.classList.add('hidden');
-            return;
-          }
-          autocompleteResults.innerHTML = produtos.map(p => `
-            <button type="button" class="w-full px-3 py-2 text-left hover:bg-gray-100" data-id="${p.id}" data-nome="${p.nome}" data-unidade="${p.unidade}">
-              ${p.nome} <span class="text-gray-500">(${p.unidade})</span>
-            </button>
-          `).join('');
-          autocompleteResults.classList.remove('hidden');
-
-          autocompleteResults.querySelectorAll('button').forEach(btn => {
-            btn.onclick = () => {
-              produtoInput.value = btn.dataset.nome;
-              produtoIdInput.value = btn.dataset.id;
-              qtdInput.focus();
-              autocompleteResults.classList.add('hidden');
-              unidadeSelecionada = btn.dataset.unidade || 'un';
-              addBtn.disabled = !qtdInput.value;
-            };
-          });
-        } catch (e) {
-          console.error(e);
-        }
-      }, 300);
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!autocompleteResults.contains(e.target) && e.target !== produtoInput) {
-        autocompleteResults.classList.add('hidden');
-      }
-    });
-
-    // Add item
-    addBtn.onclick = () => {
-      const produtoId = parseInt(produtoIdInput.value);
-      const produtoNome = produtoInput.value;
-      const unidade = unidadeSelecionada;
-      const quantidade = parseInt(qtdInput.value);
-
-      if (!produtoId || !quantidade) return;
-
-      const existing = itens.findIndex(i => i.produto_id === produtoId);
-      if (existing >= 0) {
-        itens[existing].quantidade += quantidade;
-      } else {
-        itens.push({ produto_id: produtoId, produto_nome: produtoNome, unidade, quantidade });
-      }
-
-      produtoInput.value = '';
-      produtoIdInput.value = '';
-      qtdInput.value = 1;
-      autocompleteResults.classList.add('hidden');
-      renderItens();
-    };
-
-    // Cancel
-    cancelBtn.onclick = () => {
-      State.navigate('minhas-listas');
-    };
-
-    // Save
-    saveBtn.onclick = async () => {
-      const nome = nomeInput.value.trim();
-      if (!nome || itens.length === 0) return;
-
-      saveBtn.disabled = true;
-      saveBtn.innerHTML = '<span class="spinner"></span> Salvando...';
-
-      try {
-        await ApiClient.atualizarLista(listaId, { nome, itens, categorias: categoriasEdicao });
-        showToast('Lista atualizada com sucesso!', 'success');
-        State.navigate('minhas-listas');
-      } catch (e) {
-        showToast('Erro ao salvar: ' + e.message, 'error');
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = 'Salvar Alterações';
-      }
-    };
-
-    // Initial load
-    await loadLista();
-  },
-};
-
-// ============================================================
-// COMPARAÇÃO VIEWS — Lógica de comparação
-// ============================================================
-const ComparacaoViews = {
-  bindComparar() {
-    const catCheckboxes = $$('input[name="categoria"]');
-    const fornCheckboxes = $$('input[name="fornecedor"]');
-    const slider = $('#slider-disponibilidade');
-    const valorDisp = $('#valor-disponibilidade');
-    const btnProxForn = $('#btn-proximo-fornecedores');
-    const btnVoltarCat = $('#btn-voltar-categorias');
-    const btnCalc = $('#btn-calcular-orcamento');
-    const btnNova = $('#btn-nova-comparacao');
-    const stepCat = $('#step-categorias');
-    const stepForn = $('#step-fornecedores');
-    const stepRes = $('#step-resultado');
-    const stepLista = $('#step-lista');
-
-    let categoriasSelecionadas = [];
-    let fornecedoresSelecionados = [];
-    let listaSelecionada = null;
-    let produtoIdsSelecionados = [];
-    let itensEfemera = [];
-
-    // Step 0: Selecionar Lista (novo passo)
-    const listaRadios = $$('input[name="lista-selecionada"]');
-    const btnProxLista = $('#btn-proximo-categorias');
-
-    listaRadios.forEach(radio => {
-      radio.onchange = () => {
-        btnProxLista.disabled = false;
-      };
-    });
-
-    btnProxLista.onclick = async () => {
-      const selectedRadio = document.querySelector('input[name="lista-selecionada"]:checked');
-      if (!selectedRadio) {
-        showToast('Selecione uma lista', 'error');
-        return;
-      }
-
-      const listaId = selectedRadio.value;
-      if (listaId === 'efemera') {
-        // Lista efêmera do sessionStorage
-        const efemera = State.ephemeralList;
-        if (!efemera || !efemera.itens || efemera.itens.length === 0) {
-          showToast('Lista efêmera vazia', 'error');
-          return;
-        }
-        listaSelecionada = { id: 0, nome: efemera.nome || 'Lista Efêmera' };
-        itensEfemera = efemera.itens.map(i => ({ ...i }));
-        produtoIdsSelecionados = efemera.itens.map(i => i.produto_id);
-      } else {
-        // Lista salva - busca no backend
-        try {
-          const lista = await ApiClient.buscarLista(parseInt(listaId));
-          listaSelecionada = { id: lista.id, nome: lista.nome };
-          produtoIdsSelecionados = lista.itens.map(i => i.produto_id);
-        } catch (e) {
-          showToast('Erro ao carregar lista: ' + e.message, 'error');
-          return;
-        }
-      }
-
-      if (produtoIdsSelecionados.length === 0) {
-        showToast('A lista selecionada não tem itens', 'error');
-        return;
-      }
-
-      stepLista.classList.add('hidden');
-      stepCat.classList.remove('hidden');
-    };
-
-    // Step 1: Categorias
-    catCheckboxes.forEach(cb => {
-      cb.onchange = () => {
-        categoriasSelecionadas = catCheckboxes.filter(c => c.checked).map(c => parseInt(c.value));
-        btnProxForn.disabled = categoriasSelecionadas.length === 0;
-      };
-    });
-
-    btnProxForn.onclick = async () => {
-      // Filtra fornecedores por categorias
-      fornCheckboxes.forEach(cb => {
-        const cats = JSON.parse(cb.dataset.categorias || '[]');
-        const match = categoriasSelecionadas.some(c => cats.includes(c));
-        cb.closest('label').style.display = match ? 'flex' : 'none';
-        if (!match) cb.checked = false;
-      });
-      stepCat.classList.add('hidden');
-      stepForn.classList.remove('hidden');
-      await updateDisponibilidade();
-    };
-
-    btnVoltarCat.onclick = () => {
-      stepForn.classList.add('hidden');
-      stepCat.classList.remove('hidden');
-    };
-
-    // Voltar da lista para categorias
-    const btnVoltarLista = $('#btn-voltar-lista');
-    if (btnVoltarLista) {
-      btnVoltarLista.onclick = () => {
-        stepCat.classList.add('hidden');
-        stepLista.classList.remove('hidden');
-      };
-    }
-
-    // Slider disponibilidade
-    slider.oninput = async () => {
-      valorDisp.textContent = slider.value + '%';
-      await updateDisponibilidade();
-    };
-
-    async function updateDisponibilidade() {
-      const minDisp = parseFloat(slider.value);
-      const visibleCheckboxes = fornCheckboxes.filter(cb => cb.closest('label').style.display !== 'none');
-      let removidos = 0;
-
-      // Buscar disponibilidade real para todos os fornecedores visíveis em paralelo
-      const disponibilidadePromises = visibleCheckboxes.map(async (cb) => {
-        const badge = document.getElementById(`disp-${cb.value}`);
-        if (!badge) return;
-
-        try {
-          const data = await ApiClient.calcularDisponibilidade(parseInt(cb.value), produtoIdsSelecionados);
-          const disponibilidade = data.percentual_disponibilidade;
-          badge.textContent = disponibilidade.toFixed(1) + '%';
-          badge.className = 'badge ' + (disponibilidade >= minDisp ? 'badge-success' : 'badge-warning');
-
-          if (disponibilidade < minDisp) {
-            if (cb.checked) removidos++;
-            cb.checked = false;
-            cb.disabled = true;
-            cb.closest('label').classList.add('opacity-50');
-          } else {
-            cb.disabled = false;
-            cb.closest('label').classList.remove('opacity-50');
-          }
-        } catch (e) {
-          badge.textContent = 'Erro';
-          badge.className = 'badge badge-danger';
-          cb.disabled = true;
-        }
-      });
-
-      await Promise.all(disponibilidadePromises);
-      updateCalcButton();
-      if (removidos > 0) {
-        showToast(`${removidos} fornecedor(es) removido(s) pelo filtro de disponibilidade mínima (${minDisp}%).`, 'warning');
-      }
-    }
-
-    // Fornecedores checkboxes
-    fornCheckboxes.forEach(cb => {
-      cb.onchange = updateCalcButton;
-    });
-
-    function updateCalcButton() {
-      fornecedoresSelecionados = fornCheckboxes.filter(c => c.checked).map(c => parseInt(c.value));
-      btnCalc.disabled = fornecedoresSelecionados.length < 2;
-    }
-
-    // Calcular orçamento
-    btnCalc.onclick = async () => {
-      btnCalc.disabled = true;
-      btnCalc.innerHTML = '<span class="spinner"></span> Calculando...';
-
-      try {
-        let result;
-        if (listaSelecionada?.id === 0) {
-          // Lista efêmera: envia itens inline (sem login)
-          result = await ApiClient.calcularOrcamentoEfemera({
-            itens: itensEfemera,
-            fornecedor_ids: fornecedoresSelecionados,
-            disponibilidade_minima: parseFloat(slider.value),
-            lista_nome: listaSelecionada?.nome || 'Lista Efêmera',
-          });
-        } else {
-          result = await ApiClient.calcularOrcamento({
-            lista_id: listaSelecionada?.id || 0,
-            fornecedor_ids: fornecedoresSelecionados,
-            disponibilidade_minima: parseFloat(slider.value),
-          });
-        }
-        State.setComparacao(result);
-        renderResultado(result);
-        stepForn.classList.add('hidden');
-        stepRes.classList.remove('hidden');
-      } catch (e) {
-        showToast('Erro: ' + e.message, 'error');
-      } finally {
-        btnCalc.disabled = false;
-        btnCalc.textContent = 'Calcular Orçamento →';
-      }
-    };
-
-    // Nova comparação
-    btnNova.onclick = () => {
-      stepRes.classList.add('hidden');
-      stepCat.classList.add('hidden');
-      stepForn.classList.add('hidden');
-      stepLista.classList.remove('hidden');
-      catCheckboxes.forEach(cb => cb.checked = false);
-      fornCheckboxes.forEach(cb => { cb.checked = false; cb.disabled = false; cb.closest('label').style.display = 'flex'; cb.closest('label').classList.remove('opacity-50'); });
-      slider.value = 0;
-      valorDisp.textContent = '0%';
-      categoriasSelecionadas = [];
-      fornecedoresSelecionados = [];
-      listaSelecionada = null;
-      produtoIdsSelecionados = [];
-      btnProxForn.disabled = true;
-      btnCalc.disabled = true;
-      btnProxLista.disabled = true;
-      listaRadios.forEach(r => r.checked = false);
-    };
-  },
-};
-
-function renderResultado(data) {
-  const container = $('#resultado-comparacao');
-  if (!container) return;
-
-  if (!data.fornecedores || data.fornecedores.length === 0) {
-    container.innerHTML = `
-      <div class="text-center py-12 text-gray-500">
-        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        <p class="text-lg">Nenhum fornecedor atende aos critérios</p>
-        <p class="text-sm mt-1">Tente reduzir a disponibilidade mínima ou selecionar mais fornecedores</p>
-      </div>
-    `;
-    return;
-  }
-
-  const melhor = data.fornecedores.find(f => f.eh_melhor) || data.fornecedores[0];
-  const menor = data.fornecedores.reduce((a, b) => a.preco_total < b.preco_total ? a : b);
-  const maiorTotal = Math.max(...data.fornecedores.map(f => f.preco_total));
-  const economia = maiorTotal - melhor.preco_total;
-  const avgDisp = Math.round(data.fornecedores.reduce((s, f) => s + f.percentual_disponibilidade, 0) / data.fornecedores.length * 10) / 10;
-
-  container.innerHTML = `
-    <div class="mb-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="card card-pad border-l-4 border-l-green-500">
-          <div class="text-sm text-gray-500 uppercase tracking-wider mb-1">🏆 Melhor oferta</div>
-          <div class="text-xl font-bold">${escapeHtml(melhor.fornecedor_nome)}</div>
-          <div class="text-sm text-gray-600">${formatCurrency(melhor.preco_total)} · ${melhor.percentual_disponibilidade.toFixed(1)}% da lista</div>
-        </div>
-        <div class="card card-pad border-l-4 border-l-blue-500">
-          <div class="text-sm text-gray-500 uppercase tracking-wider mb-1">💰 Menor preço</div>
-          <div class="text-xl font-bold">${formatCurrency(menor.preco_total)}</div>
-          <div class="text-sm text-gray-600">${menor.fornecedor_nome} · ${menor.percentual_disponibilidade.toFixed(1)}% cobertura</div>
-        </div>
-        <div class="card card-pad border-l-4 border-l-yellow-500">
-          <div class="text-sm text-gray-500 uppercase tracking-wider mb-1">📊 Economia potencial</div>
-          <div class="text-xl font-bold">${formatCurrency(economia > 0 ? economia : 0)}</div>
-          <div class="text-sm text-gray-600">vs. maior total cotado (${formatCurrency(maiorTotal)})</div>
-        </div>
-        <div class="card card-pad border-l-4 border-l-indigo-500">
-          <div class="text-sm text-gray-500 uppercase tracking-wider mb-1">Disponibilidade média</div>
-          <div class="text-xl font-bold">${avgDisp}%</div>
-          <div class="text-sm text-gray-600">${data.fornecedores.length} fornecedores comparados</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="table-container">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Fornecedor</th>
-            <th class="text-center">Cobertura</th>
-            <th class="text-center">Itens</th>
-            <th class="text-center">Ausentes</th>
-            <th class="text-right">Preço total</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${data.fornecedores.map(f => {
-            const disponiveis = f.itens.filter(i => i.disponivel).length;
-            const ausentesNomes = f.itens.filter(i => !i.disponivel).map(i => escapeHtml(i.produto_nome)).join(', ');
-            const ausentesHtml = f.itens_ausentes > 0
-              ? `<span class="badge badge-warning" title="${ausentesNomes}">⚠ ${f.itens_ausentes} item(es)</span>`
-              : '<span class="badge badge-success">—</span>';
-            return `
-            <tr class="${f.eh_melhor ? 'bg-green-50' : ''} ${f.percentual_disponibilidade === 0 ? 'opacity-50' : ''}">
-              <td class="font-medium">${escapeHtml(f.fornecedor_nome)} ${f.eh_melhor ? '<span class="badge badge-success ml-2">MELHOR OFERTA</span>' : ''}</td>
-              <td class="text-center">
-                <div class="w-16 h-2 bg-gray-200 rounded overflow-hidden mr-2 inline-block">
-                  <div class="h-full ${f.percentual_disponibilidade >= 80 ? 'bg-green-500' : f.percentual_disponibilidade >= 40 ? 'bg-yellow-500' : 'bg-red-500'}" style="width:${f.percentual_disponibilidade}%"></div>
-                </div>
-                ${f.percentual_disponibilidade.toFixed(1)}%
-              </td>
-              <td class="text-center">${disponiveis} de ${f.itens_disponiveis + f.itens_ausentes}</td>
-              <td class="text-center">${ausentesHtml}</td>
-              <td class="text-right font-semibold ${f.eh_melhor ? 'text-green-700' : ''}">${formatCurrency(f.preco_total)}</td>
-            </tr>
-          `}).join('')}
-        </tbody>
-      </table>
-    </div>
-
-    <details class="mt-6">
-      <summary class="cursor-pointer font-medium text-gray-700">Ver detalhes por item</summary>
-      <div class="mt-4 space-y-4">
-        ${data.fornecedores.map(f => `
-          <div class="card ${f.eh_melhor ? 'ring-2 ring-green-500' : ''}">
-            <div class="card-header flex items-center justify-between">
-              <h4 class="font-semibold">${escapeHtml(f.fornecedor_nome)} ${f.eh_melhor ? '<span class="badge badge-success">MELHOR OFERTA</span>' : ''}</h4>
-              <span class="text-right">Total: <strong>${formatCurrency(f.preco_total)}</strong></span>
-            </div>
-            <div class="card-body p-0">
-              <div class="table-container">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Produto</th>
-                      <th class="text-center">Un.</th>
-                      <th class="text-center">Qtd</th>
-                      <th class="text-right">Preço Unit.</th>
-                      <th class="text-right">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${f.itens.map(i => `
-                      <tr class="${!i.disponivel ? 'bg-red-50 text-red-600' : ''}">
-                        <td>${i.produto_nome}</td>
-                        <td class="text-center">${i.unidade}</td>
-                        <td class="text-center">${i.quantidade}</td>
-                        <td class="text-right">${i.preco_unitario !== null ? formatCurrency(i.preco_unitario) : '<span class="text-red-600">N/D</span>'}</td>
-                        <td class="text-right">${i.preco_total !== null ? formatCurrency(i.preco_total) : '<span class="text-red-600">N/D</span>'}</td>
-                      </tr>
-                    `).join('')}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    </details>
-
-    <div class="mt-6 flex gap-3 justify-end">
-      <button id="btn-exportar-pdf-resultado" class="btn btn-primary">Exportar PDF</button>
-      <button id="btn-imprimir" class="btn btn-secondary no-print">Imprimir</button>
-      <button id="btn-ver-vencedora" class="btn btn-primary btn--lg" style="background:var(--brand-red); border:none;">🏆 Ver lista vencedora →</button>
-    </div>
-  `;
-
-  $('#btn-imprimir')?.addEventListener('click', () => window.print());
-  $('#btn-ver-vencedora')?.addEventListener('click', () => {
-    router.navigate('/vencedora');
-  });
-  $('#btn-exportar-pdf-resultado')?.addEventListener('click', async () => {
-    const btn = document.getElementById('btn-exportar-pdf-resultado');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Gerando...';
-
-    try {
-      // Pega os dados necessários para exportar
-      const listaId = listaSelecionada?.id || 0;
-      const fornecedorIds = fornecedoresSelecionados;
-      const disponibilidadeMinima = parseFloat(slider.value);
-
-      let blob;
-      let filename;
-      if (listaSelecionada?.id === 0) {
-        // Lista efêmera: PDF da lista vencedora (RF17), sem login
-        blob = await ApiClient.exportarPDFVencedora({
-          itens: itensEfemera,
-          fornecedor_ids: fornecedorIds,
-          disponibilidade_minima: disponibilidadeMinima,
-          lista_nome: listaSelecionada?.nome || 'Lista Efêmera',
-        });
-        filename = `lista_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.pdf`;
-      } else {
-        blob = await ApiClient.exportarPDF(listaId);
-        filename = `lista_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.pdf`;
-      }
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast('PDF baixado!', 'success');
-    } catch (e) {
-      showToast('Erro ao gerar PDF: ' + e.message, 'error');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Exportar PDF';
-    }
-  });
-}
-
-// ============================================================
-// JOURNEY PANEL — Jornada de Mariana (SPECS §2.15)
 const JOURNEY = [
-  { t: "Mariana descobre o COBECO", d: "Dona do restaurante “Tempero da Mari”: precisa cotar a compra da semana em vários mercados sem perder a manhã. Clique em “Criar minha lista”." },
-  { t: "Pré-filtro por categorias (UC03)", d: "Ela marca “Mercado” — só fornecedores relevantes aparecem depois (RF12). Mínimo 1 categoria." },
-  { t: "Monta a lista (UC01/UC02)", d: "Nome da lista + produtos do catálogo com quantidades (RF07). Tudo em memória, sem cadastro obrigatório." },
-  { t: "Escolhe os fornecedores (UC04/UC05)", d: "Marca os fornecedores elegíveis (2–10, RF13). O slider filtra por disponibilidade mínima (RF14)." },
-  { t: "Compara orçamentos (UC06/UC07)", d: "Tabela flat: cobertura, itens ausentes e total por fornecedor. A melhor oferta é destacada (RF15/RF16)." },
-  { t: "Abre a lista vencedora", d: "Vencedor = maior cobertura; empate → menor total. Itens precificados pelo fornecedor campeão." },
-  { t: "Exporta o PDF (UC08/RF17)", d: "O PDF contém a LISTA VENCEDORA com itens precificados + total consolidado — nunca a “lista de listas”." },
-  { t: "Salva na conta (UC14/UC17)", d: "Só agora a autenticação é exigida (RF08): modal de login + promoção da lista efêmera." },
-  { t: "Confere Minhas Listas (UC15)", d: "Lista persistida: busca, ordenação e ações (RF09–RF11). Jornada concluída! 🎉" },
+  { t: 'Mariana descobre o COBECO', d: 'Dona do restaurante “Tempero da Mari”: precisa cotar a compra da semana em vários mercados sem perder a manhã. Clique em “Criar minha lista”.' },
+  { t: 'Pré-filtro por categorias (UC03)', d: 'Ela marca “Mercado” — só fornecedores relevantes aparecem depois (RF12). Mínimo 1 categoria.' },
+  { t: 'Monta a lista (UC01/UC02)', d: 'Nome da lista + 6 produtos do catálogo com quantidades (RF07). Tudo em memória, sem cadastro obrigatório. Dica: use “⚡ Preencher demo”.' },
+  { t: 'Escolhe os fornecedores (UC04/UC05)', d: 'Marca os 3 mercados elegíveis (2–10, RF13). O slider filtra por disponibilidade mínima (RF14).' },
+  { t: 'Compara orçamentos (UC06/UC07)', d: 'Tabela flat: cobertura, itens ausentes e total por fornecedor. A melhor oferta é destacada (RF15/RF16).' },
+  { t: 'Abre a lista vencedora', d: 'Vencedor = maior cobertura; empate → menor total. Itens precificados pelo fornecedor campeão.' },
+  { t: 'Exporta o PDF (UC08/RF17)', d: 'O PDF contém a LISTA VENCEDORA com itens precificados + total consolidado — nunca a “lista de listas”.' },
+  { t: 'Salva na conta (UC14/UC17)', d: 'Só agora a autenticação é exigida (RF08): modal de login + promoção da lista efêmera. Demo: mariana / Comida123!' },
+  { t: 'Confere Minhas Listas (UC15)', d: 'Lista persistida no “banco” simulado: busca, ordenação e ações (RF09–RF11). Jornada concluída! 🎉' },
 ];
-
-function renderJourney() {
-  const panel = $('#journey-panel');
-  if (!panel) return;
-
-  let idx;
-  if (State.flags.done || State.flags.saved) idx = 8;
-  else if (State.flags.pdf) idx = 7;
-  else {
-    const map = { home: 0, categorias: 1, lista: 2, fornecedores: 3, comparacao: 4, vencedora: 5, dashboard: 8, perfil: 6 };
-    idx = map[State.currentView] ?? 0;
+function journeyIndex() {
+  if (state.flags.done) return 8;
+  if (state.flags.saved) return 8;
+  if (state.flags.pdf) return 7;
+  switch (state.view) {
+    case 'home': return 0;
+    case 'categorias': return 1;
+    case 'lista': return 2;
+    case 'fornecedores': return 3;
+    case 'resultados': return 4;
+    case 'vencedora': return 5;
+    case 'dashboard': return 8;
+    default: return state.flags.pdf ? 7 : 0;
   }
-  if (idx === undefined) idx = 0;
-
-  const steps = JOURNEY.map((s, i) => `
-    <div class="journey-step ${i < idx ? 'journey-step--done' : i === idx ? 'journey-step--current' : ''}">
-      <span class="journey-step-dot">${i < idx ? '✓' : i === idx ? (i + 1) : (i + 1)}</span>
-      <span>${escapeHtml(s.t)}</span>
+}
+function renderJourney() {
+  const j = document.getElementById('journey');
+  const idx = journeyIndex();
+  j.innerHTML = `<div class="j-card">
+    <div class="j-head" data-action="journey-toggle">
+      <span class="av">👩‍🍳</span>
+      <div><b>Jornada de Mariana</b><span>Persona · dona de restaurante · passo ${Math.min(idx + 1, 9)}/9</span></div>
+      <button class="tgl" aria-label="Recolher painel">▾</button>
     </div>
-  `).join('');
-
-  const desc = JOURNEY[Math.min(idx, 8)].d;
-
-  panel.innerHTML = `
-    <div class="card card-pad journey-card">
-      <div class="flex items-center justify-between mb-3">
-        <div class="flex items-center gap-2">
-          <span class="text-2xl">👩‍🍳</span>
-          <div>
-            <div class="text-sm font-bold text-gray-900">Jornada de Mariana</div>
-            <div class="text-xs text-gray-500">Persona · passo ${Math.min(idx + 1, 9)}/9</div>
-          </div>
-        </div>
-        <button id="journey-toggle" class="text-gray-400 hover:text-gray-600" aria-label="Recolher painel">▾</button>
-      </div>
-      <div class="space-y-2">
-        ${steps}
-      </div>
-      <div class="mt-3 pt-3 border-t border-gray-200">
-        <div class="text-xs text-gray-600 mb-1">💡 ${escapeHtml(desc)}</div>
-        <button id="journey-next" class="w-full btn btn-primary btn-sm text-xs">🎯 Destacar próxima ação</button>
-      </div>
-    </div>
-    <style>
-      .journey-card { font-family: Inter, system-ui, -apple-system, sans-serif; }
-      .journey-step { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 0.85rem; }
-      .journey-step--done { color: var(--success, #15803d); }
-      .journey-step--current { color: var(--brand-red, #c41e3a); font-weight: 600; }
-      .journey-step-dot { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; font-weight: 700; font-size: 0.75rem; flex-shrink: 0; }
-      .journey-step--done .journey-step-dot { background: var(--success, #15803d); color: #fff; }
-      .journey-step--current .journey-step-dot { background: var(--brand-red, #c41e3a); color: #fff; box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.2); }
-    </style>
-  `;
-
-  $('#journey-toggle')?.addEventListener('click', () => {
-    const content = panel.querySelector('.space-y-2');
-    const btn = $('#journey-toggle');
-    if (content) {
-      const hidden = content.style.display === 'none';
-      content.style.display = hidden ? 'flex' : 'none';
-      btn.textContent = hidden ? '▴' : '▾';
-    }
-  });
-
-  $('#journey-next')?.addEventListener('click', () => {
-    const primary = document.querySelector('[data-primary], .btn-primary') || document.querySelector('button.btn-primary');
-    if (primary) {
-      primary.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      primary.classList.remove('ring-2', 'ring-green-500');
-      void primary.offsetWidth;
-      primary.classList.add('ring-2', 'ring-green-500');
-      primary.focus({ preventScroll: true });
-    } else {
-      showToast('Nenhuma ação disponível neste ponto.', 'info');
-    }
-  });
+    <div class="j-body">
+     ${JOURNEY.map((s, i) => `<div class="j-step ${i < idx ? 'done' : i === idx ? 'cur' : ''}">
+       <span class="st">${i < idx ? '✓' : i + 1}</span><span>${esc(s.t)}</span></div>`).join('')}
+     <div class="j-desc">💡 ${esc(JOURNEY[Math.min(idx, 8)].d)}</div>
+     <button class="btn btn-pri btn-sm j-next" data-action="journey-next">🎯 Destacar próxima ação</button>
+    </div></div>`;
 }
 
 // ============================================================
-// ROUTER — Navegação SPA
-const routes = {
-  '/': Views.home,
-  '/login': Views.login,
-  '/cadastrar': Views.cadastrar,
-  '/recuperar-senha': Views.recuperarSenha,
-  '/recuperar-senha/confirmar': Views.recuperarSenhaConfirmar,
-  '/criar-lista': Views.criarLista,
-  '/editar-lista/:id': Views.editarLista,
-  '/minhas-listas': Views.minhasListas,
-  '/lista/:id': Views.verLista,
-  '/comparar': Views.comparar,
-  '/vencedora': Views.vencedora,
-  '/perfil': Views.perfil,
-};
-
-const router = {
-  currentPath: null,
-  requestId: 0,
-
-  async navigate(path, params = {}) {
-    // Normaliza caminho: aceita '/login', 'login' e 'home'
-    let target = path.startsWith('/') ? path : `/${path}`;
-    if (target === '/home') target = '/';
-
-    const requestId = ++this.requestId;
-
-    // Match route
-    let matchedRoute = null;
-    let matchedParams = {};
-
-    for (const [routePath, viewFn] of Object.entries(routes)) {
-      const regex = new RegExp('^' + routePath.replace(/:(\w+)/g, '([^/]+)') + '$');
-      const match = target.match(regex);
-      if (match) {
-        matchedRoute = viewFn;
-        const paramNames = routePath.match(/:(\w+)/g) || [];
-        paramNames.forEach((name, i) => {
-          matchedParams[name.slice(1)] = match[i + 1];
-        });
-        break;
-      }
-    }
-
-    if (!matchedRoute) {
-      // 404 -> home
-      return this.navigate('/');
-    }
-
-    // Render
-    const main = $('#main-content');
-    main.innerHTML = '<div class="flex items-center justify-center h-64"><span class="spinner text-2xl"></span></div>';
-
-    try {
-      const html = await matchedRoute(matchedParams);
-      if (requestId !== this.requestId) return; // navegação mais recente assumiu
-      main.innerHTML = html;
-      renderJourney();
-      this.currentPath = target;
-
-      // Mantém URL sincronizada com a rota renderizada
-      if (window.location.hash !== `#${target}`) {
-        window.location.hash = target;
-      }
-
-      // Bind events based on route
-      this.bindEvents(target, matchedParams);
-    } catch (e) {
-      console.error(e);
-      main.innerHTML = '<div class="card"><div class="card-body text-center text-red-600">Erro ao carregar página</div></div>';
-    }
-
-    // Scroll to top
-    window.scrollTo(0, 0);
-  },
-
-  bindEvents(path, params) {
-    // Delegated event binding for links
-    document.querySelectorAll('[data-link]').forEach(link => {
-      link.onclick = (e) => {
-        e.preventDefault();
-        const href = link.getAttribute('href');
-        if (href.startsWith('#')) {
-          this.navigate(href.slice(1));
-        }
-      };
-    });
-
-    // Route-specific bindings
-    if (path === '/login') AuthViews.login();
-    else if (path === '/cadastrar') AuthViews.cadastrar();
-    else if (path === '/recuperar-senha') AuthViews.recuperarSenha();
-    else if (path === '/recuperar-senha/confirmar') AuthViews.recuperarSenhaConfirmar();
-    else if (path === '/criar-lista') ListaViews.bindCriarLista();
-    else if (path.startsWith('/editar-lista/')) ListaViews.bindEditarLista(params);
-    else if (path === '/minhas-listas') ListaViews.bindMinhasListas();
-    else if (path.startsWith('/lista/')) ListaViews.bindVerLista(params);
-    else if (path === '/comparar') ComparacaoViews.bindComparar();
-    else if (path === '/perfil') AuthViews.perfil();
-    else if (path === '/vencedora') {
-      $('#btn-imprimir-vencedora')?.addEventListener('click', () => window.print());
-      $('#btn-exportar-pdf-vencedora')?.addEventListener('click', async () => {
-        const btn = document.getElementById('btn-exportar-pdf-vencedora');
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner"></span> Gerando...';
-        try {
-          const data = State.ultimaComparacao;
-          const vencedor = data.fornecedores.find(f => f.eh_melhor) || data.fornecedores[0];
-          const listaId = listaSelecionada?.id || 0;
-          let blob;
-          if (listaId === 0) {
-            // Lista efêmera: PDF da vencedora com itens inline (sem login)
-            blob = await ApiClient.exportarPDFVencedora({
-              itens: itensEfemera,
-              fornecedor_ids: fornecedoresSelecionados,
-              disponibilidade_minima: parseFloat(slider.value),
-              lista_nome: data.lista_nome || 'Lista Efêmera',
-            });
-          } else {
-            blob = await ApiClient.exportarPDFVencedora({
-              lista_id: listaId,
-              fornecedor_ids: fornecedoresSelecionados,
-              disponibilidade_minima: parseFloat(slider.value),
-            });
-          }
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `lista_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.pdf`;
-          a.click();
-          URL.revokeObjectURL(url);
-          showToast('PDF baixado!', 'success');
-        } catch (e) {
-          showToast('Erro ao gerar PDF: ' + e.message, 'error');
-        } finally {
-          btn.disabled = false;
-          btn.textContent = 'Exportar PDF';
-        }
-      });
-    }
-
-    // Header navigation
-    $('#nav-auth')?.addEventListener('click', (e) => {
-      const link = e.target.closest('[data-link]');
-      if (link) {
-        e.preventDefault();
-        this.navigate(link.getAttribute('href').slice(1));
-      }
-    });
-  },
-
-  init() {
-    // Handle hash changes
-    window.addEventListener('hashchange', () => {
-      const path = window.location.hash.slice(1) || '/';
-      if (path !== this.currentPath) this.navigate(path);
-    });
-
-    // Initial load
-    this.navigate(window.location.hash.slice(1) || '/');
-  },
-};
-
+// NAVEGAÇÃO E STEPPER
 // ============================================================
-// INIT
-// ============================================================
-function initApp() {
-  State.init();
-  router.init();
+function navHTML() {
+  const v = state.view;
+  const logged = !!state.user;
+  return `<a class="logo" href="#" data-action="nav-home"><span class="mark">🛒</span>
+    <span>COBECO<small>Cotação de Bens de Consumo · v3.2</small></span></a>
+  <nav class="main" aria-label="Navegação principal">
+    <a href="#" class="${v === 'home' ? 'on' : ''}" data-action="nav-home">Início</a>
+    <a href="#" class="${['categorias', 'lista', 'fornecedores', 'resultados', 'vencedora'].includes(v) ? 'on' : ''}" data-action="nav-nova">Nova lista</a>
+    ${logged ? `<a href="#" class="${v === 'dashboard' ? 'on' : ''}" data-action="nav-listas">Minhas listas</a>
+    <a href="#" class="${v === 'perfil' ? 'on' : ''}" data-action="nav-perfil">Perfil</a>` : ''}
+  </nav>
+  <div class="auth-zone">${logged
+    ? `<span class="userchip">🟢 ${esc(state.user.nome_usuario)} · sessão ativa</span>
+      <button class="btn btn-ghost btn-sm" data-action="sair">Sair</button>`
+    : `<button class="btn btn-ghost btn-sm" data-action="page-login">Entrar</button>
+      <button class="btn btn-pri btn-sm" data-action="page-cadastro">Criar conta</button>`}
+  </div>`;
+}
 
-  // RNF04 — Desktop-only ≥1024px
-  const warning = $('#desktop-warning');
-  const closeBtn = $('#desktop-warning-close');
-  const updateWarning = () => {
-    if (warning) warning.style.display = window.innerWidth < 1024 ? 'flex' : 'none';
+function stepperHTML(step) {
+  const steps = [
+    ['1', 'Categorias', 'categorias'],
+    ['2', 'Lista', 'lista'],
+    ['3', 'Fornecedores', 'fornecedores'],
+    ['4', 'Comparação', 'resultados'],
+    ['5', 'Lista vencedora', 'vencedora'],
+  ];
+  return `<div class="stepper" aria-label="Progresso do fluxo">` + steps.map((s, i) => {
+    const n = i + 1;
+    const cls = n < step ? 'done' : n === step ? 'active' : '';
+    return `${i > 0 ? `<div class="stp-bar ${n <= step ? 'done' : ''}"></div>` : ''}
+     <div class="stp ${cls}" ${n < step ? `data-action="goto-step" data-step="${s[2]}" title="Voltar para ${s[1]}"` : ''}>
+      <div class="dot">${n < step ? '✓' : n}</div><div class="lb">${s[1]}</div></div>`;
+  }).join('') + `</div>`;
+}
+
+function go(view) {
+  state.view = view;
+  render();
+  window.scrollTo({ top: 0 });
+}
+
+function render() {
+  document.getElementById('topbar').innerHTML = navHTML();
+  const M = {
+    home: vHome, categorias: vCategorias, lista: vLista, fornecedores: vFornecedores,
+    resultados: vResultados, vencedora: vVencedora, login: vLogin, cadastro: vCadastro,
+    recuperar: vRecuperar, dashboard: vDashboard, perfil: vPerfil,
   };
-  updateWarning();
-  window.addEventListener('resize', updateWarning);
-  closeBtn?.addEventListener('click', () => { if (warning) warning.style.display = 'none'; });
+  document.getElementById('main').innerHTML = (M[state.view] || vHome)();
+  renderJourney();
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initApp);
-} else {
-  initApp();
+// ============================================================
+// VIEWS
+// ============================================================
+
+function vHome() {
+  return `<div class="container page">
+  <section class="hero">
+   <div><span class="tag">Comparador inteligente · MVP v3.2</span>
+    <h1>Compras mais inteligentes,<br>economia de verdade.</h1>
+    <p>Crie sua lista, filtre fornecedores por categoria, compare preço e disponibilidade em uma única tela — e exporte a lista vencedora em PDF. Sem cadastro obrigatório.</p>
+    <div class="cta-row">
+     <button class="btn btn-white btn-lg" data-action="nav-nova" data-primary>Criar minha lista →</button>
+     <button class="btn btn-outlinew btn-lg" data-action="page-login">${state.user ? 'Minhas listas' : 'Entrar na minha conta'}</button>
+    </div></div>
+   <div class="mini-compare" aria-hidden="true">
+    <h4>Comparação da sua lista · 6 produtos · 3 fornecedores</h4>
+    <div class="mini-row"><span>🏆 Carrefour · 100% disponível</span><b>${BRL(158.47)}</b></div>
+    <div class="mini-row"><span>Pão de Açúcar · 100% disponível</span><b>${BRL(173.80)}</b></div>
+    <div class="mini-row"><span>Extra · 83% disponível ⚠ 1 ausente</span><b>${BRL(118.75)}</b></div>
+    <div class="mini-foot"><span>Melhor oferta = maior cobertura</span><span>desempate: menor total</span></div>
+   </div>
+  </section>
+  <section class="value-cards">
+   <div class="card vcard"><div class="ic">🏷️</div><h3>Pré-filtro por categorias</h3><p>Escolha entre 11 categorias macro (Mercado, Vestuário, Eletrodomésticos…) para ver apenas fornecedores relevantes (RF12).</p></div>
+   <div class="card vcard"><div class="ic">📊</div><h3>Comparação clara</h3><p>Tabela flat por fornecedor: preço total, % de cobertura e itens ausentes. A melhor oferta é destacada (RF15/RF16).</p></div>
+   <div class="card vcard"><div class="ic">📄</div><h3>PDF da lista vencedora</h3><p>Exporte a lista do fornecedor campeão com itens precificados e total consolidado (RF17). Funciona sem login.</p></div>
+  </section>
+  <section class="card card-pad mt"><div class="row-between mb"><h2 style="font-size:18px">Como funciona</h2><span class="muted small">Fluxo principal · visitante percorre tudo sem autenticação</span></div>
+   <div class="howto">
+    <div class="how"><div class="n">1</div><b>Categorias</b><span>Pré-filtro</span></div>
+    <div class="how"><div class="n">2</div><b>Lista</b><span>Produtos + qtd</span></div>
+    <div class="how"><div class="n">3</div><b>Fornecedores</b><span>Seleção 2–10</span></div>
+    <div class="how"><div class="n">4</div><b>Comparar</b><span>Tabela flat</span></div>
+    <div class="how"><div class="n">5</div><b>Exportar</b><span>PDF / Imprimir</span></div>
+   </div></section>
+  <section class="persona-strip"><span class="av">👩‍🍳</span>
+   <div style="flex:1"><b>Conheça Mariana Duarte, 34 — dona do restaurante “Tempero da Mari” (Taquaritinga/SP)</b>
+   <p>Toda semana ela compra insumos para ~40 refeições em 3 mercados diferentes. Sem o COBECO: planilha, telefone e risco de escolher o “mais barato” incompleto. Acompanhe a jornada dela no painel ao lado →</p></div>
+   <button class="btn btn-pri" data-action="nav-nova">Iniciar jornada →</button>
+  </section>
+ </div>`;
 }
 
-// Expose for debugging
-window.COBECO = { State, ApiClient, Views, router };
+function vCategorias() {
+  return `<div class="container page">
+  <div class="page-head"><span class="kicker">Passo 1 de 5 · Pré-filtro</span>
+   <h1>Selecione as categorias</h1>
+   <p>Escolha uma ou mais categorias macro para filtrar os fornecedores. Mínimo: 1 categoria (RF12). A seleção fica apenas em memória (transitória).</p></div>
+  ${stepperHTML(1)}
+  <div class="card card-pad">
+   <div class="toolbar">
+    <span class="count-chip ${state.categorias.length ? 'ok' : ''}" id="cat-count">${state.categorias.length} categoria(s) selecionada(s) · 11 disponíveis</span>
+    <div><button class="btn btn-ghost btn-sm" data-action="cat-all">Selecionar todas</button>
+    <button class="btn btn-ghost btn-sm" data-action="cat-none">Limpar</button></div>
+   </div>
+   <div class="cat-grid" role="group" aria-label="Categorias macro">
+    ${CATEGORIAS.map(c => `<label class="cat-card ${state.categorias.includes(c.id) ? 'sel' : ''}" data-catcard="${c.id}">
+      <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id) ? 'checked' : ''}>
+      <span class="ci">${c.ic}</span><span class="cn">${c.nome}</span></label>`).join('')}
+   </div>
+   <div class="tip">ℹ️ <b>Como funciona:</b> os fornecedores exibidos na próxima etapa pertencem às categorias selecionadas. Ex.: “Mercado” + “Eletrodomésticos” → Carrefour, Extra, Pão de Açúcar, Magazine Luiza, Casas Bahia…</div>
+   <div class="row-between mt">
+    <button class="btn btn-ghost" data-action="nav-home">← Voltar</button>
+    <div>
+     <button class="btn btn-pri btn-lg" id="btn-to-lista" data-action="to-lista" data-primary ${state.categorias.length ? '' : 'disabled'}>Continuar para a lista →</button>
+     ${state.categorias.length ? '' : `<div class="hint-disabled">⚠️ Selecione ao menos 1 categoria para continuar.</div>`}
+    </div>
+   </div>
+  </div></div>`;
+}
+
+function vLista() {
+  const un = state.lista.itens.reduce((s, i) => s + i.qtd, 0);
+  const logado = !!state.user;
+  return `<div class="container page">
+  <div class="page-head"><span class="kicker">Passo 2 de 5 · Lista de compras</span>
+   <h1>Monte sua lista</h1>
+   <p>Adicione produtos do catálogo e ajuste quantidades (1–9999). Armazenamento: <b>em memória / sessionStorage</b> até salvar.</p></div>
+  ${stepperHTML(2)}
+  <div class="two-col">
+   <div class="card card-pad">
+    <div class="row-between mb"><span class="mode-chip ${logado ? 'mode-db' : 'mode-eph'}">${logado ? '🔒 CONTA: ' + esc(state.user.nome_usuario) : '⚠ MODO EFÊMERO (visitante)'}</span>
+     <button class="btn btn-ghost btn-sm" data-action="demo-lista" title="Acelera a live demo">⚡ Preencher com a lista da Mariana (demo)</button></div>
+    <div class="field" id="f-nome">
+     <label for="nome-lista">Nome da lista <span class="req">*</span></label>
+     <input type="text" id="nome-lista" maxlength="100" value="${esc(state.lista.nome)}" placeholder="Ex.: Compras do Mês" autocomplete="off">
+     <div class="counter"><span id="nome-count">${state.lista.nome.length}</span>/100</div>
+     <div class="err-msg">Informe um nome para a lista.</div>
+    </div>
+    <div class="field searchbox">
+     <label for="busca">Adicionar produto — autocomplete (mín. 2 caracteres)</label>
+     <input type="text" id="busca" value="${esc(state.busca)}" placeholder="Digite para buscar no catálogo… ex.: arroz" autocomplete="off" role="combobox" aria-expanded="false">
+     <div id="sug-box"></div>
+    </div>
+    <h3 style="font-size:15px;margin:8px 0 10px">Itens da lista</h3>
+    <div id="itens-box">${itensTableHTML()}</div>
+   </div>
+   <aside class="card card-pad resumo"><h3>Resumo</h3>
+    <div class="res-line"><span>Produtos</span><b id="r-prod">${state.lista.itens.length}</b></div>
+    <div class="res-line"><span>Unidades totais</span><b id="r-un">${un}</b></div>
+    <div class="res-line"><span>Categorias filtradas</span><b>${state.categorias.length}</b></div>
+    <div class="res-line"><span>Modo</span><b>${logado ? 'Conta' : 'Efêmero'}</b></div>
+    <div class="actions-stack">
+     <button class="btn btn-pri btn-lg" id="btn-to-forn" data-action="to-fornecedores" data-primary ${state.lista.itens.length ? '' : 'disabled'}>Comparar preços →</button>
+     ${state.lista.itens.length ? '' : `<div class="hint-disabled">Adicione ao menos 1 item para comparar.</div>`}
+     <button class="btn btn-ghost" data-action="salvar-lista">${logado ? '💾 Salvar lista' : '💾 Salvar lista 🔒'}</button>
+    </div>
+    <div class="tip">💡 Visitantes podem comparar e exportar sem conta. A autenticação é exigida <b>apenas para salvar</b> (RF08) — o rascunho é preservado durante o login.</div>
+   </aside>
+  </div></div>`;
+}
+
+function itensTableHTML() {
+  if (!state.lista.itens.length) return `<div class="empty"><div class="big">🧺</div>Nenhum produto adicionado. Use a busca acima.</div>`;
+  return `<table class="tbl"><thead><tr><th>Produto</th><th style="width:130px">Qtd.</th><th style="width:80px">Un.</th><th style="width:44px"></th></tr></thead><tbody>
+   ${state.lista.itens.map((i, ix) => {
+    const p = PRODUTOS.find(x => x.id === i.pid);
+    return `<tr>
+     <td><b>${esc(p.nome)}</b></td>
+     <td><span class="qty"><button data-action="dec" data-ix="${ix}" aria-label="Diminuir">−</button>
+      <input type="text" inputmode="numeric" value="${i.qtd}" data-qtdix="${ix}" aria-label="Quantidade">
+      <button data-action="inc" data-ix="${ix}" aria-label="Aumentar">+</button></span></td>
+     <td class="muted">${p.un}</td>
+     <td><button class="icon-del" data-action="del-item" data-ix="${ix}" title="Remover item" aria-label="Remover ${esc(p.nome)}">✕</button></td></tr>`;
+   }).join('')}
+  </tbody></table>`;
+}
+
+function refreshListaUI() {
+  document.getElementById('itens-box').innerHTML = itensTableHTML();
+  const un = state.lista.itens.reduce((s, i) => s + i.qtd, 0);
+  document.getElementById('r-prod').textContent = state.lista.itens.length;
+  document.getElementById('r-un').textContent = un;
+  const b = document.getElementById('btn-to-forn');
+  if (b) {
+    b.disabled = !state.lista.itens.length;
+    const h = b.nextElementSibling;
+    if (h && h.classList.contains('hint-disabled')) h.style.display = state.lista.itens.length ? 'none' : 'flex';
+  }
+}
+
+function vFornecedores() {
+  return `<div class="container page">
+  <div class="page-head"><span class="kicker">Passo 3 de 5 · Fornecedores</span>
+   <h1>Escolha os fornecedores</h1>
+   <p>Selecione de <b>2 a 10</b> fornecedores (RF13). Apenas fornecedores das categorias escolhidas (${state.categorias.map(c => CATEGORIAS.find(x => x.id === c).nome).join(', ')}) são exibidos. O % indica a cobertura da sua lista.</p></div>
+  ${stepperHTML(3)}
+  <div class="card card-pad slider-box">
+   <div class="sl-head"><label for="slider-disp"><b>Filtro de disponibilidade (UC05)</b> — mostrar apenas fornecedores com cobertura mínima da lista</label>
+    <output id="slider-out">${state.filtroDisp}%</output></div>
+   <input type="range" id="slider-disp" min="0" max="100" step="5" value="${state.filtroDisp}" aria-label="Disponibilidade mínima">
+   <div class="sl-scale"><span>0% (todos)</span><span>50%</span><span>100%</span></div>
+  </div>
+  <div class="card card-pad">
+   <div class="toolbar">
+    <span class="count-chip ${state.fornecedores.length >= 2 ? 'ok' : ''}" id="forn-count">${state.fornecedores.length} selecionado(s) · mín 2 · máx 10</span>
+    <div><button class="btn btn-ghost btn-sm" data-action="forn-all">Selecionar todos</button>
+    <button class="btn btn-ghost btn-sm" data-action="forn-clear">Limpar</button></div>
+   </div>
+   <div id="forn-grid" class="forn-grid">${fornCardsHTML()}</div>
+   <div class="row-between mt">
+    <button class="btn btn-ghost" data-action="goto-step" data-step="lista">← Voltar à lista</button>
+    <div><button class="btn btn-pri btn-lg" id="btn-calc" data-action="calcular" data-primary ${state.fornecedores.length >= 2 ? '' : 'disabled'}>Calcular orçamento →</button>
+    ${state.fornecedores.length >= 2 ? '' : `<div class="hint-disabled">⚠️ Selecione ao menos 2 fornecedores.</div>`}</div>
+   </div>
+  </div></div>`;
+}
+
+function fornCardsHTML() {
+  const eleg = fornecedoresElegiveis();
+  if (!eleg.length) return `<div class="empty" style="grid-column:1/-1"><div class="big">🔎</div>Nenhum fornecedor disponível nas categorias selecionadas.<br>Tente incluir outras categorias.</div>`;
+  return eleg.map(f => {
+    const cov = Math.round(coberturaDe(f.id) * 100);
+    const passa = cov >= state.filtroDisp;
+    const sel = state.fornecedores.includes(f.id);
+    const cls = cov >= 80 ? 'cov-hi' : cov >= 40 ? 'cov-md' : 'cov-lo';
+    return `<label class="forn-card ${sel ? 'sel' : ''} ${passa ? '' : 'off'}" data-forncard="${f.id}">
+     <div class="forn-cb-row"><input type="checkbox" class="forn-cb" value="${f.id}" ${sel ? 'checked' : ''} ${passa ? '' : 'disabled'}>
+     <div style="flex:1"><div class="forn-top"><b>${f.nome}</b>
+       <span class="cov-badge ${cls}" title="Itens da sua lista disponíveis neste fornecedor">${cov}% da lista</span></div>
+      <div class="forn-cats">${f.cats.filter(c => state.categorias.includes(c)).map(c => `<span class="mini-tag">${CATEGORIAS.find(x => x.id === c).nome}</span>`).join('')}</div>
+     ${cov === 0 ? `<div class="small muted" style="margin-top:6px">⚠ Não possui itens da sua lista</div>` : ''}
+    </div></div></label>`;
+  }).join('');
+}
+
+function refreshFornecedores() {
+  document.getElementById('forn-grid').innerHTML = fornCardsHTML();
+  const c = document.getElementById('forn-count');
+  c.textContent = `${state.fornecedores.length} selecionado(s) · mín 2 · máx 10`;
+  c.classList.toggle('ok', state.fornecedores.length >= 2);
+  const b = document.getElementById('btn-calc');
+  b.disabled = state.fornecedores.length < 2;
+  const h = b.nextElementSibling;
+  if (h && h.classList.contains('hint-disabled')) h.style.display = state.fornecedores.length >= 2 ? 'none' : 'flex';
+}
+
+function vResultados() {
+  if (!state.resultado) return vFornecedores();
+  const R = state.resultado;
+  const W = R.winner;
+  const avg = Math.round(R.rows.reduce((s, r) => s + r.cobertura, 0) / R.rows.length * 100);
+  const eco = R.maxTotal - W.total;
+  return `<div class="container page">
+  <div class="page-head"><span class="kicker">Passo 4 de 5 · Resultados</span>
+   <h1>Comparação de preços</h1>
+   <p>Lista “${esc(state.lista.nome || '(sem nome)')}” · ${state.lista.itens.length} itens · ${R.rows.length} fornecedores. Ordenado pelo menor total (RF15); melhor oferta destacada (RF16).</p></div>
+  ${stepperHTML(4)}
+  <div class="kpis">
+   <div class="card kpi win"><div class="k">🏆 Melhor oferta</div><div class="v">${W.nome}</div><div class="s">${BRL(W.total)} · ${Math.round(W.cobertura * 100)}% da lista</div></div>
+   <div class="card kpi"><div class="k">💰 Menor preço</div><div class="v">${BRL(R.minTotal)}</div><div class="s">pode ter itens ausentes</div></div>
+   <div class="card kpi"><div class="k">📊 Economia potencial</div><div class="v">${BRL(eco > 0 ? eco : 0)}</div><div class="s">vs. maior total cotado</div></div>
+   <div class="card kpi"><div class="k">Disponibilidade média</div><div class="v">${avg}%</div><div class="s">${R.rows.length} fornecedores comparados</div></div>
+  </div>
+  <div class="card" style="overflow:auto">
+   <table class="tbl"><thead><tr><th style="width:44px">#</th><th>Fornecedor</th><th>Cobertura</th><th>Itens</th><th>Ausentes</th><th style="text-align:right">Preço total</th></tr></thead><tbody>
+   ${R.rows.map((r, i) => {
+    const isW = r.fid === W.fid;
+    const isMin = r.total === R.minTotal;
+    return `<tr class="${isW ? 'row-win' : ''}">
+     <td class="muted">${i + 1}</td>
+     <td><b>${r.nome}</b> ${isW ? `<span class="badge b-ok">🏆 Melhor oferta</span>` : ''} ${isMin && !isW ? `<span class="badge b-warn">💰 Menor preço</span>` : ''}</td>
+     <td><span class="cov-bar"><i style="width:${Math.round(r.cobertura * 100)}%"></i></span>${Math.round(r.cobertura * 100)}%</td>
+     <td>${r.nDisp} de ${state.lista.itens.length}</td>
+     <td>${r.parcial ? `<span class="badge b-warn" title="${r.ausentes.map(a => esc(PRODUTOS.find(p => p.id === a.pid).nome)).join('; ')}">⚠ ${r.ausentes.length} item(ns)</span>` : `<span class="muted">—</span>`}</td>
+     <td style="text-align:right;font-weight:800;font-variant-numeric:tabular-nums">${BRL(r.total)}${r.parcial ? ` <span class="badge b-mut" title="Total parcial: considera apenas itens disponíveis">parcial</span>` : ''}</td></tr>`;
+   }).join('')}
+   </tbody></table>
+  </div>
+  <div class="warn-banner"><span>⚠️</span><span><b>Atenção:</b> o menor preço pode não incluir todos os itens da sua lista. A melhor oferta considera a <b>maior cobertura</b>; em caso de empate, vence o <b>menor total</b> — verifique a coluna “Ausentes” (passe o mouse no badge).</span></div>
+  <div class="row-between">
+   <button class="btn btn-ghost" data-action="goto-step" data-step="fornecedores">← Editar fornecedores</button>
+   <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-ghost" data-action="print-a4">🖨️ Imprimir (A4)</button>
+    <button class="btn btn-ghost" data-action="export-pdf">📄 Exportar PDF</button>
+    <button class="btn btn-ok btn-lg" data-action="ver-vencedora" data-primary>🏆 Ver lista vencedora →</button>
+   </div>
+  </div>
+  <p class="rule-note">Regra da melhor oferta (monografia/RF16): maior percentual de cobertura da lista; empate → menor custo total. A comparação não é persistida (YAGNI).</p>
+ </div>`;
+}
+
+function vVencedora() {
+  if (!state.resultado) return vResultados();
+  const W = state.resultado.winner;
+  return `<div class="container page">
+  <div class="page-head"><span class="kicker">Passo 5 de 5 · Exportação</span>
+   <h1>Lista vencedora</h1>
+   <p>Conteúdo da sua lista <b>precificado pelo fornecedor campeão</b>, com total consolidado. É este documento que o PDF exporta (RF17) — nunca a tabela comparativa.</p></div>
+  ${stepperHTML(5)}
+  <div class="win-hero">
+   <div><span class="badge b-ok" style="margin-bottom:8px">🏆 MELHOR OFERTA · ${Math.round(W.cobertura * 100)}% DA LISTA</span>
+    <h2>${W.nome}</h2><div class="meta">CNPJ ${W.cnpj} · cotação de ${hoje()} · lista “${esc(state.lista.nome || '(sem nome)')}”</div></div>
+   <div style="text-align:right"><div class="muted small">Total consolidado</div>
+    <div style="font-size:30px;font-weight:800;font-variant-numeric:tabular-nums">${BRL(W.total)}</div>
+    ${W.parcial ? `<span class="badge b-warn">total parcial — há itens indisponíveis</span>` : `<span class="badge b-ok">todos os itens disponíveis</span>`}</div>
+  </div>
+  <div class="card" style="overflow:auto"><table class="tbl">
+   <thead><tr><th>Produto</th><th>Un.</th><th style="width:90px">Qtd.</th><th style="text-align:right">Preço unitário</th><th style="text-align:right">Subtotal</th></tr></thead><tbody>
+   ${state.lista.itens.map(i => {
+    const p = PRODUTOS.find(x => x.id === i.pid);
+    const tem = temOferta(W.fid, i.pid);
+    return tem ? `<tr><td><b>${esc(p.nome)}</b></td><td class="muted">${p.un}</td><td>${i.qtd}</td>
+     <td style="text-align:right">${BRL(preco(W.fid, i.pid))}</td>
+     <td style="text-align:right;font-weight:700">${BRL(preco(W.fid, i.pid) * i.qtd)}</td></tr>`
+     : `<tr style="opacity:.55"><td>${esc(p.nome)}</td><td class="muted">${p.un}</td><td>${i.qtd}</td>
+     <td colspan="2" style="text-align:right"><span class="badge b-warn">⚠ Indisponível neste fornecedor</span></td></tr>`;
+   }).join('')}
+   </tbody></table></div>
+  <div class="total-box"><span class="tl">Total consolidado da compra (${state.lista.itens.length} itens)</span><span class="tv">${BRL(W.total)}</span></div>
+  <div class="export-note">ℹ️ O arquivo <b>lista_${stamp()}.pdf</b> (A4, gerado no servidor via ReportLab) contém exatamente este documento: itens, preços unitários, subtotais e total consolidado.</div>
+  <div class="row-between mt">
+   <button class="btn btn-ghost" data-action="goto-step" data-step="resultados">← Voltar aos resultados</button>
+   <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-ghost btn-lg" data-action="print-a4">🖨️ Imprimir A4</button>
+    <button class="btn btn-pri btn-lg" data-action="export-pdf" data-primary>⬇ Exportar PDF — lista_${stamp()}.pdf</button>
+   </div>
+  </div></div>`;
+}
+
+function vLogin() {
+  const locked = Date.now() < state.lockedUntil;
+  return `<div class="container page"><div class="auth-wrap"><div class="card auth-card">
+   <span class="step-pill">Autenticação</span><h1>Entre na sua conta</h1>
+   <p class="sub">Acesse suas listas salvas. A autenticação só é exigida para <b>salvar</b> listas.</p>
+   <div class="demo-hint"><span>🎬 <b>Demo:</b> mariana / Comida123!</span><button class="linklike" data-action="demo-login-fill" type="button">preencher</button></div>
+   <form id="form-login" novalidate>
+    <div class="field" id="fl-u"><label>Nome de usuário</label><input type="text" id="l-user" autocomplete="username"><div class="err-msg">Informe o nome de usuário.</div></div>
+    <div class="field" id="fl-p"><label>Senha</label><input type="password" id="l-pass" autocomplete="current-password"><div class="err-msg">Informe a senha.</div></div>
+    ${locked ? `<div class="warn-banner"><span>🔒</span><span>Muitas tentativas. Acesso bloqueado por 15 minutos (RF02, anti-força bruta).<br><button class="linklike" type="button" data-action="reset-lock">(modo demo: zerar bloqueio)</button></span></div>` : ''}
+    <button class="btn btn-pri btn-lg" style="width:100%" ${locked ? 'disabled' : ''} data-primary>Entrar</button>
+    <p class="small muted mt" style="text-align:center">6 tentativas consecutivas → bloqueio de 15 min · mensagem sempre genérica (segurança)</p>
+   </form>
+   <div class="auth-foot"><a href="#" data-action="page-recuperar">Esqueci minha senha</a> · Ainda não possui conta? <a href="#" data-action="page-cadastro">Criar conta</a></div>
+  </div></div></div>`;
+}
+
+function vCadastro() {
+  return `<div class="container page"><div class="auth-wrap" style="max-width:520px"><div class="card auth-card">
+   <span class="step-pill">Cadastro · UC09</span><h1>Criar conta</h1><p class="sub">Preencha seus dados para salvar listas. Leva menos de um minuto.</p>
+   <form id="form-cad" novalidate>
+    <div class="field" id="fc-u"><label>Username <span class="req">*</span></label><input type="text" id="c-user" placeholder="3–30 caracteres alfanuméricos, único"><div class="err-msg" id="fc-u-e">Username inválido (3–30 alfanuméricos) ou já cadastrado.</div></div>
+    <div class="field" id="fc-n"><label>Nome completo <span class="req">*</span></label><input type="text" id="c-nome" placeholder="2–100 caracteres"><div class="err-msg">Nome deve ter de 2 a 100 caracteres.</div></div>
+    <div class="field" id="fc-e"><label>Email <span class="req">*</span></label><input type="email" id="c-email" placeholder="voce@exemplo.com"><div class="err-msg">Email inválido ou já cadastrado.</div></div>
+    <div class="field" id="fc-s"><label>Senha <span class="req">*</span></label><input type="password" id="c-senha" placeholder="Mín. 8 · 1 maiúscula · 1 número · 1 especial"><div class="err-msg">Senha fraca: mín. 8, 1 maiúscula, 1 número e 1 caractere especial.</div></div>
+    <div class="field" id="fc-c"><label>Confirmar senha <span class="req">*</span></label><input type="password" id="c-conf"><div class="err-msg">As senhas não coincidem.</div></div>
+    <div class="field" id="fc-p"><label>Pergunta de segurança <span class="req">*</span></label>
+     <select id="c-perg"><option value="">Selecione…</option>${Object.entries(PERGUNTAS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select>
+     <div class="err-msg">Selecione uma pergunta (usada na recuperação de senha).</div></div>
+    <div class="field" id="fc-r"><label>Resposta <span class="req">*</span></label><input type="text" id="c-resp" placeholder="mín. 3 caracteres"><div class="err-msg">Resposta muito curta (mín. 3).</div></div>
+    <button class="btn btn-pri btn-lg" style="width:100%" data-primary>Criar conta</button>
+    <p class="small muted mt" style="text-align:center">Validação inline · mensagens genéricas para duplicados · senha com hash bcrypt (simulado)</p>
+   </form>
+   <div class="auth-foot">Já tenho conta · <a href="#" data-action="page-login">Entrar</a></div>
+  </div></div></div>`;
+}
+
+function vRecuperar() {
+  let body = '';
+  if (state.recStep === 1) {
+    body = `<form id="form-rec1" novalidate><div class="field" id="fr-u"><label>Nome de usuário</label>
+     <input type="text" id="r-user" placeholder="seu username"><div class="err-msg">Usuário não encontrado.</div></div>
+   <button class="btn btn-pri btn-lg" style="width:100%" data-primary>Continuar →</button></form>
+   <p class="small muted mt">⚠️ Máx. 3 tentativas por etapa · 3 solicitações/hora (rate limit). Modo dev: token também seria logado no stdout (RECOVERY_MODE=log).</p>`;
+  } else if (state.recStep === 2) {
+    const u = USERS.find(x => x.nome_usuario === state.recUser);
+    body = `<p class="small muted mb">Responda para gerar o token de reset (uso único · 15 min):</p>
+   <form id="form-rec2" novalidate><div class="field" id="fr-r"><label>${PERGUNTAS[u.pergunta]}</label>
+    <input type="text" id="r-resp" placeholder="sua resposta (demo: Thor)"><div class="err-msg">Resposta incorreta. Tentativas restantes serão limitadas (3).</div></div>
+   <button class="btn btn-pri btn-lg" style="width:100%" data-primary>Validar resposta →</button></form>`;
+  } else {
+    body = `<p class="small muted mb">Token válido ✔ (uso único, 15 min). Defina a nova senha — regras do RF01 e diferente da atual.</p>
+   <form id="form-rec3" novalidate>
+    <div class="field" id="fr-s"><label>Nova senha</label><input type="password" id="r-senha"><div class="err-msg">Senha fraca ou igual à anterior.</div></div>
+    <div class="field" id="fr-c"><label>Confirmar nova senha</label><input type="password" id="r-conf"><div class="err-msg">As senhas não coincidem.</div></div>
+   <button class="btn btn-pri btn-lg" style="width:100%" data-primary>Redefinir senha</button></form>`;
+  }
+  return `<div class="container page"><div class="auth-wrap"><div class="card auth-card">
+   <span class="step-pill">Recuperação · passo ${state.recStep} de 3</span>
+   <h1>Recuperar senha</h1><p class="sub">Via pergunta de segurança (contexto acadêmico, sem envio de email).</p>
+   ${body}<div class="auth-foot"><a href="#" data-action="page-login">← Voltar ao login</a></div>
+  </div></div></div>`;
+}
+
+function vDashboard() {
+  if (!state.user) return vLogin();
+  const q = (state.dashQ || '').toLowerCase();
+  let lists = (LISTAS[state.user.nome_usuario] || []).slice().sort((a, b) => b.criado_em.localeCompare(a.criado_em));
+  if (q) lists = lists.filter(l => norm(l.nome).includes(norm(q)));
+  return `<div class="container page">
+  <div class="page-head row-between"><div><span class="kicker">Área logada · UC15</span><h1>Minhas listas</h1>
+   <p>Listas salvas de <b>${esc(state.user.nome_usuario)}</b>, ordenadas da mais recente para a mais antiga · paginação de 20 (demo com ${lists.length}).</p></div>
+   <button class="btn btn-pri" data-action="nav-nova">+ Nova lista</button></div>
+  <div class="card card-pad">
+   <div class="toolbar"><input type="text" id="dash-q" value="${esc(state.dashQ || '')}" placeholder="🔍 Buscar por nome…" style="padding:10px 13px;border:1px solid #cbd5e1;border-radius:10px;min-width:300px" aria-label="Buscar listas por nome">
+    <span class="count-chip">${lists.length} lista(s)</span></div>
+   ${lists.length ? `<table class="tbl"><thead><tr><th>Nome</th><th>Itens</th><th>Categorias</th><th>Criada em</th><th style="width:190px">Ações</th></tr></thead><tbody>
+   ${lists.map(l => `<tr><td><b>${esc(l.nome)}</b></td><td>${l.itens.length} produtos</td>
+   <td>${(l.categorias || []).map(c => `<span class="mini-tag">${CATEGORIAS.find(x => x.id === c).nome}</span>`).join(' ') || '—'}</td>
+   <td class="muted">${l.criado_em}</td>
+   <td><button class="btn btn-ghost btn-sm" data-action="editar-lista" data-id="${l.id}">✏️ Editar</button>
+   <button class="btn btn-danger btn-sm" data-action="excluir-lista" data-id="${l.id}">🗑 Excluir</button></td></tr>`).join('')}
+   </tbody></table><p class="small muted mt">Mostrando ${lists.length} de ${lists.length} listas · « 1 » · exclusão é lógica (soft delete)</p>`
+   : `<div class="empty"><div class="big">🗂️</div>Você ainda não tem listas salvas.<br><br><button class="btn btn-pri" data-action="nav-nova">Criar lista</button></div>`}
+  </div></div>`;
+}
+
+function vPerfil() {
+  if (!state.user) return vLogin();
+  const u = USERS.find(x => x.nome_usuario === state.user.nome_usuario);
+  const edit = state.perfilEdit;
+  return `<div class="container page"><div class="auth-wrap" style="max-width:560px">
+  <div class="page-head"><span class="kicker">Perfil · UC18/UC16</span><h1>Meu perfil</h1>
+   <p>Visualize seus dados e edite nome, email ou senha — qualquer alteração exige a senha atual (RF06).</p></div>
+  <div class="card card-pad">
+   <div class="res-line"><span>Username</span><b>🔒 ${esc(u.nome_usuario)} <span class="badge b-mut">read-only</span></b></div>
+   <div class="res-line"><span>Nome completo</span><b>${esc(u.nome)}</b></div>
+   <div class="res-line"><span>Email</span><b>${esc(u.email)}</b></div>
+   <div class="res-line"><span>Conta criada em</span><b>${u.criado_em}</b></div>
+   ${!edit ? `<div class="row-between mt">
+     <button class="btn btn-ghost" data-action="sair">🚪 Logout</button>
+     <button class="btn btn-pri" data-action="perfil-editar" data-primary>✏️ Editar perfil</button></div>`
+     : `<form id="form-perfil" novalidate class="mt">
+     <div class="field" id="fp-n"><label>Novo nome</label><input type="text" id="p-nome" value="${esc(u.nome)}"><div class="err-msg">Nome deve ter de 2 a 100 caracteres.</div></div>
+     <div class="field" id="fp-e"><label>Novo email</label><input type="email" id="p-email" value="${esc(u.email)}"><div class="err-msg">Email inválido ou já cadastrado.</div></div>
+     <div class="field" id="fp-a"><label>Senha atual <span class="req">*</span></label><input type="password" id="p-atual"><div class="err-msg">Senha atual incorreta.</div></div>
+     <div class="field" id="fp-s"><label>Nova senha (opcional)</label><input type="password" id="p-nova" placeholder="deixe em branco para manter"><div class="err-msg">Senha fraca ou igual à atual.</div></div>
+     <div class="row-between"><button class="btn btn-ghost" type="button" data-action="perfil-cancelar">Cancelar</button>
+     <button class="btn btn-ok" data-primary>💾 Salvar alterações</button></div>
+     <p class="small muted mt">Transação ACID simulada: email/nome/senha atualizam juntos ou nada muda.</p></form>`}
+  </div></div></div>`;
+}
+
+// ============================================================
+// PDF / IMPRESSÃO — sempre a LISTA VENCEDORA (premissa)
+// ============================================================
+function sheetHTML() {
+  const W = state.resultado.winner;
+  const rows = state.lista.itens.map(i => {
+    const p = PRODUTOS.find(x => x.id === i.pid);
+    const tem = temOferta(W.fid, i.pid);
+    return { nome: p.nome, un: p.un, qtd: i.qtd, preco: tem ? preco(W.fid, i.pid) : null };
+  });
+  return `<div class="a4-sheet" id="a4-sheet">
+   <div class="a4-head"><div class="brand">🛒 COBECO<small>COTAÇÃO DE BENS DE CONSUMO</small></div>
+    <div class="doc"><b>LISTA VENCEDORA — COTAÇÃO</b><br>Arquivo: lista_${stamp()}.pdf<br>Formato A4 · ${hoje()}</div></div>
+   <div class="a4-meta">
+    <span>Lista: <b>${esc(state.lista.nome || '(sem nome)')}</b></span>
+    <span>Fornecedor vencedor: <b>${W.nome}</b> (CNPJ ${W.cnpj})</span>
+    <span>Itens: <b>${state.lista.itens.length}</b> · Unidades: <b>${rows.reduce((s, r) => s + r.qtd, 0)}</b></span>
+    <span>Cobertura da lista: <b>${Math.round(W.cobertura * 100)}%</b>${W.parcial ? ' (total parcial)' : ''}</span>
+   </div>
+   <table class="a4-tbl"><thead><tr><th style="width:34px">#</th><th>Produto</th><th style="width:50px">Un.</th>
+    <th class="num" style="width:60px">Qtd.</th><th class="num" style="width:110px">Preço unitário</th><th class="num" style="width:110px">Subtotal</th></tr></thead>
+   <tbody>${rows.map((r, ix) => `<tr><td>${ix + 1}</td><td>${esc(r.nome)}</td><td>${r.un}</td><td class="num">${r.qtd}</td>
+    <td class="num">${r.preco != null ? BRL(r.preco) : '—'}</td><td class="num">${r.preco != null ? BRL(r.preco * r.qtd) : '⚠ indisponível'}</td></tr>`).join('')}</tbody></table>
+   <div class="a4-total"><span><b>TOTAL CONSOLIDADO DA COMPRA</b> — preços de ${W.nome}</span><b>${BRL(W.total)}</b></div>
+   ${W.parcial ? `<p style="font-size:11px;color:#7a4a00;margin-bottom:10px">⚠ Itens indisponíveis no vencedor: ${W.ausentes.map(a => esc(PRODUTOS.find(p => p.id === a.pid).nome)).join('; ')}. Total calculado sobre itens disponíveis.</p>` : ''}
+   <div class="a4-foot"><span>Gerado por COBECO · protótipo MVP v3.2 · PDF server-side simulado (ReportLab)</span><span>Documento de cotação — sem valor fiscal</span></div>
+  </div>`;
+}
+
+function exportPDF() {
+  if (!state.resultado) { showToast('Compare os preços antes de exportar.', 'warn'); return; }
+  showToast('⏳ Gerando PDF no servidor (ReportLab)…', 'info');
+  setTimeout(() => {
+    state.flags.pdf = true;
+    openModal(`<button class="x" data-action="close-modal" aria-label="Fechar">✕</button>
+     <h3>📄 PDF gerado com sucesso</h3>
+     <p class="small muted mb">Pré-visualização de <b>lista_${stamp()}.pdf</b> — lista vencedora precificada + total consolidado (RF17/RNF11: &lt;5s).</p>
+     <div style="max-height:56vh;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#eef0f3;padding:16px">${sheetHTML()}</div>
+     <div class="modal-actions">
+      <button class="btn btn-ghost" data-action="close-modal">Fechar</button>
+      <button class="btn btn-pri" data-action="baixar-pdf" data-primary>⬇ Baixar lista_${stamp()}.pdf</button>
+     </div>`);
+    renderJourney();
+  }, 900);
+}
+
+function printWinner() {
+  if (!state.resultado) { showToast('Compare os preços antes de imprimir.', 'warn'); return; }
+  document.getElementById('print-area').innerHTML = sheetHTML();
+  setTimeout(() => window.print(), 60);
+}
+
+// ============================================================
+// REGRAS DE LOGIN / LISTA (core)
+// ============================================================
+function loginCore(user, pass, after) {
+  if (Date.now() < state.lockedUntil) { showToast('🔒 Conta bloqueada temporariamente (6 tentativas).', 'err'); return false; }
+  const u = USERS.find(x => x.nome_usuario === user);
+  if (!u || u.senha !== pass) {
+    state.attempts++;
+    if (state.attempts >= 6) {
+      state.lockedUntil = Date.now() + 15 * 60 * 1000;
+      state.attempts = 0;
+      showToast('🔒 6 tentativas falhas — bloqueio de 15 minutos (RF02).', 'err');
+    } else {
+      showToast('Credenciais inválidas. (mensagem genérica · tentativa ' + state.attempts + '/6)', 'err');
+    }
+    return false;
+  }
+  state.attempts = 0;
+  state.user = u;
+  showToast('✅ Bem-vinda(o), ' + u.nome.split(' ')[0] + '! Sessão ativa — token em memória, cookie httpOnly simulado.', 'ok');
+  return true;
+}
+
+function afterLogin() {
+  const hasEph = state.lista.itens.length > 0;
+  if (hasEph) {
+    openModal(`<button class="x" data-action="close-modal" aria-label="Fechar">✕</button>
+     <h3>💾 Salvar lista efêmera?</h3>
+     <p class="small" style="margin:8px 0">Você tem uma lista ativa na sessão: <b>“${esc(state.lista.nome || '(sem nome)')}” · ${state.lista.itens.length} itens</b>. Deseja salvá-la permanentemente na sua conta? (UC17 — Promover Lista Efêmera)</p>
+     <p class="small warn-banner" style="margin:10px 0"><span>⚠️</span><span>Se escolher “Não”, a lista permanece em memória e será perdida ao fechar a aba.</span></p>
+     <div class="modal-actions"><button class="btn btn-ghost" data-action="promote-no">Não, manter efêmera</button>
+     <button class="btn btn-ok" data-action="promote-yes" data-primary>Sim, salvar lista</button></div>`);
+  } else {
+    go('dashboard');
+  }
+}
+
+function salvarListaCore() {
+  if (!state.lista.nome.trim()) { showToast('Informe um nome para a lista.', 'err'); return false; }
+  if (!state.lista.itens.length) { showToast('A lista precisa de ao menos 1 item.', 'err'); return false; }
+  if (!state.categorias.length) { showToast('Selecione ao menos 1 categoria antes de salvar (UC03).', 'err'); return false; }
+  const db = LISTAS[state.user.nome_usuario] = LISTAS[state.user.nome_usuario] || [];
+  const snap = { nome: state.lista.nome, itens: state.lista.itens.map(i => ({ ...i })), categorias: [...state.categorias] };
+  if (state.listaEditId) {
+    const l = db.find(x => x.id === state.listaEditId);
+    Object.assign(l, snap);
+    showToast('✅ Lista atualizada (transação ACID simulada).', 'ok');
+  } else {
+    db.push({ id: ++listSeq, criado_em: hoje(), ...snap });
+    state.listaEditId = listSeq;
+    state.flags.saved = true;
+    showToast('✅ Lista salva com sucesso! Persistida no banco (simulado).', 'ok');
+  }
+  persistEph();
+  renderJourney();
+  return true;
+}
+
+// ============================================================
+// AÇÕES — clique delegado
+// ============================================================
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const a = el.dataset.action;
+  e.preventDefault();
+  switch (a) {
+    case 'overlay-click': if (e.target === el) closeModal(); break;
+    case 'close-modal': closeModal(); break;
+    case 'nav-home': go('home'); break;
+    case 'nav-nova': go(state.categorias.length ? 'lista' : 'categorias'); break;
+    case 'nav-listas': state.user ? go('dashboard') : (go('login'), showToast('Entre para acessar suas listas.', 'warn')); break;
+    case 'nav-perfil': state.user ? go('perfil') : go('login'); break;
+    case 'page-login': go('login'); break;
+    case 'page-cadastro': go('cadastro'); break;
+    case 'page-recuperar': state.recStep = 1; go('recuperar'); break;
+    case 'sair': {
+      const hadEph = state.lista.itens.length > 0;
+      state.user = null;
+      state.perfilEdit = false;
+      showToast('Sessão encerrada. ' + (hadEph ? 'Rascunho da aba preservado (RF03).' : ''), 'info');
+      go('home');
+      break;
+    }
+    case 'cat-all': state.categorias = CATEGORIAS.map(c => c.id); render(); break;
+    case 'cat-none': state.categorias = []; render(); break;
+    case 'to-lista': if (!state.categorias.length) { showToast('Selecione ao menos 1 categoria.', 'err'); break; } go('lista'); break;
+    case 'goto-step': {
+      const s = el.dataset.step;
+      if (s === 'lista' && !state.categorias.length) { go('categorias'); break; }
+      if ((s === 'fornecedores' || s === 'resultados') && !state.lista.itens.length) { go('lista'); break; }
+      if (s === 'resultados' && !state.resultado) { go('fornecedores'); break; }
+      go(s);
+      break;
+    }
+    case 'demo-lista':
+      state.lista = { nome: 'Compras do Mês', itens: [{ pid: 1, qtd: 2 }, { pid: 2, qtd: 2 }, { pid: 3, qtd: 3 }, { pid: 4, qtd: 2 }, { pid: 5, qtd: 2 }, { pid: 6, qtd: 6 }] };
+      if (!state.categorias.length) state.categorias = [1];
+      persistEph(); render();
+      showToast('⚡ Lista da Mariana preenchida: 6 produtos de mercado.', 'ok');
+      break;
+    case 'inc':
+    case 'dec': {
+      const ix = +el.dataset.ix;
+      const it = state.lista.itens[ix];
+      it.qtd = Math.min(9999, Math.max(1, it.qtd + (a === 'inc' ? 1 : -1)));
+      persistEph(); refreshListaUI();
+      break;
+    }
+    case 'del-item': state.lista.itens.splice(+el.dataset.ix, 1); persistEph(); refreshListaUI(); break;
+    case 'to-fornecedores':
+      if (!state.lista.itens.length) { showToast('Adicione ao menos 1 item.', 'err'); break; }
+      go('fornecedores');
+      break;
+    case 'forn-all':
+      state.fornecedores = fornecedoresElegiveis().filter(f => coberturaDe(f.id) * 100 >= state.filtroDisp).map(f => f.id).slice(0, 10);
+      refreshFornecedores();
+      break;
+    case 'forn-clear': state.fornecedores = []; refreshFornecedores(); break;
+    case 'calcular': {
+      if (state.fornecedores.length < 2) { showToast('Selecione ao menos 2 fornecedores.', 'err'); break; }
+      const btn = el;
+      btn.disabled = true;
+      btn.textContent = '⏳ Calculando orçamento…';
+      setTimeout(() => {
+        calcularResultado();
+        go('resultados');
+        showToast('✅ Comparação concluída em ~180ms (meta p95 <500ms). Melhor oferta: ' + state.resultado.winner.nome + '.', 'ok');
+      }, 700);
+      break;
+    }
+    case 'ver-vencedora': go('vencedora'); break;
+    case 'export-pdf': exportPDF(); break;
+    case 'baixar-pdf':
+      document.getElementById('print-area').innerHTML = sheetHTML();
+      setTimeout(() => window.print(), 80);
+      break;
+    case 'print-a4': printWinner(); break;
+    case 'salvar-lista': {
+      if (!state.user) {
+        openModal(`<button class="x" data-action="close-modal" aria-label="Fechar">✕</button>
+         <h3>🔒 Entre para salvar sua lista</h3>
+         <p class="small muted mb">Sua lista permanece aqui enquanto você entra (RF08 — rascunho preservado).</p>
+         <div class="demo-hint"><span>🎬 <b>Demo:</b> mariana / Comida123!</span><button class="linklike" type="button" data-action="demo-modal-fill">preencher</button></div>
+         <form id="form-login-modal" novalidate>
+          <div class="field"><label>Nome de usuário</label><input type="text" id="m-user"></div>
+          <div class="field"><label>Senha</label><input type="password" id="m-pass"></div>
+          <button class="btn btn-pri btn-lg" style="width:100%" data-primary>Entrar e salvar</button></form>
+         <div class="auth-foot"><a href="#" data-action="close-modal">Cancelar</a> · <a href="#" data-action="goto-cad-from-modal">Criar conta</a></div>`);
+      } else {
+        if (salvarListaCore()) go('dashboard');
+      }
+      break;
+    }
+    case 'goto-cad-from-modal': closeModal(); go('cadastro'); break;
+    case 'demo-modal-fill': document.getElementById('m-user').value = 'mariana'; document.getElementById('m-pass').value = 'Comida123!'; break;
+    case 'demo-login-fill': document.getElementById('l-user').value = 'mariana'; document.getElementById('l-pass').value = 'Comida123!'; break;
+    case 'reset-lock': state.lockedUntil = 0; render(); break;
+    case 'promote-yes': closeModal(); if (salvarListaCore()) go('dashboard'); break;
+    case 'promote-no': closeModal(); showToast('Lista mantida em memória (efêmera).', 'info'); go('dashboard'); break;
+    case 'editar-lista': {
+      const l = (LISTAS[state.user.nome_usuario] || []).find(x => x.id === +el.dataset.id);
+      if (!l) break;
+      state.listaEditId = l.id;
+      state.lista = { nome: l.nome, itens: l.itens.map(i => ({ ...i })) };
+      state.categorias = [...(l.categorias || [])];
+      persistEph(); go('lista');
+      showToast('✏️ Editando “' + l.nome + '”. Ao salvar, os dados serão atualizados (UC13).', 'info');
+      break;
+    }
+    case 'excluir-lista': {
+      const id = +el.dataset.id;
+      const l = (LISTAS[state.user.nome_usuario] || []).find(x => x.id === id);
+      openModal(`<button class="x" data-action="close-modal" aria-label="Fechar">✕</button>
+       <h3>🗑️ Confirmar exclusão</h3>
+       <p class="small" style="margin:8px 0">Esta ação não pode ser desfeita (na demo). Digite o nome da lista para confirmar (RF11):</p>
+       <div class="field"><label>“${esc(l.nome)}”</label><input type="text" id="excl-nome" placeholder="digite o nome exato" autocomplete="off"></div>
+       <div class="modal-actions"><button class="btn btn-ghost" data-action="close-modal">Cancelar</button>
+       <button class="btn btn-danger" id="btn-excl" data-action="confirmar-exclusao" data-id="${id}" disabled>Excluir permanentemente</button></div>`);
+      break;
+    }
+    case 'confirmar-exclusao': {
+      const id = +el.dataset.id;
+      const db = LISTAS[state.user.nome_usuario] || [];
+      const ix = db.findIndex(x => x.id === id);
+      if (ix >= 0) db.splice(ix, 1);
+      closeModal();
+      showToast('🗑 Lista excluída (soft delete simulado — deletado_em).', 'ok');
+      render();
+      break;
+    }
+    case 'perfil-editar': state.perfilEdit = true; render(); break;
+    case 'perfil-cancelar': state.perfilEdit = false; render(); break;
+    case 'journey-toggle': document.getElementById('journey').classList.toggle('min'); break;
+    case 'journey-next': {
+      const p = document.querySelector('[data-primary]');
+      if (p) {
+        p.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        p.classList.remove('pulse');
+        void p.offsetWidth;
+        p.classList.add('pulse');
+        p.focus({ preventScroll: true });
+      } else {
+        showToast('Nenhuma ação disponível neste ponto.', 'info');
+      }
+      break;
+    }
+  }
+});
+
+// ============================================================
+// SUBMITS
+// ============================================================
+document.addEventListener('submit', (e) => {
+  const id = e.target.id;
+  if (!id) return;
+  e.preventDefault();
+  const val = (x) => { const n = document.getElementById(x); return n ? n.value.trim() : ''; };
+  const bad = (fid) => { const f = document.getElementById(fid); if (f) f.classList.add('invalid'); };
+  const clear = (fid) => { const f = document.getElementById(fid); if (f) f.classList.remove('invalid'); };
+
+  if (id === 'form-login' || id === 'form-login-modal') {
+    const u = id === 'form-login' ? val('l-user') : val('m-user');
+    const p = id === 'form-login' ? val('l-pass') : val('m-pass');
+    if (!u || !p) { showToast('Informe usuário e senha.', 'err'); return; }
+    if (loginCore(u, p)) { closeModal(); afterLogin(); } else if (id === 'form-login') render();
+  }
+  else if (id === 'form-cad') {
+    let ok = true;
+    ['fc-u', 'fc-n', 'fc-e', 'fc-s', 'fc-c', 'fc-p', 'fc-r'].forEach(clear);
+    const u = val('c-user'), n = val('c-nome'), em = val('c-email'), s = val('c-senha'), c = val('c-conf'), pg = val('c-perg'), r = val('c-resp');
+    if (!/^[a-zA-Z0-9]{3,30}$/.test(u) || USERS.some(x => x.nome_usuario === u)) { bad('fc-u'); ok = false; }
+    if (n.length < 2 || n.length > 100) { bad('fc-n'); ok = false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em) || USERS.some(x => x.email === em)) { bad('fc-e'); ok = false; }
+    if (!(s.length >= 8 && /[A-Z]/.test(s) && /\d/.test(s) && /[^A-Za-z0-9]/.test(s))) { bad('fc-s'); ok = false; }
+    if (c !== s) { bad('fc-c'); ok = false; }
+    if (!pg) { bad('fc-p'); ok = false; }
+    if (r.length < 3) { bad('fc-r'); ok = false; }
+    if (!ok) { showToast('Verifique os campos destacados.', 'err'); return; }
+    USERS.push({ nome_usuario: u, nome: n, email: em, senha: s, pergunta: pg, resposta: r, criado_em: hoje() });
+    showToast('✅ Conta criada com sucesso! Agora faça login. (201 Created)', 'ok');
+    go('login');
+  }
+  else if (id === 'form-rec1') {
+    const u = val('r-user'); clear('fr-u');
+    if (!USERS.some(x => x.nome_usuario === u)) { bad('fr-u'); showToast('Usuário não encontrado.', 'err'); return; }
+    state.recUser = u; state.recStep = 2; render();
+  }
+  else if (id === 'form-rec2') {
+    const u = USERS.find(x => x.nome_usuario === state.recUser); clear('fr-r');
+    if (val('r-resp').toLowerCase() !== u.resposta.toLowerCase()) { bad('fr-r'); showToast('Resposta incorreta (máx. 3 tentativas).', 'err'); return; }
+    showToast('✔ Resposta validada. Token de reset emitido (uso único · 15 min).', 'ok'); state.recStep = 3; render();
+  }
+  else if (id === 'form-rec3') {
+    const u = USERS.find(x => x.nome_usuario === state.recUser); let ok = true; ['fr-s', 'fr-c'].forEach(clear);
+    const s = val('r-senha'), c = val('r-conf');
+    if (!(s.length >= 8 && /[A-Z]/.test(s) && /\d/.test(s) && /[^A-Za-z0-9]/.test(s)) || s === u.senha) { bad('fr-s'); ok = false; }
+    if (c !== s) { bad('fc-c'); ok = false; }
+    if (!ok) { showToast('Verifique a nova senha.', 'err'); return; }
+    u.senha = s; state.recStep = 1; showToast('✅ Senha redefinida! Faça login com a nova senha.', 'ok'); go('login');
+  }
+  else if (id === 'form-perfil') {
+    const u = USERS.find(x => x.nome_usuario === state.user.nome_usuario); let ok = true; ['fp-n', 'fp-e', 'fp-a', 'fp-s'].forEach(clear);
+    const n = val('p-nome'), em = val('p-email'), at = val('p-atual'), nv = val('p-nova');
+    if (n.length < 2 || n.length > 100) { bad('fp-n'); ok = false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em) || USERS.some(x => x.email === em && x.nome_usuario !== u.nome_usuario)) { bad('fp-e'); ok = false; }
+    if (at !== u.senha) { bad('fp-a'); ok = false; }
+    if (nv && (!(nv.length >= 8 && /[A-Z]/.test(nv) && /\d/.test(nv) && /[^A-Za-z0-9]/.test(nv)) || nv === u.senha)) { bad('fp-s'); ok = false; }
+    if (!ok) { showToast('Verifique os campos destacados.', 'err'); return; }
+    u.nome = n; u.email = em; if (nv) u.senha = nv; state.perfilEdit = false;
+    showToast('✅ Perfil atualizado (transação ACID simulada).', 'ok'); render();
+  }
+});
+
+// ============================================================
+// INPUTS
+// ============================================================
+document.addEventListener('input', (e) => {
+  const t = e.target;
+  if (t.id === 'nome-lista') {
+    state.lista.nome = t.value; persistEph();
+    const c = document.getElementById('nome-count');
+    if (c) c.textContent = t.value.length;
+  }
+  else if (t.id === 'busca') { state.busca = t.value; updateSugestoes(); }
+  else if (t.id === 'slider-disp') {
+    state.filtroDisp = +t.value;
+    document.getElementById('slider-out').textContent = t.value + '%';
+    const removed = state.fornecedores.filter(f => coberturaDe(f.id) * 100 < state.filtroDisp);
+    if (removed.length) {
+      state.fornecedores = state.fornecedores.filter(f => coberturaDe(f.id) * 100 >= state.filtroDisp);
+      showToast(removed.length + ' fornecedor(es) removido(s) da seleção pelo filtro (UC05).', 'warn');
+    }
+    refreshFornecedores();
+  }
+  else if (t.id === 'dash-q') {
+    state.dashQ = t.value; render();
+    const i = document.getElementById('dash-q');
+    i.focus(); i.setSelectionRange(i.value.length, i.value.length);
+  }
+  else if (t.id === 'excl-nome') {
+    const id = +document.getElementById('btn-excl').dataset.id;
+    const l = (LISTAS[state.user.nome_usuario] || []).find(x => x.id === id);
+    document.getElementById('btn-excl').disabled = t.value.trim() !== l.nome;
+  }
+  else if (t.dataset.qtdix !== undefined) {
+    const ix = +t.dataset.qtdix;
+    let v = parseInt(t.value, 10);
+    if (isNaN(v)) v = 1;
+    v = Math.min(9999, Math.max(1, v));
+    state.lista.itens[ix].qtd = v; persistEph();
+  }
+});
+
+document.addEventListener('change', (e) => {
+  const t = e.target;
+  if (t.classList.contains('cat-cb')) {
+    const id = +t.value;
+    state.categorias = state.categorias.includes(id) ? state.categorias.filter(x => x !== id) : [...state.categorias, id];
+    const card = t.closest('[data-catcard]');
+    if (card) card.classList.toggle('sel', state.categorias.includes(id));
+    const c = document.getElementById('cat-count');
+    c.textContent = state.categorias.length + ' categoria(s) selecionada(s) · 11 disponíveis';
+    c.classList.toggle('ok', state.categorias.length > 0);
+    const b = document.getElementById('btn-to-lista');
+    b.disabled = !state.categorias.length;
+    const h = b.nextElementSibling;
+    if (h && h.classList.contains('hint-disabled')) h.style.display = state.categorias.length ? 'none' : 'flex';
+  }
+  else if (t.classList.contains('forn-cb')) {
+    const id = +t.value;
+    if (state.fornecedores.length >= 10 && !state.fornecedores.includes(id)) { showToast('Máximo de 10 fornecedores (RF13).', 'warn'); t.checked = false; return; }
+    state.fornecedores = state.fornecedores.includes(id) ? state.fornecedores.filter(x => x !== id) : [...state.fornecedores, id];
+    const card = t.closest('[data-forncard]');
+    if (card) card.classList.toggle('sel', state.fornecedores.includes(id));
+    refreshFornecedores();
+  }
+});
+
+let sugTimer = null;
+function updateSugestoes() {
+  const box = document.getElementById('sug-box');
+  if (!box) return;
+  const q = norm(state.busca);
+  if (q.length < 2) { box.innerHTML = ''; return; }
+  box.innerHTML = '<div class=sug><div class=sug-empty>🔎 Buscando no catálogo…</div></div>';
+  clearTimeout(sugTimer);
+  sugTimer = setTimeout(() => {
+    const hits = PRODUTOS.filter(p => norm(p.nome).includes(q)).slice(0, 6);
+    box.innerHTML = hits.length ? '<div class=sug role=listbox>' + hits.map(p =>
+      '<div class=sug-item data-action-add= + p.id +  role=option><span>' + esc(p.nome) + '</span><span class=un>por unidade de venda: ' + p.un + '</span></div>').join('') + '</div>'
+      : '<div class=sug><div class=sug-empty>Nenhum produto encontrado — tente outro termo.</div></div>';
+  }, 280);
+}
+
+document.addEventListener('click', (e) => {
+  const s = e.target.closest('[data-action-add]');
+  if (!s) return;
+  const pid = +s.dataset.actionAdd;
+  const ex = state.lista.itens.find(i => i.pid === pid);
+  if (ex) ex.qtd = Math.min(9999, ex.qtd + 1); else state.lista.itens.push({ pid, qtd: 1 });
+  state.busca = '';
+  const b = document.getElementById('busca');
+  if (b) b.value = '';
+  document.getElementById('sug-box').innerHTML = '';
+  persistEph(); refreshListaUI();
+  const p = PRODUTOS.find(x => x.id === pid);
+  showToast('➕ ' + p.nome + ' adicionado' + (ex ? ' (quantidade somada)' : '') + '.', 'ok');
+});
+
+// ============================================================
+// BOOT
+// ============================================================
+loadEph();
+render();

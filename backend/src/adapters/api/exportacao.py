@@ -212,79 +212,59 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
             )
         )
         story.append(tabela_itens)
-        story.append(Spacer(1, 16))
 
-        # --- Tabela de Comparação (se houver fornecedores) ---
+        # --- Total consolidado (preços do fornecedor vencedor, se houver comparação) ---
         if orcamento and orcamento.fornecedores:
-            story.append(Paragraph("Comparação de Fornecedores", styles["SectionHeader"]))
-
-            headers_comp = [
-                "Fornecedor",
-                "Disponíveis",
-                "Ausentes",
-                "% Disp.",
-                "Total (R$)",
-            ]
-            col_widths_comp = [6 * cm, 2.5 * cm, 2.5 * cm, 2 * cm, 3.5 * cm]
-
-            table_data_comp = [headers_comp]
-            for f in orcamento.fornecedores:
-                destaque = " ⭐ MELHOR" if f.eh_melhor else ""
-                table_data_comp.append(
+            vencedor = next((f for f in orcamento.fornecedores if f.eh_melhor), None)
+            if vencedor is None:
+                vencedor = orcamento.fornecedores[0]
+            total_txt = (
+                f"R$ {vencedor.preco_total:,.2f}".replace(",", "X")
+                .replace(".", ",")
+                .replace("X", ".")
+            )
+            total_box = Table(
+                [
                     [
-                        Paragraph(f"{f.fornecedor_nome}{destaque}", styles["TableCell"]),
-                        Paragraph(str(f.itens_disponiveis), styles["TableCellCenter"]),
-                        Paragraph(str(f.itens_ausentes), styles["TableCellCenter"]),
                         Paragraph(
-                            f"{f.percentual_disponibilidade:.1f}%",
-                            styles["TableCellCenter"],
+                            f"Total consolidado da compra "
+                            f"({vencedor.itens_disponiveis} itens · {sum(i.quantidade for i in vencedor.itens)} unidades)",
+                            ParagraphStyle(
+                                "TotalLabel",
+                                parent=styles["Normal"],
+                                fontSize=10,
+                                alignment=TA_LEFT,
+                                textColor=white,
+                            ),
                         ),
                         Paragraph(
-                            f"R$ {f.preco_total:,.2f}".replace(",", "X")
-                            .replace(".", ",")
-                            .replace("X", "."),
-                            styles["TableCellRight"],
-                        ),
-                    ]
-                )
-
-            tabela_comp = Table(table_data_comp, colWidths=col_widths_comp, repeatRows=1)
-            tabela_comp.setStyle(
-                TableStyle(
-                    [
-                        ("BACKGROUND", (0, 0), (-1, 0), HexColor("#2d5a27")),
-                        ("TEXTCOLOR", (0, 0), (-1, 0), white),
-                        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-                        ("FONTSIZE", (0, 0), (-1, 0), 9),
-                        ("BOTTOMPADDING", (0, 0), (-1, 0), 8),
-                        ("TOPPADDING", (0, 0), (-1, 0), 8),
-                        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
-                        ("FONTSIZE", (0, 1), (-1, -1), 8),
-                        ("BOTTOMPADDING", (0, 1), (-1, -1), 6),
-                        ("TOPPADDING", (0, 1), (-1, -1), 6),
-                        ("GRID", (0, 0), (-1, -1), 0.5, HexColor("#ddd")),
-                        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                        (
-                            "ROWBACKGROUNDS",
-                            (0, 1),
-                            (-1, -1),
-                            [white, HexColor("#f0f8f0")],
-                        ),
-                        # Highlight best
-                        (
-                            "BACKGROUND",
-                            (0, 1),
-                            (-1, 1),
-                            (
-                                HexColor("#e8f5e9")
-                                if orcamento.fornecedores[0].eh_melhor
-                                else HexColor("#f0f8f0")
+                            total_txt,
+                            ParagraphStyle(
+                                "TotalValue",
+                                parent=styles["Normal"],
+                                fontSize=16,
+                                alignment=TA_RIGHT,
+                                textColor=white,
                             ),
                         ),
                     ]
+                ],
+                colWidths=[11 * cm, 5 * cm],
+            )
+            total_box.setStyle(
+                TableStyle(
+                    [
+                        ("BACKGROUND", (0, 0), (-1, -1), HexColor("#1E7D32")),
+                        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                        ("TOPPADDING", (0, 0), (-1, -1), 12),
+                        ("BOTTOMPADDING", (0, 0), (-1, -1), 12),
+                        ("LEFTPADDING", (0, 0), (-1, -1), 14),
+                        ("RIGHTPADDING", (0, 0), (-1, -1), 14),
+                    ]
                 )
             )
-            story.append(tabela_comp)
+            story.append(Spacer(1, 16))
+            story.append(total_box)
 
         # --- Footer ---
         story.append(Spacer(1, 24))

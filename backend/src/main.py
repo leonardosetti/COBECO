@@ -8,7 +8,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from src.adapters.api import auth, catalogo, comparacao, exportacao, listas, perfil
+from src.adapters.api import auth, catalogo, comparacao, exportacao, listas, perfil, produtos
 from src.adapters.db.database import close_db, init_db
 from src.config import settings
 
@@ -188,6 +188,7 @@ async def health_check():
 app.include_router(auth.router, prefix="/auth", tags=["Autenticação"])
 app.include_router(listas.router, prefix="/listas", tags=["Listas"])
 app.include_router(catalogo.router, prefix="/catalogo", tags=["Catálogo"])
+app.include_router(produtos.router, prefix="", tags=["Produtos"])
 app.include_router(comparacao.router, prefix="/comparacao", tags=["Comparação"])
 app.include_router(exportacao.router, prefix="/export", tags=["Exportação"])
 app.include_router(perfil.router, prefix="/perfil", tags=["Perfil"])

@@ -26,10 +26,10 @@ async def auth_user(client):
         "pergunta_seguranca": "nome_mae",
         "resposta_seguranca": "Maria Silva",
     }
-    await client.post("/v1/auth/cadastrar", json=user_data)
+    await client.post("/auth/cadastrar", json=user_data)
 
     login_data = {"nome_usuario": "testuser_comp", "senha": "Senha@123"}
-    response = await client.post("/v1/auth/login", json=login_data)
+    response = await client.post("/auth/login", json=login_data)
     tokens = response.json()
 
     return {"Authorization": f"Bearer {tokens['access_token']}"}
@@ -39,7 +39,7 @@ async def auth_user(client):
 async def lista_com_itens(client, auth_user):
     """Cria lista com alguns itens para comparação"""
     # Pega alguns produtos do seed
-    prod_resp = await client.get("/v1/produtos?limit=3")
+    prod_resp = await client.get("/produtos?limit=3")
     produtos = prod_resp.json()["items"]
 
     lista_data = {
@@ -50,7 +50,7 @@ async def lista_com_itens(client, auth_user):
             {"produto_id": produtos[2]["id"], "quantidade": 3},
         ],
     }
-    response = await client.post("/v1/listas", json=lista_data, headers=auth_user)
+    response = await client.post("/listas", json=lista_data, headers=auth_user)
     assert response.status_code == 201
     return response.json()
 
@@ -64,7 +64,7 @@ class TestComparacaoIntegration:
         lista_id = lista_com_itens["id"]
 
         # Busca fornecedores ativos
-        forn_resp = await client.get("/v1/fornecedores", headers=auth_user)
+        forn_resp = await client.get("/catalogo/fornecedores", headers=auth_user)
         fornecedores = forn_resp.json()
         forn_ids = [f["id"] for f in fornecedores[:5]]
 
@@ -126,7 +126,7 @@ class TestComparacaoIntegration:
         """RF16 - Slider de disponibilidade filtra fornecedores"""
         lista_id = lista_com_itens["id"]
 
-        forn_resp = await client.get("/v1/fornecedores", headers=auth_user)
+        forn_resp = await client.get("/catalogo/fornecedores", headers=auth_user)
         fornecedores = forn_resp.json()
         forn_ids = [f["id"] for f in fornecedores[:5]]
 
@@ -166,7 +166,7 @@ class TestComparacaoIntegration:
 
     @pytest.mark.asyncio
     async def test_comparacao_lista_inexistente(self, client, auth_user):
-        forn_resp = await client.get("/v1/fornecedores", headers=auth_user)
+        forn_resp = await client.get("/catalogo/fornecedores", headers=auth_user)
         forn_ids = [f["id"] for f in forn_resp.json()[:3]]
 
         response = await client.post(
@@ -184,7 +184,7 @@ class TestComparacaoIntegration:
     async def test_comparacao_lista_sem_itens(self, client, auth_user):
         # Cria lista vazia
         lista_resp = await client.post(
-            "/v1/listas",
+            "/listas",
             json={"nome": "Lista Vazia", "itens": []},
             headers=auth_user,
         )
@@ -230,7 +230,7 @@ class TestComparacaoFlatEstrutura:
     @pytest.mark.asyncio
     async def test_item_comparacao_campos_obrigatorios(self, client, auth_user, lista_com_itens):
         lista_id = lista_com_itens["id"]
-        forn_resp = await client.get("/v1/fornecedores", headers=auth_user)
+        forn_resp = await client.get("/catalogo/fornecedores", headers=auth_user)
         forn_ids = [f["id"] for f in forn_resp.json()[:3]]
 
         response = await client.post(
@@ -261,7 +261,7 @@ class TestComparacaoFlatEstrutura:
         self, client, auth_user, lista_com_itens
     ):
         lista_id = lista_com_itens["id"]
-        forn_resp = await client.get("/v1/fornecedores", headers=auth_user)
+        forn_resp = await client.get("/catalogo/fornecedores", headers=auth_user)
         forn_ids = [f["id"] for f in forn_resp.json()[:3]]
 
         response = await client.post(
