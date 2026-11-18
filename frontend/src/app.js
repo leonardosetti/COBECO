@@ -49,12 +49,18 @@ const showToast = (msg, type = 'info') => {
 };
 
 const openModal = (html) => {
-  document.getElementById('modal-container').innerHTML =
+  const container = document.getElementById('modal-container');
+  container.innerHTML =
     `<div class="overlay" data-action="overlay-click"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
+  container.classList.remove('hidden');
+  container.setAttribute('aria-hidden', 'false');
 };
 
 const closeModal = () => {
-  document.getElementById('modal-container').innerHTML = '';
+  const container = document.getElementById('modal-container');
+  container.innerHTML = '';
+  container.classList.add('hidden');
+  container.setAttribute('aria-hidden', 'true');
 };
 
 // ============================================================

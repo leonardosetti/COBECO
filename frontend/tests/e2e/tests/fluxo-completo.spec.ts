@@ -44,6 +44,7 @@ test.describe('Fluxo completo visitante (E2E contra API real)', () => {
 
     // ---------- Exportar PDF (RF17 — visitante, preview da lista vencedora) ----------
     await page.click('text=Exportar PDF');
+    await page.waitForTimeout(1200); // aguarda o setTimeout do exportPDF abrir o modal
     await page.waitForSelector('.a4-sheet', { state: 'visible', timeout: 5000 });
     await expect(page.locator('.a4-sheet')).toContainText('LISTA VENCEDORA');
     await expect(page.locator('.a4-sheet')).toContainText('TOTAL CONSOLIDADO');
