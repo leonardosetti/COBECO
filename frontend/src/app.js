@@ -40,7 +40,7 @@ const showToast = (msg, type = 'info') => {
   const box = document.createElement('div');
   box.className = 'toast ' + (type === 'ok' ? 'ok' : type === 'err' ? 'err' : type === 'warn' ? 'warn' : '');
   box.innerHTML = `<span>${esc(msg)}</span>`;
-  document.getElementById('toasts').appendChild(box);
+  document.getElementById('toast-container').appendChild(box);
   setTimeout(() => {
     box.style.opacity = '0';
     box.style.transition = 'opacity .4s';
@@ -49,12 +49,12 @@ const showToast = (msg, type = 'info') => {
 };
 
 const openModal = (html) => {
-  document.getElementById('modal-root').innerHTML =
+  document.getElementById('modal-container').innerHTML =
     `<div class="overlay" data-action="overlay-click"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
 };
 
 const closeModal = () => {
-  document.getElementById('modal-root').innerHTML = '';
+  document.getElementById('modal-container').innerHTML = '';
 };
 
 // ============================================================
@@ -445,7 +445,7 @@ function go(view) {
 }
 
 function render() {
-  document.getElementById('topbar').innerHTML = navHTML();
+  document.getElementById('header').innerHTML = navHTML();
   const M = {
     home: vHome, categorias: vCategorias, lista: vLista, fornecedores: vFornecedores,
     resultados: vResultados, vencedora: vVencedora, login: vLogin, cadastro: vCadastro,

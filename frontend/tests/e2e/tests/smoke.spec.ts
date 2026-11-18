@@ -1,32 +1,30 @@
 import { test, expect } from '@playwright/test';
-import { BasePage } from '../pages/BasePage';
+
+test.use({ baseURL: 'http://localhost:8380' });
 
 test.describe('Smoke — COBECO MVP (headless)', () => {
-  let page: BasePage;
-
-  test.beforeEach(async ({ page: p }) => {
-    page = new BasePage(p);
+  test('home renderiza título, hero e CTA de nova lista', async ({ page }) => {
     await page.goto('/');
-    await page.clearStorage();
+    await page.waitForSelector('h1', { state: 'visible' });
+    await expect(page.locator('h1')).toContainText('Compras mais inteligentes');
+    await expect(page.locator('[data-action="nav-nova"]').first()).toBeVisible();
+    await expect(page.locator('#main')).toBeVisible();
   });
 
-  test('home renderiza título, hero e CTA de nova lista', async () => {
-    await expect(page.page.locator('h1')).toContainText('Compras mais inteligentes');
-    await expect(page.page.locator('text=Criar minha lista')).toBeVisible();
-    await expect(page.page.locator('#main')).toBeVisible();
+  test('navega para categorias e renderiza pré-filtro (RF12/UC03)', async ({ page }) => {
+    await page.goto('/');
+    await page.click('button.btn.btn-white.btn-lg');
+    await page.waitForSelector('h1', { state: 'visible' });
+    await expect(page.locator('h1')).toContainText('Selecione as categorias');
+    await expect(page.locator('text=Passo 1 de 5')).toBeVisible();
+    await expect(page.locator('[data-catcard]')).toHaveCount(11);
   });
 
-  test('navega para categorias e renderiza pré-filtro (RF12/UC03)', async () => {
-    await page.page.click('text=Criar minha lista');
-    await page.expectVisible('h1:has-text("Selecione as categorias")');
-    await expect(page.page.locator('text=Passo 1 de 5')).toBeVisible();
-    // Pelo menos uma categoria renderizada
-    await expect(page.page.locator('.cat-card, [data-catcard]')).toHaveCount(11);
-  });
-
-  test('botão continuar desabilitado sem categoria (RF12)', async () => {
-    await page.page.click('text=Criar minha lista');
-    const btn = page.page.locator('#btn-to-lista');
+  test('botão continuar desabilitado sem categoria (RF12)', async ({ page }) => {
+    await page.goto('/');
+    await page.click('button.btn.btn-white.btn-lg');
+    await page.waitForSelector('#btn-to-lista', { state: 'visible' });
+    const btn = page.locator('#btn-to-lista');
     await expect(btn).toBeDisabled();
   });
 });
