@@ -1,11 +1,9 @@
 // COBECO Frontend — Wireframe v3.3 (sem dados mockados)
-// Estrutura baseada no protótipo canônico doc-prototype-0003.
+// Estrutura alinhada ao protótipo canônico doc-prototype-0003.
 // Consome API real: /catalogo/categorias, /catalogo/fornecedores, /catalogo/produtos,
 // /comparacao/calcular-efemera, /export/pdf/vencedora.
 
 const API_BASE = '/v1';
-
-console.log('COBECO app.js loaded');
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -38,7 +36,6 @@ const showToast = (msg, type = 'info') => {
 };
 
 const openModal = (html) => {
-  console.log('openModal called');
   const container = document.getElementById('modal-root');
   container.innerHTML = `<div class="overlay"><div class="modal">${html}</div></div>`;
   container.classList.remove('hidden');
@@ -52,9 +49,6 @@ const closeModal = () => {
   container.setAttribute('aria-hidden', 'true');
 };
 
-// ============================================================
-// ESTADO — sem dados mockados, preenchido pela API
-// ============================================================
 const state = {
   view: 'home',
   user: null,
@@ -69,9 +63,6 @@ const state = {
   busca: '',
 };
 
-// ============================================================
-// CARREGAMENTO DE DADOS MESTRES VIA API
-// ============================================================
 class ApiClient {
   static async request(endpoint, options = {}) {
     const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
@@ -104,14 +95,14 @@ async function carregarCategorias() {
   try {
     const cats = await ApiClient.listarCategorias();
     if (cats && cats.length) state.categoriasDisponiveis = cats.map(c => ({ id: c.id, nome: c.nome, ic: '📂' }));
-  } catch (e) { /* fallback: categorias vazias */ }
+  } catch (e) { }
 }
 
 async function carregarProdutos() {
   try {
     const prods = await ApiClient.listarProdutos();
     if (prods && prods.length) state.produtos = prods.map(p => ({ id: p.id, nome: p.nome, un: p.unidade || 'un' }));
-  } catch (e) { /* fallback */ }
+  } catch (e) { }
 }
 
 async function carregarFornecedores(categoriaIds = []) {
@@ -120,7 +111,7 @@ async function carregarFornecedores(categoriaIds = []) {
     if (frns && frns.length) {
       state.fornecedoresDisponiveis = frns.map(f => ({ id: f.id, nome: f.nome, cnpj: f.cnpj, cats: (f.categorias || []).map(c => c.id) }));
     }
-  } catch (e) { /* fallback */ }
+  } catch (e) { }
 }
 
 function nomeCategoria(id) {
@@ -140,6 +131,8 @@ function unidadeProduto(id) {
 
 // ============================================================
 // CÁLCULO DE ORÇAMENTO VIA API (RF15/RF16)
+// Porcentagem de cobertura = itens disponíveis / total de itens da lista
+// Melhor oferta = maior cobertura; empate → menor custo total
 // ============================================================
 async function calcularResultado() {
   const itens = state.lista.itens;
@@ -159,11 +152,12 @@ async function calcularResultado() {
       cnpj: '',
       cobertura: f.percentual_disponibilidade / 100,
       nDisp: f.itens_disponiveis,
-      ausentes: f.itens.filter(i => !i.disponivel).map(i => i.produto_id),
+      nAus: f.itens_ausentes,
       total: f.preco_total,
       parcial: f.itens_ausentes > 0,
       itens: f.itens.map(i => ({ pid: i.produto_id, preco: i.preco_unitario || 0, disponivel: i.disponivel })),
     }));
+    // Melhor oferta: maior cobertura; empate → menor total
     const winner = fornecedores.slice().sort((a, b) => b.cobertura - a.cobertura || a.total - b.total)[0];
     const display = fornecedores.slice().sort((a, b) => a.total - b.total);
     state.resultado = { rows: display, winner, minTotal: Math.min(...fornecedores.map(r => r.total)), maxTotal: Math.max(...fornecedores.map(r => r.total)) };
@@ -331,7 +325,7 @@ function vResultados() {
      const isW = r.fid === W.fid;
      return `<tr class="${isW ? 'row-win' : ''}"><td>${i+1}</td><td><b>${r.nome}</b>${isW ? ' <span class="badge b-ok">🏆 Melhor</span>' : ''}</td>
      <td><span class="cov-bar"><i style="width:${Math.round(r.cobertura*100)}%"></i></span>${Math.round(r.cobertura*100)}%</td>
-     <td>${r.nDisp} de ${state.lista.itens.length}</td><td>${r.ausentes.length}</td><td style="text-align:right">${BRL(r.total)}${r.parcial ? ' (parcial)' : ''}</td></tr>`;
+     <td>${r.nDisp} de ${state.lista.itens.length}</td><td>${r.nAus}</td><td style="text-align:right">${BRL(r.total)}${r.parcial ? ' (parcial)' : ''}</td></tr>`;
    }).join('')}
    </tbody></table>
    <div class="warn-banner"><span>⚠️</span><span>Melhor oferta = maior cobertura; empate → menor total. Verifique a coluna "Ausentes".</span></div>
@@ -437,7 +431,7 @@ document.addEventListener('click', (e) => {
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a'); a.href = url; a.download = `lista_${stamp()}.pdf`; a.click();
           URL.revokeObjectURL(url);
-          showToast('PDF baixado: lista_${stamp()}.pdf'.replace('${stamp()}', stamp()), 'ok');
+          showToast('PDF baixado.', 'ok');
         }).catch(() => showToast('Erro ao gerar PDF.', 'err'));
       break;
     }
@@ -484,7 +478,7 @@ document.addEventListener('click', (e) => {
 // PERSISTÊNCIA EFÊMERA
 // ============================================================
 function persistEph() {
-  try { sessionStorage.setItem('cobeco_eph', JSON.stringify({ lista: state.lista, categorias: state.categorias })); } catch (e) {}
+  try { sessionStorage.setItem('cobeco_eph', JSON.stringify({ lista: state.lista, categorias: state.categorias })); } catch (e) { }
 }
 function loadEph() {
   try {
@@ -492,7 +486,7 @@ function loadEph() {
     if (!raw) return;
     const d = JSON.parse(raw);
     if (d.lista && d.lista.itens && d.lista.itens.length) { state.lista = d.lista; state.categorias = d.categorias || []; showToast('Lista efêmera recuperada.', 'ok'); }
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function refreshListaUI() {
@@ -506,15 +500,10 @@ function refreshFornecedores() {
   const b = document.getElementById('btn-calc'); if (b) b.disabled = state.fornecedores.length < 2;
 }
 
-window.state = state;
-window.refreshFornecedores = refreshFornecedores;
-window.refreshListaUI = refreshListaUI;
-
 // ============================================================
 // BOOT
 // ============================================================
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log('DOMContentLoaded fired');
   try {
     await carregarCategorias();
     await carregarProdutos();
@@ -522,3 +511,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     render();
   } catch (e) { document.getElementById('main').innerHTML = '<div style="color:red">Erro: ' + e.message + '</div>'; }
 });
+
+window.state = state;
+window.refreshFornecedores = refreshFornecedores;
+window.refreshListaUI = refreshListaUI;
