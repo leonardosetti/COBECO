@@ -508,10 +508,13 @@ async def login(
     repo: UsuarioRepository = Depends(get_usuario_repo),
     sessao_repo: SessaoRepository = Depends(get_sessao_repo),
 ):
+    import structlog
+    logger = structlog.get_logger()
+
+    client_ip = http_request.client.host if http_request.client else "unknown"
+
     async def _rate_limit(nome_usuario: str) -> None:
-        await rate_limiter_login(
-            nome_usuario, http_request.client.host if http_request.client else None
-        )
+        await rate_limiter_login(nome_usuario, client_ip)
 
     usecase = LoginUseCase(repo, verificar_senha, criar_token, _rate_limit)
     try:
@@ -521,9 +524,12 @@ async def login(
                 senha=request.senha,
             )
         )
+        logger.info("login_sucesso", nome_usuario=request.nome_usuario, ip=client_ip)
     except CredenciaisInvalidas:
+        logger.warning("login_falha_credenciais", nome_usuario=request.nome_usuario, ip=client_ip)
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
     except RateLimitExcedido as e:
+        logger.warning("login_rate_limit", nome_usuario=request.nome_usuario, ip=client_ip, minutos=e.minutos)
         raise HTTPException(status_code=429, detail=f"Tente novamente em {e.minutos} minutos")
 
     # Salva refresh token no banco (hash SHA256)
@@ -535,12 +541,12 @@ async def login(
     )
     await sessao_repo.criar(sessao)
 
-    # Set refresh token como httpOnly cookie (SameSite=Strict)
+    # Set refresh token como httpOnly cookie (SameSite=Strict, Secure em produção)
     response.set_cookie(
         key="refresh_token",
         value=tokens.refresh_token,
         httponly=True,
-        secure=False,  # True em produção com HTTPS
+        secure=not settings.DEBUG,  # Secure=True quando não DEBUG (HTTPS)
         samesite="strict",
         max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
         path="/",
@@ -586,7 +592,7 @@ async def refresh_token(
     sessao_repo: SessaoRepository = Depends(get_sessao_repo),
     repo: UsuarioRepository = Depends(get_usuario_repo),
 ):
-    """Renova access token usando refresh token (cookie httpOnly)"""
+    """Renova access token usando refresh token (cookie httpOnly) com rotação de refresh token"""
     if not refresh_token:
         raise HTTPException(status_code=401, detail="Refresh token não fornecido")
 
@@ -605,15 +611,44 @@ async def refresh_token(
         response.delete_cookie(key="refresh_token", path="/", httponly=True, samesite="strict")
         raise HTTPException(status_code=401, detail="Usuário não encontrado")
 
-    # Gera novo access token (15min) - mantém mesmo refresh token (sliding expiry opcional)
+    # ROTAÇÃO DE REFRESH TOKEN: revoga o antigo e cria novo (segurança: detecta replay)
+    if sessao.id is not None:
+        await sessao_repo.revogar(sessao.id)
+
+    # Gera novo par de tokens
     access_token = criar_token(
         sub=str(usuario.id),
         expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
     )
+    novo_refresh_token = criar_token(
+        sub=str(usuario.id),
+        expires_delta=timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
+        token_type="refresh",
+    )
+
+    # Salva novo refresh token no banco (hash SHA256)
+    novo_refresh_hash = hash_refresh_token(novo_refresh_token)
+    nova_sessao = Sessao(
+        usuario_id=usuario.id,
+        refresh_token_hash=novo_refresh_hash,
+        expira_em=datetime.now() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
+    )
+    await sessao_repo.criar(nova_sessao)
+
+    # Set novo refresh token como httpOnly cookie
+    response.set_cookie(
+        key="refresh_token",
+        value=novo_refresh_token,
+        httponly=True,
+        secure=not settings.DEBUG,
+        samesite="strict",
+        max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
+        path="/",
+    )
 
     return TokenResponse(
         access_token=access_token,
-        refresh_token=refresh_token,  # Reutiliza o mesmo refresh token
+        refresh_token=novo_refresh_token,
         expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
     )
 
@@ -688,11 +723,12 @@ async def gerenciar_perfil(
     request: AtualizarPerfilRequest,
     current_user: UsuarioModel = Depends(get_current_user),
     repo: UsuarioRepository = Depends(get_usuario_repo),
+    sessao_repo: SessaoRepository = Depends(get_sessao_repo),
 ):
     if request.nova_senha and request.nova_senha != request.confirmar_nova_senha:
         raise HTTPException(status_code=400, detail="As senhas não coincidem")
 
-    usecase = GerenciarPerfilUseCase(repo, hash_senha, verificar_senha)
+    usecase = GerenciarPerfilUseCase(repo, hash_senha, verificar_senha, sessao_repo)
     try:
         usuario = await usecase.atualizar(
             usuario_id=current_user.id,

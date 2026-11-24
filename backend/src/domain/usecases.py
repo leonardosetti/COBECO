@@ -25,6 +25,7 @@ from src.domain.repositories import (
     FornecedorRepository,
     ListaRepository,
     ProdutoRepository,
+    SessaoRepository,
     UsuarioRepository,
 )
 
@@ -308,10 +309,12 @@ class GerenciarPerfilUseCase:
         repo: UsuarioRepository,
         hash_senha_fn: Callable[[str], str],
         verificar_senha_fn: Callable[[str, str], bool],
+        sessao_repo: SessaoRepository | None = None,
     ) -> None:
         self.repo = repo
         self.hash_senha = hash_senha_fn
         self.verificar_senha = verificar_senha_fn
+        self.sessao_repo = sessao_repo
 
     async def atualizar(
         self,
@@ -340,6 +343,9 @@ class GerenciarPerfilUseCase:
             if not self.verificar_senha(senha_atual, usuario.senha_hash.valor):
                 raise DomainError("SENHA_ATUAL_INCORRETA", "Senha atual incorreta")
             usuario.senha_hash = SenhaHash(self.hash_senha(nova_senha))
+            # Revoga todas as sessões do usuário ao alterar senha (segurança)
+            if self.sessao_repo:
+                await self.sessao_repo.revogar_todas_do_usuario(usuario_id)
 
         return await self.repo.atualizar(usuario)
 

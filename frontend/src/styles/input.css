@@ -145,7 +145,7 @@
 
   /* Toasts */
   .toast {
-    @apply fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg min-w-[300px] max-w-md animate-slide-in;
+    @apply fixed top-20 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg min-w-[300px] max-w-md animate-slide-in;
   }
 
   .toast-success {
@@ -156,8 +156,20 @@
     @apply toast bg-red-600 text-white;
   }
 
+  .toast-warning {
+    @apply toast bg-yellow-600 text-white;
+  }
+
   .toast-info {
     @apply toast bg-blue-600 text-white;
+  }
+
+  .toast-icon {
+    @apply flex-shrink-0 text-lg;
+  }
+
+  .toast-close {
+    @apply ml-2 flex-shrink-0 text-current opacity-70 hover:opacity-100 transition-opacity p-0.5 rounded leading-none;
   }
 
   /* Modals */
@@ -169,16 +181,36 @@
     @apply bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto;
   }
 
+  .modal-sm {
+    @apply max-w-md;
+  }
+
+  .modal-lg {
+    @apply max-w-2xl;
+  }
+
   .modal-header {
     @apply px-6 py-4 border-b border-gray-100 flex items-center justify-between;
+  }
+
+  .modal-title {
+    @apply text-lg font-semibold text-gray-900;
   }
 
   .modal-body {
     @apply p-6;
   }
 
+  .modal-message {
+    @apply text-gray-700;
+  }
+
   .modal-footer {
     @apply px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3;
+  }
+
+  .modal-close {
+    @apply p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors;
   }
 
   /* Loading states */
@@ -218,6 +250,14 @@
   /* Loading overlay */
   .loading-overlay {
     @apply fixed inset-0 bg-white/80 z-50 flex items-center justify-center;
+  }
+
+  .loading-content {
+    @apply flex flex-col items-center gap-4;
+  }
+
+  .loading-text {
+    @apply text-gray-700 text-lg font-medium;
   }
 
   .loading-spinner {
@@ -327,6 +367,53 @@
     /* Table borders */
     .table, .table th, .table td {
       border: 1px solid #999 !important;
+    }
+
+    /* Prevent table row breaks */
+    .table tbody tr {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* Print-only content */
+    .print-only {
+      display: block !important;
+    }
+
+    /* Hide all interactive elements */
+    button, .btn, select, input, textarea, .modal-overlay, .toast {
+      display: none !important;
+    }
+
+    /* Links: show URL after text */
+    a[href^="http"]::after {
+      content: " (" attr(href) ")";
+      font-size: 0.8em;
+      color: #666;
+    }
+
+    /* Reset flex/grid for print */
+    .flex, .grid {
+      display: block !important;
+    }
+
+    /* Remove shadows and rounded corners */
+    .shadow, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl,
+    .rounded, .rounded-lg, .rounded-xl, .rounded-full {
+      box-shadow: none !important;
+      border-radius: 0 !important;
+    }
+
+    /* Full width for print */
+    .w-full, .max-w-full {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    /* Avoid orphans/widows */
+    p, li, .card-body {
+      orphans: 3;
+      widows: 3;
     }
   }
 }

@@ -21,6 +21,7 @@ env:
   DATABASE_ECHO: "false"
   DATABASE_POOL_SIZE: "5"
   DATABASE_MAX_OVERFLOW: "10"
+  DEBUG: "true"
 
 jobs:
   lint:
@@ -101,7 +102,7 @@ jobs:
       - name: Run tests with coverage
         run: |
           cd backend
-          pytest tests/unit tests/integration -v --tb=short --cov=src --cov-fail-under=80
+          pytest tests/unit tests/integration tests/contract -v --tb=short --cov=src --cov-fail-under=80
 
   build:
     name: Build Docker Images
@@ -141,6 +142,7 @@ jobs:
 
       - name: Run smoke tests
         run: |
+          curl -f http://localhost:8380/openapi.json > /dev/null && echo "OpenAPI JSON accessible"
           curl -f http://localhost:8380/v1/docs > /dev/null && echo "OpenAPI docs accessible"
 
       - name: Cleanup

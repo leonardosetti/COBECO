@@ -183,7 +183,7 @@ networks:
   data:
     name: cobeco-data
     driver: bridge
-    internal: true      # Sem acesso à internet — apenas DB ↔ backend/migrate
+    # internal: true  # Desabilitado para permitir port binding no host (dev)
   edge:
     name: cobeco-edge
     driver: bridge
@@ -194,4 +194,4 @@ networks:
 # ============================================================
 volumes:
   db_data:
-    name: cobeco-db-data
+    name: cobeco-db-data-test

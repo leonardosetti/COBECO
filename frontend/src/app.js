@@ -23,30 +23,260 @@ const stamp = () => {
   return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
 };
 
+// ============================================================
+// TOAST — success/error/warning/info, auto-dismiss 3-4s, stack top-right
+// ============================================================
 const showToast = (msg, type = 'info') => {
+  const container = document.getElementById('toasts');
   const box = document.createElement('div');
-  box.className = 'toast ' + (type === 'ok' ? 'ok' : type === 'err' ? 'err' : 'warn');
-  box.innerHTML = `<span>${esc(msg)}</span>`;
-  document.getElementById('toasts').appendChild(box);
-  setTimeout(() => {
-    box.style.opacity = '0';
-    box.style.transition = 'opacity .4s';
-    setTimeout(() => box.remove(), 420);
-  }, 4200);
+  const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+  const classes = { success: 'toast-success', error: 'toast-error', warning: 'toast-warning', info: 'toast-info' };
+  box.className = `toast ${classes[type] || classes.info}`;
+  box.setAttribute('role', 'alert');
+  box.setAttribute('aria-live', 'polite');
+  box.innerHTML = `<span class="toast-icon" aria-hidden="true">${icons[type] || icons.info}</span><span>${esc(msg)}</span><button class="toast-close" aria-label="Fechar">✕</button>`;
+  container.appendChild(box);
+  box.querySelector('.toast-close').addEventListener('click', () => dismissToast(box));
+  const duration = type === 'error' ? 5000 : 3500;
+  const timer = setTimeout(() => dismissToast(box), duration);
+  box.dataset.timer = timer;
 };
 
-const openModal = (html) => {
+const dismissToast = (box) => {
+  const timer = box.dataset.timer;
+  if (timer) clearTimeout(timer);
+  box.style.opacity = '0';
+  box.style.transform = 'translateX(100%)';
+  box.style.transition = 'opacity .3s, transform .3s';
+  setTimeout(() => box.remove(), 300);
+};
+
+// ============================================================
+// LOADING — skeleton loaders for lists/tables, spinner overlay for actions
+// ============================================================
+const Loading = {
+  // Skeleton para lista de itens
+  skeletonItens: (count = 3) => `<div id="itens-box">${Array.from({ length: count }, () => `
+    <div class="skeleton skeleton-table-row" style="margin-bottom: 8px;"></div>
+  `).join('')}</div>`,
+
+  // Skeleton para grid de fornecedores
+  skeletonFornecedores: (count = 4) => `<div id="forn-grid" class="forn-grid">${Array.from({ length: count }, () => `
+    <div class="skeleton skeleton-card" style="margin-bottom: 12px;"></div>
+  `).join('')}</div>`,
+
+  // Skeleton para tabela de resultados
+  skeletonResultados: (rows = 3) => `<table class="tbl"><thead><tr><th>#</th><th>Fornecedor</th><th>Cobertura</th><th>Itens</th><th>Ausentes</th><th style="text-align:right">Total</th></tr></thead><tbody>
+    ${Array.from({ length: rows }, () => `
+      <tr><td class="skeleton skeleton-text" style="width:30px;height:16px"></td>
+      <td class="skeleton skeleton-text" style="width:180px;height:16px"></td>
+      <td class="skeleton skeleton-text" style="width:80px;height:16px"></td>
+      <td class="skeleton skeleton-text" style="width:50px;height:16px"></td>
+      <td class="skeleton skeleton-text" style="width:50px;height:16px"></td>
+      <td class="skeleton skeleton-text" style="width:100px;height:16px"></td></tr>
+    `).join('')}
+  </tbody></table>`,
+
+  // Skeleton para lista de categorias
+  skeletonCategorias: (count = 6) => `<div class="cat-grid">${Array.from({ length: count }, () => `
+    <div class="skeleton skeleton-card" style="height:80px;margin-bottom:8px;"></div>
+  `).join('')}</div>`,
+
+  // Overlay spinner para ações (calcular, exportar, etc.)
+  showOverlay: (msg = 'Carregando…') => {
+    const existing = document.getElementById('loading-overlay');
+    if (existing) existing.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'loading-overlay';
+    overlay.className = 'loading-overlay';
+    overlay.setAttribute('role', 'status');
+    overlay.setAttribute('aria-live', 'polite');
+    overlay.innerHTML = `<div class="loading-content"><div class="loading-spinner" aria-hidden="true"></div><span class="loading-text">${esc(msg)}</span></div>`;
+    document.body.appendChild(overlay);
+    return overlay;
+  },
+
+  hideOverlay: () => {
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) overlay.remove();
+  },
+
+  // Spinner inline para botões
+  setButtonLoading: (btn, loading = true, originalText = '') => {
+    if (loading) {
+      btn.dataset.originalText = btn.textContent;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner" aria-hidden="true"></span><span>Carregando…</span>`;
+    } else {
+      btn.disabled = false;
+      btn.textContent = btn.dataset.originalText || originalText;
+      delete btn.dataset.originalText;
+    }
+  }
+};
+
+// ============================================================
+// MODAL — confirmation dialogs (delete, logout), accessible (focus trap, ESC close)
+// ============================================================
+let lastFocusedElement = null;
+let focusTrapCleanup = null;
+
+const openModal = (html, options = {}) => {
   const container = document.getElementById('modal-root');
-  container.innerHTML = `<div class="overlay"><div class="modal">${html}</div></div>`;
+  lastFocusedElement = document.activeElement;
+  const modalId = `modal-${Date.now()}`;
+  const { title = '', size = 'md', closable = true, onClose } = options;
+  container.innerHTML = `
+    <div class="modal-overlay" id="${modalId}" role="dialog" aria-modal="true" ${title ? `aria-labelledby="${modalId}-title"` : ''}>
+      <div class="modal modal-${size}">
+        ${title ? `<header class="modal-header"><h2 id="${modalId}-title" class="modal-title">${esc(title)}</h2>${closable ? `<button class="modal-close" aria-label="Fechar">✕</button>` : ''}</header>` : ''}
+        <div class="modal-body">${html}</div>
+      </div>
+    </div>
+  `;
   container.classList.remove('hidden');
   container.setAttribute('aria-hidden', 'false');
+
+  const overlay = container.querySelector('.modal-overlay');
+  const modal = container.querySelector('.modal');
+  const closeBtn = container.querySelector('.modal-close');
+
+  // Focus trap
+  const focusableElements = modal.querySelectorAll(
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+  );
+  const firstFocusable = focusableElements[0];
+  const lastFocusable = focusableElements[focusableElements.length - 1];
+
+  const trapFocus = (e) => {
+    if (e.key !== 'Tab') return;
+    if (e.shiftKey) {
+      if (document.activeElement === firstFocusable) {
+        e.preventDefault();
+        lastFocusable.focus();
+      }
+    } else {
+      if (document.activeElement === lastFocusable) {
+        e.preventDefault();
+        firstFocusable.focus();
+      }
+    }
+  };
+
+  const handleKeydown = (e) => {
+    if (e.key === 'Escape' && closable) {
+      closeModal();
+    } else {
+      trapFocus(e);
+    }
+  };
+
+  const handleOverlayClick = (e) => {
+    if (e.target === overlay && closable) closeModal();
+  };
+
+  const handleCloseClick = () => closeModal();
+
+  overlay.addEventListener('keydown', handleKeydown);
+  overlay.addEventListener('click', handleOverlayClick);
+  if (closeBtn) closeBtn.addEventListener('click', handleCloseClick);
+
+  focusTrapCleanup = () => {
+    overlay.removeEventListener('keydown', handleKeydown);
+    overlay.removeEventListener('click', handleOverlayClick);
+    if (closeBtn) closeBtn.removeEventListener('click', handleCloseClick);
+  };
+
+  // Focus first element
+  setTimeout(() => firstFocusable?.focus(), 0);
+
+  return {
+    close: closeModal,
+    element: overlay
+  };
 };
 
 const closeModal = () => {
   const container = document.getElementById('modal-root');
+  if (focusTrapCleanup) {
+    focusTrapCleanup();
+    focusTrapCleanup = null;
+  }
   container.innerHTML = '';
   container.classList.add('hidden');
   container.setAttribute('aria-hidden', 'true');
+  if (lastFocusedElement) {
+    lastFocusedElement.focus();
+    lastFocusedElement = null;
+  }
+};
+
+// Confirmation dialog helpers
+const Modal = {
+  confirm: (message, options = {}) => {
+    const { title = 'Confirmar', confirmText = 'Confirmar', cancelText = 'Cancelar', variant = 'danger', onConfirm } = options;
+    return new Promise((resolve) => {
+      openModal(`
+        <p class="modal-message">${esc(message)}</p>
+        <footer class="modal-footer">
+          <button class="btn btn-ghost" data-action="modal-cancel">${esc(cancelText)}</button>
+          <button class="btn btn-${variant}" data-action="modal-confirm">${esc(confirmText)}</button>
+        </footer>
+      `, { title });
+
+      const handleClick = (e) => {
+        const btn = e.target.closest('[data-action]');
+        if (!btn) return;
+        const action = btn.dataset.action;
+        if (action === 'modal-confirm') {
+          closeModal();
+          resolve(true);
+          onConfirm?.();
+        } else if (action === 'modal-cancel') {
+          closeModal();
+          resolve(false);
+        }
+      };
+      document.getElementById('modal-root').addEventListener('click', handleClick);
+    });
+  },
+
+  alert: (message, options = {}) => {
+    const { title = 'Atenção', confirmText = 'OK', onConfirm } = options;
+    return new Promise((resolve) => {
+      openModal(`
+        <p class="modal-message">${esc(message)}</p>
+        <footer class="modal-footer">
+          <button class="btn btn-pri" data-action="modal-ok">${esc(confirmText)}</button>
+        </footer>
+      `, { title });
+
+      const handleClick = (e) => {
+        if (e.target.closest('[data-action="modal-ok"]')) {
+          closeModal();
+          resolve(true);
+          onConfirm?.();
+        }
+      };
+      document.getElementById('modal-root').addEventListener('click', handleClick);
+    });
+  },
+
+  // Delete confirmation with item name
+  confirmDelete: (itemName, options = {}) => {
+    return Modal.confirm(
+      `Tem certeza que deseja excluir <strong>${esc(itemName)}</strong>? Esta ação não pode ser desfeita.`,
+      { title: 'Excluir item', confirmText: 'Excluir', variant: 'danger', ...options }
+    );
+  },
+
+  // Logout confirmation
+  confirmLogout: () => {
+    return Modal.confirm(
+      'Deseja realmente sair da sua conta?',
+      { title: 'Sair', confirmText: 'Sair', variant: 'secondary' }
+    );
+  }
 };
 
 const state = {
@@ -67,7 +297,7 @@ class ApiClient {
   static async request(endpoint, options = {}) {
     const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
     const response = await fetch(API_BASE + endpoint, { ...options, headers, credentials: 'include' });
-    if (response.status === 401) { showToast('Sessão expirada.', 'warn'); return null; }
+    if (response.status === 401) { showToast('Sessão expirada.', 'warning'); return null; }
     const data = await response.json().catch(() => ({}));
     if (!response.ok) { throw new Error(data.detail || 'Erro ' + response.status); }
     return data;
@@ -162,7 +392,7 @@ async function calcularResultado() {
     const display = fornecedores.slice().sort((a, b) => a.total - b.total);
     state.resultado = { rows: display, winner, minTotal: Math.min(...fornecedores.map(r => r.total)), maxTotal: Math.max(...fornecedores.map(r => r.total)) };
   } catch (e) {
-    showToast('Erro ao calcular orçamento.', 'err');
+    showToast('Erro ao calcular orçamento.', 'error');
     state.resultado = null;
   }
 }
@@ -410,29 +640,29 @@ document.addEventListener('click', (e) => {
     case 'sair': state.user = null; showToast('Saiu.', 'info'); render(); break;
     case 'cat-all': state.categorias = state.categoriasDisponiveis.map(c => c.id); render(); break;
     case 'cat-none': state.categorias = []; render(); break;
-    case 'to-lista': if (!state.categorias.length) { showToast('Selecione ≥1 categoria.', 'err'); return; } go('lista'); break;
+    case 'to-lista': if (!state.categorias.length) { showToast('Selecione ≥1 categoria.', 'error'); return; } go('lista'); break;
     case 'goto-step': go(el.dataset.step); break;
-    case 'demo-lista': state.lista = { nome: 'Lista demo', itens: [{ pid: 1, qtd: 2 }, { pid: 2, qtd: 1 }, { pid: 3, qtd: 3 }] }; if (!state.categorias.length) state.categorias = [1]; persistEph(); render(); showToast('Lista demo carregada.', 'ok'); break;
-    case 'to-fornecedores': if (!state.lista.itens.length) { showToast('Adicione ≥1 item.', 'err'); return; } carregarFornecedores(state.categorias).then(() => go('fornecedores')); break;
+    case 'demo-lista': state.lista = { nome: 'Lista demo', itens: [{ pid: 1, qtd: 2 }, { pid: 2, qtd: 1 }, { pid: 3, qtd: 3 }] }; if (!state.categorias.length) state.categorias = [1]; persistEph(); render(); showToast('Lista demo carregada.', 'success'); break;
+    case 'to-fornecedores': if (!state.lista.itens.length) { showToast('Adicione ≥1 item.', 'error'); return; } carregarFornecedores(state.categorias).then(() => go('fornecedores')); break;
     case 'forn-all': state.fornecedores = fornecedoresElegiveis().filter(f => coberturaDe(f.id) * 100 >= state.filtroDisp).map(f => f.id); refreshFornecedores(); break;
     case 'forn-clear': state.fornecedores = []; refreshFornecedores(); break;
     case 'calcular': {
-      if (state.fornecedores.length < 2) { showToast('Selecione ≥2 fornecedores.', 'err'); return; }
+      if (state.fornecedores.length < 2) { showToast('Selecione ≥2 fornecedores.', 'error'); return; }
       const btn = el; btn.disabled = true; btn.textContent = 'Calculando…';
       calcularResultado().then(() => { go('resultados'); btn.disabled = false; btn.textContent = 'Calcular →'; }).catch(() => { btn.disabled = false; btn.textContent = 'Calcular →'; });
       break;
     }
     case 'ver-vencedora': go('vencedora'); break;
     case 'export-pdf': {
-      if (!state.resultado) { showToast('Compare antes de exportar.', 'warn'); return; }
+      if (!state.resultado) { showToast('Compare antes de exportar.', 'warning'); return; }
       showToast('Gerando PDF…', 'info');
       ApiClient.exportarPDFVencedora({ itens: state.lista.itens.map(i => ({ produto_id: i.pid, quantidade: i.qtd })), fornecedor_ids: state.fornecedores, lista_nome: state.lista.nome || 'Lista' })
         .then(blob => {
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a'); a.href = url; a.download = `lista_${stamp()}.pdf`; a.click();
           URL.revokeObjectURL(url);
-          showToast('PDF baixado.', 'ok');
-        }).catch(() => showToast('Erro ao gerar PDF.', 'err'));
+          showToast('PDF baixado.', 'success');
+        }).catch(() => showToast('Erro ao gerar PDF.', 'error'));
       break;
     }
     case 'dec': case 'inc': {
@@ -453,14 +683,14 @@ document.addEventListener('input', (e) => {
 
 let sugTimer = null;
 function updateSugestoes() {
-  const q = state.busca;
+  const q = norm(state.busca);
   const box = document.getElementById('sug-box');
   clearTimeout(sugTimer);
   sugTimer = setTimeout(() => {
     if (!q.length) { box.innerHTML = ''; return; }
-    const hits = state.produtos.filter(p => norm(p.nome).includes(q)).slice(0, 6);
+    const hits = state.produtos.filter(p => norm(p.nome).includes(q)).slice(0, 10);
     box.innerHTML = hits.length ? '<div class="sug">' + hits.map(p => `<div class="sug-item" data-action-add="${p.id}"><span>${esc(p.nome)}</span><span class="un">${p.un}</span></div>`).join('') + '</div>' : '<div class="sug-empty">Nenhum produto encontrado.</div>';
-  }, 280);
+  }, 300);
 }
 
 document.addEventListener('click', (e) => {
@@ -471,7 +701,7 @@ document.addEventListener('click', (e) => {
   if (ex) ex.qtd = Math.min(9999, ex.qtd + 1); else state.lista.itens.push({ pid, qtd: 1 });
   state.busca = ''; const b = document.getElementById('busca'); if (b) b.value = ''; document.getElementById('sug-box').innerHTML = '';
   persistEph(); refreshListaUI();
-  showToast('➕ ' + nomeProduto(pid) + ' adicionado.', 'ok');
+  showToast('➕ ' + nomeProduto(pid) + ' adicionado.', 'success');
 });
 
 // ============================================================
@@ -485,7 +715,7 @@ function loadEph() {
     const raw = sessionStorage.getItem('cobeco_eph');
     if (!raw) return;
     const d = JSON.parse(raw);
-    if (d.lista && d.lista.itens && d.lista.itens.length) { state.lista = d.lista; state.categorias = d.categorias || []; showToast('Lista efêmera recuperada.', 'ok'); }
+    if (d.lista && d.lista.itens && d.lista.itens.length) { state.lista = d.lista; state.categorias = d.categorias || []; showToast('Lista efêmera recuperada.', 'success'); }
   } catch (e) { }
 }
 

@@ -88,6 +88,20 @@ def upgrade() -> None:
     op.create_index('ix_usuario_criado_em', 'usuarios', ['criado_em'])
 
     op.create_table(
+        'produtos',
+        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('nome', sa.String(200), nullable=False),
+        sa.Column('unidade', sa.String(10), nullable=False),
+        sa.Column('ativo', sa.Boolean(), nullable=False, server_default=sa.text('TRUE')),
+        sa.Column('criado_em', sa.DateTime(), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
+        sa.PrimaryKeyConstraint('id', name='pk_produtos'),
+        mysql_charset='utf8mb4',
+        mysql_collate='utf8mb4_unicode_ci',
+        mysql_engine='InnoDB',
+    )
+    op.create_index('ix_produto_nome', 'produtos', ['nome'])
+
+    op.create_table(
         'listas',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.Column('usuario_id', sa.Integer(), nullable=False),
@@ -132,20 +146,6 @@ def upgrade() -> None:
     )
 
     op.create_table(
-        'produtos',
-        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column('nome', sa.String(200), nullable=False),
-        sa.Column('unidade', sa.String(10), nullable=False),
-        sa.Column('ativo', sa.Boolean(), nullable=False, server_default=sa.text('TRUE')),
-        sa.Column('criado_em', sa.DateTime(), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
-        sa.PrimaryKeyConstraint('id', name='pk_produtos'),
-        mysql_charset='utf8mb4',
-        mysql_collate='utf8mb4_unicode_ci',
-        mysql_engine='InnoDB',
-    )
-    op.create_index('ix_produto_nome', 'produtos', ['nome'])
-
-    op.create_table(
         'fornecedores_produtos',
         sa.Column('fornecedor_id', sa.Integer(), nullable=False),
         sa.Column('produto_id', sa.Integer(), nullable=False),
@@ -163,12 +163,12 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint('fornecedor_id', 'produto_id', name='pk_fornecedores_produtos'),
         sa.CheckConstraint('preco >= 0', name='ck_fp_preco_positivo'),
         sa.CheckConstraint('estoque >= 0', name='ck_fp_estoque_positivo'),
-        sa.Index('ix_fp_fornecedor', 'fornecedores_produtos', ['fornecedor_id']),
-        sa.Index('ix_fp_produto', 'fornecedores_produtos', ['produto_id']),
         mysql_charset='utf8mb4',
         mysql_collate='utf8mb4_unicode_ci',
         mysql_engine='InnoDB',
     )
+    op.create_index('ix_fp_fornecedor', 'fornecedores_produtos', ['fornecedor_id'])
+    op.create_index('ix_fp_produto', 'fornecedores_produtos', ['produto_id'])
 
     op.create_table(
         'sessoes',
@@ -186,21 +186,21 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint('id', name='pk_sessoes'),
         sa.UniqueConstraint('refresh_token_hash', name='uq_sessoes_refresh_token_hash'),
-        sa.Index('ix_sessoes_usuario_expira', 'sessoes', ['usuario_id', 'expira_em']),
-        sa.Index('ix_sessoes_token_hash', 'sessoes', ['refresh_token_hash']),
         mysql_charset='utf8mb4',
         mysql_collate='utf8mb4_unicode_ci',
         mysql_engine='InnoDB',
     )
+    op.create_index('ix_sessoes_usuario_expira', 'sessoes', ['usuario_id', 'expira_em'])
+    op.create_index('ix_sessoes_token_hash', 'sessoes', ['refresh_token_hash'])
 
 
 def downgrade() -> None:
     op.drop_table('itens_lista')
     op.drop_table('listas')
+    op.drop_table('produtos')
     op.drop_table('sessoes')
     op.drop_table('usuarios')
     op.drop_table('fornecedores_produtos')
-    op.drop_table('produtos')
     op.drop_table('fornecedores_categorias')
     op.drop_table('fornecedores')
     op.drop_table('categorias')

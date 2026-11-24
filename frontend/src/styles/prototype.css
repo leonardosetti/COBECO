@@ -40,6 +40,7 @@ nav.main a.on{background:var(--pri-bg);color:var(--pri)}
 .btn-ok{background:var(--ok);color:#fff}.btn-ok:hover{background:var(--ok-d)}
 .btn-ghost{background:#fff;border-color:var(--line);color:#334155}.btn-ghost:hover{background:#f8fafc}
 .btn-danger{background:#fff;border-color:#fecaca;color:var(--err)}.btn-danger:hover{background:var(--err-bg)}
+.btn-secondary{background:var(--pri-bg);color:var(--pri);border-color:var(--pri)}.btn-secondary:hover{background:var(--pri-d);color:#fff;border-color:var(--pri-d)}
 .btn-sm{padding:7px 12px;font-size:13px;border-radius:8px}
 .btn-lg{padding:14px 24px;font-size:15px}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
@@ -215,12 +216,16 @@ tr.row-win td:first-child{border-left:4px solid var(--ok)}
 .empty .big{font-size:40px;margin-bottom:10px}
 
 /* ---------- Modal ---------- */
+.modal-overlay,
 .overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;z-index:100;padding:24px}
 .modal{background:#fff;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.3);max-width:520px;width:100%;padding:28px;position:relative;max-height:90vh;overflow:auto;animation:pop .18s ease}
 @keyframes pop{from{transform:scale(.96);opacity:.4}to{transform:scale(1);opacity:1}}
-.modal h3{font-size:18px;margin-bottom:8px}
-.modal .x{position:absolute;top:14px;right:14px;border:none;background:#f1f5f9;border-radius:8px;width:30px;height:30px;font-size:14px;color:#475569}
-.modal .x:hover{background:#e2e8f0}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.modal-title{font-size:18px;font-weight:700}
+.modal-close{position:static;border:none;background:#f1f5f9;border-radius:8px;width:30px;height:30px;font-size:14px;color:#475569;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:#e2e8f0}
+.modal-body{font-size:14px;line-height:1.6}
+.modal-footer{display:flex;gap:10px;margin-top:20px;justify-content:flex-end;padding-top:16px;border-top:1px solid var(--line);flex-wrap:wrap}
 .modal-pdf{max-width:860px}
 .modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end;flex-wrap:wrap}
 
@@ -243,8 +248,45 @@ tr.row-win td:first-child{border-left:4px solid var(--ok)}
 /* ---------- Toast ---------- */
 #toasts{position:fixed;top:76px;right:20px;z-index:200;display:flex;flex-direction:column;gap:10px;max-width:380px}
 .toast{display:flex;gap:10px;align-items:flex-start;background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(15,23,42,.2);padding:13px 16px;font-size:13.5px;border-left:4px solid var(--pri);animation:slidein .2s ease}
-.toast.ok{border-left-color:var(--ok)} .toast.err{border-left-color:var(--err)} .toast.warn{border-left-color:#f59e0b}
+.toast-success{border-left-color:var(--ok)} .toast-error{border-left-color:var(--err)} .toast-warning{border-left-color:#f59e0b} .toast-info{border-left-color:var(--pri)}
+.toast-icon{flex-shrink:0;font-size:16px;line-height:1}
+.toast-close{flex-shrink:0;margin-left:8px;padding:2px 6px;border:none;background:#f1f5f9;border-radius:6px;font-size:12px;color:#64748b;cursor:pointer;line-height:1}
+.toast-close:hover{background:#e2e8f0;color:#334155}
 @keyframes slidein{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+
+/* ---------- Skeleton Loaders ---------- */
+.skeleton{background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px}
+.skeleton-text{height:16px}
+.skeleton-title{height:24px;width:75%}
+.skeleton-card{height:128px;width:100%}
+.skeleton-table-row{height:48px;width:100%}
+.skeleton-avatar{width:40px;height:40px;border-radius:50%}
+.skeleton-button{height:40px;width:96px;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ---------- Loading Overlay ---------- */
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px}
+.loading-content{display:flex;flex-direction:column;align-items:center;gap:12px;background:#fff;padding:32px 40px;border-radius:16px;box-shadow:0 20px 50px rgba(15,23,42,.15)}
+.loading-spinner{width:48px;height:48px;border:4px solid #e2e8f0;border-top-color:var(--pri);border-radius:50%;animation:spin 1s linear infinite}
+.loading-text{font-size:15px;color:var(--mut);font-weight:500}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- Inline Button Spinner ---------- */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid #cbd5e1;border-top-color:var(--pri);border-radius:50%;animation:spin .8s linear infinite;margin-right:8px;vertical-align:middle}
+
+/* ---------- Modal ---------- */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:40;display:flex;align-items:center;justify-content:center;padding:24px}
+.modal{background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(15,23,42,.25);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;animation:modalIn .15s ease}
+@keyframes modalIn{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--line)}
+.modal-title{font-size:18px;font-weight:700;color:var(--ink)}
+.modal-close{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:none;background:#f1f5f9;border-radius:10px;font-size:18px;color:#64748b;cursor:pointer;line-height:1}
+.modal-close:hover{background:#e2e8f0;color:#334155}
+.modal-body{padding:24px}
+.modal-message{font-size:14.5px;color:#334155;line-height:1.6}
+.modal-footer{display:flex;justify-content:flex-end;gap:12px;padding:16px 24px;border-top:1px solid var(--line);background:#f8fafc;border-radius:0 0 16px 16px}
+.modal-sm{max-width:380px}
+.modal-lg{max-width:720px}
 
 /* ---------- Journey ---------- */
 #journey{position:fixed;right:18px;bottom:18px;z-index:90;width:330px}

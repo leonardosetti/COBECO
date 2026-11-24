@@ -126,6 +126,7 @@ class Produto:
 
     id: int | None = None
     nome: str = ""
+    marca: str | None = None
     unidade: UnidadeMedida = UnidadeMedida.UN
     ativo: bool = True
     criado_em: datetime = field(default_factory=datetime.now)
