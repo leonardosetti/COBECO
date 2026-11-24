@@ -36,13 +36,13 @@ Permite criar listas de compras, filtrar fornecedores por categoria, comparar pr
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                      COBECO MVP                             │
-├─────────────────────────────────────────────────────────────┤
+├────────────────────────────────────┬────────────────────────┤
 │  Frontend (Vanilla JS + Tailwind)  │  Backend (FastAPI)     │
 │  http://localhost:8380             │  http://localhost:8000 │
 │  - SPA Router                      │  - Clean Architecture  │
 │  - Tailwind CSS                    │  - Domain/UseCase/Repo │
 │  - Playwright E2E Tests            │  - PostgreSQL/MySQL    │
-└────────────────────────────────────┴────────────────────────┘
+└─────────────────────────────┬──────┴────────────────────────┘
                               │
                     ┌─────────┴─────────┐
                     │   MySQL 8.0       │

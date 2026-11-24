@@ -1,6 +1,19 @@
 # COBECO Backend — Integration Tests Shared Fixtures
 # Fixtures compartilhadas para todos os testes de integração
 
+import os
+
+# Define env vars ANTES de importar src.config (get_settings é lru_cache —
+# a primeira chamada congela os valores; sem isso, DEBUG fica False e
+# openapi_url=None, quebrando testes de contrato quando rodados juntos).
+os.environ.setdefault("SECRET_KEY", "test-secret-key-for-ci-only-32chars")
+os.environ.setdefault("DATABASE_URL", "mysql+asyncmy://test:test@localhost:3306/cobeco_test")
+os.environ.setdefault("JWT_ALGORITHM", "HS256")
+os.environ.setdefault("ACCESS_TOKEN_EXPIRE_MINUTES", "15")
+os.environ.setdefault("REFRESH_TOKEN_EXPIRE_DAYS", "7")
+os.environ.setdefault("RECOVERY_MODE", "log")
+os.environ.setdefault("DEBUG", "true")
+
 import pytest
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy import text
@@ -174,9 +187,9 @@ async def test_app():
 
     app.dependency_overrides[get_db] = override_get_db
 
-    # Inicializa tabelas
-    async with test_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    # Tabelas já criadas pelo Alembic (alembic upgrade head roda antes dos testes no CI).
+    # create_all() removido para evitar "Duplicate key name" em índices já existentes
+    # (ex: ix_produto_classes_categoria_macro da migration 0004).
 
     # Carrega seed data (conteúdo lido no nível do módulo)
     if _SEED_SQL:

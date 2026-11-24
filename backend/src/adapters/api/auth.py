@@ -307,22 +307,21 @@ class SessaoRepositoryImpl(SessaoRepository):
         return False
 
     async def revogar_todas_do_usuario(self, usuario_id: int) -> int:
-        from datetime import datetime
+        """Remove todas as sessões (ativas e revogadas) de um usuário.
 
-        from sqlalchemy import select
+        Usado no login para evitar colisão de UNIQUE em refresh_token_hash
+        quando tokens gerados em sequência colidem (ex: testes rápidos com
+        mesmo iat). Em produção, garante single-session por usuário.
+        """
+        from sqlalchemy import delete
 
         from src.adapters.db.models import SessaoModel
 
         result = await self.session.execute(
-            select(SessaoModel).where(
-                SessaoModel.usuario_id == usuario_id, SessaoModel.revogada_em.is_(None)
-            )
+            delete(SessaoModel).where(SessaoModel.usuario_id == usuario_id)
         )
-        count = 0
-        for model in result.scalars().all():
-            model.revogada_em = datetime.now()
-            count += 1
-        return count
+        await self.session.flush()
+        return result.rowcount or 0
 
     async def limpar_expiradas(self) -> int:
         from datetime import datetime
@@ -363,8 +362,10 @@ def verificar_senha(senha: str, hash: str) -> bool:
 
 
 def criar_token(sub: str, expires_delta: timedelta, token_type: str = "access") -> str:
-    """Cria JWT token"""
+    """Cria JWT token com jti aleatório para garantir unicidade do refresh_token_hash."""
     from datetime import datetime
+
+    import secrets
 
     expire = datetime.now(UTC) + expires_delta
     payload = {
@@ -372,6 +373,7 @@ def criar_token(sub: str, expires_delta: timedelta, token_type: str = "access") 
         "exp": expire,
         "type": token_type,
         "iat": datetime.now(UTC),
+        "jti": secrets.token_hex(8),
     }
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
@@ -534,6 +536,10 @@ async def login(
             "login_rate_limit", nome_usuario=request.nome_usuario, ip=client_ip, minutos=e.minutos
         )
         raise HTTPException(status_code=429, detail=f"Tente novamente em {e.minutos} minutos")
+
+    # Revoga todas as sessões ativas do usuário (single-session por segurança e
+    # evita colisão de UNIQUE em refresh_token_hash quando tokens colidem em testes rápidos)
+    await sessao_repo.revogar_todas_do_usuario(tokens.usuario_id)
 
     # Salva refresh token no banco (hash SHA256)
     refresh_hash = hash_refresh_token(tokens.refresh_token)
