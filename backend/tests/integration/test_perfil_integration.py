@@ -64,6 +64,7 @@ class TestPerfilIntegration:
     async def test_atualizar_perfil_email_duplicado(self, client, auth_headers, test_user):
         # Cria outro usuário com email
         import uuid
+
         unique_suffix = uuid.uuid4().hex[:8]
         other = {
             "nome_usuario": f"outro_user{unique_suffix}",
@@ -94,6 +95,7 @@ class TestPerfilIntegration:
 @pytest.mark.asyncio
 async def test_alterar_senha_com_senha_atual_correta(client, auth_headers, test_user):
     """RF6 - Alterar senha com senha atual correta"""
+
     async def change_password():
         return await client.put(
             "/auth/perfil",
@@ -112,7 +114,9 @@ async def test_alterar_senha_com_senha_atual_correta(client, auth_headers, test_
 
     response = await _retry_on_duplicate_entry(change_password)
     if response.status_code != 200:
-        pytest.skip("Erro interno persistente (duplicata de sessão em testes paralelos - known flaky)")
+        pytest.skip(
+            "Erro interno persistente (duplicata de sessão em testes paralelos - known flaky)"
+        )
 
     login_resp = await _retry_on_duplicate_entry(login_with_new_password)
     assert login_resp.status_code == 200

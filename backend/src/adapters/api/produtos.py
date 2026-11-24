@@ -93,12 +93,9 @@ class ProdutoRepositoryImpl(ProdutoRepository):
             LIMIT :limit
         """)
         excluded = tuple(marca_ids) if marca_ids else (0,)
-        result = await self.session.execute(marca_sql, {
-            "excluded_ids": excluded,
-            "query": q,
-            "prefix": f"{q}%",
-            "limit": remaining
-        })
+        result = await self.session.execute(
+            marca_sql, {"excluded_ids": excluded, "query": q, "prefix": f"{q}%", "limit": remaining}
+        )
         rows = result.mappings().all()
         produtos.extend(ProdutoModel(**dict(r)) for r in rows)
 
@@ -121,6 +118,7 @@ class ProdutoRepositoryImpl(ProdutoRepository):
             classe_rows = result.mappings().all()
 
             import json
+
             related_terms = set()
             related_brands = set()
             for row in classe_rows:
@@ -138,7 +136,10 @@ class ProdutoRepositoryImpl(ProdutoRepository):
                       AND (marca IN ({brand_placeholders}))
                     LIMIT :limit
                 """)
-                params = {"excluded_ids": tuple(brand_ids) if brand_ids else (0,), "limit": remaining}
+                params = {
+                    "excluded_ids": tuple(brand_ids) if brand_ids else (0,),
+                    "limit": remaining,
+                }
                 for i, brand in enumerate(related_brands):
                     params[f"brand{i}"] = brand
                 result = await self.session.execute(marca_sql, params)
@@ -148,7 +149,9 @@ class ProdutoRepositoryImpl(ProdutoRepository):
             if len(produtos) < limit and related_terms:
                 remaining = limit - len(produtos)
                 term_ids = {p.id for p in produtos}
-                simple_terms = [t for t in related_terms if t.replace(" ", "").isalnum() and len(t) >= 2]
+                simple_terms = [
+                    t for t in related_terms if t.replace(" ", "").isalnum() and len(t) >= 2
+                ]
                 if simple_terms:
                     ft_query = " ".join(f"+{t}*" for t in simple_terms[:5])
                     ft_sql = text("""
@@ -160,11 +163,9 @@ class ProdutoRepositoryImpl(ProdutoRepository):
                         LIMIT :limit
                     """)
                     excluded = tuple(term_ids) if term_ids else (0,)
-                    result = await self.session.execute(ft_sql, {
-                        "excluded_ids": excluded,
-                        "query": ft_query,
-                        "limit": remaining
-                    })
+                    result = await self.session.execute(
+                        ft_sql, {"excluded_ids": excluded, "query": ft_query, "limit": remaining}
+                    )
                     rows = result.mappings().all()
                     produtos.extend(ProdutoModel(**dict(r)) for r in rows)
 
@@ -181,7 +182,9 @@ def get_produto_repo(session: AsyncSession = Depends(get_db)) -> ProdutoReposito
     summary="Listar Produtos Ativos (raiz da API)",
 )
 async def listar_produtos(
-    limit: int | None = Query(None, ge=1, le=500, description="Limite máximo de produtos retornados"),
+    limit: int | None = Query(
+        None, ge=1, le=500, description="Limite máximo de produtos retornados"
+    ),
     repo: ProdutoRepository = Depends(get_produto_repo),
 ):
     produtos = await repo.listar_ativos(limit=limit)

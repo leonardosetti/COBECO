@@ -141,6 +141,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 # Fixtures base para testes de integração
 # ============================================================
 
+
 @pytest.fixture
 async def test_app():
     """App FastAPI para testes de integração"""
@@ -197,6 +198,7 @@ async def test_app():
     import asyncio
     from sqlalchemy import create_engine
     from sqlalchemy import text as sql_text
+
     sync_engine = create_engine(
         settings.DATABASE_URL.replace("asyncmy", "pymysql"),
         pool_pre_ping=True,
@@ -238,6 +240,7 @@ def clear_rate_limiter():
 async def test_user(client):
     """Cria usuário único para cada teste e retorna credenciais"""
     import uuid
+
     unique_suffix = uuid.uuid4().hex[:8]
     username = f"testuser{unique_suffix}"
     email = f"test{unique_suffix}@teste.com"

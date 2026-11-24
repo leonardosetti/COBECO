@@ -347,7 +347,9 @@ async def calcular_orcamento(
             timeout=10.0,
         )
     except TimeoutError:
-        raise HTTPException(status_code=504, detail="Cálculo de orçamento excedeu o tempo limite (10s)")
+        raise HTTPException(
+            status_code=504, detail="Cálculo de orçamento excedeu o tempo limite (10s)"
+        )
     except FornecedoresInsuficientes:
         raise HTTPException(status_code=400, detail="Selecione pelo menos 2 fornecedores")
     except HTTPException:
@@ -380,7 +382,9 @@ async def calcular_orcamento_efemera(
             timeout=10.0,
         )
     except TimeoutError:
-        raise HTTPException(status_code=504, detail="Cálculo de orçamento excedeu o tempo limite (10s)")
+        raise HTTPException(
+            status_code=504, detail="Cálculo de orçamento excedeu o tempo limite (10s)"
+        )
     except FornecedoresInsuficientes:
         raise HTTPException(status_code=400, detail="Selecione pelo menos 2 fornecedores")
     except HTTPException:

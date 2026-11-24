@@ -103,7 +103,9 @@ class ListaModel(Base):
     )
     nome: Mapped[str] = mapped_column(String(100), nullable=False)
     categorias: Mapped[str | None] = mapped_column(
-        String(200), nullable=True, comment="IDs das categorias selecionadas (RF12/RF08), JSON texto"
+        String(200),
+        nullable=True,
+        comment="IDs das categorias selecionadas (RF12/RF08), JSON texto",
     )
     criado_em: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
     atualizado_em: Mapped[datetime] = mapped_column(
@@ -362,7 +364,13 @@ class FornecedorProdutoModel(Base):
         Index("ix_fp_fornecedor", "fornecedor_id"),
         Index("ix_fp_produto", "produto_id"),
         # RNF09: composite index for calcular_disponibilidade and buscar_precos_para_comparacao
-        Index("ix_fp_fornecedor_produto_ativo_estoque", "fornecedor_id", "produto_id", "ativo", "estoque"),
+        Index(
+            "ix_fp_fornecedor_produto_ativo_estoque",
+            "fornecedor_id",
+            "produto_id",
+            "ativo",
+            "estoque",
+        ),
     )
 
     def to_domain(self) -> "FornecedorProduto":

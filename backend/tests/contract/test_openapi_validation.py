@@ -14,7 +14,7 @@ class TestOpenAPIContract:
         response = await client.get("/openapi.json")
         assert response.status_code == 200
         assert response.headers["content-type"] == "application/json"
-        
+
         spec = response.json()
         assert spec["openapi"] == "3.1.0"
         assert spec["info"]["title"] == "COBECO MVP"
@@ -26,7 +26,7 @@ class TestOpenAPIContract:
         response = await client.get("/openapi.json")
         spec = response.json()
         paths = spec.get("paths", {})
-        
+
         # Endpoints críticos que devem existir
         critical_paths = [
             "/health",
@@ -50,11 +50,11 @@ class TestOpenAPIContract:
             "/export/pdf/vencedora",
             "/perfil/health",
         ]
-        
+
         for path in critical_paths:
             # Verifica se o path template existe no schema (com parâmetros)
             found = False
-            for schema_path in paths.keys():
+            for schema_path in paths:
                 if self._path_matches(path, schema_path):
                     found = True
                     break
@@ -65,19 +65,22 @@ class TestOpenAPIContract:
         """Verifica se o esquema de segurança OAuth2 está definido"""
         response = await client.get("/openapi.json")
         spec = response.json()
-        
+
         security_schemes = spec.get("components", {}).get("securitySchemes", {})
         assert "OAuth2PasswordBearer" in security_schemes
         assert security_schemes["OAuth2PasswordBearer"]["type"] == "oauth2"
         assert "password" in security_schemes["OAuth2PasswordBearer"]["flows"]
-        assert security_schemes["OAuth2PasswordBearer"]["flows"]["password"]["tokenUrl"] == "/v1/auth/login"
+        assert (
+            security_schemes["OAuth2PasswordBearer"]["flows"]["password"]["tokenUrl"]
+            == "/v1/auth/login"
+        )
 
     @pytest.mark.asyncio
     async def test_openapi_has_error_schema(self, client):
         """Verifica se o schema de erro HTTPValidationError está definido"""
         response = await client.get("/openapi.json")
         spec = response.json()
-        
+
         schemas = spec.get("components", {}).get("schemas", {})
         assert "HTTPValidationError" in schemas
         assert "ValidationError" in schemas
@@ -85,14 +88,14 @@ class TestOpenAPIContract:
     def _path_matches(self, route_path, schema_path):
         """Verifica se route_path corresponde a schema_path (com params)"""
         import re
-        
+
         # Converte schema_path para regex
         pattern = schema_path
         pattern = pattern.replace("{lista_id}", r"[^/]+")
         pattern = pattern.replace("{fornecedor_id}", r"[^/]+")
         pattern = pattern.replace("{id}", r"[^/]+")
         pattern = "^" + pattern + "$"
-        
+
         return bool(re.match(pattern, route_path))
 
 
@@ -104,7 +107,7 @@ class TestOpenAPISchemaValidation:
         """Verifica se o spec é JSON válido e bem formado"""
         response = await client.get("/openapi.json")
         spec = response.json()
-        
+
         # Campos obrigatórios do OpenAPI 3.1.0
         assert "openapi" in spec
         assert "info" in spec
@@ -117,7 +120,7 @@ class TestOpenAPISchemaValidation:
         response = await client.get("/openapi.json")
         spec = response.json()
         info = spec["info"]
-        
+
         assert info["title"] == "COBECO MVP"
         assert info["version"] == "0.1.0"
         assert "description" in info
@@ -128,6 +131,6 @@ class TestOpenAPISchemaValidation:
         response = await client.get("/openapi.json")
         spec = response.json()
         servers = spec.get("servers", [])
-        
+
         assert len(servers) >= 1
         assert servers[0]["url"] == "/v1"

@@ -103,7 +103,8 @@ class TestLogin:
     async def test_login_sucesso(self, client, test_user):
         """HP1: Login com credenciais válidas retorna tokens"""
         response = await client.post(
-            "/auth/login", json={"nome_usuario": test_user["username"], "senha": test_user["password"]}
+            "/auth/login",
+            json={"nome_usuario": test_user["username"], "senha": test_user["password"]},
         )
 
         assert response.status_code == 200
@@ -166,7 +167,8 @@ class TestLogout:
         """HP1: Logout remove cookie refresh_token"""
         # Login primeiro
         login_resp = await client.post(
-            "/auth/login", json={"nome_usuario": test_user["username"], "senha": test_user["password"]}
+            "/auth/login",
+            json={"nome_usuario": test_user["username"], "senha": test_user["password"]},
         )
         assert login_resp.status_code == 200
 
@@ -190,7 +192,8 @@ class TestRefreshToken:
     async def test_refresh_token_sucesso(self, client, test_user):
         """HP1: Refresh token válido gera novo access token (com rotação)"""
         login_resp = await client.post(
-            "/auth/login", json={"nome_usuario": test_user["username"], "senha": test_user["password"]}
+            "/auth/login",
+            json={"nome_usuario": test_user["username"], "senha": test_user["password"]},
         )
         assert login_resp.status_code == 200
         cookies = login_resp.cookies
@@ -216,7 +219,9 @@ class TestRefreshToken:
         """E1: Refresh token inválido/expirado retorna 401"""
         response = await client.post("/auth/refresh")
         assert response.status_code == 401
-        assert "não fornecido" in response.json()["detail"] or "inválido" in response.json()["detail"]
+        assert (
+            "não fornecido" in response.json()["detail"] or "inválido" in response.json()["detail"]
+        )
 
 
 # ============================================================
@@ -281,6 +286,7 @@ class TestPerfil:
         """E1: Email duplicado retorna 400"""
         # Cria outro usuário
         import uuid
+
         unique_suffix = uuid.uuid4().hex[:8]
         await client.post(
             "/auth/cadastrar",
@@ -307,6 +313,7 @@ class TestPerfil:
 @pytest.mark.asyncio
 async def test_alterar_senha_sucesso(client, auth_headers, test_user):
     """UC16: Alterar senha com senha atual correta"""
+
     # Retry the password change + login if there's a session hash collision
     async def change_password():
         return await client.put(
@@ -326,7 +333,9 @@ async def test_alterar_senha_sucesso(client, auth_headers, test_user):
 
     response = await _retry_on_duplicate_entry(change_password)
     if response.status_code != 200:
-        pytest.skip("Erro interno persistente (duplicata de sessão em testes paralelos - known flaky)")
+        pytest.skip(
+            "Erro interno persistente (duplicata de sessão em testes paralelos - known flaky)"
+        )
 
     login_resp = await _retry_on_duplicate_entry(login_with_new_password)
     assert login_resp.status_code == 200
@@ -577,7 +586,9 @@ class TestPromoverListaEfemera:
             "categorias": [1],
         }
 
-        response = await client.post("/listas/promover-efemera", headers=auth_headers, json=lista_memoria)
+        response = await client.post(
+            "/listas/promover-efemera", headers=auth_headers, json=lista_memoria
+        )
 
         assert response.status_code == 201
         data = response.json()
