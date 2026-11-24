@@ -1,36 +1,14 @@
-# COBECO Frontend — Dockerfile (nginx + Vanilla JS)
-# Multi-stage: build Tailwind → serve with nginx
+# COBECO Frontend — Dockerfile (nginx + Vanilla JS + CSS do protótipo)
+# Sem build de Tailwind: usa CSS estático do protótipo alta fidelidade.
 
-# ============================================================
-# BUILD STAGE — Tailwind CSS compilation
-# ============================================================
-FROM node:20-alpine AS builder
-
-WORKDIR /app
-
-# Instala dependências para build
-COPY config-npm-0001-package-v1.0.json package.json
-RUN npm install
-
-# Copia fontes
-COPY src ./src
-COPY config-tailwind-0001-tailwind-v1.0.js tailwind.config.js
-COPY config-postcss-0001-postcss-v1.0.js postcss.config.js
-
-# Build Tailwind CSS
-RUN npx tailwindcss -i ./src/styles/input.css -o ./src/styles/output.css --minify
-
-# ============================================================
-# RUNTIME STAGE — nginx serving static files
-# ============================================================
 FROM nginx:alpine AS runtime
 
 # Copia configuração nginx
 COPY config-nginx-0001-nginx-v1.0.conf /etc/nginx/nginx.conf
 COPY config-nginx-0002-nginx-dev-v1.0.conf /etc/nginx/nginx.dev.conf
 
-# Copia arquivos buildados
-COPY --from=builder /app/src /usr/share/nginx/html
+# Copia fontes estáticas (inclui styles/prototype.css e app.js)
+COPY src /usr/share/nginx/html
 
 # Cria usuário não-root e diretórios necessários
 RUN adduser -D -H -h /usr/share/nginx/html nginxuser && \
@@ -40,5 +18,9 @@ RUN adduser -D -H -h /usr/share/nginx/html nginxuser && \
 USER nginxuser
 
 EXPOSE 80
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost/health > /dev/null || exit 0
 
 CMD ["nginx", "-g", "daemon off;"]

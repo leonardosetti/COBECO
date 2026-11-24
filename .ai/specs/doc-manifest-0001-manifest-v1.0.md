@@ -4,14 +4,14 @@ type: doc-manifest
 title: DOC MANIFEST — Manifest
 version: v1.0
 status: ratificado
-canonical: false
+canonical: true
 canonical_slug: manifest
 created: '2026-11-14'
-updated: '2026-11-14'
+updated: '2026-11-16'
 author: Leonardo Setti (@leonardosetti)
 owner: CCB
-ratified_by: null
-ratified_at: null
+ratified_by: gh-sig:owner:leonardosetti:14863508
+ratified_at: '2026-11-16T04:58:00-03:00'
 supersedes: null
 superseded_by: null
 trace:
@@ -26,13 +26,14 @@ trace:
   tests: []
 domain: specs
 layer: manifest
-tags: []
+tags:
+- ratificado-ccb-001
 lgpd_class: n/a
 workflow:
-  stage: rascunho
-  reviewer: null
-  reviewed_at: null
-  approval_hash: null
+  stage: ratificado
+  reviewer: gh-sig:owner:leonardosetti:14863508
+  reviewed_at: '2026-11-16T04:58:00-03:00'
+  approval_hash: CCB-001
   board_url: null
 ---
 ---
@@ -135,9 +136,9 @@ editáveis apontando para o slug novo; "imutáveis" = resolvidas pelo mapa do §
 | `backend-mvp-v1.spec.md` | spec | `spec-004-backend-mvp-v1.spec.md` | 1.0.0 (bump inicial) | 207 → 262 (título substituído por frontmatter+título = +13 de deslocamento; corpo `f6e0455` idêntico; +42 anexados = §§10–14 + MAPA) | 25 em `spec-005` + 1 em `docs/planos/plano-granular/desenvolvimento.md:13` | `ADR-016:18,127`; `hf-exec-0029:16,30,49,61`; `hf-exec-0500:12`; `hf-exec-0031:19` |
 | `container-layers-v1.spec.md` | spec | `spec-005-container-layers-v1.spec.md` | 0.2.0 (mantida) | 378 hoje (arquivo nunca commitado — criado em TA-0029; `hf-exec-0030:18` atesta 344 l no dispatch da amenda; +12 frontmatter + MAPA/anotação anexados em TA-0031) | 0 externas (2 auto-referências) | `ledger.yaml:24,32`; `hf-exec-0030:18,26,57`; `hf-exec-0031:19` |
 | `afa-changelog.md` | **pinned** | (sem rename) | — | — | — | — (canon AFA §15, ver §5) |
-| `requisitos.md` (0 B) | **pinned** | (sem rename) | — | — | — | — (ver §5) |
-| `tap.md` (0 B) | **pinned** | (sem rename) | — | — | — | — (ver §5) |
-| `eap.md` (0 B) | **pinned** | (sem rename) | — | — | — | — (ver §5) |
+| `requisitos.md` | **pinned** | (sem rename) | — | — | — | **SSOT confirmado CCB-001** (ativo, ssot-confirmed-ccb-001) |
+| `tap.md` | **pinned** | (sem rename) | — | — | — | **ratificado CCB-001** (ratificado-ccb-001) |
+| `eap.md` | **pinned** | (sem rename) | — | — | — | **ratificado CCB-001** (ratificado-ccb-001) |
 | `kb-taxonomy.md` | **pinned** | (sem rename) | — | — | — | — (ver §5) |
 | `input-canonico-v4.1.1.md` | **pinned/ambiguous** | (sem rename — hf-exec-0031:44-45) | — | — | — | `ADR-011:56` (ver §5) |
 

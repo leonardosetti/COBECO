@@ -1,7 +1,7 @@
 # COBECO MVP — Makefile
 # Comandos padronizados para desenvolvimento e deploy
 
-.PHONY: help up down logs build test lint seed seed-generate seed-expanded migrate shell clean
+.PHONY: help up down down-destroy logs build test lint seed seed-generate seed-expanded migrate shell clean
 
 # ============================================================
 # Variáveis
@@ -23,7 +23,10 @@ help: ## Mostra esta ajuda
 up: ## Sobe containers em modo desenvolvimento (hot reload)
 	$(COMPOSE_DEV) up -d --build
 
-down: ## Para e remove containers
+down: ## Para containers (MANTÉM volume db_data — dados persistentes)
+	$(COMPOSE_DEV) down
+
+down-destroy: ## DESTRUTIVO: para containers e APAGA o volume db_data
 	$(COMPOSE_DEV) down -v
 
 logs: ## Mostra logs de todos os serviços

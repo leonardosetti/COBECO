@@ -5,14 +5,16 @@ import hashlib
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Any, Optional
 
+from src.domain.entities import Usuario
+
 if TYPE_CHECKING:
-    from src.domain.entities import Usuario
+    pass
 
 import bcrypt
-from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import jwt
-from jose.exceptions import ExpiredSignatureError, JWTError
+from jose import jwt  # type: ignore[import-untyped]
+from jose.exceptions import ExpiredSignatureError, JWTError  # type: ignore[import-untyped]
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -405,26 +407,39 @@ async def get_current_user(
     return usuario
 
 
+async def get_current_user_optional(
+    token: str = Depends(oauth2_scheme),
+    session: AsyncSession = Depends(get_db),
+):
+    """Retorna usuário autenticado ou None — permite fluxo de visitante (RF17)."""
+    if not token:
+        return None
+    try:
+        return await get_current_user(token, session)
+    except HTTPException:
+        return None
+
+
 # Rate limiting simples em memória (produção: Redis)
 _tentativas_login: dict[str, list[float]] = {}
 _tentativas_recovery: dict[str, list[float]] = {}
 
 
-async def rate_limiter_login(nome_usuario: str):
-    """6 tentativas/15min por username"""
+async def rate_limiter_login(nome_usuario: str, ip: str | None = None):
+    """6 tentativas/15min por IP + username (rate limiting híbrido)"""
     import time
 
     agora = time.time()
-    chave = f"login:{nome_usuario}"
+    chave = f"login:{ip or 'unknown'}:{nome_usuario}"
     if chave not in _tentativas_login:
         _tentativas_login[chave] = []
 
     # Limpa tentativas antigas (>15min)
     _tentativas_login[chave] = [t for t in _tentativas_login[chave] if agora - t < 900]
 
-    # Adiciona a tentativa atual e verifica limite (máx 5 tentativas = 6ª bloqueia)
+    # Adiciona a tentativa atual e verifica limite (6 tentativas -> lockout na 7ª)
     _tentativas_login[chave].append(agora)
-    if len(_tentativas_login[chave]) > 5:
+    if len(_tentativas_login[chave]) > 6:
         raise RateLimitExcedido(15)
 
 
@@ -488,11 +503,20 @@ async def cadastrar_usuario(
 )
 async def login(
     response: Response,
+    http_request: Request,
     request: LoginRequest,
     repo: UsuarioRepository = Depends(get_usuario_repo),
     sessao_repo: SessaoRepository = Depends(get_sessao_repo),
 ):
-    usecase = LoginUseCase(repo, verificar_senha, criar_token, rate_limiter_login)
+    import structlog
+    logger = structlog.get_logger()
+
+    client_ip = http_request.client.host if http_request.client else "unknown"
+
+    async def _rate_limit(nome_usuario: str) -> None:
+        await rate_limiter_login(nome_usuario, client_ip)
+
+    usecase = LoginUseCase(repo, verificar_senha, criar_token, _rate_limit)
     try:
         tokens = await usecase.executar(
             LoginInput(
@@ -500,9 +524,12 @@ async def login(
                 senha=request.senha,
             )
         )
+        logger.info("login_sucesso", nome_usuario=request.nome_usuario, ip=client_ip)
     except CredenciaisInvalidas:
+        logger.warning("login_falha_credenciais", nome_usuario=request.nome_usuario, ip=client_ip)
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
     except RateLimitExcedido as e:
+        logger.warning("login_rate_limit", nome_usuario=request.nome_usuario, ip=client_ip, minutos=e.minutos)
         raise HTTPException(status_code=429, detail=f"Tente novamente em {e.minutos} minutos")
 
     # Salva refresh token no banco (hash SHA256)
@@ -514,12 +541,12 @@ async def login(
     )
     await sessao_repo.criar(sessao)
 
-    # Set refresh token como httpOnly cookie (SameSite=Strict)
+    # Set refresh token como httpOnly cookie (SameSite=Strict, Secure em produção)
     response.set_cookie(
         key="refresh_token",
         value=tokens.refresh_token,
         httponly=True,
-        secure=False,  # True em produção com HTTPS
+        secure=not settings.DEBUG,  # Secure=True quando não DEBUG (HTTPS)
         samesite="strict",
         max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
         path="/",
@@ -552,6 +579,78 @@ async def logout(
 
     response.delete_cookie(key="refresh_token", path="/", httponly=True, samesite="strict")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post(
+    "/refresh",
+    response_model=TokenResponse,
+    summary="UC10/RF02 - Refresh Access Token",
+)
+async def refresh_token(
+    response: Response,
+    refresh_token: str | None = Cookie(None),
+    sessao_repo: SessaoRepository = Depends(get_sessao_repo),
+    repo: UsuarioRepository = Depends(get_usuario_repo),
+):
+    """Renova access token usando refresh token (cookie httpOnly) com rotação de refresh token"""
+    if not refresh_token:
+        raise HTTPException(status_code=401, detail="Refresh token não fornecido")
+
+    # Verifica refresh token no banco
+    refresh_hash = hash_refresh_token(refresh_token)
+    sessao = await sessao_repo.buscar_por_token_hash(refresh_hash)
+    if not sessao or not sessao.esta_ativa():
+        response.delete_cookie(key="refresh_token", path="/", httponly=True, samesite="strict")
+        raise HTTPException(status_code=401, detail="Refresh token inválido ou expirado")
+
+    # Busca usuário
+    usuario = await repo.buscar_por_id(sessao.usuario_id)
+    if not usuario or not usuario.esta_ativo():
+        if sessao.id is not None:
+            await sessao_repo.revogar(sessao.id)
+        response.delete_cookie(key="refresh_token", path="/", httponly=True, samesite="strict")
+        raise HTTPException(status_code=401, detail="Usuário não encontrado")
+
+    # ROTAÇÃO DE REFRESH TOKEN: revoga o antigo e cria novo (segurança: detecta replay)
+    if sessao.id is not None:
+        await sessao_repo.revogar(sessao.id)
+
+    # Gera novo par de tokens
+    access_token = criar_token(
+        sub=str(usuario.id),
+        expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
+    )
+    novo_refresh_token = criar_token(
+        sub=str(usuario.id),
+        expires_delta=timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
+        token_type="refresh",
+    )
+
+    # Salva novo refresh token no banco (hash SHA256)
+    novo_refresh_hash = hash_refresh_token(novo_refresh_token)
+    nova_sessao = Sessao(
+        usuario_id=usuario.id,
+        refresh_token_hash=novo_refresh_hash,
+        expira_em=datetime.now() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
+    )
+    await sessao_repo.criar(nova_sessao)
+
+    # Set novo refresh token como httpOnly cookie
+    response.set_cookie(
+        key="refresh_token",
+        value=novo_refresh_token,
+        httponly=True,
+        secure=not settings.DEBUG,
+        samesite="strict",
+        max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
+        path="/",
+    )
+
+    return TokenResponse(
+        access_token=access_token,
+        refresh_token=novo_refresh_token,
+        expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+    )
 
 
 @router.post(
@@ -624,11 +723,12 @@ async def gerenciar_perfil(
     request: AtualizarPerfilRequest,
     current_user: UsuarioModel = Depends(get_current_user),
     repo: UsuarioRepository = Depends(get_usuario_repo),
+    sessao_repo: SessaoRepository = Depends(get_sessao_repo),
 ):
     if request.nova_senha and request.nova_senha != request.confirmar_nova_senha:
         raise HTTPException(status_code=400, detail="As senhas não coincidem")
 
-    usecase = GerenciarPerfilUseCase(repo, hash_senha, verificar_senha)
+    usecase = GerenciarPerfilUseCase(repo, hash_senha, verificar_senha, sessao_repo)
     try:
         usuario = await usecase.atualizar(
             usuario_id=current_user.id,

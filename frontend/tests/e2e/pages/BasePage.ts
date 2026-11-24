@@ -6,7 +6,7 @@ export abstract class BasePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.baseURL = processconfig-env-0001-env-example-v1.0.BASE_URL || 'http://localhost:8380';
+    this.baseURL = process.env.BASE_URL || 'http://localhost:8380';
   }
 
   async goto(path: string = '/'): Promise<void> {

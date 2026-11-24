@@ -69,6 +69,7 @@ class Product:
     id: int
     category_id: int
     name: str
+    marca: str | None
     unit: str
     price: Decimal
 
@@ -414,6 +415,40 @@ _VARIANT_FACTORS: Final[tuple[Decimal, ...]] = (
     Decimal("1.25"),
     Decimal("1.30"),
 )
+
+# Marcas por categoria (para seed realista de marca)
+_CATEGORY_BRANDS: Final[dict[int, tuple[str, ...]]] = {
+    1: ("Tio João", "Camil", "Nome", "Carolino", "Tio Jorge"),          # Mercado
+    2: ("Hering", "Renner", "C&A", "Zara", "Riachuelo"),                 # Vestuário
+    3: ("Bosch", "Mobil", "Shell", "Ipiranga", "Petrobras"),            # Automotivos
+    4: ("Dell", "HP", "Lenovo", "Logitech", "Kingston"),                # Informática
+    5: ("Portobello", "Donalisa", "Oxford", "Tecnisa", "Portobello"),  # Decoração
+    6: ("Tok&Stok", "Etna", "Mobly", "Madesa", "Kappesberg"),          # Móveis
+    7: ("Votoran", "InterCement", "Tigre", "Amanco", "Deca"),           # Materiais Construção
+    8: ("Tramontina", "Stanley", "Bosch", "Makita", "Dewalt"),         # Ferramentas
+    9: ("Companhia das Letras", "Saraiva", "Rocco", "Intrínseca", "HarperCollins"),  # Livros
+    10: ("Vasap", "Truper", "Gardena", "Stihl", "Husqvarna"),           # Jardinagem
+    11: ("Brastemp", "Consul", "Electrolux", "LG", "Samsung"),          # Eletrodomésticos
+    12: ("Coca-Cola", "Ambev", "Nestlé", "Suvalan", "Garoto"),          # Bebidas
+    13: ("Ypê", "OMO", "Bombril", "Veja", "Sanytol"),                   # Limpeza e Higiene
+    14: ("Nike", "Adidas", "Vans", "Melissa", "Arezzo"),                # Calçados e Bolsas
+    15: ("Ray-Ban", "Oakley", "Casio", "Citizen", "Seiko"),             # Óculos e Relógios
+    16: ("Samsung", "Apple", "Motorola", "Xiaomi", "Sony"),             # Celulares
+    17: ("Sony", "Microsoft", "Nintendo", "Logitech", "Razer"),         # Games
+    18: ("Caloi", "Groove", "Sense", "Absolute", "Shimano"),            # Bicicletas
+    19: ("Neosaldina", "Dorflex", "Buscopan", "Medley", "Eurofarma"),   # Farmácia
+    20: ("Nivea", "L'Oréal", "Natura", "O Boticário", "Dove"),          # Beleza
+    21: ("BIC", "Faber-Castell", "Tilibra", "Pilot", "Stabilo"),        # Papelaria
+    22: ("Nike", "Adidas", "Asics", "Mizuno", "Under Armour"),          # Esportes
+    23: ("Nautika", "Moringa", "Guepardo", "Deuter", "Sea to Summit"),  # Camping
+    24: ("Lego", "Mattel", "Hasbro", "Estrela", "Fisher-Price"),        # Brinquedos
+    25: ("Pedigree", "Whiskas", "Royal Canin", "Premier", "Golden"),    # Pet
+    26: ("Kraft", "Smurfit Kappa", "DS Smith", "WestRock", "International Paper"),  # Embalagens
+}
+
+# Marcas padrão para categorias não mapeadas
+_DEFAULT_BRANDS: Final[tuple[str, ...]] = ("Genérico", "Marca Própria", "White Label")
+
 _CATEGORY_BASE_PRICES: Final[dict[int, Decimal]] = {
     1: Decimal("12.90"),
     2: Decimal("39.90"),
@@ -595,13 +630,17 @@ def _build_baseline() -> SeedDataset:
     product_id = 1
     for category_id, quantity in _BASELINE_PRODUCT_GROUPS:
         category = categories[category_id - 1]
+        brands = _CATEGORY_BRANDS.get(category_id, _DEFAULT_BRANDS)
         for product_index in range(quantity):
             name = category.products[product_index]
+            # Atribui marca de forma determinística baseada no product_id
+            marca = brands[(product_id - 1) % len(brands)]
             products.append(
                 Product(
                     id=product_id,
                     category_id=category_id,
                     name=name,
+                    marca=marca,
                     unit=_infer_unit(name),
                     price=_base_price(category_id, product_index),
                 )
@@ -672,16 +711,20 @@ def _build_expanded() -> SeedDataset:
     products: list[Product] = []
     product_id = 1
     for category in categories:
+        brands = _CATEGORY_BRANDS.get(category.id, _DEFAULT_BRANDS)
         for product_index, base_name in enumerate(category.products):
             for variant_index, variant in enumerate(_VARIANTS):
                 price = _money(
                     _base_price(category.id, product_index) * _VARIANT_FACTORS[variant_index]
                 )
+                # Marca determinística: varia por produto base, não por variante
+                marca = brands[product_index % len(brands)]
                 products.append(
                     Product(
                         id=product_id,
                         category_id=category.id,
                         name=f"{category.name} - {base_name} - {variant}",
+                        marca=marca,
                         unit=_infer_unit(base_name),
                         price=price,
                     )
@@ -797,3 +840,202 @@ def build_dataset(profile: Profile) -> SeedDataset:
         raise ValueError(f"perfil inválido: {profile}")
     validate_dataset(dataset)
     return dataset
+
+
+# ============================================================
+# Seed data para produto_classes (Mapeamento Semântico Marca -> Classe)
+# ============================================================
+
+_PRODUTO_CLASSES_SEED: Final[tuple[dict, ...]] = (
+    # Alimentos - Mercearia
+    {
+        "classe_nome": "Amido de Milho",
+        "termos_busca": ["amido de milho", "maizena", "maisena", "amido milho"],
+        "marcas_referencia": ["Maizena", "Amafil", "Yoki", "Dr. Oetker", "Camil"],
+        "categoria_macro": "Mercearia",
+    },
+    {
+        "classe_nome": "Palha de Aço",
+        "termos_busca": ["palha de aço", "bombril", "esponja aço", "lã de aço"],
+        "marcas_referencia": ["Bombril", "Assolan", "Scotch-Brite", "Bombril", "Climax"],
+        "categoria_macro": "Limpeza e Higiene",
+    },
+    {
+        "classe_nome": "Cachaça / Aguardente",
+        "termos_busca": ["cachaça", "aguardente", "pinga", "51", "caninha"],
+        "marcas_referencia": ["51", "Velho Barreiro", "Ypióca", "Salo", "Minas Gerais"],
+        "categoria_macro": "Bebidas",
+    },
+    {
+        "classe_nome": "Molho de Tomate",
+        "termos_busca": ["molho de tomate", "pomarola", "molho tomate", "extrato tomate"],
+        "marcas_referencia": ["Pomarola", "Elefante", "Qualitá", "Heinz", "Predilecta"],
+        "categoria_macro": "Mercearia",
+    },
+    {
+        "classe_nome": "Arroz Tipo 1",
+        "termos_busca": ["arroz", "arroz tipo 1", "arroz branco", "arroz agulhinha"],
+        "marcas_referencia": ["Tio João", "Camil", "Nome", "Carolino", "Tio Jorge"],
+        "categoria_macro": "Mercearia",
+    },
+    {
+        "classe_nome": "Feijão Preto",
+        "termos_busca": ["feijão preto", "feijao", "feijão carioca", "feijão preto tipo 1"],
+        "marcas_referencia": ["Camil", "Kicaldo", "Feijão Bom", "Tio João", "Nome"],
+        "categoria_macro": "Mercearia",
+    },
+    {
+        "classe_nome": "Óleo de Soja",
+        "termos_busca": ["óleo de soja", "oleo soja", "óleo cozinha", "óleo 900ml"],
+        "marcas_referencia": ["Liza", "Soya", "Cargill", "Bunge", "Predilecta"],
+        "categoria_macro": "Mercearia",
+    },
+    {
+        "classe_nome": "Açúcar Cristal",
+        "termos_busca": ["açúcar", "acucar", "açúcar cristal", "açúcar refinado"],
+        "marcas_referencia": ["União", "Camil", "Caravelas", "Da Barra", "São Vicente"],
+        "categoria_macro": "Mercearia",
+    },
+    {
+        "classe_nome": "Café Torrado",
+        "termos_busca": ["café", "cafe", "café torrado", "café moído", "café grão"],
+        "marcas_referencia": ["Melitta", "Pilão", "3 Corações", "Santa Clara", "Café do Ponto"],
+        "categoria_macro": "Mercearia",
+    },
+    {
+        "classe_nome": "Leite Integral",
+        "termos_busca": ["leite", "leite integral", "leite uht", "leite longa vida"],
+        "marcas_referencia": ["Itambé", "Piracanjuba", "Nestlé", "Paralat", "Mococa"],
+        "categoria_macro": "Mercearia",
+    },
+    # Limpeza
+    {
+        "classe_nome": "Detergente Líquido",
+        "termos_busca": ["detergente", "detergente liquido", "sabão louça", "lava louças"],
+        "marcas_referencia": ["Ypê", "Minerva", "Limpol", "Assolan", "Finish"],
+        "categoria_macro": "Limpeza e Higiene",
+    },
+    {
+        "classe_nome": "Sabão em Pó",
+        "termos_busca": ["sabão em pó", "sabao po", "sabão roupa", "detergente po"],
+        "marcas_referencia": ["OMO", "Ariel", "Tixan", "Brilhante", "Ypê"],
+        "categoria_macro": "Limpeza e Higiene",
+    },
+    {
+        "classe_nome": "Amaciante",
+        "termos_busca": ["amaciante", "amaciante roupa", "suavizante"],
+        "marcas_referencia": ["Comfort", "Ypê", "Minerva", "Downy", "Fofo"],
+        "categoria_macro": "Limpeza e Higiene",
+    },
+    {
+        "classe_nome": "Papel Higiênico",
+        "termos_busca": ["papel higienico", "papel higiênico", "papel toilet", "papel rolo"],
+        "marcas_referencia": ["Personal", "Neve", "Duetto", "Elite", "Personal VIP"],
+        "categoria_macro": "Limpeza e Higiene",
+    },
+    # Bebidas
+    {
+        "classe_nome": "Refrigerante Cola",
+        "termos_busca": ["refrigerante", "coca cola", "pepsi", "cola", "guarana"],
+        "marcas_referencia": ["Coca-Cola", "Pepsi", "Guaraná Antarctica", "Tubaina", "Fanta"],
+        "categoria_macro": "Bebidas",
+    },
+    {
+        "classe_nome": "Cerveja",
+        "termos_busca": ["cerveja", "skol", "brahma", "antartica", "heineken"],
+        "marcas_referencia": ["Skol", "Brahma", "Antarctica", "Heineken", "Itaipava"],
+        "categoria_macro": "Bebidas",
+    },
+    # Higiene/Beleza
+    {
+        "classe_nome": "Shampoo",
+        "termos_busca": ["shampoo", "xampu", "shampoo cabelo", "lavar cabelo"],
+        "marcas_referencia": ["Nivea", "L'Oréal", "Pantene", "Dove", "Seda"],
+        "categoria_macro": "Beleza e Cuidados Pessoais",
+    },
+    {
+        "classe_nome": "Sabonete",
+        "termos_busca": ["sabonete", "sabonete liquido", "sabonete barra", "sabão corpo"],
+        "marcas_referencia": ["Dove", "Nivea", "Protex", "Palmolive", "Granado"],
+        "categoria_macro": "Beleza e Cuidados Pessoais",
+    },
+    {
+        "classe_nome": "Protetor Solar",
+        "termos_busca": ["protetor solar", "filtro solar", "bloqueador solar", "protetor fps"],
+        "marcas_referencia": ["Nivea", "La Roche-Posay", "Avène", "Sundown", "Australian Gold"],
+        "categoria_macro": "Beleza e Cuidados Pessoais",
+    },
+    # Farmácia
+    {
+        "classe_nome": "Analgésico / Dipirona",
+        "termos_busca": ["dipirona", "novalgina", "analgésico", "dor", "dor de cabeça"],
+        "marcas_referencia": ["Novalgina", "Dorflex", "Anador", "Medley", "Genérico"],
+        "categoria_macro": "Farmácia e Saúde",
+    },
+    # Informática/Eletrônicos
+    {
+        "classe_nome": "Notebook",
+        "termos_busca": ["notebook", "laptop", "computador portátil", "ultrabook"],
+        "marcas_referencia": ["Dell", "HP", "Lenovo", "Asus", "Acer"],
+        "categoria_macro": "Informática",
+    },
+    {
+        "classe_nome": "Smartphone",
+        "termos_busca": ["smartphone", "celular", "iphone", "android", "telefone"],
+        "marcas_referencia": ["Samsung", "Apple", "Motorola", "Xiaomi", "Sony"],
+        "categoria_macro": "Celulares e Telecomunicações",
+    },
+    # Automotivo
+    {
+        "classe_nome": "Óleo de Motor",
+        "termos_busca": ["óleo motor", "oleo motor", "lubrificante motor", "oleo 5w30", "oleo 20w50"],
+        "marcas_referencia": ["Mobil", "Shell", "Castrol", "Valvoline", "Ipiranga"],
+        "categoria_macro": "Automotivos",
+    },
+    # Pet
+    {
+        "classe_nome": "Ração para Cães",
+        "termos_busca": ["ração cães", "ração cachorro", "ração pet", "ração premium"],
+        "marcas_referencia": ["Pedigree", "Royal Canin", "Premier", "Golden", "Whiskas"],
+        "categoria_macro": "Pet",
+    },
+    {
+        "classe_nome": "Ração para Gatos",
+        "termos_busca": ["ração gatos", "ração gato", "ração felina"],
+        "marcas_referencia": ["Whiskas", "Royal Canin", "Premier", "Golden", "Pedigree"],
+        "categoria_macro": "Pet",
+    },
+    # Ferramentas
+    {
+        "classe_nome": "Furadeira/Parafusadeira",
+        "termos_busca": ["furadeira", "parafusadeira", "furadeira impacto", "parafusadeira bateria"],
+        "marcas_referencia": ["Bosch", "Makita", "DeWalt", "Black+Decker", "Stanley"],
+        "categoria_macro": "Ferramentas",
+    },
+)
+
+
+def build_produto_classes_seed() -> list[dict]:
+    """Retorna lista de dicts prontos para INSERT na tabela produto_classes."""
+    return [
+        {
+            "classe_nome": item["classe_nome"],
+            "termos_busca": item["termos_busca"],
+            "marcas_referencia": item["marcas_referencia"],
+            "categoria_macro": item["categoria_macro"],
+            "ativo": True,
+        }
+        for item in _PRODUTO_CLASSES_SEED
+    ]
+
+
+def validate_produto_classes_seed(classes: list[dict]) -> None:
+    """Validações básicas do seed de classes."""
+    nomes = [c["classe_nome"] for c in classes]
+    if len(nomes) != len(set(nomes)):
+        raise ValueError("classe_nome duplicado no seed de produto_classes")
+    for c in classes:
+        if not c["termos_busca"] or not isinstance(c["termos_busca"], list):
+            raise ValueError(f"termos_busca inválido para {c['classe_nome']}")
+        if not c["marcas_referencia"] or not isinstance(c["marcas_referencia"], list):
+            raise ValueError(f"marcas_referencia inválido para {c['classe_nome']}")

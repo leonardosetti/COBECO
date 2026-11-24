@@ -5,6 +5,8 @@ from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from decimal import Decimal
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.domain.entities import (
     Categoria,
     Fornecedor,
@@ -113,7 +115,10 @@ class ProdutoRepository(ABC):
         ...
 
     @abstractmethod
-    async def listar_ativos(self) -> list[Produto]: ...
+    async def listar_ativos(self, limit: int | None = None) -> list[Produto]: ...
+
+    @abstractmethod
+    async def count_ativos(self) -> int: ...
 
 
 # ============================================================
@@ -154,6 +159,10 @@ class ListaRepository(ABC):
 # Comparação Repository (RF15, RF16)
 # ============================================================
 class ComparacaoRepository(ABC):
+    """Camada de comparação (RF15, RF16) — expõe sessão para queries de segurança."""
+
+    session: AsyncSession  # definido na implementação concreta
+
     @abstractmethod
     async def calcular_orcamento(
         self,
@@ -166,6 +175,21 @@ class ComparacaoRepository(ABC):
         - Timeout: 10s (config)
         - Cache: 5min (config)
         - Ordena por preço ASC
+        """
+        ...
+
+    @abstractmethod
+    async def calcular_orcamento_itens(
+        self,
+        itens: list[dict],
+        fornecedor_ids: list[int],
+        disponibilidade_minima: float = 0.0,
+        lista_nome: str = "Lista",
+    ) -> OrcamentoComparacao:
+        """
+        Calcula orçamento a partir de itens em memória (RF15, lista efêmera).
+        Não exige lista persistida — suporta visitante (Autenticação Tardia).
+        itens: [{"produto_id": int, "quantidade": int}, ...]
         """
         ...
 
@@ -183,6 +207,10 @@ class ComparacaoRepository(ABC):
 # Exportação Repository (RF17)
 # ============================================================
 class ExportacaoRepository(ABC):
+    """Exportação (RF17) — expõe sessão para queries auxiliares."""
+
+    session: AsyncSession  # definido na implementação concreta
+
     @abstractmethod
     async def gerar_pdf_lista(self, lista_id: int) -> bytes:
         """
@@ -192,6 +220,17 @@ class ExportacaoRepository(ABC):
         - Nome: lista_YYYYMMDD.pdf
         - Formato A4
         - <5s para até 100 itens (RNF11)
+        """
+        ...
+
+    @abstractmethod
+    async def gerar_pdf_vencedora(self, orcamento) -> bytes:
+        """
+        Gera PDF da LISTA VENCEDORA (RF17)
+        - Server-side com ReportLab, A4
+        - Exporta APENAS a lista do fornecedor campeão precificada
+          (nunca a tabela comparativa)
+        - Nome: lista_YYYYMMDD.pdf
         """
         ...
 

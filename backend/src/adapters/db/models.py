@@ -2,6 +2,7 @@
 # Mapeamento ORM para as 8 tabelas PT-BR (doc-arch-0001-camada-de-dados-canon.md v3.2)
 # Clean Architecture: Adapters não vazam para Domain
 
+import json
 from datetime import datetime
 from decimal import Decimal
 from typing import TYPE_CHECKING
@@ -26,6 +27,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    JSON,
     String,
     Text,
     UniqueConstraint,
@@ -100,6 +102,9 @@ class ListaModel(Base):
         index=True,
     )
     nome: Mapped[str] = mapped_column(String(100), nullable=False)
+    categorias: Mapped[str | None] = mapped_column(
+        String(200), nullable=True, comment="IDs das categorias selecionadas (RF12/RF08), JSON texto"
+    )
     criado_em: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
     atualizado_em: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=func.now(), onupdate=func.now()
@@ -116,6 +121,8 @@ class ListaModel(Base):
     __table_args__ = (
         CheckConstraint("LENGTH(nome) BETWEEN 1 AND 100", name="ck_lista_nome_len"),
         Index("ix_lista_usuario_criado", "usuario_id", "criado_em"),
+        # RNF09: composite index for listar_por_usuario with soft delete filter
+        Index("ix_lista_usuario_criado_deletado", "usuario_id", "criado_em", "deletado_em"),
     )
 
     def to_domain(self) -> "Lista":
@@ -125,6 +132,7 @@ class ListaModel(Base):
             id=self.id,
             usuario_id=self.usuario_id,
             nome=self.nome,
+            categorias=json.loads(self.categorias) if self.categorias else [],
             criado_em=self.criado_em,
             atualizado_em=self.atualizado_em,
             deletado_em=self.deletado_em,
@@ -159,6 +167,8 @@ class ItemListaModel(Base):
     __table_args__ = (
         CheckConstraint("quantidade BETWEEN 1 AND 9999", name="ck_item_quantidade"),
         UniqueConstraint("lista_id", "produto_id", name="uq_item_lista_produto"),
+        # RNF09: explicit composite index for item lookup (covered by unique constraint but explicit for clarity)
+        Index("ix_itens_lista_lista_produto", "lista_id", "produto_id"),
     )
 
     def to_domain(self) -> "ItemLista":
@@ -271,6 +281,7 @@ class ProdutoModel(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     nome: Mapped[str] = mapped_column(String(200), nullable=False, index=True)
+    marca: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
     unidade: Mapped[str] = mapped_column(String(10), nullable=False)
     ativo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     criado_em: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
@@ -281,7 +292,11 @@ class ProdutoModel(Base):
         "FornecedorProdutoModel", back_populates="produto"
     )
 
-    __table_args__ = (Index("ix_produto_nome", "nome"),)
+    __table_args__ = (
+        Index("ix_produto_nome", "nome"),
+        Index("ix_produto_marca", "marca"),
+        Index("ix_produto_nome_fulltext", "nome", mysql_prefix="FULLTEXT"),
+    )
 
     def to_domain(self) -> "Produto":
         from src.domain.entities import Produto, UnidadeMedida
@@ -289,10 +304,34 @@ class ProdutoModel(Base):
         return Produto(
             id=self.id,
             nome=self.nome,
+            marca=self.marca,
             unidade=UnidadeMedida(self.unidade),
             ativo=self.ativo,
             criado_em=self.criado_em,
         )
+
+
+# ============================================================
+# Tabela: produto_classes (Mapeamento semântico Marca -> Classe)
+# ============================================================
+class ProdutoClasseModel(Base):
+    __tablename__ = "produto_classes"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    classe_nome: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    termos_busca: Mapped[list[str]] = mapped_column(JSON, nullable=False)
+    marcas_referencia: Mapped[list[str]] = mapped_column(JSON, nullable=False)
+    categoria_macro: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    ativo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    criado_em: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
+    atualizado_em: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=func.now(), onupdate=func.now()
+    )
+
+    __table_args__ = (
+        Index("ix_produto_classes_ativo", "ativo"),
+        Index("ix_produto_classes_categoria_macro", "categoria_macro"),
+    )
 
 
 # ============================================================
@@ -322,6 +361,8 @@ class FornecedorProdutoModel(Base):
         CheckConstraint("estoque >= 0", name="ck_fp_estoque_positivo"),
         Index("ix_fp_fornecedor", "fornecedor_id"),
         Index("ix_fp_produto", "produto_id"),
+        # RNF09: composite index for calcular_disponibilidade and buscar_precos_para_comparacao
+        Index("ix_fp_fornecedor_produto_ativo_estoque", "fornecedor_id", "produto_id", "ativo", "estoque"),
     )
 
     def to_domain(self) -> "FornecedorProduto":
@@ -364,6 +405,8 @@ class SessaoModel(Base):
     __table_args__ = (
         Index("ix_sessao_usuario_expira", "usuario_id", "expira_em"),
         Index("ix_sessao_token_hash", "refresh_token_hash"),
+        # RNF09: composite index for buscar_ativas_por_usuario (filters revogada_em IS NULL)
+        Index("ix_sessao_usuario_revogada_expira", "usuario_id", "revogada_em", "expira_em"),
     )
 
     def to_domain(self) -> "Sessao":

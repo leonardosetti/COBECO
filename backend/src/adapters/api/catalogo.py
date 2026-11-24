@@ -49,6 +49,7 @@ class FornecedorResponse(BaseModel):
 class ProdutoResponse(BaseModel):
     id: int
     nome: str
+    marca: str | None = None
     unidade: str
 
     class Config:
@@ -173,21 +174,134 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         return list(result.scalars().all())
 
     async def autocomplete(self, query: str, limit: int = 10):
-        result = await self.session.execute(
-            select(ProdutoModel)
-            .where(
-                ProdutoModel.nome.ilike(f"%{query}%"),
-                ProdutoModel.ativo,
-            )
-            .limit(limit)
-        )
-        return list(result.scalars().all())
+        """Busca híbrida: FULLTEXT (nome) + marca exata + expansão semântica via produto_classes."""
+        from sqlalchemy import text
+
+        q = query.strip()
+        if not q:
+            return []
+
+        # 1. FULLTEXT search no nome (MySQL MATCH AGAINST)
+        fulltext_sql = text("""
+            SELECT id, nome, marca, unidade, ativo, criado_em
+            FROM produtos
+            WHERE ativo = TRUE
+              AND MATCH(nome) AGAINST(:query IN BOOLEAN MODE)
+            LIMIT :limit
+        """)
+        result = await self.session.execute(fulltext_sql, {"query": f"+{q}*", "limit": limit})
+        rows = result.mappings().all()
+        produtos = [ProdutoModel(**dict(r)) for r in rows]
+
+        if len(produtos) >= limit:
+            return produtos[:limit]
+
+        # 2. Match exato/prefixo em marca (case-insensitive)
+        remaining = limit - len(produtos)
+        marca_ids = {p.id for p in produtos}
+        marca_sql = text("""
+            SELECT id, nome, marca, unidade, ativo, criado_em
+            FROM produtos
+            WHERE ativo = TRUE
+              AND id NOT IN :excluded_ids
+              AND (marca = :query OR marca LIKE :prefix)
+            LIMIT :limit
+        """)
+        excluded = tuple(marca_ids) if marca_ids else (0,)
+        result = await self.session.execute(marca_sql, {
+            "excluded_ids": excluded,
+            "query": q,
+            "prefix": f"{q}%",
+            "limit": remaining
+        })
+        rows = result.mappings().all()
+        produtos.extend(ProdutoModel(**dict(r)) for r in rows)
+
+        if len(produtos) >= limit:
+            return produtos[:limit]
+
+        # 3. Expansão semântica via produto_classes
+        # First, find classes matching the query term (substring match on JSON arrays)
+        remaining = limit - len(produtos)
+        if remaining > 0:
+            classe_sql = text("""
+                SELECT termos_busca, marcas_referencia
+                FROM produto_classes
+                WHERE ativo = TRUE
+                  AND (
+                    CAST(termos_busca AS CHAR) LIKE :query_like
+                    OR CAST(marcas_referencia AS CHAR) LIKE :query_like
+                  )
+            """)
+            result = await self.session.execute(classe_sql, {"query_like": f"%{q.lower()}%"})
+            classe_rows = result.mappings().all()
+
+            # Collect all related terms and brands from matching classes
+            import json
+            related_terms = set()
+            related_brands = set()
+            for row in classe_rows:
+                related_terms.update(json.loads(row["termos_busca"]))
+                related_brands.update(json.loads(row["marcas_referencia"]))
+
+            # Search produtos by related brands (exact/prefix)
+            if related_brands:
+                brand_ids = {p.id for p in produtos}
+                brand_placeholders = ", ".join([f":brand{i}" for i in range(len(related_brands))])
+                marca_sql = text(f"""
+                    SELECT id, nome, marca, unidade, ativo, criado_em
+                    FROM produtos
+                    WHERE ativo = TRUE
+                      AND id NOT IN :excluded_ids
+                      AND (marca IN ({brand_placeholders}))
+                    LIMIT :limit
+                """)
+                params = {"excluded_ids": tuple(brand_ids) if brand_ids else (0,), "limit": remaining}
+                for i, brand in enumerate(related_brands):
+                    params[f"brand{i}"] = brand
+                result = await self.session.execute(marca_sql, params)
+                rows = result.mappings().all()
+                produtos.extend(ProdutoModel(**dict(r)) for r in rows)
+
+            # Search produtos by related terms via FULLTEXT
+            if len(produtos) < limit and related_terms:
+                remaining = limit - len(produtos)
+                term_ids = {p.id for p in produtos}
+                # Filter terms to simple alphanumeric for FULLTEXT boolean mode
+                simple_terms = [t for t in related_terms if t.replace(" ", "").isalnum() and len(t) >= 2]
+                if simple_terms:
+                    ft_query = " ".join(f"+{t}*" for t in simple_terms[:5])  # Limit to 5 terms
+                    ft_sql = text("""
+                        SELECT id, nome, marca, unidade, ativo, criado_em
+                        FROM produtos
+                        WHERE ativo = TRUE
+                          AND id NOT IN :excluded_ids
+                          AND MATCH(nome) AGAINST(:query IN BOOLEAN MODE)
+                        LIMIT :limit
+                    """)
+                    excluded = tuple(term_ids) if term_ids else (0,)
+                    result = await self.session.execute(ft_sql, {
+                        "excluded_ids": excluded,
+                        "query": ft_query,
+                        "limit": remaining
+                    })
+                    rows = result.mappings().all()
+                    produtos.extend(ProdutoModel(**dict(r)) for r in rows)
+
+        return produtos[:limit]
 
     async def listar_ativos(self):
         result = await self.session.execute(
             select(ProdutoModel).where(ProdutoModel.ativo).order_by(ProdutoModel.nome)
         )
         return list(result.scalars().all())
+
+    async def count_ativos(self) -> int:
+        from sqlalchemy import func
+        result = await self.session.execute(
+            select(func.count()).select_from(ProdutoModel).where(ProdutoModel.ativo)
+        )
+        return int(result.scalar_one())
 
 
 def get_categoria_repo(session: AsyncSession = Depends(get_db)) -> CategoriaRepository:
@@ -250,7 +364,7 @@ async def listar_fornecedores(
             FornecedorResponse(
                 id=fornecedor.id or 0,
                 nome=fornecedor.nome,
-                cnpj=fornecedor.cnpj.valor,
+                cnpj=fornecedor.cnpj,
                 categorias=[CategoriaResponse.model_validate(c) for c in cats],
             )
         )

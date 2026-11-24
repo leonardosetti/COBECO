@@ -180,7 +180,7 @@ Desenvolver um MVP funcional e minimalista que automatize a comparação de pre�
 │                          │                ▼                    │
 │                          │        ┌───────────────┐            │
 │                          │        │    PROXY      │            │
-│                          │        │   nginx:8080  │            │
+│                          │        │   nginx:8380  │            │
 │                          │        │  / -> frontend│            │
 │                          │        │  /v1/ -> back │            │
 │                          │        └───────────────┘            │
@@ -216,12 +216,12 @@ cp config-env-0001-env-example-v1.0.example config-env-0001-env-example-v1.0
 
 # 3. Suba os containers (desenvolvimento com hot reload)
 make up
-# ou: docker compose -f config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0002-docker-compose-override-v1-v1-v1.0-v1.0-v1.0.yml -f config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0002-docker-compose-override-v1-v1-v1.0-v1.0.override.yml up -d --build
+# ou: docker compose -f config-docker-0001-docker-compose-v1.0.yml -f docker-compose.override.yml up -d --build
 
 # 4. Acesse a aplicação no navegador
-# Frontend + Proxy: http://localhost:8080
-# Backend API:      http://localhost:8080/v1/
-# Swagger Docs:     http://localhost:8080/v1/docs
+# Frontend + Proxy: http://localhost:8380
+# Backend API:      http://localhost:8380/v1/
+# Swagger Docs:     http://localhost:8380/v1/docs
 
 # 5. (Opcional) Execute os testes
 make test
@@ -332,10 +332,10 @@ COBECO/
 │   └── Dockerfile
 ├── proxy/                      # nginx reverse proxy
 │   └── nginx.conf
-├── config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0002-docker-compose-override-v1-v1-v1.0-v1.0-v1.0.yml          # Produção
-├── config-docker-0001-config-docker-0001-config-docker-0001-config-docker-0002-docker-compose-override-v1-v1-v1.0-v1.0.override.yml # Desenvolvimento (hot reload)
-├── config-make-0001-makefile-v1                    # Comandos padronizados
-├── config-env-0001-env-example-v1.0.example                # Template variáveis ambiente
+├── config-docker-0001-docker-compose-v1.0.yml          # Produção
+├── docker-compose.override.yml                         # Desenvolvimento (hot reload)
+├── config-make-0001-makefile-v1                        # Comandos padronizados
+├── config-env-0001-env-example-v1.0.example            # Template variáveis ambiente
 ├── .gitignore
 ├── doc-readme-0001-readme-canon.md                   # Este arquivo
 ├── constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md             # Lei suprema do projeto

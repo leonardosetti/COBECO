@@ -8,8 +8,8 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from src.adapters.api import auth, catalogo, comparacao, exportacao, listas, perfil
-from src.adapters.db.database import close_db, init_db
+from src.adapters.api import auth, catalogo, comparacao, exportacao, listas, perfil, produtos
+from src.adapters.db.database import close_db
 from src.config import settings
 
 # ============================================================
@@ -69,9 +69,9 @@ async def lifespan(app: FastAPI):
     """Gerencia ciclo de vida da aplicação"""
     logger.info("starting_application", app_name=settings.APP_NAME, version=settings.APP_VERSION)
 
-    # Startup: Inicializa DB
-    await init_db()
-    logger.info("database_initialized")
+    # Startup: DB já foi migrado pelo serviço migrate (Alembic)
+    # init_db() com create_all() removido — usa migrations em produção
+    logger.info("database_ready")
 
     yield
 
@@ -91,6 +91,7 @@ app = FastAPI(
     redoc_url="/redoc" if settings.DEBUG else None,
     openapi_url="/openapi.json" if settings.DEBUG else None,
     lifespan=lifespan,
+    root_path="/v1",
 )
 
 # CORS Middleware (apenas se configurado)
@@ -188,6 +189,7 @@ async def health_check():
 app.include_router(auth.router, prefix="/auth", tags=["Autenticação"])
 app.include_router(listas.router, prefix="/listas", tags=["Listas"])
 app.include_router(catalogo.router, prefix="/catalogo", tags=["Catálogo"])
+app.include_router(produtos.router, prefix="", tags=["Produtos"])
 app.include_router(comparacao.router, prefix="/comparacao", tags=["Comparação"])
 app.include_router(exportacao.router, prefix="/export", tags=["Exportação"])
 app.include_router(perfil.router, prefix="/perfil", tags=["Perfil"])

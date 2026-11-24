@@ -1,16 +1,8 @@
 # COBECO Backend — Catálogo Integration Tests
 # Testes de integração para Catálogo: Categorias, Fornecedores, Produtos, Autocomplete (RF12, RF13)
+# Usa fixtures compartilhadas de tests/integration/conftest.py
 
 import pytest
-from httpx import AsyncClient, ASGITransport
-from src.main import app
-
-
-@pytest.fixture
-async def client():
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        yield ac
 
 
 class TestCatalogoIntegration:
@@ -44,8 +36,7 @@ class TestCatalogoIntegration:
         assert "id" in forn
         assert "nome" in forn
         assert "cnpj" in forn
-        assert "ativo" in forn
-        assert forn["ativo"] is True
+        assert "categorias" in forn
 
     @pytest.mark.asyncio
     async def test_listar_fornecedores_por_categorias(self, client):
@@ -102,7 +93,7 @@ class TestCatalogoIntegration:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
-        assert len(data) >= 50  # Seed tem 50 produtos
+        assert len(data) >= 20  # Seed tem 20 produtos
 
 
 class TestCatalogoPrefiltroComparacao:

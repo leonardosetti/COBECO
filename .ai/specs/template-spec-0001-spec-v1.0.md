@@ -3,15 +3,15 @@ id: template-spec-0001-spec-v1.0
 type: template-spec
 title: TEMPLATE SPEC — Spec
 version: v1.0
-status: rascunho
-canonical: false
+status: ratificado
+canonical: true
 canonical_slug: spec
 created: '2026-11-14'
-updated: '2026-11-14'
+updated: '2026-11-16'
 author: Leonardo Setti (@leonardosetti)
 owner: CCB
 ratified_by: gh-sig:owner:leonardosetti:14863508
-ratified_at: '2026-11-14'
+ratified_at: '2026-11-16T04:58:00-03:00'
 supersedes: null
 superseded_by: null
 trace:

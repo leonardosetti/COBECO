@@ -23,6 +23,10 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - data
+    # Porta exposta apenas para desenvolvimento local (testes de integração
+    # rodam contra localhost:3306 — conftest). Não expor em produção.
+    ports:
+      - "3306:3306"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
       interval: 5s
@@ -72,8 +76,10 @@ services:
       dockerfile: config-docker-0003-backend-dockerfile-v1.0
     container_name: cobeco-seed
     user: root
+    # Seed idempotente: só popula se o banco estiver vazio (volume persistente —
+    # dados de usuário/criados em demo sobrevivem a restarts; jamais apagados aqui)
     command: >
-      sh -c "sleep 2 && mysql --skip-ssl -h db -u cobeco -pcobeco cobeco < /app/seed.sql"
+      sh -c "sleep 2 && COUNT=$$(mysql --skip-ssl -h db -u cobeco -pcobeco cobeco -N -e 'SELECT COUNT(*) FROM categorias' 2>/dev/null || echo 0) && if [ \"$$COUNT\" = \"0\" ]; then mysql --skip-ssl -h db -u cobeco -pcobeco cobeco < /app/config-seed-0001-seed-v1.0.sql && echo 'Seed aplicado (banco vazio)'; else echo \"Seed pulado — banco já populado ($$COUNT categorias, volume persistente)\"; fi"
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -177,7 +183,7 @@ networks:
   data:
     name: cobeco-data
     driver: bridge
-    internal: true      # Sem acesso à internet — apenas DB ↔ backend/migrate
+    # internal: true  # Desabilitado para permitir port binding no host (dev)
   edge:
     name: cobeco-edge
     driver: bridge
@@ -188,4 +194,4 @@ networks:
 # ============================================================
 volumes:
   db_data:
-    name: cobeco-db-data
+    name: cobeco-db-data-test
