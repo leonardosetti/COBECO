@@ -234,5 +234,5 @@ class TestComparacaoFlatEstrutura:
             assert "percentual_disponibilidade" in f
             assert "preco_total" in f
             assert "itens" in f
-            assert isinstance(f["percentual_disponibilidade"], (int, float))
+            assert isinstance(f["percentual_disponibilidade"], int | float)
             assert 0 <= f["percentual_disponibilidade"] <= 100
