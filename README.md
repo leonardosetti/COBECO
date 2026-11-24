@@ -18,15 +18,16 @@
 Permite criar listas de compras, filtrar fornecedores por categoria, comparar preços em tempo real e exportar resultados em PDF.
 
 **Stack:**
-| Camada | Tecnologia |
-|--------|------------|
-| **Frontend** | Vanilla JS ES6+, Tailwind CSS, Playwright (E2E) |
-| **Backend** | FastAPI 0.115, SQLAlchemy 2.0, Pydantic 2.10 |
-| **Database** | MySQL 8.0 (InnoDB), driver aiomysql/pymysql |
-| **Auth** | JWT (HS256), bcrypt (salt=12), cookies httpOnly |
-| **PDF** | ReportLab (server-side) |
-| **Proxy** | nginx (reverse proxy, TLS ready) |
-| **CI/CD** | GitHub Actions (ruff + pytest + coverage + Docker build) |
+
+| Camada             | Tecnologia                                               |
+| ------------------ | -------------------------------------------------------- |
+| **Frontend** | Vanilla JS ES6+, Tailwind CSS, Playwright (E2E)          |
+| **Backend**  | FastAPI 0.115, SQLAlchemy 2.0, Pydantic 2.10             |
+| **Database** | MySQL 8.0 (InnoDB), driver aiomysql/pymysql              |
+| **Auth**     | JWT (HS256), bcrypt (salt=12), cookies httpOnly          |
+| **PDF**      | ReportLab (server-side)                                  |
+| **Proxy**    | nginx (reverse proxy, TLS ready)                         |
+| **CI/CD**    | GitHub Actions (ruff + pytest + coverage + Docker build) |
 
 ---
 
@@ -34,14 +35,14 @@ Permite criar listas de compras, filtrar fornecedores por categoria, comparar pr
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                      COBECO MVP                              │
+│                      COBECO MVP                             │
 ├─────────────────────────────────────────────────────────────┤
 │  Frontend (Vanilla JS + Tailwind)  │  Backend (FastAPI)     │
-│  http://localhost:8380             │  http://localhost:8000  │
-│  - SPA Router                      │  - Clean Architecture   │
-│  - Tailwind CSS                    │  - Domain/UseCase/Repo  │
-│  - Playwright E2E Tests            │  - PostgreSQL/MySQL     │
-└─────────────────────────────────────────────────────────────┘
+│  http://localhost:8380             │  http://localhost:8000 │
+│  - SPA Router                      │  - Clean Architecture  │
+│  - Tailwind CSS                    │  - Domain/UseCase/Repo │
+│  - Playwright E2E Tests            │  - PostgreSQL/MySQL    │
+└────────────────────────────────────┴────────────────────────┘
                               │
                     ┌─────────┴─────────┐
                     │   MySQL 8.0       │
@@ -85,13 +86,13 @@ curl http://localhost:8380/health
 
 ### Acessos após subir
 
-| Serviço | URL |
-|---------|-----|
-| **Frontend** | http://localhost:8380 |
-| **API (Swagger/OpenAPI)** | http://localhost:8380/openapi.json |
-| **Backend direto** | http://localhost:8000/docs |
-| **Health Check** | http://localhost:8380/health |
-| **MySQL** | localhost:3306 (usuário: `cobeco`, senha: `cobeco`, banco: `cobeco`) |
+| Serviço                        | URL                                                                         |
+| ------------------------------- | --------------------------------------------------------------------------- |
+| **Frontend**              | http://localhost:8380                                                       |
+| **API (Swagger/OpenAPI)** | http://localhost:8380/openapi.json                                          |
+| **Backend direto**        | http://localhost:8000/docs                                                  |
+| **Health Check**          | http://localhost:8380/health                                                |
+| **MySQL**                 | localhost:3306 (usuário: `cobeco`, senha: `cobeco`, banco: `cobeco`) |
 
 ### Comandos úteis
 
@@ -220,30 +221,31 @@ COBECO/
 
 ## 📋 Requisitos Implementados (18 RFs)
 
-| ID | Requisito | Status |
-|----|-----------|--------|
-| RF01 | Cadastrar Usuário | ✅ |
-| RF02 | Login (JWT + Refresh, lockout 6/15min) | ✅ |
-| RF03 | Logout | ✅ |
-| RF04 | Recuperar Senha | ✅ |
-| RF05 | Visualizar Perfil | ✅ |
-| RF06 | Editar Perfil | ✅ |
-| RF07 | Criar Lista (memória + autocomplete) | ✅ |
-| RF08 | Salvar/Promover Lista | ✅ |
-| RF09 | Listar Minhas Listas | ✅ |
-| RF10 | Editar Lista | ✅ |
-| RF11 | Excluir Lista (Soft Delete) | ✅ |
-| RF12 | Selecionar Categorias | ✅ |
-| RF13 | Selecionar Fornecedores | ✅ |
-| RF14 | Filtrar Disponibilidade | ✅ |
-| RF15 | Calcular Orçamento | ✅ |
-| RF16 | Visualizar Resultados (melhor oferta: maior cobertura; empate → menor total) | ✅ |
-| RF17 | Exportar PDF (Lista Vencedora — todos, sem login) | ✅ |
-| RF18 | Impressão @media print | ✅ |
+| ID   | Requisito                                                                     | Status |
+| ---- | ----------------------------------------------------------------------------- | ------ |
+| RF01 | Cadastrar Usuário                                                            | ✅     |
+| RF02 | Login (JWT + Refresh, lockout 6/15min)                                        | ✅     |
+| RF03 | Logout                                                                        | ✅     |
+| RF04 | Recuperar Senha                                                               | ✅     |
+| RF05 | Visualizar Perfil                                                             | ✅     |
+| RF06 | Editar Perfil                                                                 | ✅     |
+| RF07 | Criar Lista (memória + autocomplete)                                         | ✅     |
+| RF08 | Salvar/Promover Lista                                                         | ✅     |
+| RF09 | Listar Minhas Listas                                                          | ✅     |
+| RF10 | Editar Lista                                                                  | ✅     |
+| RF11 | Excluir Lista (Soft Delete)                                                   | ✅     |
+| RF12 | Selecionar Categorias                                                         | ✅     |
+| RF13 | Selecionar Fornecedores                                                       | ✅     |
+| RF14 | Filtrar Disponibilidade                                                       | ✅     |
+| RF15 | Calcular Orçamento                                                           | ✅     |
+| RF16 | Visualizar Resultados (melhor oferta: maior cobertura; empate → menor total) | ✅     |
+| RF17 | Exportar PDF (Lista Vencedora — todos, sem login)                            | ✅     |
+| RF18 | Impressão @media print                                                       | ✅     |
 
 **Fluxo de visitante (Autenticação Tardia):** o visitante percorre todos os passos sem login: Categorias → Lista (em `sessionStorage`) → Fornecedores → Comparação → Lista Vencedora → PDF. O login é exigido apenas para salvar a lista na conta (RF08).
 
 Endpoints públicos:
+
 - `POST /v1/comparacao/calcular-efemera` — orçamento a partir de itens em memória (sem auth)
 - `POST /v1/export/pdf/vencedora` — PDF da Lista Vencedora (sem auth, itens inline)
 
@@ -253,19 +255,19 @@ Endpoints públicos:
 
 Crie um arquivo `.env` na raiz do repositório (exemplo em `config-env-0001-env-example-v1.0.example`):
 
-| Variável | Descrição | Obrigatório | Padrão |
-|----------|-----------|-------------|--------|
-| `SECRET_KEY` | Chave JWT (mín. 32 chars) | ✅ | — |
-| `DATABASE_URL` | URL MySQL (aiomysql/asyncmy) | ✅ | — |
-| `MYSQL_ROOT_PASSWORD` | Senha root do MySQL | ✅ | — |
-| `MYSQL_DATABASE` | Nome do banco | ✅ | `cobeco` |
-| `MYSQL_USER` | Usuário do banco | ✅ | `cobeco` |
-| `MYSQL_PASSWORD` | Senha do usuário do banco | ✅ | — |
-| `JWT_ALGORITHM` | Algoritmo JWT (HS256) | ✅ | `HS256` |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | Expiração access token | ✅ | `15` |
-| `REFRESH_TOKEN_EXPIRE_DAYS` | Expiração refresh token | ✅ | `7` |
-| `RECOVERY_MODE` | `log` ou `email` | ✅ | `log` |
-| `NGINX_PORT` | Porta do proxy | ❌ | `8380` |
+| Variável                       | Descrição                  | Obrigatório | Padrão    |
+| ------------------------------- | ---------------------------- | ------------ | ---------- |
+| `SECRET_KEY`                  | Chave JWT (mín. 32 chars)   | ✅           | —         |
+| `DATABASE_URL`                | URL MySQL (aiomysql/asyncmy) | ✅           | —         |
+| `MYSQL_ROOT_PASSWORD`         | Senha root do MySQL          | ✅           | —         |
+| `MYSQL_DATABASE`              | Nome do banco                | ✅           | `cobeco` |
+| `MYSQL_USER`                  | Usuário do banco            | ✅           | `cobeco` |
+| `MYSQL_PASSWORD`              | Senha do usuário do banco   | ✅           | —         |
+| `JWT_ALGORITHM`               | Algoritmo JWT (HS256)        | ✅           | `HS256`  |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Expiração access token     | ✅           | `15`     |
+| `REFRESH_TOKEN_EXPIRE_DAYS`   | Expiração refresh token    | ✅           | `7`      |
+| `RECOVERY_MODE`               | `log` ou `email`         | ✅           | `log`    |
+| `NGINX_PORT`                  | Porta do proxy               | ❌           | `8380`   |
 
 **Importante:** o arquivo `.env` está no `.gitignore` e nunca deve ser commitado. Cada desenvolvedor cria o seu próprio localmente.
 
@@ -294,7 +296,7 @@ MIT License — veja [LICENSE](LICENSE) para detalhes.
 
 ---
 
-**Última atualização:** 2026-11-24  
+**Última atualização:** 2026-11-24
 **Versão:** 0.1.0 (MVP)
 
 ---
@@ -305,14 +307,14 @@ MIT License — veja [LICENSE](LICENSE) para detalhes.
 
 ### O que garante a replicabilidade
 
-| Item | Status | Comentário |
-|------|--------|------------|
-| `docker-compose.yml` | ✅ Trackado | Orquestra MySQL + migrações + seed + backend + frontend + proxy |
-| Dockerfiles (backend, frontend, proxy) | ✅ Trackados | Imagens self-contained |
-| Seed SQL (`backend/seed.sql`) | ✅ Trackado | Popula o banco com dados determinísticos (11 cat, 10 forn, 50 prod, ~300 preços) |
-| Migrações Alembic | ✅ Trackadas | `alembic upgrade head` cria o schema automaticamente |
-| `.env.example` | ✅ Trackado | Modelo para o `.env` local (não versionado) |
-| `.gitignore` | ✅ Trackado | Impede commit de segredos e artefatos de build |
+| Item                                   | Status       | Comentário                                                                        |
+| -------------------------------------- | ------------ | ---------------------------------------------------------------------------------- |
+| `docker-compose.yml`                 | ✅ Trackado  | Orquestra MySQL + migrações + seed + backend + frontend + proxy                  |
+| Dockerfiles (backend, frontend, proxy) | ✅ Trackados | Imagens self-contained                                                             |
+| Seed SQL (`backend/seed.sql`)        | ✅ Trackado  | Popula o banco com dados determinísticos (11 cat, 10 forn, 50 prod, ~300 preços) |
+| Migrações Alembic                    | ✅ Trackadas | `alembic upgrade head` cria o schema automaticamente                             |
+| `.env.example`                       | ✅ Trackado  | Modelo para o `.env` local (não versionado)                                     |
+| `.gitignore`                         | ✅ Trackado  | Impede commit de segredos e artefatos de build                                     |
 
 ### O que o terceiro precisa providenciar
 
