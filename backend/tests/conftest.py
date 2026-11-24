@@ -19,6 +19,7 @@ os.environ.setdefault("RECOVERY_MODE", "log")
 # Fixtures para testes unitários
 # ============================================================
 
+
 @pytest.fixture(autouse=True)
 def clear_rate_limiter():
     """Limpa rate limiters entre testes (estado é global no módulo auth)"""

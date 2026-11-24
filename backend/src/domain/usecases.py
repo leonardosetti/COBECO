@@ -74,12 +74,14 @@ class FornecedoresInsuficientes(DomainError):
 _RECOVERY_TOKENS: dict[str, dict] = {}
 _TOKEN_TTL_SECONDS = 15 * 60  # 15 min
 
+
 def _armazenar_token_recuperacao(nome_usuario: str, token: str) -> None:
     _RECOVERY_TOKENS[token] = {
         "nome_usuario": nome_usuario,
         "expira_em": datetime.now() + timedelta(seconds=_TOKEN_TTL_SECONDS),
         "usado": False,
     }
+
 
 def _validar_token_recuperacao(nome_usuario: str, token: str) -> bool:
     entrada = _RECOVERY_TOKENS.get(token)
@@ -556,11 +558,7 @@ class FiltrarDisponibilidadeUseCase:
         disponibilidade = await self.buscar_disponibilidade_fornecedores(
             fornecedor_ids, produto_ids
         )
-        return [
-            f
-            for f in fornecedores
-            if disponibilidade.get(f.id or 0, 0) >= min_disponibilidade
-        ]
+        return [f for f in fornecedores if disponibilidade.get(f.id or 0, 0) >= min_disponibilidade]
 
     async def buscar_disponibilidade_fornecedores(
         self, fornecedor_ids: list[int], produto_ids: list[int]

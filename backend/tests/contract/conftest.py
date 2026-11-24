@@ -20,7 +20,7 @@ from src.main import app
 @pytest.fixture
 def test_app():
     """App FastAPI para testes de contrato (sem DB)"""
-    yield app
+    return app
 
 
 @pytest.fixture

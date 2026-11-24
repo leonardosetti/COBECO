@@ -44,13 +44,20 @@ class TestListasIntegration:
             headers=auth_headers,
         )
         assert response.status_code == 422
-        assert "list should have at least 1 item" in str(response.json()).lower() or "pelo menos 1 item" in str(response.json()).lower()
+        assert (
+            "list should have at least 1 item" in str(response.json()).lower()
+            or "pelo menos 1 item" in str(response.json()).lower()
+        )
 
     @pytest.mark.asyncio
     async def test_criar_lista_produto_inexistente(self, client, auth_headers):
         response = await client.post(
             "/listas",
-            json={"nome": "Lista", "itens": [{"produto_id": 99999, "quantidade": 1}], "categorias": [1]},
+            json={
+                "nome": "Lista",
+                "itens": [{"produto_id": 99999, "quantidade": 1}],
+                "categorias": [1],
+            },
             headers=auth_headers,
         )
         assert response.status_code == 400
@@ -134,6 +141,7 @@ class TestListasIntegration:
 
         # Cria outro usuário
         import uuid
+
         unique_suffix = uuid.uuid4().hex[:8]
         other_user = {
             "nome_usuario": f"outrouser{unique_suffix}",
@@ -195,7 +203,11 @@ class TestListasIntegration:
 
         response = await client.put(
             f"/listas/{lista_id}",
-            json={"nome": "", "itens": [{"produto_id": sample_produtos[0].id, "quantidade": 1}], "categorias": [1]},
+            json={
+                "nome": "",
+                "itens": [{"produto_id": sample_produtos[0].id, "quantidade": 1}],
+                "categorias": [1],
+            },
             headers=auth_headers,
         )
         assert response.status_code == 422

@@ -509,6 +509,7 @@ async def login(
     sessao_repo: SessaoRepository = Depends(get_sessao_repo),
 ):
     import structlog
+
     logger = structlog.get_logger()
 
     client_ip = http_request.client.host if http_request.client else "unknown"
@@ -529,7 +530,9 @@ async def login(
         logger.warning("login_falha_credenciais", nome_usuario=request.nome_usuario, ip=client_ip)
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
     except RateLimitExcedido as e:
-        logger.warning("login_rate_limit", nome_usuario=request.nome_usuario, ip=client_ip, minutos=e.minutos)
+        logger.warning(
+            "login_rate_limit", nome_usuario=request.nome_usuario, ip=client_ip, minutos=e.minutos
+        )
         raise HTTPException(status_code=429, detail=f"Tente novamente em {e.minutos} minutos")
 
     # Salva refresh token no banco (hash SHA256)
