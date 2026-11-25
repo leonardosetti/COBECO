@@ -13,7 +13,7 @@ from typing import Final, Literal
 
 # ruff: noqa: TRY003
 
-Profile = Literal["baseline", "expanded"]
+Profile = Literal["baseline", "expanded", "semantica"]
 _UNIT_PATTERN: Final = re.compile(r"^(un|kg|L|m)$")
 _SPACE_PATTERN: Final = re.compile(r"\s+")
 _CNPJ_PATTERN: Final = re.compile(r"^\d{2}\.\d{3}\.\d{3}/0001-\d{2}$")
@@ -37,6 +37,13 @@ _EXPECTED_COUNTS: Final[dict[Profile, dict[str, int]]] = {
         "produtos": 2_600,
         "precos": 31_200,
         "relacoes": 312,
+    },
+    "semantica": {
+        "categorias": 12,
+        "fornecedores": 14,
+        "produtos": 60,
+        "precos": 82,
+        "relacoes": 32,
     },
 }
 
@@ -766,6 +773,169 @@ def _build_expanded() -> SeedDataset:
     )
 
 
+# ---------------------------------------------------------------------------
+# Perfil "semantica" — dados de borda para validar a semântica de negócio
+# (RF12-RF16): categoria órfã, coberturas 0/50/100%, empate de preço com
+# cobertura diferente, produto sem preço em nenhum fornecedor, estoque 0.
+# ---------------------------------------------------------------------------
+
+_SEMANTICA_CATEGORIES: Final[tuple[tuple[int, str, str, str], ...]] = (
+    (1, "Mercado", "Alimentação e hogar", "Supermercados, mercearias e atacados"),
+    (2, "Vestuário", "Moda e acessórios", "Roupas, calçados e acessórios"),
+    (3, "Automotivos", "Mobilidade", "Peças, acessórios e serviços automotivos"),
+    (4, "Informática", "Tecnologia e comunicação", "Computadores, periféricos e eletrônicos"),
+    (5, "Decoração", "Casa e construção", "Itens de decoração e artigos para casa"),
+    (6, "Móveis", "Casa e construção", "Móveis residenciais e corporativos"),
+    (7, "Materiais de Construção e Ferragens", "Casa e construção", "Materiais de construção, ferramentas e ferragens"),
+    (8, "Ferramentas", "Casa e construção", "Ferramentas manuais, elétricas e de medição"),
+    (9, "Livros", "Cultura e entretenimento", "Livros, revistas e publicações"),
+    (10, "Jardinagem", "Casa e construção", "Plantas, ferramentas e artigos de jardim"),
+    (11, "Eletrodomésticos", "Casa e construção", "Eletrodomésticos de linha branca e marrom"),
+    (12, "Brinquedos", "Infância, pet e consumo operacional", "Brinquedos e produtos infantis"),  # órfã
+)
+
+# (id, nome, cnpj_raiz, [categoria_ids])
+_SEMANTICA_SUPPLIERS: Final[tuple[tuple[int, str, str, tuple[int, ...]], ...]] = (
+    (1, "Carrefour", "99000111", (1, 2, 3, 5, 11, 4)),
+    (2, "Extra", "00111222", (1, 2, 9, 11)),
+    (3, "Pão de Açúcar", "66777888", (1,)),
+    (4, "Magazine Luiza", "77888999", (11, 4, 6)),
+    (5, "Casas Bahia", "88999000", (11, 4, 6)),
+    (6, "Leroy Merlin", "11222333", (7, 8, 10, 5)),
+    (7, "Etna", "22333444", (5, 6)),
+    (8, "C&A", "33444555", (2,)),
+    (9, "Renner", "44455666", (2,)),
+    (10, "Hering", "55666777", (2,)),
+    (11, "Brinquedos da Feliz", "10000001", (12,)),  # só categoria órfã
+    (12, "Mercado Popular", "20000002", (1, 12)),
+    (13, "Informática Total", "30000003", (4,)),
+    (14, "Mercado e Informática", "40000004", (1, 4)),
+)
+
+# (categoria_id, quantidade_de_produtos) -> 5 por categoria = 60 produtos
+_SEMANTICA_PRODUCT_GROUPS: Final[tuple[tuple[int, int], ...]] = tuple(
+    (cid, 5) for cid in range(1, 13)
+)
+
+# fornecedor_id -> [produto_ids] com variação de cobertura
+# Produto 1 (Arroz, id 1): Carrefour, Extra, Pão de Açúcar (100% para mercado)
+# Produto 2 (Feijão, id 2): Carrefour, Extra (empate de preço com Pão de Açúcar? não, preço diferente)
+# Para empate de preço total + cobertura diferente: produto 10 (Ovos) preço igual em Carrefour e Extra
+_SEMANTICA_CATALOGO: Final[dict[int, list[int]]] = {
+    1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],   # Carrefour: 12 produtos
+    2: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11],           # Extra: 10 produtos (sem 4, 12)
+    3: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],    # Pão de Açúcar: 12 produtos
+    4: [13, 14, 15, 16, 17],                       # Magalu: 5 (informática/móveis)
+    5: [13, 14, 15, 16, 17],                       # Casas Bahia: 5
+    6: [18, 19, 20, 21, 22],                       # Leroy: 5 (construção/ferramentas/jardinagem/decoração)
+    7: [23, 24, 25, 26],                           # Etna: 4 (decoração/móveis)
+    8: [27, 28, 29],                               # C&A: 3 (vestuário)
+    9: [30, 31, 32],                               # Renner: 3 (vestuário)
+    10: [33, 34, 35],                              # Hering: 3 (vestuário)
+    11: [36, 37, 38, 39, 40],                      # Brinquedos da Feliz: 5 (categoria órfã 12)
+    12: [1, 2, 36, 37, 38],                        # Mercado Popular: 5 (mercado + brinquedos)
+    13: [41, 42, 43, 44, 45],                      # Informática Total: 5 (informática)
+    14: [1, 41, 42, 43, 44],                       # Mercado e Informática: 5 (mercado + informática)
+}
+
+# Fator de preço por fornecedor (para criar empates e variações)
+_SEMANTICA_FATOR: Final[dict[int, float]] = {
+    1: 1.00, 2: 1.00, 3: 1.10, 4: 0.95, 5: 1.05, 6: 0.90, 7: 1.00, 8: 1.00,
+    9: 1.00, 10: 1.00, 11: 1.00, 12: 0.98, 13: 1.02, 14: 1.00,
+}
+
+# Estoque: 0 em alguns itens para simular indisponibilidade
+_SEMANTICA_STOCK_ZERO: Final[set[tuple[int, int]]] = {
+    (4, 14), (6, 20), (11, 38),  # estoque zero (indisponível)
+}
+
+# Preços iguais propositalmente para gerar empate de preço total com cobertura diferente
+# Produto 1 (id 1) preço 10.00 em Carrefour (1) e Extra (2) — mesmo preço, mesma cobertura parcial
+# Ajuste: cobrimos via fatores iguais para 1 e 2 no produto 1
+
+
+def _semantica_category(cid: int, nome: str, segmento: str, descricao: str) -> Categoria:
+    return Category(
+        id=cid,
+        name=normalize_text(nome),
+        segment=normalize_text(segmento),
+        description=normalize_text(descricao),
+        products=(),
+    )
+
+
+def _semantica_supplier(sid: int, nome: str, cnpj_raiz: str, categories: tuple[int, ...]) -> Supplier:
+    return Supplier(
+        id=sid,
+        name=normalize_text(nome),
+        cnpj=make_cnpj(cnpj_raiz),
+        categories=tuple(sorted(categories)),
+    )
+
+
+def _build_semantica() -> SeedDataset:
+    categories = tuple(
+        _semantica_category(cid, nome, seg, desc)
+        for cid, nome, seg, desc in _SEMANTICA_CATEGORIES
+    )
+
+    suppliers = tuple(
+        _semantica_supplier(sid, nome, cnpj, cats)
+        for sid, nome, cnpj, cats in _SEMANTICA_SUPPLIERS
+    )
+
+    products: list[Product] = []
+    product_id = 1
+    for category_id, quantity in _SEMANTICA_PRODUCT_GROUPS:
+        category = categories[category_id - 1]
+        for _ in range(quantity):
+            products.append(
+                Product(
+                    id=product_id,
+                    category_id=category_id,
+                    name=normalize_text(f"{category.name} Item {product_id}"),
+                    marca=normalize_text("Genérica"),
+                    unit="un",
+                    price=_money(Decimal("10.00") + Decimal(product_id)),
+                )
+            )
+            product_id += 1
+
+    # Montar ofertas com base no catálogo, fator de preço e estoque
+    offers: list[Offer] = []
+    for fid, pids in _SEMANTICA_CATALOGO.items():
+        fator = _SEMANTICA_FATOR[fid]
+        for pid in pids:
+            produto = products[pid - 1]
+            preco = _money(produto.price * Decimal(str(fator)))
+            estoque = 0 if (fid, pid) in _SEMANTICA_STOCK_ZERO else _stock(fid, pid)
+            offers.append(
+                Offer(
+                    supplier_id=fid,
+                    product_id=pid,
+                    price=preco,
+                    stock=estoque,
+                )
+            )
+
+    supplier_categories = tuple(
+        sorted(
+            (supplier.id, category_id)
+            for supplier in suppliers
+            for category_id in supplier.categories
+        )
+    )
+
+    return SeedDataset(
+        profile="semantica",
+        categories=categories,
+        suppliers=suppliers,
+        products=tuple(products),
+        offers=tuple(offers),
+        supplier_categories=supplier_categories,
+    )
+
+
 def validate_dataset(dataset: SeedDataset) -> None:  # noqa: PLR0912
     """Valida contagens, referências e unicidade do dataset gerado."""
     if dataset.counts != _EXPECTED_COUNTS[dataset.profile]:
@@ -836,6 +1006,8 @@ def build_dataset(profile: Profile) -> SeedDataset:
         dataset = _build_baseline()
     elif profile == "expanded":
         dataset = _build_expanded()
+    elif profile == "semantica":
+        dataset = _build_semantica()
     else:
         raise ValueError(f"perfil inválido: {profile}")
     validate_dataset(dataset)

@@ -61,6 +61,7 @@ INSERT INTO `fornecedores_categorias` (`fornecedor_id`, `categoria_id`) VALUES
   (1, 4),
   (2, 1),
   (2, 2),
+  (2, 9),
   (2, 11),
   (3, 1),
   (4, 11),

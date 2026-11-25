@@ -455,86 +455,177 @@ function stepperHTML(step) {
 }
 
 function vHome() {
-  return `<main class="page">
-    <div class="hero"><div><div class="tag">Wireframe v3.3 · MVP</div>
-      <h1>Comparação de preços para listas de compras</h1>
-      <p>Wireframe sem dados mockados. Consome a API real para categorias, fornecedores e cálculo de orçamento.</p>
-      <div class="cta-row"><button class="btn btn-pri btn-lg" data-action="nav-nova">Criar lista</button>
-      <button class="btn btn-ghost btn-sm" data-action="page-login">${state.user ? 'Minhas listas' : 'Entrar'}</button></div></div></div>
-    <div class="value-cards">
-      <div class="card card-pad"><div class="ic">📂</div><h3>Pré-filtro por categorias (RF12)</h3><p>Selecione categorias para filtrar fornecedores.</p></div>
-      <div class="card card-pad"><div class="ic">📊</div><h3>Comparação (RF15/RF16)</h3><p>Melhor oferta = maior cobertura; empate → menor total.</p></div>
-      <div class="card card-pad"><div class="ic">📄</div><h3>PDF da vencedora (RF17)</h3><p>Exporta apenas a lista do fornecedor campeão.</p></div>
-    </div>
-  </main>`;
+  const logged = !!state.user;
+  return `<div class="container page">
+    <section class="hero">
+      <div>
+        <span class="tag">Comparador inteligente · MVP</span>
+        <h1>Compras mais inteligentes,<br>economia de verdade.</h1>
+        <p>Crie sua lista, filtre fornecedores por categoria, compare preço e disponibilidade em uma única tela — e exporte a lista vencedora em PDF. Sem cadastro obrigatório.</p>
+        <div class="cta-row">
+          <button class="btn btn-white btn-lg" data-action="nav-nova" data-primary>Criar minha lista →</button>
+          <button class="btn btn-outlinew btn-lg" data-action="page-login">${logged ? 'Minhas listas' : 'Entrar na minha conta'}</button>
+        </div>
+      </div>
+      <div class="mini-compare" aria-hidden="true">
+        <h4>Comparação da sua lista · 6 produtos · 3 fornecedores</h4>
+        <div class="mini-row"><span>🏆 Carrefour · 100% disponível</span><b>R$ 158,47</b></div>
+        <div class="mini-row"><span>Pão de Açúcar · 100% disponível</span><b>R$ 173,80</b></div>
+        <div class="mini-row"><span>Extra · 83% disponível ⚠ 1 ausente</span><b>R$ 118,75</b></div>
+        <div class="mini-foot"><span>Melhor oferta = maior cobertura</span><span>desempate: menor total</span></div>
+      </div>
+    </section>
+    <section class="value-cards">
+      <div class="card vcard"><div class="ic">🏷️</div><h3>Pré-filtro por categorias</h3><p>Escolha entre 11 categorias macro (Mercado, Vestuário, Eletrodomésticos…) para ver apenas fornecedores relevantes (RF12).</p></div>
+      <div class="card vcard"><div class="ic">📊</div><h3>Comparação clara</h3><p>Tabela flat por fornecedor: preço total, % de cobertura e itens ausentes. A melhor oferta é destacada (RF15/RF16).</p></div>
+      <div class="card vcard"><div class="ic">📄</div><h3>PDF da lista vencedora</h3><p>Exporte a lista do fornecedor campeão com itens precificados e total consolidado (RF17). Funciona sem login.</p></div>
+    </section>
+    <section class="card card-pad mt">
+      <div class="row-between mb"><h2 style="font-size:18px">Como funciona</h2><span class="muted small">Fluxo principal · visitante percorre tudo sem autenticação</span></div>
+      <div class="howto">
+        <div class="how"><div class="n">1</div><b>Categorias</b><span>Pré-filtro</span></div>
+        <div class="how"><div class="n">2</div><b>Lista</b><span>Produtos + qtd</span></div>
+        <div class="how"><div class="n">3</div><b>Fornecedores</b><span>Seleção 2–10</span></div>
+        <div class="how"><div class="n">4</div><b>Comparar</b><span>Tabela flat</span></div>
+        <div class="how"><div class="n">5</div><b>Exportar</b><span>PDF / Imprimir</span></div>
+      </div>
+    </section>
+    <section class="persona-strip"><span class="av">👩‍🍳</span>
+      <div style="flex:1"><b>Conheça Mariana Duarte, 34 — dona do restaurante “Tempero da Mari”</b>
+        <p>Toda semana ela compra insumos para ~40 refeições em 3 mercados diferentes. Sem o COBECO: planilha, telefone e risco de escolher o “mais barato” incompleto.</p></div>
+      <button class="btn btn-pri" data-action="nav-nova">Iniciar jornada →</button>
+    </section>
+  </div>`;
 }
 
 function vCategorias() {
-  return `<main class="page">
-    <div class="page-head"><span class="kicker">Passo 1 de 5 · Pré-filtro</span><h1>Selecione as categorias</h1><p>Mínimo 1 categoria (RF12).</p></div>
+  return `<div class="container page">
+    <div class="page-head"><span class="kicker">Passo 1 de 5 · Pré-filtro</span>
+      <h1>Selecione as categorias</h1>
+      <p>Escolha uma ou mais categorias macro para filtrar os fornecedores. Mínimo: 1 categoria (RF12). A seleção fica apenas em memória (transitória).</p></div>
     ${stepperHTML(1)}
     <div class="card card-pad">
-      <div class="toolbar"><span class="count-chip ${state.categorias.length ? 'ok' : ''}">${state.categorias.length} selecionada(s) · ${totalCategorias()} disponíveis</span>
-        <div><button class="btn btn-ghost btn-sm" data-action="cat-all">Todas</button><button class="btn btn-ghost btn-sm" data-action="cat-none">Limpar</button></div></div>
-      <div class="cat-grid">${(state.categoriasDisponiveis.length ? state.categoriasDisponiveis : []).map(c => `<label class="cat-card ${state.categorias.includes(c.id) ? 'sel' : ''}" data-catcard="${c.id}"><input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id) ? 'checked' : ''}><span class="ci">${c.ic}</span><span class="cn">${esc(c.nome)}</span></label>`).join('')}</div>
-      <div class="row-between"><button class="btn btn-ghost" data-action="nav-home">← Voltar</button><div><button class="btn btn-pri btn-lg" id="btn-to-lista" data-action="to-lista" ${state.categorias.length ? '' : 'disabled'}>Lista →</button></div></div>
+      <div class="toolbar">
+        <span class="count-chip ${state.categorias.length ? 'ok' : ''}" id="cat-count">${state.categorias.length} categoria(s) selecionada(s) · ${totalCategorias()} disponíveis</span>
+        <div><button class="btn btn-ghost btn-sm" data-action="cat-all">Selecionar todas</button>
+        <button class="btn btn-ghost btn-sm" data-action="cat-none">Limpar</button></div>
+      </div>
+      <div class="cat-grid" role="group" aria-label="Categorias macro">
+        ${(state.categoriasDisponiveis.length ? state.categoriasDisponiveis : []).map(c => `<label class="cat-card ${state.categorias.includes(c.id) ? 'sel' : ''}" data-catcard="${c.id}">
+          <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id) ? 'checked' : ''}>
+          <span class="ci">${c.ic}</span><span class="cn">${esc(c.nome)}</span></label>`).join('')}
+      </div>
+      <div class="tip">ℹ️ <b>Como funciona:</b> os fornecedores exibidos na próxima etapa pertencem às categorias selecionadas.</div>
+      <div class="row-between mt">
+        <button class="btn btn-ghost" data-action="nav-home">← Voltar</button>
+        <div>
+          <button class="btn btn-pri btn-lg" id="btn-to-lista" data-action="to-lista" data-primary ${state.categorias.length ? '' : 'disabled'}>Continuar para a lista →</button>
+          ${state.categorias.length ? '' : `<div class="hint-disabled">⚠️ Selecione ao menos 1 categoria para continuar.</div>`}
+        </div>
+      </div>
     </div>
-  </main>`;
+  </div>`;
 }
 
 function vLista() {
   const un = state.lista.itens.reduce((s, i) => s + i.qtd, 0);
-  return `<main class="page">
-    <div class="page-head"><span class="kicker">Passo 2 de 5 · Lista</span><h1>Lista de compras</h1><p>Adicione produtos e quantidades.</p></div>
+  const logado = !!state.user;
+  return `<div class="container page">
+    <div class="page-head"><span class="kicker">Passo 2 de 5 · Lista de compras</span>
+      <h1>Monte sua lista</h1>
+      <p>Adicione produtos do catálogo e ajuste quantidades (1–9999). Armazenamento: <b>em memória / sessionStorage</b> até salvar.</p></div>
     ${stepperHTML(2)}
-    <div class="card card-pad">
-      <div class="row-between"><span class="mode-chip mode-eph">⚠ Wireframe (sem login)</span><button class="btn btn-ghost btn-sm" data-action="demo-lista">Demo: lista rápida</button></div>
-      <div class="field"><label>Nome da lista <span class="req">*</span></label><input type="text" id="nome-lista" value="${esc(state.lista.nome)}" placeholder="Ex.: Compras da semana"></div>
-      <div class="field searchbox"><label>Produto (autocomplete)</label><input type="text" id="busca" placeholder="Digite o produto…"><div id="sug-box"></div></div>
-      <h3 style="font-size:15px;margin:8px 0 10px">Itens</h3>
-      <div id="itens-box">${itensTableHTML()}</div>
+    <div class="two-col">
+      <div class="card card-pad">
+        <div class="row-between mb"><span class="mode-chip ${logado ? 'mode-db' : 'mode-eph'}">${logado ? '🔒 CONTA: ' + esc(state.user) : '⚠ MODO EFÊMERO (visitante)'}</span>
+          <button class="btn btn-ghost btn-sm" data-action="demo-lista" title="Acelera a live demo">⚡ Preencher com a lista da Mariana (demo)</button></div>
+        <div class="field" id="f-nome">
+          <label for="nome-lista">Nome da lista <span class="req">*</span></label>
+          <input type="text" id="nome-lista" maxlength="100" value="${esc(state.lista.nome)}" placeholder="Ex.: Compras do Mês" autocomplete="off">
+          <div class="counter"><span id="nome-count">${state.lista.nome.length}</span>/100</div>
+          <div class="err-msg">Informe um nome para a lista.</div>
+        </div>
+        <div class="field searchbox">
+          <label for="busca">Adicionar produto — autocomplete (mín. 2 caracteres)</label>
+          <input type="text" id="busca" value="${esc(state.busca)}" placeholder="Digite para buscar no catálogo… ex.: arroz" autocomplete="off" role="combobox" aria-expanded="false">
+          <div id="sug-box"></div>
+        </div>
+        <h3 style="font-size:15px;margin:8px 0 10px">Itens da lista</h3>
+        <div id="itens-box">${itensTableHTML()}</div>
+      </div>
+      <aside class="card card-pad resumo"><h3>Resumo</h3>
+        <div class="res-line"><span>Produtos</span><b id="r-prod">${state.lista.itens.length}</b></div>
+        <div class="res-line"><span>Unidades totais</span><b id="r-un">${un}</b></div>
+        <div class="res-line"><span>Categorias filtradas</span><b>${state.categorias.length}</b></div>
+        <div class="res-line"><span>Modo</span><b>${logado ? 'Conta' : 'Efêmero'}</b></div>
+        <div class="actions-stack">
+          <button class="btn btn-pri btn-lg" id="btn-to-forn" data-action="to-fornecedores" data-primary ${state.lista.itens.length ? '' : 'disabled'}>Comparar preços →</button>
+          ${state.lista.itens.length ? '' : `<div class="hint-disabled">Adicione ao menos 1 item para comparar.</div>`}
+          <button class="btn btn-ghost" data-action="salvar-lista">${logado ? '💾 Salvar lista' : '💾 Salvar lista 🔒'}</button>
+        </div>
+        <div class="tip">💡 Visitantes podem comparar e exportar sem conta. A autenticação é exigida <b>apenas para salvar</b> (RF08) — o rascunho é preservado durante o login.</div>
+      </aside>
     </div>
-    <div class="resumo"><h3>Resumo</h3><div class="res-line"><span>Produtos</span><b>${state.lista.itens.length}</b></div><div class="res-line"><span>Unidades</span><b>${un}</b></div><div class="actions-stack"><button class="btn btn-pri btn-lg" id="btn-to-forn" data-action="to-fornecedores" ${state.lista.itens.length ? '' : 'disabled'}>Comparar →</button></div></div>
-  </main>`;
+  </div>`;
 }
 
 function itensTableHTML() {
-  if (!state.lista.itens.length) return `<div class="empty"><div class="big">🧺</div>Nenhum item.</div>`;
-  return `<table class="tbl"><thead><tr><th>Produto</th><th style="width:100px">Qtd</th><th style="width:80px">Un</th><th style="width:56px"></th></tr></thead><tbody>
-   ${state.lista.itens.map((i, ix) => `<tr><td><b>${esc(nomeProduto(i.pid))}</b></td><td><span class="qty"><button data-action="dec" data-ix="${ix}">−</button><input type="text" value="${i.qtd}" data-qtdix="${ix}"><button data-action="inc" data-ix="${ix}">+</button></span></td><td class="muted">${unidadeProduto(i.pid)}</td><td><button class="icon-del" data-action="del-item" data-ix="${ix}">✕</button></td></tr>`).join('')}
+  if (!state.lista.itens.length) return `<div class="empty"><div class="big">🧺</div>Nenhum produto adicionado. Use a busca acima.</div>`;
+  return `<table class="tbl"><thead><tr><th>Produto</th><th style="width:130px">Qtd.</th><th style="width:80px">Un.</th><th style="width:44px"></th></tr></thead><tbody>
+   ${state.lista.itens.map((i, ix) => { const p = state.produtos.find(x => x.id === i.pid); return `<tr>
+    <td><b>${esc(p ? p.nome : 'Desconhecido')}</b></td>
+    <td><span class="qty"><button data-action="dec" data-ix="${ix}" aria-label="Diminuir">−</button>
+     <input type="text" inputmode="numeric" value="${i.qtd}" data-qtdix="${ix}" aria-label="Quantidade">
+     <button data-action="inc" data-ix="${ix}" aria-label="Aumentar">+</button></span></td>
+    <td class="muted">${p ? p.un : 'un'}</td>
+    <td><button class="icon-del" data-action="del-item" data-ix="${ix}" title="Remover item" aria-label="Remover">${esc(p ? p.nome : '')} ✕</button></td></tr>`; }).join('')}
   </tbody></table>`;
 }
 
 function vFornecedores() {
-  return `<main class="page">
-    <div class="page-head"><span class="kicker">Passo 3 de 5 · Fornecedores</span><h1>Escolha fornecedores</h1><p>Mínimo 2 (RF13). Cobertura da lista por fornecedor.</p></div>
+  return `<div class="container page">
+    <div class="page-head"><span class="kicker">Passo 3 de 5 · Fornecedores</span>
+      <h1>Escolha os fornecedores</h1>
+      <p>Selecione de <b>2 a 10</b> fornecedores (RF13). Apenas fornecedores das categorias escolhidas (${state.categorias.map(c => (state.categoriasDisponiveis.find(x => x.id === c) || { nome: '' }).nome).join(', ')}) são exibidos. O % indica a cobertura da sua lista.</p></div>
     ${stepperHTML(3)}
     <div class="card card-pad slider-box">
-      <div class="sl-head"><label>Disponibilidade mínima (UC05)</label><output id="slider-out">${state.filtroDisp}%</output></div>
-      <input type="range" id="slider-disp" min="0" max="100" step="5" value="${state.filtroDisp}">
-      <div class="sl-scale"><span>0%</span><span>50%</span><span>100%</span></div>
+      <div class="sl-head"><label for="slider-disp"><b>Filtro de disponibilidade (UC05)</b> — mostrar apenas fornecedores com cobertura mínima da lista</label>
+       <output id="slider-out">${state.filtroDisp}%</output></div>
+      <input type="range" id="slider-disp" min="0" max="100" step="5" value="${state.filtroDisp}" aria-label="Disponibilidade mínima">
+      <div class="sl-scale"><span>0% (todos)</span><span>50%</span><span>100%</span></div>
     </div>
     <div class="card card-pad">
-      <div class="toolbar"><span class="count-chip ${state.fornecedores.length >= 2 ? 'ok' : ''}">${state.fornecedores.length} selecionado(s) · mín 2</span>
-        <div><button class="btn btn-ghost btn-sm" data-action="forn-all">Todos</button><button class="btn btn-ghost btn-sm" data-action="forn-clear">Limpar</button></div></div>
+      <div class="toolbar">
+        <span class="count-chip ${state.fornecedores.length >= 2 ? 'ok' : ''}" id="forn-count">${state.fornecedores.length} selecionado(s) · mín 2 · máx 10</span>
+        <div><button class="btn btn-ghost btn-sm" data-action="forn-all">Selecionar todos</button>
+        <button class="btn btn-ghost btn-sm" data-action="forn-clear">Limpar</button></div>
+      </div>
       <div id="forn-grid" class="forn-grid">${fornCardsHTML()}</div>
-      <div class="row-between"><button class="btn btn-ghost" data-action="goto-step" data-step="lista">← Voltar</button><div><button class="btn btn-pri btn-lg" id="btn-calc" data-action="calcular" ${state.fornecedores.length >= 2 ? '' : 'disabled'}>Calcular →</button></div></div>
+      <div class="row-between mt">
+        <button class="btn btn-ghost" data-action="goto-step" data-step="lista">← Voltar à lista</button>
+        <div>
+          <button class="btn btn-pri btn-lg" id="btn-calc" data-action="calcular" data-primary ${state.fornecedores.length >= 2 ? '' : 'disabled'}>Calcular orçamento →</button>
+          ${state.fornecedores.length >= 2 ? '' : `<div class="hint-disabled">⚠️ Selecione ao menos 2 fornecedores.</div>`}
+        </div>
+      </div>
     </div>
-  </main>`;
+  </div>`;
 }
 
 function fornCardsHTML() {
   const eleg = fornecedoresElegiveis();
-  if (!eleg.length) return `<div class="empty"><div class="big">🔎</div>Nenhum fornecedor nas categorias selecionadas.</div>`;
+  if (!eleg.length) return `<div class="empty" style="grid-column:1/-1"><div class="big">🔎</div>Nenhum fornecedor disponível nas categorias selecionadas.<br>Tente incluir outras categorias.</div>`;
   return eleg.map(f => {
     const cov = Math.round(coberturaDe(f.id) * 100);
     const passa = cov >= state.filtroDisp;
     const sel = state.fornecedores.includes(f.id);
+    const cls = cov >= 80 ? 'cov-hi' : cov >= 40 ? 'cov-md' : 'cov-lo';
     return `<label class="forn-card ${sel ? 'sel' : ''} ${passa ? '' : 'off'}" data-forncard="${f.id}">
      <div class="forn-cb-row"><input type="checkbox" class="forn-cb" value="${f.id}" ${sel ? 'checked' : ''} ${passa ? '' : 'disabled'}>
-     <div style="flex:1"><div class="forn-top"><b>${esc(f.nome)}</b><span class="cov-badge ${cov >= 80 ? 'cov-hi' : cov >= 40 ? 'cov-md' : 'cov-lo'}">${cov}% da lista</span></div>
-     <div class="forn-cats">${(f.cats || []).filter(c => state.categorias.includes(c)).map(c => `<span class="mini-tag">${nomeCategoria(c)}</span>`).join('')}</div>
-     ${cov === 0 ? `<div class="small muted" style="margin-top:6px">Sem itens da lista</div>` : ''}
+     <div style="flex:1"><div class="forn-top"><b>${esc(f.nome)}</b>
+       <span class="cov-badge ${cls}" title="Itens da sua lista disponíveis neste fornecedor">${cov}% da lista</span></div>
+      <div class="forn-cats">${(f.cats || []).filter(c => state.categorias.includes(c)).map(c => `<span class="mini-tag">${nomeCategoria(c)}</span>`).join('')}</div>
+      ${cov === 0 ? `<div class="small muted" style="margin-top:6px">⚠ Não possui itens da sua lista</div>` : ''}
      </div></div></label>`;
   }).join('');
 }
@@ -542,35 +633,60 @@ function fornCardsHTML() {
 function vResultados() {
   if (!state.resultado) return vFornecedores();
   const R = state.resultado, W = R.winner;
-  return `<main class="page">
-    <div class="page-head"><span class="kicker">Passo 4 de 5 · Comparação</span><h1>Resultados</h1><p>Ordenado pelo menor total (RF15); melhor oferta destacada (RF16).</p></div>
+  return `<div class="container page">
+    <div class="page-head"><span class="kicker">Passo 4 de 5 · Resultados</span>
+      <h1>Comparação de preços</h1>
+      <p>Lista “${esc(state.lista.nome || '(sem nome)')}” · ${state.lista.itens.length} itens · ${state.resultado.rows.length} fornecedores. Ordenado pelo menor total (RF15); melhor oferta destacada (RF16).</p></div>
     ${stepperHTML(4)}
     <div class="kpis">
-      <div class="card kpi win"><div class="k">Melhor oferta</div><div class="v">${W.nome}</div><div class="s">${BRL(W.total)} · ${Math.round(W.cobertura*100)}% da lista</div></div>
-      <div class="card kpi"><div class="k">Menor preço</div><div class="v">${BRL(R.minTotal)}</div><div class="s">pode ter itens ausentes</div></div>
-      <div class="card kpi"><div class="k">Economia</div><div class="v">${BRL(R.maxTotal - W.total)}</div><div class="s">vs. maior total</div></div>
+      <div class="card kpi win"><div class="k">🏆 Melhor oferta</div><div class="v">${W.nome}</div><div class="s">${BRL(W.total)} · ${Math.round(W.cobertura*100)}% da lista</div></div>
+      <div class="card kpi"><div class="k">💰 Menor preço</div><div class="v">${BRL(R.minTotal)}</div><div class="s">pode ter itens ausentes</div></div>
+      <div class="card kpi"><div class="k">📊 Economia potencial</div><div class="v">${BRL(R.maxTotal - W.total > 0 ? R.maxTotal - W.total : 0)}</div><div class="s">vs. maior total cotado</div></div>
+      <div class="card kpi"><div class="k">Disponibilidade média</div><div class="v">${Math.round(R.rows.reduce((s, r) => s + r.cobertura, 0) / R.rows.length * 100)}%</div><div class="s">${R.rows.length} fornecedores comparados</div></div>
     </div>
-    <table class="tbl"><thead><tr><th>#</th><th>Fornecedor</th><th>Cobertura</th><th>Itens</th><th>Ausentes</th><th style="text-align:right">Total</th></tr></thead><tbody>
+    <div class="card" style="overflow:auto">
+      <table class="tbl"><thead><tr><th style="width:44px">#</th><th>Fornecedor</th><th>Cobertura</th><th>Itens</th><th>Ausentes</th><th style="text-align:right">Preço total</th></tr></thead><tbody>
    ${R.rows.map((r, i) => {
      const isW = r.fid === W.fid;
-     return `<tr class="${isW ? 'row-win' : ''}"><td>${i+1}</td><td><b>${r.nome}</b>${isW ? ' <span class="badge b-ok">🏆 Melhor</span>' : ''}</td>
-     <td><span class="cov-bar"><i style="width:${Math.round(r.cobertura*100)}%"></i></span>${Math.round(r.cobertura*100)}%</td>
-     <td>${r.nDisp} de ${state.lista.itens.length}</td><td>${r.nAus}</td><td style="text-align:right">${BRL(r.total)}${r.parcial ? ' (parcial)' : ''}</td></tr>`;
+     const isMin = r.total === R.minTotal;
+     return `<tr class="${isW ? 'row-win' : ''}">
+      <td class="muted">${i + 1}</td>
+      <td><b>${r.nome}</b> ${isW ? `<span class="badge b-ok">🏆 Melhor oferta</span>` : ''} ${isMin && !isW ? `<span class="badge b-warn">💰 Menor preço</span>` : ''}</td>
+      <td><span class="cov-bar"><i style="width:${Math.round(r.cobertura * 100)}%"></i></span>${Math.round(r.cobertura * 100)}%</td>
+      <td>${r.nDisp} de ${state.lista.itens.length}</td>
+      <td>${r.parcial ? `<span class="badge b-warn">⚠ ${r.nAus} item(ns)</span>` : `<span class="muted">—</span>`}</td>
+      <td style="text-align:right;font-weight:800;font-variant-numeric:tabular-nums">${BRL(r.total)}${r.parcial ? ` <span class="badge b-mut">parcial</span>` : ''}</td></tr>`;
    }).join('')}
    </tbody></table>
-   <div class="warn-banner"><span>⚠️</span><span>Melhor oferta = maior cobertura; empate → menor total. Verifique a coluna "Ausentes".</span></div>
-   <div class="row-between"><button class="btn btn-ghost" data-action="goto-step" data-step="fornecedores">← Editar fornecedores</button><div style="display:flex;gap:10px">
-    <button class="btn btn-ghost" data-action="ver-vencedora" data-primary>🏆 Ver vencedora →</button></div></div>
-  </main>`;
+   </div>
+    <div class="warn-banner"><span>⚠️</span><span><b>Atenção:</b> o menor preço pode não incluir todos os itens da sua lista. A melhor oferta considera a <b>maior cobertura</b>; em caso de empate, vence o <b>menor total</b> — verifique a coluna “Ausentes”.</span></div>
+    <div class="row-between">
+      <button class="btn btn-ghost" data-action="goto-step" data-step="fornecedores">← Editar fornecedores</button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost" data-action="print-a4">🖨️ Imprimir (A4)</button>
+        <button class="btn btn-ghost" data-action="export-pdf">📄 Exportar PDF</button>
+        <button class="btn btn-ok btn-lg" data-action="ver-vencedora" data-primary>🏆 Ver lista vencedora →</button>
+      </div>
+    </div>
+    <p class="rule-note">Regra da melhor oferta (RF16): maior percentual de cobertura da lista; empate → menor custo total.</p>
+  </div>`;
 }
 
 function vVencedora() {
   if (!state.resultado) return vResultados();
   const W = state.resultado.winner;
-  return `<main class="page">
-    <div class="page-head"><span class="kicker">Passo 5 de 5 · Vencedora</span><h1>Lista vencedora</h1><p>PDF exporta apenas esta lista (RF17).</p></div>
+  return `<div class="container page">
+    <div class="page-head"><span class="kicker">Passo 5 de 5 · Exportação</span>
+      <h1>Lista vencedora</h1>
+      <p>Conteúdo da sua lista <b>precificado pelo fornecedor campeão</b>, com total consolidado. É este documento que o PDF exporta (RF17) — nunca a tabela comparativa.</p></div>
     ${stepperHTML(5)}
-    <div class="win-hero"><div><span class="badge b-ok">🏆 Melhor oferta · ${Math.round(W.cobertura*100)}% da lista</span><h2>${W.nome}</h2><div class="meta">CNPJ ${W.cnpj} · ${hoje()} · “${esc(state.lista.nome || '(sem nome)')}”</div></div><div style="text-align:right"><div class="muted small">Total consolidado</div><div style="font-size:28px;font-weight:800">${BRL(W.total)}</div></div></div>
+    <div class="win-hero">
+      <div><span class="badge b-ok" style="margin-bottom:8px">🏆 MELHOR OFERTA · ${Math.round(W.cobertura * 100)}% DA LISTA</span>
+        <h2>${W.nome}</h2><div class="meta">CNPJ ${W.cnpj} · cotação de ${hoje()} · lista “${esc(state.lista.nome || '(sem nome)')}”</div></div>
+      <div style="text-align:right"><div class="muted small">Total consolidado</div>
+        <div style="font-size:30px;font-weight:800;font-variant-numeric:tabular-nums">${BRL(W.total)}</div>
+        ${W.parcial ? `<span class="badge b-warn">total parcial — há itens indisponíveis</span>` : `<span class="badge b-ok">todos os itens disponíveis</span>`}</div>
+    </div>
     <table class="tbl"><thead><tr><th>Produto</th><th>Un</th><th style="width:90px">Qtd</th><th style="text-align:right">Unitário</th><th style="text-align:right">Subtotal</th></tr></thead><tbody>
    ${state.lista.itens.map(i => {
      const itemWin = (W.itens || []).find(it => it.pid === i.pid);
@@ -579,10 +695,15 @@ function vVencedora() {
      return `<tr style="opacity:.55"><td>${esc(p.nome)}</td><td class="muted">${p.un}</td><td>${i.qtd}</td><td colspan="2" style="text-align:right"><span class="badge b-warn">Indisponível</span></td></tr>`;
    }).join('')}
    </tbody></table>
-   <div class="total-box"><span class="tl">Total consolidado</span><span class="tv">${BRL(W.total)}</span></div>
-   <div class="row-between mt"><button class="btn btn-ghost" data-action="goto-step" data-step="resultados">← Resultados</button><div style="display:flex;gap:10px">
-    <button class="btn btn-pri btn-lg" data-action="export-pdf" data-primary>⬇ Exportar PDF — lista_${stamp()}.pdf</button></div></div>
-  </main>`;
+   </div>
+   <div class="row-between mt">
+      <button class="btn btn-ghost" data-action="goto-step" data-step="resultados">← Voltar aos resultados</button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-lg" data-action="print-a4">🖨️ Imprimir A4</button>
+        <button class="btn btn-pri btn-lg" data-action="export-pdf" data-primary>⬇ Exportar PDF — lista_${stamp()}.pdf</button>
+      </div>
+   </div>
+</div>`;
 }
 
 function vLogin() {

@@ -223,7 +223,7 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Gera o seed SQL determinístico do COBECO")
     parser.add_argument(
         "--profile",
-        choices=("baseline", "expanded"),
+        choices=("baseline", "expanded", "semantica"),
         default="baseline",
         help="perfil de seed (padrão: baseline)",
     )
