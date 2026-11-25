@@ -291,6 +291,7 @@ const state = {
   filtroDisp: 0,
   resultado: null,
   busca: '',
+  coberturaPorFornecedor: {}, // mapa fid -> percentual (calculado antes de clicar em Calcular)
 };
 
 class ApiClient {
@@ -307,6 +308,10 @@ class ApiClient {
   static listarFornecedores(categorias = []) {
     const q = categorias.length ? '?categorias=' + categorias.join(',') : '';
     return this.request('/catalogo/fornecedores' + q);
+  }
+  static listarDisponibilidadeLote(produtoIds, fornecedorIds = null) {
+    const q = '?produtos=' + produtoIds.join(',') + (fornecedorIds ? '&fornecedores=' + fornecedorIds.join(',') : '');
+    return this.request('/catalogo/fornecedores/disponibilidade-lote' + q);
   }
   static calcularOrcamentoEfemera(data) {
     return this.request('/comparacao/calcular-efemera', {
@@ -342,6 +347,19 @@ async function carregarFornecedores(categoriaIds = []) {
       state.fornecedoresDisponiveis = frns.map(f => ({ id: f.id, nome: f.nome, cnpj: f.cnpj, cats: (f.categorias || []).map(c => c.id) }));
     }
   } catch (e) { }
+}
+
+// Busca a cobertura de cada fornecedor para os produtos da lista (ANTES de calcular orçamento)
+async function carregarCoberturaFornecedores() {
+  const produtoIds = state.lista.itens.map(i => i.pid);
+  if (!produtoIds.length) { state.coberturaPorFornecedor = {}; return; }
+  const fornecedorIds = state.fornecedoresDisponiveis.map(f => f.id);
+  try {
+    const dados = await ApiClient.listarDisponibilidadeLote(produtoIds, fornecedorIds);
+    const mapa = {};
+    for (const d of dados || []) mapa[d.fornecedor_id] = d.percentual_disponibilidade / 100;
+    state.coberturaPorFornecedor = mapa;
+  } catch (e) { state.coberturaPorFornecedor = {}; }
 }
 
 function nomeCategoria(id) {
@@ -616,7 +634,8 @@ function fornCardsHTML() {
   const eleg = fornecedoresElegiveis();
   if (!eleg.length) return `<div class="empty" style="grid-column:1/-1"><div class="big">🔎</div>Nenhum fornecedor disponível nas categorias selecionadas.<br>Tente incluir outras categorias.</div>`;
   return eleg.map(f => {
-    const cov = Math.round(coberturaDe(f.id) * 100);
+    const covPct = state.coberturaPorFornecedor[f.id] ?? coberturaDe(f.id);
+    const cov = Math.round(covPct * 100);
     const passa = cov >= state.filtroDisp;
     const sel = state.fornecedores.includes(f.id);
     const cls = cov >= 80 ? 'cov-hi' : cov >= 40 ? 'cov-md' : 'cov-lo';
@@ -762,9 +781,9 @@ document.addEventListener('click', (e) => {
     case 'cat-all': state.categorias = state.categoriasDisponiveis.map(c => c.id); render(); break;
     case 'cat-none': state.categorias = []; render(); break;
     case 'to-lista': if (!state.categorias.length) { showToast('Selecione ≥1 categoria.', 'error'); return; } go('lista'); break;
-    case 'goto-step': go(el.dataset.step); break;
+    case 'goto-step': { const destino = el.dataset.step; if (destino === 'fornecedores' && state.lista.itens.length) { carregarFornecedores(state.categorias).then(() => carregarCoberturaFornecedores().then(() => go(destino))); } else { go(destino); } break; }
     case 'demo-lista': state.lista = { nome: 'Lista demo', itens: [{ pid: 1, qtd: 2 }, { pid: 2, qtd: 1 }, { pid: 3, qtd: 3 }] }; if (!state.categorias.length) state.categorias = [1]; persistEph(); render(); showToast('Lista demo carregada.', 'success'); break;
-    case 'to-fornecedores': if (!state.lista.itens.length) { showToast('Adicione ≥1 item.', 'error'); return; } carregarFornecedores(state.categorias).then(() => go('fornecedores')); break;
+    case 'to-fornecedores': if (!state.lista.itens.length) { showToast('Adicione ≥1 item.', 'error'); return; } carregarFornecedores(state.categorias).then(() => carregarCoberturaFornecedores().then(() => go('fornecedores'))); break;
     case 'forn-all': state.fornecedores = fornecedoresElegiveis().filter(f => coberturaDe(f.id) * 100 >= state.filtroDisp).map(f => f.id); refreshFornecedores(); break;
     case 'forn-clear': state.fornecedores = []; refreshFornecedores(); break;
     case 'calcular': {

@@ -403,6 +403,52 @@ async def calcular_disponibilidade_fornecedor(
     )
 
 
+class FornecedorDisponibilidadeLoteItem(BaseModel):
+    fornecedor_id: int
+    percentual_disponibilidade: float
+    itens_disponiveis: int
+    itens_totais: int
+
+
+@router.get(
+    "/fornecedores/disponibilidade-lote",
+    response_model=list[FornecedorDisponibilidadeLoteItem],
+    summary="UC04/UC05 - Disponibilidade em lote de fornecedores para uma lista de produtos",
+)
+async def calcular_disponibilidade_lote(
+    produtos: str = Query(..., description="IDs de produtos separados por vírgula"),
+    fornecedores: str | None = Query(
+        None, description="IDs de fornecedores separados por vírgula (opcional: todos os ativos)"
+    ),
+    repo: FornecedorRepository = Depends(get_fornecedor_repo),
+):
+    produto_ids = [int(p) for p in produtos.split(",")]
+    if not produto_ids:
+        return []
+
+    if fornecedores:
+        fornecedor_ids = [int(f) for f in fornecedores.split(",")]
+    else:
+        todos = await repo.listar_ativos()
+        fornecedor_ids = [f.id for f in todos]
+
+    resultado: list[FornecedorDisponibilidadeLoteItem] = []
+    for fornecedor_id in fornecedor_ids:
+        itens_disp, itens_aus, _preco = await repo.calcular_disponibilidade(
+            fornecedor_id, produto_ids
+        )
+        percentual = (itens_disp / len(produto_ids) * 100) if produto_ids else 0
+        resultado.append(
+            FornecedorDisponibilidadeLoteItem(
+                fornecedor_id=fornecedor_id,
+                percentual_disponibilidade=round(percentual, 1),
+                itens_disponiveis=itens_disp,
+                itens_totais=len(produto_ids),
+            )
+        )
+    return resultado
+
+
 @router.get(
     "/produtos/autocomplete",
     response_model=list[ProdutoResponse],
