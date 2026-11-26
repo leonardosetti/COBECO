@@ -799,7 +799,7 @@ function vLogin() {
     <form id="form-login" novalidate>
       <div class="field"><label>Usuário</label><input type="text" id="l-user" placeholder="usuário"></div>
       <div class="field"><label>Senha</label><input type="password" id="l-pass" placeholder="senha"></div>
-      <button class="btn btn-pri btn-lg btn-block" data-primary>Entrar</button>
+      <button class="btn btn-pri btn-lg btn-block" data-action="login" data-primary>Entrar</button>
     </form><div class="auth-foot">Não tem conta? <button class="linklike" data-action="page-cadastro">Criar conta</button></div></div></div>`;
 }
 
@@ -813,7 +813,7 @@ function vCadastro() {
       <div class="field"><label>Confirmar senha</label><input type="password" id="c-conf"></div>
       <div class="field"><label>Pergunta de segurança</label><select id="c-perg"><option value="">Selecione…</option><option value="pet">Qual seu pet?</option><option value="cidade">Cidade natal?</option><option value="escola">Escola?</option></select></div>
       <div class="field"><label>Resposta</label><input type="text" id="c-resp" placeholder="mín. 3"></div>
-      <button class="btn btn-pri btn-lg btn-block" data-primary>Criar conta</button>
+      <button class="btn btn-pri btn-lg btn-block" data-action="cadastrar" data-primary>Criar conta</button>
     </form><div class="auth-foot">Já tem conta? <button class="linklike" data-action="page-login">Entrar</button></div></div></div>`;
 }
 
@@ -861,6 +861,188 @@ function concluirJornada() {
   showToast('Lista concluída. Inicie uma nova lista.', 'success');
 }
 
+
+// ============================================================
+// HANDLERS DE AUTENTICAÇÃO E SALVAMENTO DE LISTA
+// ============================================================
+async function handleSalvarLista() {
+  const logado = !!state.user;
+
+  if (!logado) {
+    // Usuário não logado: modal de aviso para cadastro
+    const querCadastrar = await Modal.confirm(
+      'Salvar listas é apenas para usuários cadastrados. Deseja criar uma conta agora?',
+      { title: 'Cadastro necessário', confirmText: 'Criar conta', cancelText: 'Cancelar', variant: 'info' }
+    );
+    if (!querCadastrar) {
+      // Usuário não quer cadastrar: pergunta se quer descartar a lista
+      const descartar = await Modal.confirm(
+        'Deseja descartar a lista em andamento?',
+        { title: 'Descartar lista', confirmText: 'Sim, descartar', cancelText: 'Não, manter', variant: 'warning' }
+      );
+      if (descartar) {
+        limparRascunho();
+        go('home');
+        showToast('Lista descartada.', 'info');
+      }
+      return;
+    }
+    // Redireciona para cadastro; após cadastro bem-sucedido, handleCadastro promoverá a lista
+    go('cadastro');
+    return;
+  }
+
+  // Usuário logado: confirmação para salvar
+  const confirmar = await Modal.confirm(
+    'Deseja salvar a lista em andamento?',
+    { title: 'Salvar lista', confirmText: 'Salvar', cancelText: 'Cancelar', variant: 'primary' }
+  );
+  if (!confirmar) return;
+
+  // Salva via API
+  try {
+    const btn = document.querySelector('[data-action="salvar-lista"]');
+    if (btn) { btn.disabled = true; btn.textContent = 'Salvando…'; }
+
+    const data = {
+      nome: state.lista.nome || 'Lista',
+      itens: state.lista.itens.map(i => ({ produto_id: i.pid, quantidade: i.qtd })),
+      categorias: state.categorias,
+    };
+    const res = await ApiClient.request('/listas', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    if (res) {
+      showToast('Lista salva com sucesso!', 'success');
+      limparRascunho();
+      go('home');
+    }
+  } catch (e) {
+    showToast(e.message || 'Erro ao salvar lista.', 'error');
+  } finally {
+    const btn = document.querySelector('[data-action="salvar-lista"]');
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar lista'; }
+  }
+}
+
+async function handleCadastro() {
+  const form = document.getElementById('form-cad');
+  if (!form) return;
+
+  const data = {
+    nome_usuario: document.getElementById('c-user').value.trim(),
+    nome: document.getElementById('c-nome').value.trim(),
+    email: document.getElementById('c-email').value.trim(),
+    senha: document.getElementById('c-senha').value,
+    confirmar_senha: document.getElementById('c-conf').value,
+    pergunta_seguranca: document.getElementById('c-perg').value,
+    resposta_seguranca: document.getElementById('c-resp').value.trim(),
+  };
+
+  // Validação básica
+  if (!data.nome_usuario || !data.nome || !data.email || !data.senha || !data.confirmar_senha || !data.pergunta_seguranca || !data.resposta_seguranca) {
+    showToast('Preencha todos os campos.', 'error');
+    return;
+  }
+  if (data.senha !== data.confirmar_senha) {
+    showToast('As senhas não coincidem.', 'error');
+    return;
+  }
+  if (data.senha.length < 8) {
+    showToast('Senha deve ter no mínimo 8 caracteres.', 'error');
+    return;
+  }
+
+  const btn = form.querySelector('button[type="submit"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Criando…'; }
+
+  try {
+    const res = await ApiClient.request('/auth/cadastrar', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    if (res?.access_token) {
+      state.user = { nome_usuario: data.nome_usuario };
+      showToast('Conta criada e login automático realizado!', 'success');
+      // Após cadastro, promove a lista efêmera se houver
+      if (state.lista.itens.length > 0) {
+        await promoverListaEfemera();
+      }
+      go('categorias');
+    }
+  } catch (e) {
+    showToast(e.message || 'Erro ao cadastrar.', 'error');
+  } finally {
+    const btn = form.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = false; btn.textContent = 'Criar conta'; }
+  }
+}
+
+async function promoverListaEfemera() {
+  try {
+    const btn = document.querySelector('[data-action="salvar-lista"]');
+    if (btn) { btn.disabled = true; btn.textContent = 'Salvando lista…'; }
+
+    const data = {
+      nome: state.lista.nome || 'Lista',
+      itens: state.lista.itens.map(i => ({ produto_id: i.pid, quantidade: i.qtd })),
+      categorias: state.categorias,
+    };
+    const res = await ApiClient.request('/listas/promover-efemera', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    if (res) {
+      showToast('Lista efêmera salva com sucesso!', 'success');
+      limparRascunho();
+    }
+  } catch (e) {
+    showToast(e.message || 'Erro ao salvar lista efêmera.', 'error');
+  } finally {
+    const btn = document.querySelector('[data-action="salvar-lista"]');
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar lista'; }
+  }
+}
+
+async function handleLogin() {
+  const form = document.getElementById('form-login');
+  if (!form) return;
+
+  const data = {
+    nome_usuario: document.getElementById('l-user').value.trim(),
+    senha: document.getElementById('l-pass').value,
+  };
+
+  if (!data.nome_usuario || !data.senha) {
+    showToast('Preencha usuário e senha.', 'error');
+    return;
+  }
+
+  const btn = form.querySelector('button[type="submit"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Entrando…'; }
+
+  try {
+    const res = await ApiClient.request('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    if (res?.access_token) {
+      state.user = { nome_usuario: data.nome_usuario };
+      showToast('Login realizado com sucesso!', 'success');
+      // Após login, promove a lista efêmera se houver
+      if (state.lista.itens.length > 0) {
+        await promoverListaEfemera();
+      }
+      go('categorias');
+    }
+  } catch (e) {
+    showToast(e.message || 'Erro ao entrar.', 'error');
+  } finally {
+    const btn = form.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
+  }
+}
 document.addEventListener('click', (e) => {
   const t = e.target;
   if (t.classList.contains('cat-cb')) {
@@ -895,6 +1077,8 @@ document.addEventListener('click', (e) => {
     case 'nav-dash': case 'nav-perfil': showToast('Em construção (wireframe).', 'info'); break;
     case 'page-login': go('login'); break;
     case 'page-cadastro': go('cadastro'); break;
+    case 'cadastrar': handleCadastro(); break;
+    case 'login': handleLogin(); break;
     case 'sair': state.user = null; showToast('Saiu.', 'info'); render(); break;
     case 'cat-all': state.categorias = state.categoriasDisponiveis.map(c => c.id); render(); break;
     case 'cat-none': state.categorias = []; render(); break;
@@ -931,6 +1115,7 @@ document.addEventListener('click', (e) => {
     }
     case 'del-item': state.lista.itens.splice(+el.dataset.ix, 1); persistJornada(); refreshListaUI(); break;
     case 'nome-lista': case 'busca': break;
+    case 'salvar-lista': handleSalvarLista(); break;
   }
 });
 
