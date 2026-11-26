@@ -19,6 +19,7 @@ class ProdutoRootResponse(BaseModel):
     nome: str
     marca: str | None = None
     unidade: str
+    relevancia: float | None = None  # Score de relevância da busca Full-Text (MAIOR = mais relevante)
 
     class Config:
         from_attributes = True
@@ -27,6 +28,18 @@ class ProdutoRootResponse(BaseModel):
 class ProdutosListResponse(BaseModel):
     items: list[ProdutoRootResponse]
     total: int
+
+
+class ProdutoBuscaResponse(BaseModel):
+    """Resultado de busca Full-Text com score de relevância (ordem: mais relevante primeiro)."""
+    id: int
+    nome: str
+    marca: str | None = None
+    unidade: str
+    relevancia: float  # Score do MATCH/AGAINST (BOOLEAN MODE) — ordenação por relevância
+
+    class Config:
+        from_attributes = True
 
 
 class ProdutoRepositoryImpl(ProdutoRepository):
@@ -59,24 +72,31 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         return list(result.scalars().all())
 
     async def autocomplete(self, query: str, limit: int = 10):
-        """Busca híbrida: FULLTEXT (nome) + marca exata + expansão semântica via produto_classes."""
+        """Busca híbrida: FULLTEXT (nome) + marca exata + expansão semântica via produto_classes.
+
+        Retorna resultados ordenados por relevância (score do MATCH/AGAINST, BOOLEAN MODE).
+        """
         from sqlalchemy import text
 
         q = query.strip()
         if not q:
             return []
 
-        # 1. FULLTEXT search no nome (MySQL MATCH AGAINST)
+        # 1. FULLTEXT search no nome (MySQL MATCH AGAINST) — ordenado por relevância
         fulltext_sql = text("""
-            SELECT id, nome, marca, unidade, ativo, criado_em
+            SELECT id, nome, marca, unidade, ativo, criado_em,
+                   MATCH(nome) AGAINST(:query IN BOOLEAN MODE) AS relevancia
             FROM produtos
             WHERE ativo = TRUE
               AND MATCH(nome) AGAINST(:query IN BOOLEAN MODE)
+            ORDER BY relevancia DESC
             LIMIT :limit
         """)
         result = await self.session.execute(fulltext_sql, {"query": f"+{q}*", "limit": limit})
         rows = result.mappings().all()
-        produtos = [ProdutoModel(**dict(r)) for r in rows]
+        produtos = [ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows]
+        for p, r in zip(produtos, rows):
+            p.relevancia = float(r["relevancia"])
 
         if len(produtos) >= limit:
             return produtos[:limit]

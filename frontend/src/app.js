@@ -284,6 +284,8 @@ const state = {
   user: null,
   categorias: [],
   categoriasDisponiveis: [],
+  categoriasVisiveis: [],
+  categoriaBusca: '',
   fornecedoresDisponiveis: [],
   produtos: [],
   lista: { nome: '', itens: [] },
@@ -304,7 +306,11 @@ class ApiClient {
     return data;
   }
   static listarCategorias() { return this.request('/catalogo/categorias'); }
-  static listarProdutos() { return this.request('/catalogo/produtos'); }
+  static buscarCategorias(q) { return this.request('/catalogo/categorias/busca?q=' + encodeURIComponent(q)); }
+  static listarProdutos(categorias = []) {
+    const q = categorias.length ? '?categorias=' + categorias.join(',') : '';
+    return this.request('/catalogo/produtos' + q);
+  }
   static listarFornecedores(categorias = []) {
     const q = categorias.length ? '?categorias=' + categorias.join(',') : '';
     return this.request('/catalogo/fornecedores' + q);
@@ -312,6 +318,9 @@ class ApiClient {
   static listarDisponibilidadeLote(produtoIds, fornecedorIds = null) {
     const q = '?produtos=' + produtoIds.join(',') + (fornecedorIds ? '&fornecedores=' + fornecedorIds.join(',') : '');
     return this.request('/catalogo/fornecedores/disponibilidade-lote' + q);
+  }
+  static buscarProdutos(q, limit = 10) {
+    return this.request('/produtos/autocomplete?q=' + encodeURIComponent(q) + '&limit=' + limit);
   }
   static calcularOrcamentoEfemera(data) {
     return this.request('/comparacao/calcular-efemera', {
@@ -329,15 +338,19 @@ class ApiClient {
 async function carregarCategorias() {
   try {
     const cats = await ApiClient.listarCategorias();
-    if (cats && cats.length) state.categoriasDisponiveis = cats.map(c => ({ id: c.id, nome: c.nome, ic: '📂' }));
+    if (cats && cats.length) {
+      state.categoriasDisponiveis = cats.map(c => ({ id: c.id, nome: c.nome, ic: '📂' }));
+      state.categoriasVisiveis = state.categoriasDisponiveis.slice();
+    }
   } catch (e) { }
 }
 
-async function carregarProdutos() {
+async function carregarProdutos(categoriaIds = []) {
   try {
-    const prods = await ApiClient.listarProdutos();
+    const prods = await ApiClient.listarProdutos(categoriaIds);
     if (prods && prods.length) state.produtos = prods.map(p => ({ id: p.id, nome: p.nome, un: p.unidade || 'un' }));
-  } catch (e) { }
+    else state.produtos = [];
+  } catch (e) { state.produtos = []; }
 }
 
 async function carregarFornecedores(categoriaIds = []) {
@@ -417,7 +430,12 @@ async function calcularResultado() {
 
 function fornecedoresElegiveis() {
   const base = state.fornecedoresDisponiveis.length ? state.fornecedoresDisponiveis : [];
-  return base.filter(f => f.cats.some(c => state.categorias.includes(c)));
+  return base.filter(f => {
+    if (!f.cats.some(c => state.categorias.includes(c))) return false;
+    const cov = (state.coberturaPorFornecedor[f.id] ?? coberturaDe(f.id)) * 100;
+    // RF14/RF22: omite fornecedores com 0% de cobertura e abaixo do filtro de disponibilidade
+    return cov > 0 && cov >= state.filtroDisp;
+  });
 }
 
 function coberturaDe(fid) {
@@ -528,8 +546,11 @@ function vCategorias() {
         <div><button class="btn btn-ghost btn-sm" data-action="cat-all">Selecionar todas</button>
         <button class="btn btn-ghost btn-sm" data-action="cat-none">Limpar</button></div>
       </div>
+        <div class="search-box"><label>Buscar categoria (semântica)</label>
+          <input type="text" id="busca-cat" value="${esc(state.categoriaBusca)}" placeholder="Ex.: roupas, camiseta, pá, rastelo" autocomplete="off" role="combobox">
+        </div>
       <div class="cat-grid" role="group" aria-label="Categorias macro">
-        ${(state.categoriasDisponiveis.length ? state.categoriasDisponiveis : []).map(c => `<label class="cat-card ${state.categorias.includes(c.id) ? 'sel' : ''}" data-catcard="${c.id}">
+        ${(state.categoriasVisiveis.length ? state.categoriasVisiveis : []).map(c => `<label class="cat-card ${state.categorias.includes(c.id) ? 'sel' : ''}" data-catcard="${c.id}">
           <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id) ? 'checked' : ''}>
           <span class="ci">${c.ic}</span><span class="cn">${esc(c.nome)}</span></label>`).join('')}
       </div>
@@ -632,19 +653,17 @@ function vFornecedores() {
 
 function fornCardsHTML() {
   const eleg = fornecedoresElegiveis();
-  if (!eleg.length) return `<div class="empty" style="grid-column:1/-1"><div class="big">🔎</div>Nenhum fornecedor disponível nas categorias selecionadas.<br>Tente incluir outras categorias.</div>`;
+  if (!eleg.length) return `<div class="empty" style="grid-column:1/-1"><div class="big">🔎</div>Nenhum fornecedor disponível nas categorias selecionadas.<br>Tente incluir outras categorias ou reduzir o filtro de disponibilidade.</div>`;
   return eleg.map(f => {
     const covPct = state.coberturaPorFornecedor[f.id] ?? coberturaDe(f.id);
     const cov = Math.round(covPct * 100);
-    const passa = cov >= state.filtroDisp;
     const sel = state.fornecedores.includes(f.id);
     const cls = cov >= 80 ? 'cov-hi' : cov >= 40 ? 'cov-md' : 'cov-lo';
-    return `<label class="forn-card ${sel ? 'sel' : ''} ${passa ? '' : 'off'}" data-forncard="${f.id}">
-     <div class="forn-cb-row"><input type="checkbox" class="forn-cb" value="${f.id}" ${sel ? 'checked' : ''} ${passa ? '' : 'disabled'}>
+    return `<label class="forn-card ${sel ? 'sel' : ''}" data-forncard="${f.id}">
+     <div class="forn-cb-row"><input type="checkbox" class="forn-cb" value="${f.id}" ${sel ? 'checked' : ''}>
      <div style="flex:1"><div class="forn-top"><b>${esc(f.nome)}</b>
        <span class="cov-badge ${cls}" title="Itens da sua lista disponíveis neste fornecedor">${cov}% da lista</span></div>
       <div class="forn-cats">${(f.cats || []).filter(c => state.categorias.includes(c)).map(c => `<span class="mini-tag">${nomeCategoria(c)}</span>`).join('')}</div>
-      ${cov === 0 ? `<div class="small muted" style="margin-top:6px">⚠ Não possui itens da sua lista</div>` : ''}
      </div></div></label>`;
   }).join('');
 }
@@ -780,11 +799,11 @@ document.addEventListener('click', (e) => {
     case 'sair': state.user = null; showToast('Saiu.', 'info'); render(); break;
     case 'cat-all': state.categorias = state.categoriasDisponiveis.map(c => c.id); render(); break;
     case 'cat-none': state.categorias = []; render(); break;
-    case 'to-lista': if (!state.categorias.length) { showToast('Selecione ≥1 categoria.', 'error'); return; } go('lista'); break;
+    case 'to-lista': if (!state.categorias.length) { showToast('Selecione ≥1 categoria.', 'error'); return; } carregarProdutos(state.categorias); go('lista'); break;
     case 'goto-step': { const destino = el.dataset.step; if (destino === 'fornecedores' && state.lista.itens.length) { carregarFornecedores(state.categorias).then(() => carregarCoberturaFornecedores().then(() => go(destino))); } else { go(destino); } break; }
     case 'demo-lista': state.lista = { nome: 'Lista demo', itens: [{ pid: 1, qtd: 2 }, { pid: 2, qtd: 1 }, { pid: 3, qtd: 3 }] }; if (!state.categorias.length) state.categorias = [1]; persistEph(); render(); showToast('Lista demo carregada.', 'success'); break;
     case 'to-fornecedores': if (!state.lista.itens.length) { showToast('Adicione ≥1 item.', 'error'); return; } carregarFornecedores(state.categorias).then(() => carregarCoberturaFornecedores().then(() => go('fornecedores'))); break;
-    case 'forn-all': state.fornecedores = fornecedoresElegiveis().filter(f => coberturaDe(f.id) * 100 >= state.filtroDisp).map(f => f.id); refreshFornecedores(); break;
+    case 'forn-all': state.fornecedores = fornecedoresElegiveis().slice(0, 10).map(f => f.id); refreshFornecedores(); break;
     case 'forn-clear': state.fornecedores = []; refreshFornecedores(); break;
     case 'calcular': {
       if (state.fornecedores.length < 2) { showToast('Selecione ≥2 fornecedores.', 'error'); return; }
@@ -818,18 +837,42 @@ document.addEventListener('input', (e) => {
   const t = e.target;
   if (t.id === 'nome-lista') { state.lista.nome = t.value; persistEph(); }
   else if (t.id === 'busca') { state.busca = t.value; updateSugestoes(); }
+  else if (t.id === 'busca-cat') { state.categoriaBusca = t.value; buscarCategoriasUI(); }
   else if (t.id === 'slider-disp') { state.filtroDisp = +t.value; document.getElementById('slider-out').textContent = t.value + '%'; refreshFornecedores(); }
 });
 
 let sugTimer = null;
-function updateSugestoes() {
+async function updateSugestoes() {
   const q = norm(state.busca);
   const box = document.getElementById('sug-box');
   clearTimeout(sugTimer);
-  sugTimer = setTimeout(() => {
+  sugTimer = setTimeout(async () => {
     if (!q.length) { box.innerHTML = ''; return; }
-    const hits = state.produtos.filter(p => norm(p.nome).includes(q)).slice(0, 10);
-    box.innerHTML = hits.length ? '<div class="sug">' + hits.map(p => `<div class="sug-item" data-action-add="${p.id}"><span>${esc(p.nome)}</span><span class="un">${p.un}</span></div>`).join('') + '</div>' : '<div class="sug-empty">Nenhum produto encontrado.</div>';
+    try {
+      const res = await ApiClient.buscarProdutos(q, 10);
+      const hits = (res || []).slice(0, 10);
+      box.innerHTML = hits.length
+        ? '<div class="sug">' + hits.map(p => `<div class="sug-item" data-action-add="${p.id}"><span>${esc(p.nome)}</span><span class="un">${p.un || 'un'}</span><span class="rel">${Math.round((p.relevancia || 0) * 100)}% relevância</span></div>`).join('') + '</div>'
+        : '<div class="sug-empty">Nenhum produto encontrado.</div>';
+    } catch (e) {
+      // Fallback para busca local se a API falhar
+      const hits = state.produtos.filter(p => norm(p.nome).includes(q)).slice(0, 10);
+      box.innerHTML = hits.length ? '<div class="sug">' + hits.map(p => `<div class="sug-item" data-action-add="${p.id}"><span>${esc(p.nome)}</span><span class="un">${p.un}</span></div>`).join('') + '</div>' : '<div class="sug-empty">Nenhum produto encontrado.</div>';
+    }
+  }, 300);
+}
+
+let catTimer = null;
+async function buscarCategoriasUI() {
+  const q = norm(state.categoriaBusca);
+  clearTimeout(catTimer);
+  if (!q.length) { state.categoriasVisiveis = state.categoriasDisponiveis.slice(); render(); return; }
+  catTimer = setTimeout(async () => {
+    try {
+      const res = await ApiClient.buscarCategorias(q);
+      state.categoriasVisiveis = (res || []).map(c => ({ id: c.id, nome: c.nome, ic: '📂' }));
+    } catch (e) { state.categoriasVisiveis = state.categoriasDisponiveis.slice(); }
+    render();
   }, 300);
 }
 
@@ -868,6 +911,9 @@ function refreshFornecedores() {
   document.getElementById('forn-grid').innerHTML = fornCardsHTML();
   const c = document.getElementById('forn-count'); if (c) c.textContent = state.fornecedores.length + ' selecionado(s) · mín 2';
   const b = document.getElementById('btn-calc'); if (b) b.disabled = state.fornecedores.length < 2;
+  // Mantém seleção apenas entre fornecedores ainda elegíveis (filtro de disponibilidade/cobertura)
+  const elegiveis = new Set(fornecedoresElegiveis().map(f => f.id));
+  state.fornecedores = state.fornecedores.filter(id => elegiveis.has(id));
 }
 
 // ============================================================
