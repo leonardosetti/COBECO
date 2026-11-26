@@ -318,6 +318,10 @@ const CATEGORIAS=[
  {id:4,nome:"Informática",ic:"💻"},{id:5,nome:"Decoração",ic:"🖼️"},{id:6,nome:"Móveis",ic:"🛋️"},
  {id:7,nome:"Materiais de Construção e Ferragens",ic:"🧱"},{id:8,nome:"Ferramentas",ic:"🔧"},
  {id:9,nome:"Livros",ic:"📚"},{id:10,nome:"Jardinagem",ic:"🪴"},{id:11,nome:"Eletrodomésticos",ic:"🔌"}];
+const AREAS=[{id:1,nome:"Supermercado",cats:[1]},{id:2,nome:"Informática",cats:[4]},
+{id:3,nome:"Automóveis",cats:[3]},{id:4,nome:"Lojas de departamento",cats:[2,5,6,11]},
+{id:5,nome:"Construção e Ferragens",cats:[7,8]},{id:6,nome:"Casa e Jardim",cats:[10,5]},
+{id:7,nome:"Livros e Papelaria",cats:[9]}];
 const FORNECEDORES=[
  {id:1,nome:"Carrefour",cnpj:"99.000.111/0001-22",cats:[1,2,3,5,11,4]},
  {id:2,nome:"Extra",cnpj:"00.111.222/0001-33",cats:[1,2,11]},
@@ -356,7 +360,7 @@ const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 /* ---------- Estado ---------- */
-const state={view:"home",user:null,categorias:[],lista:{nome:"",itens:[]},listaEditId:null,
+const state={view:"home",user:null,categorias:[],areasSelecionadas:[],lista:{nome:"",itens:[]},listaGerada:null,historicoSessao:[],listaEditId:null,
  fornecedores:[],filtroDisp:0,resultado:null,busca:"",recStep:1,recUser:null,perfilEdit:false,
  flags:{pdf:false,saved:false,done:false},attempts:0,lockedUntil:0};
 const USERS=[{nome_usuario:"mariana",nome:"Mariana Duarte",email:"mariana@temperodamari.com.br",
@@ -366,11 +370,11 @@ const LISTAS={mariana:[{id:101,nome:"Compras da semana passada",criado_em:"11/09
 let listSeq=200;
 
 /* sessão efêmera: sessionStorage (RF07/UC01) — access token: só memória (RNF10) */
-function persistEph(){try{sessionStorage.setItem("cobeco_eph",JSON.stringify({lista:state.lista,categorias:state.categorias}));}catch(e){}}
-function loadEph(){try{const raw=sessionStorage.getItem("cobeco_eph");if(!raw)return;
- const d=JSON.parse(raw);if(d.lista&&d.lista.itens&&d.lista.itens.length){state.lista=d.lista;state.categorias=d.categorias||[];
+function persistJornada(){try{sessionStorage.setItem("coboco_jornada",JSON.stringify({rascunho:{lista:state.lista,categorias:state.categorias,areas:state.areasSelecionadas},gerada:state.listaGerada,historico:state.historicoSessao}));}catch(e){}}
+function loadJornada(){try{const raw=sessionStorage.getItem("coboco_jornada");if(!raw)return;
+ const d=JSON.parse(raw);if(d.rascunho&&d.rascunho.lista&&d.rascunho.lista.itens&&d.rascunho.lista.itens.length){state.lista=d.rascunho.lista;state.categorias=d.rascunho.categorias||[];state.areasSelecionadas=d.rascunho.areas||[];
  setTimeout(()=>toast("Lista efêmera recuperada da sessão: “"+state.lista.nome+"” ("+state.lista.itens.length+" itens).","ok"),600);}
-}catch(e){}}
+ state.listaGerada=d.gerada||null;state.historicoSessao=d.historico||[];}catch(e){}}
 
 /* ---------- Toast ---------- */
 function toast(msg,type="info"){const box=document.createElement("div");
@@ -510,20 +514,31 @@ function vHome(){
 }
 
 /* ---- Passo 1: Categorias (UC03/RF12) ---- */
+function catsVisiveis(){
+ if(!state.areasSelecionadas.length)return CATEGORIAS;
+ const ids=new Set();AREAS.forEach(a=>{if(state.areasSelecionadas.includes(a.id))a.cats.forEach(c=>ids.add(c));});
+ return CATEGORIAS.filter(c=>ids.has(c.id));
+}
 function vCategorias(){
+ const vis=catsVisiveis();
  return `<div class="container page">
   <div class="page-head"><span class="kicker">Passo 1 de 5 · Pré-filtro</span>
    <h1>Selecione as categorias</h1>
-   <p>Escolha uma ou mais categorias macro para filtrar os fornecedores. Mínimo: 1 categoria (RF12). A seleção fica apenas em memória (transitória).</p></div>
+   <p>Escolha uma ou mais categorias macro para filtrar os fornecedores. Mínimo: 1 categoria (RF12). Use as grandes áreas para enxergar o catálogo; a seleção fica em memória (transitória).</p></div>
   ${stepperHTML(1)}
   <div class="card card-pad">
+   <div class="areas-bar" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)">
+    <strong>Grandes áreas:</strong>
+    ${AREAS.map(a=>`<label class="area-cb" style="display:flex;align-items:center;gap:6px;font-size:13px;color:#334155;cursor:pointer"><input type="checkbox" class="area-cb" data-action="area-cb" value="${a.id}" ${state.areasSelecionadas.includes(a.id)?"checked":""}> ${a.nome}</label>`).join("")}
+    <button class="btn btn-ghost btn-sm" data-action="area-limpar" style="margin-left:auto">Limpar áreas</button>
+   </div>
    <div class="toolbar">
-    <span class="count-chip ${state.categorias.length?"ok":""}" id="cat-count">${state.categorias.length} categoria(s) selecionada(s) · 11 disponíveis</span>
+    <span class="count-chip ${state.categorias.length?"ok":""}" id="cat-count">${state.categorias.length} categoria(s) selecionada(s) · ${vis.length} disponíveis</span>
     <div><button class="btn btn-ghost btn-sm" data-action="cat-all">Selecionar todas</button>
     <button class="btn btn-ghost btn-sm" data-action="cat-none">Limpar</button></div>
    </div>
    <div class="cat-grid" role="group" aria-label="Categorias macro">
-    ${CATEGORIAS.map(c=>`<label class="cat-card ${state.categorias.includes(c.id)?"sel":""}" data-catcard="${c.id}">
+    ${vis.map(c=>`<label class="cat-card ${state.categorias.includes(c.id)?"sel":""}" data-catcard="${c.id}">
       <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id)?"checked":""}>
       <span class="ci">${c.ic}</span><span class="cn">${c.nome}</span></label>`).join("")}
    </div>
@@ -935,8 +950,16 @@ function salvarListaCore(){
  if(state.listaEditId){const l=db.find(x=>x.id===state.listaEditId);Object.assign(l,snap);toast("✅ Lista atualizada (transação ACID simulada).","ok");}
  else{db.push({id:++listSeq,criado_em:hoje(),...snap});state.listaEditId=listSeq;
   state.flags.saved=true;toast("✅ Lista salva com sucesso! Persistida no banco (simulado).","ok");}
- persistEph();renderJourney();return true;
+ persistJornada();renderJourney();return true;
 }
+
+/* ---------- Retenção opcional de lista em andamento (RF22-RF25) ---------- */
+function temRascunho(){return state.lista.itens.length>0||state.categorias.length>0||state.areasSelecionadas.length>0;}
+function limparRascunho(){state.lista={nome:"",itens:[]};state.categorias=[];state.areasSelecionadas=[];persistJornada();}
+function esquecerOuIr(destino){if(!temRascunho()){go(destino);return;}
+ openModal(`<h3>Esquecer lista em andamento?</h3><p>${state.lista.itens.length} itens · ${state.categorias.length} categorias · ${state.areasSelecionadas.length} áreas</p>
+ <div class="modal-actions"><button class="btn btn-ghost" data-action="esquecer-nao">Não — manter</button><button class="btn btn-ok" data-action="esquecer-sim" data-primary>Sim — começar nova</button></div>`);}
+function concluirJornada(){state.historicoSessao=[...(state.historicoSessao||[]),{lista:{...state.lista},categorias:[...state.categorias],areas:[...state.areasSelecionadas],exportado_em:hoje()}];state.listaGerada={...state.lista};limparRascunho();go("home");toast("Lista concluída. Inicie uma nova lista.","ok");}
 
 document.addEventListener("click",e=>{
  const el=e.target.closest("[data-action]");if(!el)return;
@@ -944,8 +967,8 @@ document.addEventListener("click",e=>{
  switch(a){
   case"overlay-click":if(e.target===el)closeModal();break;
   case"close-modal":closeModal();break;
-  case"nav-home":go("home");break;
-  case"nav-nova":go(state.categorias.length?"lista":"categorias");break;
+  case"nav-home":esquecerOuIr("home");break;
+  case"nav-nova":esquecerOuIr(state.categorias.length?"lista":"categorias");break;
   case"nav-listas":state.user?go("dashboard"):(go("login"),toast("Entre para acessar suas listas.","warn"));break;
   case"nav-perfil":state.user?go("perfil"):go("login");break;
   case"page-login":go("login");break;
@@ -953,18 +976,22 @@ document.addEventListener("click",e=>{
   case"page-recuperar":state.recStep=1;go("recuperar");break;
   case"sair":{const hadEph=state.lista.itens.length>0;state.user=null;state.perfilEdit=false;
    toast(`Sessão encerrada. ${hadEph?"Rascunho da aba preservado (RF03).":""}`,"info");go("home");break;}
-  case"cat-all":state.categorias=CATEGORIAS.map(c=>c.id);render();break;
+   case"esquecer-sim":{closeModal();limparRascunho();go("home");break;}
+   case"esquecer-nao":closeModal();break;
+  case"cat-all":state.categorias=catsVisiveis().map(c=>c.id);render();break;
   case"cat-none":state.categorias=[];render();break;
+  case"area-cb":{const id=+el.value;state.areasSelecionadas=state.areasSelecionadas.includes(id)?state.areasSelecionadas.filter(x=>x!==id):[...state.areasSelecionadas,id];render();break;}
+  case"area-limpar":state.areasSelecionadas=[];render();break;
   case"to-lista":if(!state.categorias.length){toast("Selecione ao menos 1 categoria.","err");break;}go("lista");break;
   case"goto-step":{const s=el.dataset.step;if(s==="lista"&&!state.categorias.length){go("categorias");break;}
    if((s==="fornecedores"||s==="resultados")&&!state.lista.itens.length){go("lista");break;}
    if(s==="resultados"&&!state.resultado){go("fornecedores");break;}go(s);break;}
   case"demo-lista":state.lista={nome:"Compras do Mês",itens:[{pid:1,qtd:2},{pid:2,qtd:2},{pid:3,qtd:3},{pid:4,qtd:2},{pid:5,qtd:2},{pid:6,qtd:6}]};
-   if(!state.categorias.length)state.categorias=[1];persistEph();render();
+   if(!state.categorias.length)state.categorias=[1];persistJornada();render();
    toast("⚡ Lista da Mariana preenchida: 6 produtos de mercado.","ok");break;
   case"inc":case"dec":{const ix=+el.dataset.ix;const it=state.lista.itens[ix];
-   it.qtd=Math.min(9999,Math.max(1,it.qtd+(a==="inc"?1:-1)));persistEph();refreshListaUI();break;}
-  case"del-item":state.lista.itens.splice(+el.dataset.ix,1);persistEph();refreshListaUI();break;
+   it.qtd=Math.min(9999,Math.max(1,it.qtd+(a==="inc"?1:-1)));persistJornada();refreshListaUI();break;}
+  case"del-item":state.lista.itens.splice(+el.dataset.ix,1);persistJornada();refreshListaUI();break;
   case"to-fornecedores":if(!state.lista.itens.length){toast("Adicione ao menos 1 item.","err");break;}go("fornecedores");break;
   case"forn-all":state.fornecedores=fornecedoresElegiveis().filter(f=>coberturaDe(f.id)*100>=state.filtroDisp).map(f=>f.id).slice(0,10);refreshFornecedores();break;
   case"forn-clear":state.fornecedores=[];refreshFornecedores();break;
@@ -973,7 +1000,7 @@ document.addEventListener("click",e=>{
    setTimeout(()=>{calcularResultado();go("resultados");
     toast(`✅ Comparação concluída em ~180ms (meta p95 <500ms). Melhor oferta: ${state.resultado.winner.nome}.`,"ok");},700);break;}
   case"ver-vencedora":go("vencedora");break;
-  case"export-pdf":exportPDF();break;
+  case"export-pdf":exportPDF();concluirJornada();break;
   case"print-a4":printWinner();break;
   case"baixar-pdf":toast("🖨️ Abrindo destino de impressão — escolha “Salvar como PDF” (protótipo simula o download server-side).","info");
    document.getElementById("print-area").innerHTML=sheetHTML();setTimeout(()=>window.print(),80);break;
@@ -995,7 +1022,7 @@ document.addEventListener("click",e=>{
   case"promote-no":closeModal();toast("Lista mantida em memória (efêmera).","info");go("dashboard");break;
   case"editar-lista":{const l=(LISTAS[state.user]||[]).find(x=>x.id===+el.dataset.id);
    if(!l)break;state.listaEditId=l.id;state.lista={nome:l.nome,itens:l.itens.map(i=>({...i}))};
-   state.categorias=[...(l.categorias||[])];persistEph();go("lista");
+   state.categorias=[...(l.categorias||[])];persistJornada();go("lista");
    toast("✏️ Editando “"+l.nome+"”. Ao salvar, os dados serão atualizados (UC13).","info");break;}
   case"excluir-lista":{const id=+el.dataset.id;const l=(LISTAS[state.user]||[]).find(x=>x.id===id);
    openModal(`<button class="x" data-action="close-modal" aria-label="Fechar">✕</button>
@@ -1067,7 +1094,7 @@ document.addEventListener("submit",e=>{
 /* inputs */
 document.addEventListener("input",e=>{
  const t=e.target;
- if(t.id==="nome-lista"){state.lista.nome=t.value;persistEph();
+ if(t.id==="nome-lista"){state.lista.nome=t.value;persistJornada();
   const c=document.getElementById("nome-count");if(c)c.textContent=t.value.length;}
  else if(t.id==="busca"){state.busca=t.value;updateSugestoes();}
  else if(t.id==="slider-disp"){state.filtroDisp=+t.value;
@@ -1082,7 +1109,7 @@ document.addEventListener("input",e=>{
   const l=(LISTAS[state.user]||[]).find(x=>x.id===id);
   document.getElementById("btn-excl").disabled=t.value.trim()!==l.nome;}
  else if(t.dataset.qtdix!==undefined){const ix=+t.dataset.qtdix;let v=parseInt(t.value,10);
-  if(isNaN(v))v=1;v=Math.min(9999,Math.max(1,v));state.lista.itens[ix].qtd=v;persistEph();}
+  if(isNaN(v))v=1;v=Math.min(9999,Math.max(1,v));state.lista.itens[ix].qtd=v;persistJornada();}
 });
 document.addEventListener("change",e=>{
  const t=e.target;
@@ -1120,13 +1147,13 @@ document.addEventListener("click",e=>{
  const ex=state.lista.itens.find(i=>i.pid===pid);
  if(ex)ex.qtd=Math.min(9999,ex.qtd+1);else state.lista.itens.push({pid,qtd:1});
  state.busca="";const b=document.getElementById("busca");if(b)b.value="";
- document.getElementById("sug-box").innerHTML="";persistEph();refreshListaUI();
+ document.getElementById("sug-box").innerHTML="";persistJornada();refreshListaUI();
  const p=PRODUTOS.find(x=>x.id===pid);
  toast(`➕ ${p.nome} adicionado${ex?" (quantidade somada)":""}.`,"ok");
 });
 
 /* ---------- Boot ---------- */
-loadEph();
+loadJornada();
 render();
 </script>
 </body>
