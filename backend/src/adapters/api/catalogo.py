@@ -81,6 +81,27 @@ CATEGORIA_GATILHOS: dict[str, list[str]] = {
     "decoração": ["quadro", "tapete", "vaso", "luminaire", "enfeite"],
 }
 
+# Mapeamento de grandes áreas para categorias macro (RF27/RF28).
+# Expandido à medida que o catálogo cresce; migrar para coluna/tabela no DB quando houver >20 áreas.
+AREAS_GRANDES: dict[str, list[str]] = {
+    "Supermercado": ["Mercado"],
+    "Informática": ["Informática"],
+    "Automóveis": ["Automotivos"],
+    "Lojas de departamento": ["Vestuário", "Móveis", "Decoração", "Eletrodomésticos"],
+    "Construção e Ferragens": ["Materiais de Construção e Ferragens", "Ferramentas"],
+    "Casa e Jardim": ["Jardinagem", "Decoração"],
+    "Livros e Papelaria": ["Livros"],
+}
+
+
+class AreaGrandeResponse(BaseModel):
+    id: int
+    nome: str
+    categorias: list[CategoriaResponse] = []
+
+    class Config:
+        from_attributes = True
+
 
 class CategoriaBuscaResponse(BaseModel):
     id: int
@@ -423,9 +444,26 @@ def get_produto_repo(session: AsyncSession = Depends(get_db)) -> ProdutoReposito
     summary="UC03/RF12 - Listar Categorias (Pré-filtro)",
 )
 async def listar_categorias(
+    areas: str | None = Query(
+        None, description="IDs de grandes áreas separados por vírgula (filtro multi-seleção, RF27)"
+    ),
     repo: CategoriaRepository = Depends(get_categoria_repo),
 ):
     categorias = await repo.listar_todas()
+    if areas:
+        try:
+            area_ids = [int(a) for a in areas.split(",") if a.strip()]
+            nomes_area = list(AREAS_GRANDES.keys())
+            nomes_categorias_permitidas: set[str] = set()
+            for aid in area_ids:
+                if 1 <= aid <= len(nomes_area):
+                    nomes_categorias_permitidas.update(AREAS_GRANDES[nomes_area[aid - 1]])
+            if nomes_categorias_permitidas:
+                categorias = [c for c in categorias if (c.nome or "").strip() in nomes_categorias_permitidas]
+            else:
+                categorias = []
+        except ValueError:
+            pass
     return [CategoriaResponse.model_validate(c) for c in categorias]
 
 
@@ -453,6 +491,27 @@ async def buscar_categorias(
             )
         )
     return resultados
+
+
+@router.get(
+    "/areas-grandes",
+    response_model=list[AreaGrandeResponse],
+    summary="RF28 - Listar grandes áreas com suas categorias macro",
+)
+async def listar_areas_grandes(
+    repo: CategoriaRepository = Depends(get_categoria_repo),
+):
+    todas = await repo.listar_todas()
+    mapa_nome = {(c.nome or "").strip(): c for c in todas}
+    resultado = []
+    for idx, (nome_area, nomes_cats) in enumerate(AREAS_GRANDES.items(), start=1):
+        cats_resp = []
+        for nm in nomes_cats:
+            c = mapa_nome.get(nm)
+            if c:
+                cats_resp.append(CategoriaResponse.model_validate(c))
+        resultado.append(AreaGrandeResponse(id=idx, nome=nome_area, categorias=cats_resp))
+    return resultado
 
 
 @router.get(

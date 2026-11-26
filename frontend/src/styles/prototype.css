@@ -10,6 +10,7 @@
   --err:#dc2626; --err-bg:#fef2f2;
   --ink:#0f172a; --mut:#64748b; --soft:#94a3b8; --line:#e2e8f0; --bg:#f5f6fa; --card:#fff;
   --r:12px; --sh:0 1px 3px rgba(15,23,42,.08),0 4px 14px rgba(15,23,42,.05);
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px; --sp-8:32px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -43,6 +44,8 @@ nav.main a.on{background:var(--pri-bg);color:var(--pri)}
 .btn-secondary{background:var(--pri-bg);color:var(--pri);border-color:var(--pri)}.btn-secondary:hover{background:var(--pri-d);color:#fff;border-color:var(--pri-d)}
 .btn-sm{padding:7px 12px;font-size:13px;border-radius:8px}
 .btn-lg{padding:14px 24px;font-size:15px}
+.btn-block{width:100%}
+.btn-group{display:inline-flex;gap:8px;flex-wrap:wrap;align-items:center}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .btn .lk{font-size:12px}
 .linklike{background:none;border:none;color:var(--pri);font-weight:600;font-size:13px;padding:4px;text-decoration:underline}
@@ -116,15 +119,16 @@ main{flex:1}
 
 /* ---------- Lista ---------- */
 .two-col{display:grid;grid-template-columns:1fr 330px;gap:22px;align-items:start}
-.field{margin-bottom:16px}
-.field label{display:block;font-weight:700;font-size:13px;margin-bottom:6px}
+.field{margin-bottom:var(--sp-5)}
+.field label{display:block;font-weight:700;font-size:13px;margin-bottom:var(--sp-2)}
 .field .req{color:var(--err)}
-.field input[type=text],.field input[type=password],.field input[type=email],.field select{width:100%;padding:11px 13px;border:1px solid #cbd5e1;border-radius:10px;background:#fff}
-.field input:focus,.field select:focus{border-color:var(--pri)}
-.field .err-msg{color:var(--err);font-size:12.5px;margin-top:5px;display:none;font-weight:600}
-.field.invalid input,.field.invalid select{border-color:var(--err)}
+.field input,.field select,.field textarea{width:100%;padding:11px 13px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;font-size:14px;font-family:inherit}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--pri)}
+.field input:disabled,.field select:disabled,.field textarea:disabled{background:#f1f5f9;color:var(--soft);cursor:not-allowed}
+.field .err-msg{color:var(--err);font-size:12.5px;margin-top:var(--sp-2);display:none;font-weight:600}
+.field.invalid input,.field.invalid select,.field.invalid textarea{border-color:var(--err)}
 .field.invalid .err-msg{display:block}
-.counter{font-size:12px;color:var(--mut);text-align:right;margin-top:4px}
+.counter{font-size:12px;color:var(--mut);text-align:right;margin-top:var(--sp-2)}
 .searchbox{position:relative}
 .sug{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 30px rgba(15,23,42,.14);z-index:30;overflow:hidden}
 .sug-item{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;cursor:pointer;font-size:14px;border-bottom:1px solid #f1f5f9}
@@ -325,6 +329,48 @@ footer.foot{border-top:1px solid var(--line);background:#fff;padding:18px 0;font
 @media (max-width:1023px){#mobile-warn{display:block}}
 .empty .big{font-size:40px;margin-bottom:10px}
 
+/* ---------- Canvas centralizado e responsivo até 1024px ---------- */
+@media (max-width: 1024px) {
+  .container{max-width:100%;padding:0 20px}
+  .page{padding:26px 0 70px}
+  .top-in{height:56px;gap:16px}
+  nav.main a{padding:6px 10px;font-size:13px}
+  .hero{grid-template-columns:1fr;gap:24px;padding:32px 24px}
+  .hero h1{font-size:28px}
+  .hero p{max-width:100%}
+  .value-cards{grid-template-columns:repeat(2,1fr);gap:14px}
+  .cat-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .forn-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .kpis{grid-template-columns:repeat(2,1fr);gap:12px}
+  .two-col{grid-template-columns:1fr}
+  .resumo{position:static}
+  .stepper .stp{width:auto;min-width:110px}
+  .stepper .stp .lb{font-size:11px}
+  .stp-bar{margin-top:14px}
+  .win-hero{flex-direction:column;align-items:flex-start;gap:16px}
+  .win-hero > div:last-child{width:100%;text-align:left}
+}
+@media (max-width: 640px) {
+  .value-cards,.cat-grid,.forn-grid,.kpis{grid-template-columns:1fr}
+  .hero{padding:24px 20px}
+  .hero h1{font-size:24px}
+  .stepper .stp{min-width:90px}
+  .stepper .stp .lb{font-size:10px}
+}
+
 /* Desktop-only overlay mirror (RNF04) */
 #desktop-warning{display:none;background:var(--warn-bg);border-bottom:1px solid var(--warn-line);color:#78350f;text-align:center;font-size:13px;padding:8px;font-weight:600;position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.95);color:#fff;flex-direction:column;align-items:center;justify-content:center;padding:24px}
 @media (max-width:1023px){#desktop-warning{display:flex}}
+
+/* ---------- Pré-filtro de grandes áreas (RF27) ---------- */
+.areas-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.area-cb{display:flex;align-items:center;gap:6px;font-size:13px;color:#334155;cursor:pointer}
+.area-cb input{width:16px;height:16px;accent-color:var(--pri)}
+.areas-bar button{margin-left:auto}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-top:10px}
+.cat-card{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;transition:border .15s,box-shadow .15s}
+.cat-card:hover{border-color:#c7d2fe;box-shadow:0 2px 8px rgba(79,70,229,.08)}
+.cat-card.sel{border:2px solid var(--pri);background:var(--pri-bg)}
+.cat-card input{width:18px;height:18px;accent-color:var(--pri)}
+.ci{font-size:20px}
+.cn{font-size:14px;font-weight:600}

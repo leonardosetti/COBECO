@@ -286,9 +286,13 @@ const state = {
   categoriasDisponiveis: [],
   categoriasVisiveis: [],
   categoriaBusca: '',
+  areasSelecionadas: [], // pré-filtro de grandes áreas (multi-seleção)
+  areasGrandes: [],      // grandes áreas carregadas do backend
   fornecedoresDisponiveis: [],
   produtos: [],
   lista: { nome: '', itens: [] },
+  listaGerada: null,     // última lista concluída (espaço próprio da sessão)
+  historicoSessao: [],   // listas concluídas da sessão (até fechar browser)
   fornecedores: [],
   filtroDisp: 0,
   resultado: null,
@@ -306,6 +310,7 @@ class ApiClient {
     return data;
   }
   static listarCategorias() { return this.request('/catalogo/categorias'); }
+  static listarAreasGrandes() { return this.request('/catalogo/areas-grandes'); }
   static buscarCategorias(q) { return this.request('/catalogo/categorias/busca?q=' + encodeURIComponent(q)); }
   static listarProdutos(categorias = []) {
     const q = categorias.length ? '?categorias=' + categorias.join(',') : '';
@@ -320,7 +325,7 @@ class ApiClient {
     return this.request('/catalogo/fornecedores/disponibilidade-lote' + q);
   }
   static buscarProdutos(q, limit = 10) {
-    return this.request('/produtos/autocomplete?q=' + encodeURIComponent(q) + '&limit=' + limit);
+    return this.request('/catalogo/produtos/autocomplete?q=' + encodeURIComponent(q) + '&limit=' + limit);
   }
   static calcularOrcamentoEfemera(data) {
     return this.request('/comparacao/calcular-efemera', {
@@ -343,6 +348,17 @@ async function carregarCategorias() {
       state.categoriasVisiveis = state.categoriasDisponiveis.slice();
     }
   } catch (e) { }
+}
+
+async function carregarAreasGrandes() {
+  try {
+    const areas = await ApiClient.listarAreasGrandes();
+    if (areas && areas.length) {
+      state.areasGrandes = areas.map(a => ({ id: a.id, nome: a.nome, categorias: (a.categorias || []).map(c => c.id) }));
+    } else {
+      state.areasGrandes = [];
+    }
+  } catch (e) { state.areasGrandes = []; }
 }
 
 async function carregarProdutos(categoriaIds = []) {
@@ -463,6 +479,8 @@ function render() {
   const M = { home: vHome, categorias: vCategorias, lista: vLista, fornecedores: vFornecedores,
     resultados: vResultados, vencedora: vVencedora, login: vLogin, cadastro: vCadastro };
   const viewFn = M[state.view] || vHome;
+  // Navbar fixa (RF24): sempre visível no topo, atualizada a cada navegação
+  try { document.getElementById('topbar').innerHTML = navHTML(); } catch (e) { }
   try { document.getElementById('main').innerHTML = viewFn(); }
   catch(e) { document.getElementById('main').innerHTML = '<div style="color:red">Erro: ' + e.message + '</div>'; }
 }
@@ -535,14 +553,21 @@ function vHome() {
 }
 
 function vCategorias() {
+  const totalCats = totalCategorias();
+  const areasHTML = state.areasGrandes.length
+    ? `<div class="areas-bar"><strong>Grandes áreas:</strong>
+      ${state.areasGrandes.map(a => `<label class="area-cb"><input type="checkbox" class="area-cb-input" value="${a.id}" ${state.areasSelecionadas.includes(a.id) ? 'checked' : ''}> ${esc(a.nome)}</label>`).join('')}
+      <button class="btn btn-ghost btn-sm" data-action="area-limpar">Limpar áreas</button></div>`
+    : `<div class="areas-bar" style="color:#9ca3af;font-size:13px">Grandes áreas não carregadas.</div>`;
   return `<div class="container page">
     <div class="page-head"><span class="kicker">Passo 1 de 5 · Pré-filtro</span>
       <h1>Selecione as categorias</h1>
-      <p>Escolha uma ou mais categorias macro para filtrar os fornecedores. Mínimo: 1 categoria (RF12). A seleção fica apenas em memória (transitória).</p></div>
+      <p>Escolha uma ou mais categorias macro para filtrar os fornecedores. Mínimo: 1 categoria (RF12). Use as grandes áreas para enxergar o catálogo; a seleção fica em memória (transitória).</p></div>
     ${stepperHTML(1)}
     <div class="card card-pad">
+      ${areasHTML}
       <div class="toolbar">
-        <span class="count-chip ${state.categorias.length ? 'ok' : ''}" id="cat-count">${state.categorias.length} categoria(s) selecionada(s) · ${totalCategorias()} disponíveis</span>
+        <span class="count-chip ${state.categorias.length ? 'ok' : ''}" id="cat-count">${state.categorias.length} categoria(s) selecionada(s) · ${totalCats} disponíveis</span>
         <div><button class="btn btn-ghost btn-sm" data-action="cat-all">Selecionar todas</button>
         <button class="btn btn-ghost btn-sm" data-action="cat-none">Limpar</button></div>
       </div>
@@ -554,7 +579,7 @@ function vCategorias() {
           <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id) ? 'checked' : ''}>
           <span class="ci">${c.ic}</span><span class="cn">${esc(c.nome)}</span></label>`).join('')}
       </div>
-      <div class="tip">ℹ️ <b>Como funciona:</b> os fornecedores exibidos na próxima etapa pertencem às categorias selecionadas.</div>
+      <div class="tip">ℹ️ <b>Como funciona:</b> os fornecedores exibidos na próxima etapa pertencem às categorias selecionadas. Categorias já escolhidas permanecem visíveis mesmo durante a busca (RF26).</div>
       <div class="row-between mt">
         <button class="btn btn-ghost" data-action="nav-home">← Voltar</button>
         <div>
@@ -564,6 +589,31 @@ function vCategorias() {
       </div>
     </div>
   </div>`;
+}
+
+// Recalcula categorias visíveis aplicando filtro de áreas grandes + busca,
+// garantindo que categorias já selecionadas permaneçam visíveis (RF26).
+function recalcularVisiveis(baseCats) {
+  const baseIds = new Set(baseCats.map(c => c.id));
+  const selecionadas = state.categoriasDisponiveis.filter(c => state.categorias.includes(c.id));
+  const mescladas = [...baseCats];
+  selecionadas.forEach(s => { if (!baseIds.has(s.id)) mescladas.push(s); });
+  state.categoriasVisiveis = mescladas;
+  render();
+}
+
+function areasParaCategorias(areaIds) {
+  if (!areaIds.length) return state.categoriasDisponiveis.slice();
+  const out = [];
+  state.areasGrandes.forEach(a => {
+    if (areaIds.includes(a.id)) {
+      a.categorias.forEach(cid => {
+        const c = state.categoriasDisponiveis.find(x => x.id === cid);
+        if (c && !out.find(o => o.id === c.id)) out.push(c);
+      });
+    }
+  });
+  return out;
 }
 
 function vLista() {
@@ -700,7 +750,7 @@ function vResultados() {
     <div class="warn-banner"><span>⚠️</span><span><b>Atenção:</b> o menor preço pode não incluir todos os itens da sua lista. A melhor oferta considera a <b>maior cobertura</b>; em caso de empate, vence o <b>menor total</b> — verifique a coluna “Ausentes”.</span></div>
     <div class="row-between">
       <button class="btn btn-ghost" data-action="goto-step" data-step="fornecedores">← Editar fornecedores</button>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <div class="btn-group">
         <button class="btn btn-ghost" data-action="print-a4">🖨️ Imprimir (A4)</button>
         <button class="btn btn-ghost" data-action="export-pdf">📄 Exportar PDF</button>
         <button class="btn btn-ok btn-lg" data-action="ver-vencedora" data-primary>🏆 Ver lista vencedora →</button>
@@ -736,7 +786,7 @@ function vVencedora() {
    </div>
    <div class="row-between mt">
       <button class="btn btn-ghost" data-action="goto-step" data-step="resultados">← Voltar aos resultados</button>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <div class="btn-group">
         <button class="btn btn-ghost btn-lg" data-action="print-a4">🖨️ Imprimir A4</button>
         <button class="btn btn-pri btn-lg" data-action="export-pdf" data-primary>⬇ Exportar PDF — lista_${stamp()}.pdf</button>
       </div>
@@ -749,7 +799,7 @@ function vLogin() {
     <form id="form-login" novalidate>
       <div class="field"><label>Usuário</label><input type="text" id="l-user" placeholder="usuário"></div>
       <div class="field"><label>Senha</label><input type="password" id="l-pass" placeholder="senha"></div>
-      <button class="btn btn-pri btn-lg" style="width:100%" data-primary>Entrar</button>
+      <button class="btn btn-pri btn-lg btn-block" data-primary>Entrar</button>
     </form><div class="auth-foot">Não tem conta? <button class="linklike" data-action="page-cadastro">Criar conta</button></div></div></div>`;
 }
 
@@ -763,19 +813,68 @@ function vCadastro() {
       <div class="field"><label>Confirmar senha</label><input type="password" id="c-conf"></div>
       <div class="field"><label>Pergunta de segurança</label><select id="c-perg"><option value="">Selecione…</option><option value="pet">Qual seu pet?</option><option value="cidade">Cidade natal?</option><option value="escola">Escola?</option></select></div>
       <div class="field"><label>Resposta</label><input type="text" id="c-resp" placeholder="mín. 3"></div>
-      <button class="btn btn-pri btn-lg" style="width:100%" data-primary>Criar conta</button>
+      <button class="btn btn-pri btn-lg btn-block" data-primary>Criar conta</button>
     </form><div class="auth-foot">Já tem conta? <button class="linklike" data-action="page-login">Entrar</button></div></div></div>`;
 }
 
 // ============================================================
 // DISPATCH DE CLIQUES
 // ============================================================
+
+function temRascunho() {
+  return state.lista.itens.length > 0 || state.categorias.length > 0 || state.areasSelecionadas.length > 0;
+}
+
+function limparRascunho() {
+  state.lista = { nome: '', itens: [] };
+  state.categorias = [];
+  state.areasSelecionadas = [];
+  persistJornada();
+}
+
+// RF25: ao tentar voltar ao início com rascunho, pergunta se esquece a lista em andamento
+async function irParaInicioComModal(destino) {
+  if (!temRascunho()) { go(destino); return; }
+  const esquecer = await Modal.confirm(
+    `Esquecer lista em andamento? (${state.lista.itens.length} itens, ${state.categorias.length} categorias, ${state.areasSelecionadas.length} áreas)`,
+    { title: 'Lista em andamento', confirmText: 'Sim — começar nova', cancelText: 'Não — manter', variant: 'warning' }
+  );
+  if (esquecer) { limparRascunho(); go(destino); }
+  // Não → mantém tela e rascunho (não navega)
+}
+
+// RF22/RF23: concluir lista efêmera → espaço próprio (gerada/historico),
+// limpa rascunho e retorna ao início para próxima lista.
+function concluirJornada() {
+  const gerada = {
+    lista: { ...state.lista },
+    categorias: [...state.categorias],
+    areas: [...state.areasSelecionadas],
+    fornecedores: [...state.fornecedores],
+    resultado: state.resultado ? { ...state.resultado } : null,
+    exportadoEm: new Date().toISOString()
+  };
+  state.historicoSessao = [...(state.historicoSessao || []), gerada];
+  state.listaGerada = gerada;
+  limparRascunho();
+  go('home');
+  showToast('Lista concluída. Inicie uma nova lista.', 'success');
+}
+
 document.addEventListener('click', (e) => {
   const t = e.target;
   if (t.classList.contains('cat-cb')) {
     const id = +t.value;
     state.categorias = state.categorias.includes(id) ? state.categorias.filter(x => x !== id) : [...state.categorias, id];
     render();
+    return;
+  }
+  if (t.classList.contains('area-cb-input')) {
+    const id = +t.value;
+    state.areasSelecionadas = state.areasSelecionadas.includes(id)
+      ? state.areasSelecionadas.filter(x => x !== id)
+      : [...state.areasSelecionadas, id];
+    recalcularVisiveis(areasParaCategorias(state.areasSelecionadas));
     return;
   }
   if (t.classList.contains('forn-cb')) {
@@ -791,17 +890,18 @@ document.addEventListener('click', (e) => {
   e.preventDefault();
   const a = el.dataset.action;
   switch (a) {
-    case 'nav-home': go('home'); break;
-    case 'nav-nova': go('categorias'); break;
+    case 'nav-home': irParaInicioComModal('home'); break;
+    case 'nav-nova': irParaInicioComModal('categorias'); break;
     case 'nav-dash': case 'nav-perfil': showToast('Em construção (wireframe).', 'info'); break;
     case 'page-login': go('login'); break;
     case 'page-cadastro': go('cadastro'); break;
     case 'sair': state.user = null; showToast('Saiu.', 'info'); render(); break;
     case 'cat-all': state.categorias = state.categoriasDisponiveis.map(c => c.id); render(); break;
     case 'cat-none': state.categorias = []; render(); break;
+    case 'area-limpar': state.areasSelecionadas = []; recalcularVisiveis(areasParaCategorias([])); break;
     case 'to-lista': if (!state.categorias.length) { showToast('Selecione ≥1 categoria.', 'error'); return; } carregarProdutos(state.categorias); go('lista'); break;
     case 'goto-step': { const destino = el.dataset.step; if (destino === 'fornecedores' && state.lista.itens.length) { carregarFornecedores(state.categorias).then(() => carregarCoberturaFornecedores().then(() => go(destino))); } else { go(destino); } break; }
-    case 'demo-lista': state.lista = { nome: 'Lista demo', itens: [{ pid: 1, qtd: 2 }, { pid: 2, qtd: 1 }, { pid: 3, qtd: 3 }] }; if (!state.categorias.length) state.categorias = [1]; persistEph(); render(); showToast('Lista demo carregada.', 'success'); break;
+    case 'demo-lista': state.lista = { nome: 'Lista demo', itens: [{ pid: 1, qtd: 2 }, { pid: 2, qtd: 1 }, { pid: 3, qtd: 3 }] }; if (!state.categorias.length) state.categorias = [1]; persistJornada(); render(); showToast('Lista demo carregada.', 'success'); break;
     case 'to-fornecedores': if (!state.lista.itens.length) { showToast('Adicione ≥1 item.', 'error'); return; } carregarFornecedores(state.categorias).then(() => carregarCoberturaFornecedores().then(() => go('fornecedores'))); break;
     case 'forn-all': state.fornecedores = fornecedoresElegiveis().slice(0, 10).map(f => f.id); refreshFornecedores(); break;
     case 'forn-clear': state.fornecedores = []; refreshFornecedores(); break;
@@ -821,21 +921,22 @@ document.addEventListener('click', (e) => {
           const a = document.createElement('a'); a.href = url; a.download = `lista_${stamp()}.pdf`; a.click();
           URL.revokeObjectURL(url);
           showToast('PDF baixado.', 'success');
+          concluirJornada();
         }).catch(() => showToast('Erro ao gerar PDF.', 'error'));
       break;
     }
     case 'dec': case 'inc': {
       const ix = +el.dataset.ix; const it = state.lista.itens[ix];
-      it.qtd = Math.min(9999, Math.max(1, it.qtd + (a === 'inc' ? 1 : -1))); persistEph(); refreshListaUI(); break;
+      it.qtd = Math.min(9999, Math.max(1, it.qtd + (a === 'inc' ? 1 : -1))); persistJornada(); refreshListaUI(); break;
     }
-    case 'del-item': state.lista.itens.splice(+el.dataset.ix, 1); persistEph(); refreshListaUI(); break;
+    case 'del-item': state.lista.itens.splice(+el.dataset.ix, 1); persistJornada(); refreshListaUI(); break;
     case 'nome-lista': case 'busca': break;
   }
 });
 
 document.addEventListener('input', (e) => {
   const t = e.target;
-  if (t.id === 'nome-lista') { state.lista.nome = t.value; persistEph(); }
+  if (t.id === 'nome-lista') { state.lista.nome = t.value; persistJornada(); }
   else if (t.id === 'busca') { state.busca = t.value; updateSugestoes(); }
   else if (t.id === 'busca-cat') { state.categoriaBusca = t.value; buscarCategoriasUI(); }
   else if (t.id === 'slider-disp') { state.filtroDisp = +t.value; document.getElementById('slider-out').textContent = t.value + '%'; refreshFornecedores(); }
@@ -866,13 +967,17 @@ let catTimer = null;
 async function buscarCategoriasUI() {
   const q = norm(state.categoriaBusca);
   clearTimeout(catTimer);
-  if (!q.length) { state.categoriasVisiveis = state.categoriasDisponiveis.slice(); render(); return; }
+  if (!q.length) {
+    recalcularVisiveis(areasParaCategorias(state.areasSelecionadas));
+    return;
+  }
   catTimer = setTimeout(async () => {
     try {
       const res = await ApiClient.buscarCategorias(q);
-      state.categoriasVisiveis = (res || []).map(c => ({ id: c.id, nome: c.nome, ic: '📂' }));
-    } catch (e) { state.categoriasVisiveis = state.categoriasDisponiveis.slice(); }
-    render();
+      const base = (res || []).map(c => ({ id: c.id, nome: c.nome, ic: '📂' }));
+      // RF26: busca nunca esconde categorias já selecionadas
+      recalcularVisiveis(base);
+    } catch (e) { recalcularVisiveis(areasParaCategorias(state.areasSelecionadas)); }
   }, 300);
 }
 
@@ -883,22 +988,35 @@ document.addEventListener('click', (e) => {
   const ex = state.lista.itens.find(i => i.pid === pid);
   if (ex) ex.qtd = Math.min(9999, ex.qtd + 1); else state.lista.itens.push({ pid, qtd: 1 });
   state.busca = ''; const b = document.getElementById('busca'); if (b) b.value = ''; document.getElementById('sug-box').innerHTML = '';
-  persistEph(); refreshListaUI();
+  persistJornada(); refreshListaUI();
   showToast('➕ ' + nomeProduto(pid) + ' adicionado.', 'success');
 });
 
 // ============================================================
-// PERSISTÊNCIA EFÊMERA
+// PERSISTÊNCIA DA JORNADA (sessionStorage — espaço próprio até fechar browser)
 // ============================================================
-function persistEph() {
-  try { sessionStorage.setItem('cobeco_eph', JSON.stringify({ lista: state.lista, categorias: state.categorias })); } catch (e) { }
-}
-function loadEph() {
+function persistJornada() {
   try {
-    const raw = sessionStorage.getItem('cobeco_eph');
+    sessionStorage.setItem('cobeco_jornada', JSON.stringify({
+      rascunho: { lista: state.lista, categorias: state.categorias, areas: state.areasSelecionadas },
+      gerada: state.listaGerada,
+      historico: state.historicoSessao
+    }));
+  } catch (e) { }
+}
+function loadJornada() {
+  try {
+    const raw = sessionStorage.getItem('cobeco_jornada');
     if (!raw) return;
     const d = JSON.parse(raw);
-    if (d.lista && d.lista.itens && d.lista.itens.length) { state.lista = d.lista; state.categorias = d.categorias || []; showToast('Lista efêmera recuperada.', 'success'); }
+    if (d.rascunho?.lista?.itens?.length) {
+      state.lista = d.rascunho.lista;
+      state.categorias = d.rascunho.categorias || [];
+      state.areasSelecionadas = d.rascunho.areas || [];
+      showToast('Lista efêmera recuperada.', 'success');
+    }
+    state.listaGerada = d.gerada || null;
+    state.historicoSessao = d.historico || [];
   } catch (e) { }
 }
 
@@ -922,8 +1040,10 @@ function refreshFornecedores() {
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     await carregarCategorias();
+    await carregarAreasGrandes();
     await carregarProdutos();
-    loadEph();
+    loadJornada();
+    if (state.areasSelecionadas.length) recalcularVisiveis(areasParaCategorias(state.areasSelecionadas));
     render();
   } catch (e) { document.getElementById('main').innerHTML = '<div style="color:red">Erro: ' + e.message + '</div>'; }
 });
