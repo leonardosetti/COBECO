@@ -468,12 +468,14 @@ async def rate_limiter_recovery(nome_usuario: str):
 @router.post(
     "/cadastrar",
     status_code=status.HTTP_201_CREATED,
-    response_model=dict,
-    summary="UC09/RF01 - Cadastrar Usuário",
+    response_model=TokenResponse,
+    summary="UC09/RF01 - Cadastrar Usuário (com auto-login)",
 )
 async def cadastrar_usuario(
+    response: Response,
     request: CadastrarUsuarioRequest,
     repo: UsuarioRepository = Depends(get_usuario_repo),
+    sessao_repo: SessaoRepository = Depends(get_sessao_repo),
 ):
     try:
         request.validar_senhas()
@@ -492,7 +494,43 @@ async def cadastrar_usuario(
                 resposta_seguranca=request.resposta_seguranca,
             )
         )
-        return {"message": "Conta criada com sucesso", "usuario_id": usuario.id}
+
+        # Auto-login: gera tokens
+        access_token = criar_token(
+            sub=str(usuario.id),
+            expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
+        )
+        refresh_token = criar_token(
+            sub=str(usuario.id),
+            expires_delta=timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
+            token_type="refresh",
+        )
+
+        # Salva refresh token no banco
+        refresh_hash = hash_refresh_token(refresh_token)
+        sessao = Sessao(
+            usuario_id=usuario.id,
+            refresh_token_hash=refresh_hash,
+            expira_em=datetime.now() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
+        )
+        await sessao_repo.criar(sessao)
+
+        # Set refresh token como httpOnly cookie
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            httponly=True,
+            secure=not settings.DEBUG,
+            samesite="strict",
+            max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
+            path="/",
+        )
+
+        return TokenResponse(
+            access_token=access_token,
+            refresh_token=refresh_token,
+            expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        )
     except UsuarioJaExiste:
         # Mensagem genérica (não revela qual campo)
         raise HTTPException(status_code=400, detail="Credenciais inválidas")
