@@ -14,7 +14,7 @@ from typing import Final, Literal
 # ruff: noqa: TRY003
 
 Profile = Literal["baseline", "expanded", "semantica"]
-_UNIT_PATTERN: Final = re.compile(r"^(un|kg|L|m)$")
+_UNIT_PATTERN: Final = re.compile(r"^(un|kg|L|m|g|ml)$")
 _SPACE_PATTERN: Final = re.compile(r"\s+")
 _CNPJ_PATTERN: Final = re.compile(r"^\d{2}\.\d{3}\.\d{3}/0001-\d{2}$")
 _CENT: Final = Decimal("0.01")
