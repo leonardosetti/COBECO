@@ -928,8 +928,8 @@ const LISTAS = {mariana:[{id:101,nome:"Compras da semana passada",criado_em:"11/
 let listSeq = 200;
 
 /* sessionStorage efêmera */
-function persistEph(){try{sessionStorage.setItem("cobeco_eph",JSON.stringify({lista:state.lista,categorias:state.categorias}));}catch(e){}}
-function loadEph(){try{const raw=sessionStorage.getItem("cobeco_eph");if(!raw)return;const d=JSON.parse(raw);if(d.lista&&d.lista.itens&&d.lista.itens.length){state.lista=d.lista;state.categorias=d.categorias||[];setTimeout(()=>toast("Lista efêmera recuperada da sessão: “"+state.lista.nome+"” ("+state.lista.itens.length+" itens).","success"),600);} }catch(e){}}
+function persistJornada(){try{sessionStorage.setItem("coboco_jornada",JSON.stringify({lista:state.lista,categorias:state.categorias}));}catch(e){}}
+function loadJornada(){try{const raw=sessionStorage.getItem("coboco_jornada");if(!raw)return;const d=JSON.parse(raw);if(d.lista&&d.lista.itens&&d.lista.itens.length){state.lista=d.lista;state.categorias=d.categorias||[];setTimeout(()=>toast("Lista efêmera recuperada da sessão: “"+state.lista.nome+"” ("+state.lista.itens.length+" itens).","success"),600);} }catch(e){}}
 
 /* ============================================================
    TOAST
@@ -1088,9 +1088,9 @@ document.addEventListener("click",e=>{
     case"cat-none":state.categorias=[];render();break;
     case"to-lista":if(!state.categorias.length){toast("Selecione ao menos 1 categoria.","error");break;}go("lista");break;
     case"goto-step":{const s=el.dataset.step;if(s==="lista"&&!state.categorias.length){go("categorias");break;}if((s==="fornecedores"||s==="comparacao")&&!state.lista.itens.length){go("lista");break;}if(s==="comparacao"&&!state.resultado){go("fornecedores");break;}go(s);break;}
-    case"demo-lista":state.lista={nome:"Compras do Mês",itens:[{pid:1,qtd:2},{pid:2,qtd:2},{pid:3,qtd:3},{pid:4,qtd:2},{pid:5,qtd:2},{pid:6,qtd:6}]};if(!state.categorias.length)state.categorias=[1];persistEph();render();toast("⚡ Lista da Mariana preenchida: 6 produtos de mercado.","success");break;
-    case"inc":case"dec":{const ix=+el.dataset.ix;const it=state.lista.itens[ix];it.qtd=Math.min(9999,Math.max(1,it.qtd+(a==="inc"?1:-1)));persistEph();refreshListaUI();break;}
-    case"del-item":state.lista.itens.splice(+el.dataset.ix,1);persistEph();refreshListaUI();break;
+    case"demo-lista":state.lista={nome:"Compras do Mês",itens:[{pid:1,qtd:2},{pid:2,qtd:2},{pid:3,qtd:3},{pid:4,qtd:2},{pid:5,qtd:2},{pid:6,qtd:6}]};if(!state.categorias.length)state.categorias=[1];persistJornada();render();toast("⚡ Lista da Mariana preenchida: 6 produtos de mercado.","success");break;
+    case"inc":case"dec":{const ix=+el.dataset.ix;const it=state.lista.itens[ix];it.qtd=Math.min(9999,Math.max(1,it.qtd+(a==="inc"?1:-1)));persistJornada();refreshListaUI();break;}
+    case"del-item":state.lista.itens.splice(+el.dataset.ix,1);persistJornada();refreshListaUI();break;
     case"to-fornecedores":if(!state.lista.itens.length){toast("Adicione ao menos 1 item.","error");break;}go("fornecedores");break;
     case"forn-all":state.fornecedores=fornecedoresElegiveis().filter(f=>coberturaDe(f.id)*100>=state.filtroDisp).map(f=>f.id).slice(0,10);render();break;
     case"forn-clear":state.fornecedores=[];render();break;
@@ -1105,7 +1105,7 @@ document.addEventListener("click",e=>{
     case"demo-login-fill":document.getElementById("l-user").value="mariana";document.getElementById("l-pass").value="Comida123!";break;
     case"promote-yes":closeModal();if(salvarListaCore())go("dashboard");break;
     case"promote-no":closeModal();toast("Lista mantida em memória (efêmera).","info");go("dashboard");break;
-    case"editar-lista":{const l=(LISTAS[state.user]||[]).find(x=>x.id===+el.dataset.id);if(!l)break;state.listaEditId=l.id;state.lista={nome:l.nome,itens:l.itens.map(i=>({...i}))};state.categorias=[...(l.categorias||[])];persistEph();go("lista");toast("✏️ Editando “"+l.nome+"”. Ao salvar, os dados serão atualizados (UC13).","info");break;}
+    case"editar-lista":{const l=(LISTAS[state.user]||[]).find(x=>x.id===+el.dataset.id);if(!l)break;state.listaEditId=l.id;state.lista={nome:l.nome,itens:l.itens.map(i=>({...i}))};state.categorias=[...(l.categorias||[])];persistJornada();go("lista");toast("✏️ Editando “"+l.nome+"”. Ao salvar, os dados serão atualizados (UC13).","info");break;}
     case"excluir-lista":{const id=+el.dataset.id;const l=(LISTAS[state.user]||[]).find(x=>x.id===id);openModal(`<div class="modal-overlay" data-action="overlay-click"><div class="modal" role="dialog" aria-modal="true"><button class="modal__close" data-action="close-modal" aria-label="Fechar">✕</button><h3 class="modal__title">🗑️ Confirmar exclusão</h3><p class="modal__subtitle muted small">Esta ação não pode ser desfeita (na demo). Digite o nome da lista para confirmar (RF11):</p><div class="field"><label class="field__label">“${l.nome}”</label><input type="text" id="excl-nome" placeholder="digite o nome exato" autocomplete="off" class="input"></div><div class="modal__actions"><button class="btn btn--ghost" data-action="close-modal">Cancelar</button><button class="btn btn--danger" id="btn-excl" data-action="confirmar-exclusao" data-id="${id}" disabled>Excluir permanentemente</button></div></div></div>`);break;}
     case"confirmar-exclusao":{const id=+el.dataset.id;const db=LISTAS[state.user]||[];const ix=db.findIndex(x=>x.id===id);if(ix>=0){db.splice(ix,1);}closeModal();toast("🗑 Lista excluída (soft delete simulado — deletado_em).","success");render();break;}
     case"perfil-editar":state.perfilEdit=true;render();break;
@@ -1130,17 +1130,17 @@ document.addEventListener("submit",e=>{
 /* Inputs */
 document.addEventListener("input",e=>{
   const t=e.target;
-  if(t.id==="nome-lista"){state.lista.nome=t.value;persistEph();const c=document.getElementById("nome-count");if(c)c.textContent=t.value.length;}
+  if(t.id==="nome-lista"){state.lista.nome=t.value;persistJornada();const c=document.getElementById("nome-count");if(c)c.textContent=t.value.length;}
   else if(t.id==="busca"){state.busca=t.value;updateSugestoes();}
   else if(t.id==="slider-disp"){state.filtroDisp=+t.value;document.getElementById("slider-out").textContent=t.value+"%";const removed=state.fornecedores.filter(f=>coberturaDe(f)*100<state.filtroDisp);if(removed.length){state.fornecedores=state.fornecedores.filter(f=>coberturaDe(f)*100>=state.filtroDisp);toast(`${removed.length} fornecedor(es) removidos da seleção pelo filtro (UC05).`,"warning");}render();}
   else if(t.id==="dash-q"){state.dashQ=t.value;render();}
   else if(t.id==="excl-nome"){const id=+document.getElementById("btn-excl").dataset.id;const l=(LISTAS[state.user]||[]).find(x=>x.id===id);document.getElementById("btn-excl").disabled=t.value.trim()!==l.nome;}
-  else if(t.dataset.qtdix!==undefined){const ix=+t.dataset.qtdix;let v=parseInt(t.value,10);if(isNaN(v))v=1;v=Math.min(9999,Math.max(1,v));state.lista.itens[ix].qtd=v;persistEph();}
+  else if(t.dataset.qtdix!==undefined){const ix=+t.dataset.qtdix;let v=parseInt(t.value,10);if(isNaN(v))v=1;v=Math.min(9999,Math.max(1,v));state.lista.itens[ix].qtd=v;persistJornada();}
 });
 
 document.addEventListener("change",e=>{
   const t=e.target;
-  if(t.dataset.actionAdd){const pid=+t.dataset.actionAdd;const ex=state.lista.itens.find(i=>i.pid===pid);if(ex)ex.qtd=Math.min(9999,ex.qtd+1);else state.lista.itens.push({pid,qtd:1});state.busca="";const b=document.getElementById("busca");if(b)b.value="";document.getElementById("sug-box").innerHTML="";document.getElementById("sug-box").style.display="none";persistEph();refreshListaUI();const p=PRODUCTS.find(x=>x.id===pid);toast(`➕ ${p.nome} adicionado${ex?" (quantidade somada)":""}.`,"success");}
+  if(t.dataset.actionAdd){const pid=+t.dataset.actionAdd;const ex=state.lista.itens.find(i=>i.pid===pid);if(ex)ex.qtd=Math.min(9999,ex.qtd+1);else state.lista.itens.push({pid,qtd:1});state.busca="";const b=document.getElementById("busca");if(b)b.value="";document.getElementById("sug-box").innerHTML="";document.getElementById("sug-box").style.display="none";persistJornada();refreshListaUI();const p=PRODUCTS.find(x=>x.id===pid);toast(`➕ ${p.nome} adicionado${ex?" (quantidade somada)":""}.`,"success");}
 });
 
 /* Auth core */
@@ -1165,7 +1165,7 @@ function salvarListaCore(){
   const snap={nome:state.lista.nome,itens:state.lista.itens.map(i=>({...i})),categorias:[...state.categorias]};
   if(state.listaEditId){const l=db.find(x=>x.id===state.listaEditId);Object.assign(l,snap);toast("✅ Lista atualizada (transação ACID simulada).","success");}
   else{db.push({id:++listSeq,criado_em:today(),...snap});state.listaEditId=listSeq;state.flags.saved=true;toast("✅ Lista salva com sucesso! Persistida no banco (simulado).","success");}
-  persistEph();renderJourney();return true;
+  persistJornada();renderJourney();return true;
 }
 
 /* Navigation */
@@ -1178,7 +1178,7 @@ function render(){
 }
 
 /* Boot */
-loadEph();
+loadJornada();
 render();
 </script>
 </body>
