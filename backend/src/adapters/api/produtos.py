@@ -72,14 +72,20 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         return list(result.scalars().all())
 
     async def autocomplete(self, query: str, limit: int = 10):
-        """Busca híbrida: FULLTEXT (nome) + marca exata + expansão semântica via produto_classes.
+        """Busca híbrida Full-Text Search: FULLTEXT (nome) + marca (FULLTEXT) + expansão semântica via produto_classes (FULLTEXT).
 
         Retorna resultados ordenados por relevância (score do MATCH/AGAINST, BOOLEAN MODE).
+        Todas as buscas usam índices FULLTEXT do MySQL — nenhuma busca por LIKE.
         """
         from sqlalchemy import text
 
         q = query.strip()
         if not q:
+            return []
+
+        # Sanitiza termo para BOOLEAN MODE (escapa caracteres especiais)
+        q_sanitized = "".join(ch for ch in q if ch.isalnum() or ch.isspace()).strip()
+        if not q_sanitized:
             return []
 
         # 1. FULLTEXT search no nome (MySQL MATCH AGAINST) — ordenado por relevância
@@ -92,7 +98,7 @@ class ProdutoRepositoryImpl(ProdutoRepository):
             ORDER BY relevancia DESC
             LIMIT :limit
         """)
-        result = await self.session.execute(fulltext_sql, {"query": f"+{q}*", "limit": limit})
+        result = await self.session.execute(fulltext_sql, {"query": f"+{q_sanitized}*", "limit": limit})
         rows = result.mappings().all()
         produtos = [ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows]
         for p, r in zip(produtos, rows):
@@ -101,28 +107,32 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         if len(produtos) >= limit:
             return produtos[:limit]
 
-        # 2. Match exato/prefixo em marca (case-insensitive)
+        # 2. FULLTEXT search em marca (MySQL MATCH AGAINST)
         remaining = limit - len(produtos)
         marca_ids = {p.id for p in produtos}
         marca_sql = text("""
-            SELECT id, nome, marca, unidade, ativo, criado_em
+            SELECT id, nome, marca, unidade, ativo, criado_em,
+                   MATCH(marca) AGAINST(:query IN BOOLEAN MODE) AS relevancia
             FROM produtos
             WHERE ativo = TRUE
               AND id NOT IN :excluded_ids
-              AND (marca = :query OR marca LIKE :prefix)
+              AND MATCH(marca) AGAINST(:query IN BOOLEAN MODE)
+            ORDER BY relevancia DESC
             LIMIT :limit
         """)
         excluded = tuple(marca_ids) if marca_ids else (0,)
         result = await self.session.execute(
-            marca_sql, {"excluded_ids": excluded, "query": q, "prefix": f"{q}%", "limit": remaining}
+            marca_sql, {"excluded_ids": excluded, "query": f"+{q_sanitized}*", "limit": remaining}
         )
         rows = result.mappings().all()
-        produtos.extend(ProdutoModel(**dict(r)) for r in rows)
+        produtos.extend(ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows)
+        for p, r in zip(produtos[len(produtos) - len(rows):], rows):
+            p.relevancia = float(r["relevancia"])
 
         if len(produtos) >= limit:
             return produtos[:limit]
 
-        # 3. Expansão semântica via produto_classes
+        # 3. Expansão semântica via produto_classes (FULLTEXT nas colunas geradas)
         remaining = limit - len(produtos)
         if remaining > 0:
             classe_sql = text("""
@@ -130,11 +140,11 @@ class ProdutoRepositoryImpl(ProdutoRepository):
                 FROM produto_classes
                 WHERE ativo = TRUE
                   AND (
-                    CAST(termos_busca AS CHAR) LIKE :query_like
-                    OR CAST(marcas_referencia AS CHAR) LIKE :query_like
+                    MATCH(termos_busca_texto) AGAINST(:query IN BOOLEAN MODE)
+                    OR MATCH(marcas_referencia_texto) AGAINST(:query IN BOOLEAN MODE)
                   )
             """)
-            result = await self.session.execute(classe_sql, {"query_like": f"%{q.lower()}%"})
+            result = await self.session.execute(classe_sql, {"query": f"+{q_sanitized}*"})
             classe_rows = result.mappings().all()
 
             import json
@@ -175,11 +185,13 @@ class ProdutoRepositoryImpl(ProdutoRepository):
                 if simple_terms:
                     ft_query = " ".join(f"+{t}*" for t in simple_terms[:5])
                     ft_sql = text("""
-                        SELECT id, nome, marca, unidade, ativo, criado_em
+                        SELECT id, nome, marca, unidade, ativo, criado_em,
+                               MATCH(nome) AGAINST(:query IN BOOLEAN MODE) AS relevancia
                         FROM produtos
                         WHERE ativo = TRUE
                           AND id NOT IN :excluded_ids
                           AND MATCH(nome) AGAINST(:query IN BOOLEAN MODE)
+                        ORDER BY relevancia DESC
                         LIMIT :limit
                     """)
                     excluded = tuple(term_ids) if term_ids else (0,)
@@ -187,7 +199,10 @@ class ProdutoRepositoryImpl(ProdutoRepository):
                         ft_sql, {"excluded_ids": excluded, "query": ft_query, "limit": remaining}
                     )
                     rows = result.mappings().all()
-                    produtos.extend(ProdutoModel(**dict(r)) for r in rows)
+                    novos = [ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows]
+                    for p, r in zip(novos, rows):
+                        p.relevancia = float(r["relevancia"])
+                    produtos.extend(novos)
 
         return produtos[:limit]
 

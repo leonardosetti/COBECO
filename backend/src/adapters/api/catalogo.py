@@ -13,6 +13,7 @@ from src.adapters.db.models import (
     CategoriaModel,
     FornecedorCategoriaModel,
     FornecedorModel,
+    FornecedorProdutoModel,
     ProdutoModel,
 )
 from src.domain.repositories import (
@@ -63,6 +64,34 @@ class FornecedorDisponibilidadeResponse(BaseModel):
     itens_totais: int
 
 
+# Gatilhos de busca semântica para categorias (RF20).
+# Mapeia termo do usuário -> nomes de categorias relacionadas.
+# Expandido à medida que o catálogo cresce; migrar para coluna de sinônimos no DB quando houver >20 categorias.
+CATEGORIA_GATILHOS: dict[str, list[str]] = {
+    "vestuário": ["roupas", "camiseta", "camisa", "calça", "calçado", "sapato", "moda", "roupa"],
+    "livros": ["livro", "revista", "leitura", "didático", "literatura"],
+    "jardinagem": ["pá", "rastelo", "jardim", "plantas", "vasos", "adubo", "jardim"],
+    "ferramentas": ["martelo", "serrote", "chave de fenda", "alicate", "furadeira", "pá", "rastelo"],
+    "informática": ["computador", "notebook", "periférico", "impressora", "processador", "placa de vídeo"],
+    "mercado": ["arroz", "feijão", "supermercado", "mercearia", "alimento"],
+    "eletrodomésticos": ["geladeira", "fogão", "máquina de lavar", "micro-ondas"],
+    "móveis": ["sofá", "cadeira", "mesa", "armário", "cama"],
+    "automotivos": ["pneu", "óleo", "bateria", "carro", "moto"],
+    "materiais de construção": ["cimento", "tijolo", "tinta", "canos", "construção"],
+    "decoração": ["quadro", "tapete", "vaso", "luminaire", "enfeite"],
+}
+
+
+class CategoriaBuscaResponse(BaseModel):
+    id: int
+    nome: str
+    descricao: str | None = None
+    match_por: str = "nome"  # "nome" | "sinonimo"
+
+    class Config:
+        from_attributes = True
+
+
 # ============================================================
 # Repository Implementations
 # ============================================================
@@ -85,6 +114,30 @@ class CategoriaRepositoryImpl(CategoriaRepository):
             select(CategoriaModel).where(CategoriaModel.id.in_(ids))
         )
         return list(result.scalars().all())
+
+    async def buscar_por_termo(self, termo: str):
+        """Busca semântica de categorias por nome ou sinônimos (RF20)."""
+        from sqlalchemy import select, func
+
+        t = (termo or "").strip().lower()
+        if not t:
+            return []
+
+        categorias_por_nome: dict[int, CategoriaModel] = {}
+        categorias_por_sinonimo: dict[int, CategoriaModel] = {}
+
+        todas = await self.session.execute(select(CategoriaModel).order_by(CategoriaModel.nome))
+        for cat in todas.scalars().all():
+            nome = (cat.nome or "").lower()
+            if t in nome or nome in t:
+                categorias_por_nome[cat.id] = cat
+                continue
+            gatilhos = CATEGORIA_GATILHOS.get(nome, [])
+            if t in gatilhos or any(g.startswith(t) or t.startswith(g) for g in gatilhos if g):
+                categorias_por_sinonimo[cat.id] = cat
+
+        mescladas = {**categorias_por_sinonimo, **categorias_por_nome}
+        return list(mescladas.values())
 
 
 class FornecedorRepositoryImpl(FornecedorRepository):
@@ -174,51 +227,67 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         return list(result.scalars().all())
 
     async def autocomplete(self, query: str, limit: int = 10):
-        """Busca híbrida: FULLTEXT (nome) + marca exata + expansão semântica via produto_classes."""
+        """Busca híbrida Full-Text Search: FULLTEXT (nome) + marca (FULLTEXT) + expansão semântica via produto_classes (FULLTEXT).
+
+        Retorna resultados ordenados por relevância (score do MATCH/AGAINST, BOOLEAN MODE).
+        Todas as buscas usam índices FULLTEXT do MySQL — nenhuma busca por LIKE.
+        """
         from sqlalchemy import text
 
         q = query.strip()
         if not q:
             return []
 
-        # 1. FULLTEXT search no nome (MySQL MATCH AGAINST)
+        # Sanitiza termo para BOOLEAN MODE (escapa caracteres especiais)
+        q_sanitized = "".join(ch for ch in q if ch.isalnum() or ch.isspace()).strip()
+        if not q_sanitized:
+            return []
+
+        # 1. FULLTEXT search no nome (MySQL MATCH AGAINST) — ordenado por relevância
         fulltext_sql = text("""
-            SELECT id, nome, marca, unidade, ativo, criado_em
+            SELECT id, nome, marca, unidade, ativo, criado_em,
+                   MATCH(nome) AGAINST(:query IN BOOLEAN MODE) AS relevancia
             FROM produtos
             WHERE ativo = TRUE
               AND MATCH(nome) AGAINST(:query IN BOOLEAN MODE)
+            ORDER BY relevancia DESC
             LIMIT :limit
         """)
-        result = await self.session.execute(fulltext_sql, {"query": f"+{q}*", "limit": limit})
+        result = await self.session.execute(fulltext_sql, {"query": f"+{q_sanitized}*", "limit": limit})
         rows = result.mappings().all()
-        produtos = [ProdutoModel(**dict(r)) for r in rows]
+        produtos = [ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows]
+        for p, r in zip(produtos, rows):
+            p.relevancia = float(r["relevancia"])
 
         if len(produtos) >= limit:
             return produtos[:limit]
 
-        # 2. Match exato/prefixo em marca (case-insensitive)
+        # 2. FULLTEXT search em marca (MySQL MATCH AGAINST)
         remaining = limit - len(produtos)
         marca_ids = {p.id for p in produtos}
         marca_sql = text("""
-            SELECT id, nome, marca, unidade, ativo, criado_em
+            SELECT id, nome, marca, unidade, ativo, criado_em,
+                   MATCH(marca) AGAINST(:query IN BOOLEAN MODE) AS relevancia
             FROM produtos
             WHERE ativo = TRUE
               AND id NOT IN :excluded_ids
-              AND (marca = :query OR marca LIKE :prefix)
+              AND MATCH(marca) AGAINST(:query IN BOOLEAN MODE)
+            ORDER BY relevancia DESC
             LIMIT :limit
         """)
         excluded = tuple(marca_ids) if marca_ids else (0,)
         result = await self.session.execute(
-            marca_sql, {"excluded_ids": excluded, "query": q, "prefix": f"{q}%", "limit": remaining}
+            marca_sql, {"excluded_ids": excluded, "query": f"+{q_sanitized}*", "limit": remaining}
         )
         rows = result.mappings().all()
-        produtos.extend(ProdutoModel(**dict(r)) for r in rows)
+        produtos.extend(ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows)
+        for p, r in zip(produtos[len(produtos) - len(rows):], rows):
+            p.relevancia = float(r["relevancia"])
 
         if len(produtos) >= limit:
             return produtos[:limit]
 
-        # 3. Expansão semântica via produto_classes
-        # First, find classes matching the query term (substring match on JSON arrays)
+        # 3. Expansão semântica via produto_classes (FULLTEXT nas colunas geradas)
         remaining = limit - len(produtos)
         if remaining > 0:
             classe_sql = text("""
@@ -226,14 +295,13 @@ class ProdutoRepositoryImpl(ProdutoRepository):
                 FROM produto_classes
                 WHERE ativo = TRUE
                   AND (
-                    CAST(termos_busca AS CHAR) LIKE :query_like
-                    OR CAST(marcas_referencia AS CHAR) LIKE :query_like
+                    MATCH(termos_busca_texto) AGAINST(:query IN BOOLEAN MODE)
+                    OR MATCH(marcas_referencia_texto) AGAINST(:query IN BOOLEAN MODE)
                   )
             """)
-            result = await self.session.execute(classe_sql, {"query_like": f"%{q.lower()}%"})
+            result = await self.session.execute(classe_sql, {"query": f"+{q_sanitized}*"})
             classe_rows = result.mappings().all()
 
-            # Collect all related terms and brands from matching classes
             import json
 
             related_terms = set()
@@ -242,7 +310,6 @@ class ProdutoRepositoryImpl(ProdutoRepository):
                 related_terms.update(json.loads(row["termos_busca"]))
                 related_brands.update(json.loads(row["marcas_referencia"]))
 
-            # Search produtos by related brands (exact/prefix)
             if related_brands:
                 brand_ids = {p.id for p in produtos}
                 brand_placeholders = ", ".join([f":brand{i}" for i in range(len(related_brands))])
@@ -264,22 +331,22 @@ class ProdutoRepositoryImpl(ProdutoRepository):
                 rows = result.mappings().all()
                 produtos.extend(ProdutoModel(**dict(r)) for r in rows)
 
-            # Search produtos by related terms via FULLTEXT
             if len(produtos) < limit and related_terms:
                 remaining = limit - len(produtos)
                 term_ids = {p.id for p in produtos}
-                # Filter terms to simple alphanumeric for FULLTEXT boolean mode
                 simple_terms = [
                     t for t in related_terms if t.replace(" ", "").isalnum() and len(t) >= 2
                 ]
                 if simple_terms:
-                    ft_query = " ".join(f"+{t}*" for t in simple_terms[:5])  # Limit to 5 terms
+                    ft_query = " ".join(f"+{t}*" for t in simple_terms[:5])
                     ft_sql = text("""
-                        SELECT id, nome, marca, unidade, ativo, criado_em
+                        SELECT id, nome, marca, unidade, ativo, criado_em,
+                               MATCH(nome) AGAINST(:query IN BOOLEAN MODE) AS relevancia
                         FROM produtos
                         WHERE ativo = TRUE
                           AND id NOT IN :excluded_ids
                           AND MATCH(nome) AGAINST(:query IN BOOLEAN MODE)
+                        ORDER BY relevancia DESC
                         LIMIT :limit
                     """)
                     excluded = tuple(term_ids) if term_ids else (0,)
@@ -287,7 +354,10 @@ class ProdutoRepositoryImpl(ProdutoRepository):
                         ft_sql, {"excluded_ids": excluded, "query": ft_query, "limit": remaining}
                     )
                     rows = result.mappings().all()
-                    produtos.extend(ProdutoModel(**dict(r)) for r in rows)
+                    novos = [ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows]
+                    for p, r in zip(novos, rows):
+                        p.relevancia = float(r["relevancia"])
+                    produtos.extend(novos)
 
         return produtos[:limit]
 
@@ -304,6 +374,30 @@ class ProdutoRepositoryImpl(ProdutoRepository):
             select(func.count()).select_from(ProdutoModel).where(ProdutoModel.ativo)
         )
         return int(result.scalar_one())
+
+    async def listar_por_categorias(self, categoria_ids: list[int]):
+        """Produtos vendidos por fornecedores das categorias selecionadas (união, RF19)."""
+        if not categoria_ids:
+            return []
+        sub_fornecedores = (
+            select(FornecedorCategoriaModel.fornecedor_id)
+            .where(FornecedorCategoriaModel.categoria_id.in_(categoria_ids))
+        )
+        result = await self.session.execute(
+            select(ProdutoModel)
+            .distinct()
+            .join(
+                FornecedorProdutoModel,
+                FornecedorProdutoModel.produto_id == ProdutoModel.id,
+            )
+            .where(
+                ProdutoModel.ativo,
+                FornecedorProdutoModel.ativo,
+                FornecedorProdutoModel.fornecedor_id.in_(sub_fornecedores),
+            )
+            .order_by(ProdutoModel.nome)
+        )
+        return list(result.scalars().all())
 
 
 def get_categoria_repo(session: AsyncSession = Depends(get_db)) -> CategoriaRepository:
@@ -333,6 +427,32 @@ async def listar_categorias(
 ):
     categorias = await repo.listar_todas()
     return [CategoriaResponse.model_validate(c) for c in categorias]
+
+
+@router.get(
+    "/categorias/busca",
+    response_model=list[CategoriaBuscaResponse],
+    summary="RF20 - Busca semântica de categorias (nome + sinônimos)",
+)
+async def buscar_categorias(
+    q: str = Query(..., min_length=1, description="Termo de busca semântica (ex.: roupas, pá, rastelo)"),
+    repo: CategoriaRepository = Depends(get_categoria_repo),
+):
+    categorias = await repo.buscar_por_termo(q)
+    resultados = []
+    t = (q or "").strip().lower()
+    for c in categorias:
+        nome = (c.nome or "").lower()
+        match_por = "nome" if (t in nome or nome in t) else "sinonimo"
+        resultados.append(
+            CategoriaBuscaResponse(
+                id=c.id,
+                nome=c.nome,
+                descricao=c.descricao,
+                match_por=match_por,
+            )
+        )
+    return resultados
 
 
 @router.get(
@@ -466,10 +586,17 @@ async def autocomplete_produtos(
 @router.get(
     "/produtos",
     response_model=list[ProdutoResponse],
-    summary="Listar Produtos Ativos",
+    summary="Listar Produtos Ativos (filtrado por categorias selecionadas, RF19)",
 )
 async def listar_produtos(
+    categorias: str | None = Query(
+        None, description="IDs de categorias separados por vírgula (filtra produtos por categoria)"
+    ),
     repo: ProdutoRepository = Depends(get_produto_repo),
 ):
-    produtos = await repo.listar_ativos()
+    if categorias:
+        categoria_ids = [int(c) for c in categorias.split(",")]
+        produtos = await repo.listar_por_categorias(categoria_ids)
+    else:
+        produtos = await repo.listar_ativos()
     return [ProdutoResponse.model_validate(p) for p in produtos]
