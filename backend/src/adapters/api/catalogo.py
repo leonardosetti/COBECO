@@ -82,15 +82,16 @@ CATEGORIA_GATILHOS: dict[str, list[str]] = {
 }
 
 # Mapeamento de grandes áreas para categorias macro (RF27/RF28).
+# Nomes batem com as categorias reais do seed (25 categorias no banco).
 # Expandido à medida que o catálogo cresce; migrar para coluna/tabela no DB quando houver >20 áreas.
 AREAS_GRANDES: dict[str, list[str]] = {
-    "Supermercado": ["Mercado"],
-    "Informática": ["Informática"],
-    "Automóveis": ["Automotivos"],
-    "Lojas de departamento": ["Vestuário", "Móveis", "Decoração", "Eletrodomésticos"],
-    "Construção e Ferragens": ["Materiais de Construção e Ferragens", "Ferramentas"],
-    "Casa e Jardim": ["Jardinagem", "Decoração"],
-    "Livros e Papelaria": ["Livros"],
+    "Supermercado": ["Mercearia", "Padaria", "Hortifruti", "Frios e Laticínios", "Açougue", "Bebidas", "Limpeza", "Higiene"],
+    "Informática": ["Informática", "Eletrônicos"],
+    "Automóveis": ["Peças Automotivas", "Pneus e Rodas"],
+    "Lojas de departamento": ["Vestuário Feminino", "Vestuário Masculino", "Móveis", "Eletrodomésticos"],
+    "Construção e Ferragens": ["Materiais Construção", "Ferramentas", "Iluminação"],
+    "Casa e Jardim": ["Jardinagem", "Eletrodomésticos"],
+    "Livros e Papelaria": ["Livros", "Papelaria"],
 }
 
 
