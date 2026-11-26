@@ -487,7 +487,7 @@ function render() {
 
 function navHTML() {
   const logged = !!state.user;
-  return `<header class="top"><div class="container top-in" id="topbar">
+  return `
     <div class="logo"><div class="mark">🛒</div><div><b>COBECO</b><small>Cotação de Bens de Consumo · Wireframe v3.3</small></div></div>
     <nav class="main">
       <a href="#" class="${state.view === 'home' ? 'on' : ''}" data-action="nav-home">Início</a>
@@ -496,7 +496,7 @@ function navHTML() {
       <a href="#" class="${state.view === 'perfil' ? 'on' : ''}" data-action="nav-perfil">Perfil</a>` : ''}
     </nav>
     <div class="auth-zone">${logged ? `<span class="userchip">🟢 ${esc(state.user.nome_usuario)}</span><button class="btn btn-ghost btn-sm" data-action="sair">Sair</button>` : `<button class="btn btn-ghost btn-sm" data-action="page-login">Entrar</button><button class="btn btn-pri btn-sm" data-action="page-cadastro">Criar conta</button>`}</div>
-  </div></header>`;
+  `;
 }
 
 function stepperHTML(step) {
@@ -799,7 +799,7 @@ function vLogin() {
     <form id="form-login" novalidate>
       <div class="field"><label>Usuário</label><input type="text" id="l-user" placeholder="usuário"></div>
       <div class="field"><label>Senha</label><input type="password" id="l-pass" placeholder="senha"></div>
-      <button class="btn btn-pri btn-lg btn-block" data-primary>Entrar</button>
+      <button class="btn btn-pri btn-lg btn-block" data-action="login" data-primary>Entrar</button>
     </form><div class="auth-foot">Não tem conta? <button class="linklike" data-action="page-cadastro">Criar conta</button></div></div></div>`;
 }
 
@@ -813,8 +813,93 @@ function vCadastro() {
       <div class="field"><label>Confirmar senha</label><input type="password" id="c-conf"></div>
       <div class="field"><label>Pergunta de segurança</label><select id="c-perg"><option value="">Selecione…</option><option value="pet">Qual seu pet?</option><option value="cidade">Cidade natal?</option><option value="escola">Escola?</option></select></div>
       <div class="field"><label>Resposta</label><input type="text" id="c-resp" placeholder="mín. 3"></div>
-      <button class="btn btn-pri btn-lg btn-block" data-primary>Criar conta</button>
+      <button class="btn btn-pri btn-lg btn-block" data-action="cadastrar" data-primary>Criar conta</button>
     </form><div class="auth-foot">Já tem conta? <button class="linklike" data-action="page-login">Entrar</button></div></div></div>`;
+}
+
+// ============================================================
+// HANDLERS DE AUTENTICAÇÃO
+// ============================================================
+async function handleCadastro() {
+  const form = document.getElementById('form-cad');
+  if (!form) return;
+
+  const data = {
+    nome_usuario: document.getElementById('c-user').value.trim(),
+    nome: document.getElementById('c-nome').value.trim(),
+    email: document.getElementById('c-email').value.trim(),
+    senha: document.getElementById('c-senha').value,
+    confirmar_senha: document.getElementById('c-conf').value,
+    pergunta_seguranca: document.getElementById('c-perg').value,
+    resposta_seguranca: document.getElementById('c-resp').value.trim(),
+  };
+
+  // Validação básica
+  if (!data.nome_usuario || !data.nome || !data.email || !data.senha || !data.confirmar_senha || !data.pergunta_seguranca || !data.resposta_seguranca) {
+    showToast('Preencha todos os campos.', 'error');
+    return;
+  }
+  if (data.senha !== data.confirmar_senha) {
+    showToast('As senhas não coincidem.', 'error');
+    return;
+  }
+  if (data.senha.length < 8) {
+    showToast('Senha deve ter no mínimo 8 caracteres.', 'error');
+    return;
+  }
+
+  const btn = form.querySelector('button[data-action="cadastrar"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Criando…'; }
+
+  try {
+    const res = await ApiClient.request('/auth/cadastrar', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    if (res?.access_token) {
+      state.user = { nome_usuario: data.nome_usuario };
+      showToast('Conta criada e login automático realizado!', 'success');
+      go('categorias');
+    }
+  } catch (e) {
+    showToast(e.message || 'Erro ao cadastrar.', 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Criar conta'; }
+  }
+}
+
+async function handleLogin() {
+  const form = document.getElementById('form-login');
+  if (!form) return;
+
+  const data = {
+    nome_usuario: document.getElementById('l-user').value.trim(),
+    senha: document.getElementById('l-pass').value,
+  };
+
+  if (!data.nome_usuario || !data.senha) {
+    showToast('Preencha usuário e senha.', 'error');
+    return;
+  }
+
+  const btn = form.querySelector('button[data-action="login"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Entrando…'; }
+
+  try {
+    const res = await ApiClient.request('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    if (res?.access_token) {
+      state.user = { nome_usuario: data.nome_usuario };
+      showToast('Login realizado com sucesso!', 'success');
+      go('categorias');
+    }
+  } catch (e) {
+    showToast(e.message || 'Erro ao entrar.', 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
+  }
 }
 
 // ============================================================
@@ -901,6 +986,8 @@ document.addEventListener('click', (e) => {
     case 'area-limpar': state.areasSelecionadas = []; recalcularVisiveis(areasParaCategorias([])); break;
     case 'to-lista': if (!state.categorias.length) { showToast('Selecione ≥1 categoria.', 'error'); return; } carregarProdutos(state.categorias); go('lista'); break;
     case 'goto-step': { const destino = el.dataset.step; if (destino === 'fornecedores' && state.lista.itens.length) { carregarFornecedores(state.categorias).then(() => carregarCoberturaFornecedores().then(() => go(destino))); } else { go(destino); } break; }
+    case 'login': handleLogin(); break;
+    case 'cadastrar': handleCadastro(); break;
     case 'demo-lista': state.lista = { nome: 'Lista demo', itens: [{ pid: 1, qtd: 2 }, { pid: 2, qtd: 1 }, { pid: 3, qtd: 3 }] }; if (!state.categorias.length) state.categorias = [1]; persistJornada(); render(); showToast('Lista demo carregada.', 'success'); break;
     case 'to-fornecedores': if (!state.lista.itens.length) { showToast('Adicione ≥1 item.', 'error'); return; } carregarFornecedores(state.categorias).then(() => carregarCoberturaFornecedores().then(() => go('fornecedores'))); break;
     case 'forn-all': state.fornecedores = fornecedoresElegiveis().slice(0, 10).map(f => f.id); refreshFornecedores(); break;
