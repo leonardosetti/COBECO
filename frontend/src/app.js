@@ -593,13 +593,33 @@ function vCategorias() {
 
 // Recalcula categorias visíveis aplicando filtro de áreas grandes + busca,
 // garantindo que categorias já selecionadas permaneçam visíveis (RF26).
-function recalcularVisiveis(baseCats) {
+function recalcularVisiveis(baseCats, { fullRender = true } = {}) {
   const baseIds = new Set(baseCats.map(c => c.id));
   const selecionadas = state.categoriasDisponiveis.filter(c => state.categorias.includes(c.id));
   const mescladas = [...baseCats];
   selecionadas.forEach(s => { if (!baseIds.has(s.id)) mescladas.push(s); });
   state.categoriasVisiveis = mescladas;
-  render();
+  if (fullRender) {
+    render();
+  } else {
+    atualizarGridCategorias();
+  }
+}
+
+// Atualiza apenas o grid de categorias e contador, sem full render (preserva foco)
+function atualizarGridCategorias() {
+  const grid = document.getElementById('cat-grid');
+  if (!grid) return;
+  grid.innerHTML = state.categoriasVisiveis.map(c => `<label class="cat-card ${state.categorias.includes(c.id) ? 'sel' : ''}" data-catcard="${c.id}">
+    <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id) ? 'checked' : ''}>
+    <span class="ci">${c.ic}</span><span class="cn">${esc(c.nome)}</span></label>`).join('');
+  const countChip = document.getElementById('cat-count');
+  if (countChip) {
+    countChip.textContent = `${state.categorias.length} categoria(s) selecionada(s) · ${totalCategorias()} disponíveis`;
+    countChip.classList.toggle('ok', state.categorias.length > 0);
+  }
+  const btn = document.getElementById('btn-to-lista');
+  if (btn) btn.disabled = !state.categorias.length;
 }
 
 function areasParaCategorias(areaIds) {
@@ -968,7 +988,7 @@ async function buscarCategoriasUI() {
   const q = norm(state.categoriaBusca);
   clearTimeout(catTimer);
   if (!q.length) {
-    recalcularVisiveis(areasParaCategorias(state.areasSelecionadas));
+    recalcularVisiveis(areasParaCategorias(state.areasSelecionadas), { fullRender: false });
     return;
   }
   catTimer = setTimeout(async () => {
@@ -976,8 +996,8 @@ async function buscarCategoriasUI() {
       const res = await ApiClient.buscarCategorias(q);
       const base = (res || []).map(c => ({ id: c.id, nome: c.nome, ic: '📂' }));
       // RF26: busca nunca esconde categorias já selecionadas
-      recalcularVisiveis(base);
-    } catch (e) { recalcularVisiveis(areasParaCategorias(state.areasSelecionadas)); }
+      recalcularVisiveis(base, { fullRender: false });
+    } catch (e) { recalcularVisiveis(areasParaCategorias(state.areasSelecionadas), { fullRender: false }); }
   }, 300);
 }
 
