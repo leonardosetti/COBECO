@@ -248,8 +248,7 @@ class RecuperarSenhaUseCase:
 
     async def solicitar_reset(self, nome_usuario: str) -> str | None:
         """Retorna token se modo email, None se pergunta de segurança"""
-        await self.rate_limiter(nome_usuario)
-
+        # Rate limiting já verificado no endpoint
         usuario = await self.repo.buscar_por_nome_usuario(nome_usuario)
         if not usuario:
             # Mensagem genérica (não revela existência)

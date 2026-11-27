@@ -568,7 +568,7 @@ async def login(
         logger.info("login_sucesso", nome_usuario=request.nome_usuario, ip=client_ip)
     except CredenciaisInvalidas:
         logger.warning("login_falha_credenciais", nome_usuario=request.nome_usuario, ip=client_ip)
-        raise HTTPException(status_code=401, detail="Credenciais inválidas")
+        raise HTTPException(status_code=400, detail="Credenciais inválidas")
     except RateLimitExcedido as e:
         logger.warning(
             "login_rate_limit", nome_usuario=request.nome_usuario, ip=client_ip, minutos=e.minutos
@@ -708,7 +708,10 @@ async def solicitar_recuperacao_senha(
     request: RecuperarSenhaSolicitarRequest,
     repo: UsuarioRepository = Depends(get_usuario_repo),
 ):
-    await rate_limiter_recovery(request.nome_usuario)
+    try:
+        await rate_limiter_recovery(request.nome_usuario)
+    except RateLimitExcedido as e:
+        raise HTTPException(status_code=429, detail=f"Tente novamente em {e.minutos} minutos")
 
     usecase = RecuperarSenhaUseCase(repo, hash_senha, verificar_senha, rate_limiter_recovery)
     token = await usecase.solicitar_reset(request.nome_usuario)
@@ -741,7 +744,7 @@ async def confirmar_recuperacao_senha(
         )
         return {"message": "Senha alterada com sucesso"}
     except CredenciaisInvalidas:
-        raise HTTPException(status_code=400, detail="Token/resposta inválida ou expirada")
+        raise HTTPException(status_code=401, detail="Token/resposta inválida ou expirada")
 
 
 @router.get(

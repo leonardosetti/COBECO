@@ -1,6 +1,6 @@
 # COBECO MVP — Comparação de Preços para Listas de Compras
 
-[![CI](https://github.com/leonardosetti/COBECO/actions/workflows/ci.yml/badge.svg)](https://github.com/leonardosetti/COBECO/actions/workflows/ci.yml)
+[![CI](https://github.com/leonardosetti/COBECO/actions/workflows/config-ci-0001-github-actions-v1.0.yml/badge.svg)](https://github.com/leonardosetti/COBECO/actions/workflows/config-ci-0001-github-actions-v1.0.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Node](https://img.shields.io/badge/node-20+-green.svg)](https://nodejs.org/)

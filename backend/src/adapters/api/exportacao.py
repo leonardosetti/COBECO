@@ -174,17 +174,41 @@ class ExportacaoRepositoryImpl(ExportacaoRepository):
         story.append(Paragraph("Itens da Lista", styles["SectionHeader"]))
 
         # Cabeçalho
-        headers = ["Produto", "Un.", "Qtd."]
-        col_widths = [11 * cm, 2 * cm, 2 * cm]
+        headers = ["Produto", "Un.", "Qtd.", "Preço unit.", "Subtotal"]
+        col_widths = [8 * cm, 2 * cm, 2 * cm, 3 * cm, 3 * cm]
 
         table_data = [headers]
         for item in itens:
             produto = produtos_map.get(item.produto_id)
+            # Buscar preço do vencedor se houver orçamento
+            preco_unit = None
+            subtotal = None
+            if orcamento and orcamento.fornecedores:
+                vencedor = next((f for f in orcamento.fornecedores if f.eh_melhor), None)
+                if vencedor is None and orcamento.fornecedores:
+                    vencedor = orcamento.fornecedores[0]
+                if vencedor:
+                    item_win = next((it for it in vencedor.itens if it.produto_id == item.produto_id), None)
+                    if item_win and item_win.disponivel:
+                        preco_unit = item_win.preco_unitario
+                        subtotal = item_win.preco_total
+            
+            preco_unit_txt = (
+                f"R$ {preco_unit:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+                if preco_unit is not None else "N/D"
+            )
+            subtotal_txt = (
+                f"R$ {subtotal:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+                if subtotal is not None else "N/D"
+            )
+            
             table_data.append(
                 [
                     Paragraph(produto.nome if produto else "Desconhecido", styles["TableCell"]),
                     Paragraph(produto.unidade if produto else "un", styles["TableCellCenter"]),
                     Paragraph(str(item.quantidade), styles["TableCellCenter"]),
+                    Paragraph(preco_unit_txt, styles["TableCellRight"]),
+                    Paragraph(subtotal_txt, styles["TableCellRight"]),
                 ]
             )
 

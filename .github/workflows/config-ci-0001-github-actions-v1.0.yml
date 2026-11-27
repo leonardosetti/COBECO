@@ -99,7 +99,7 @@ jobs:
         env:
           PYTHONPATH: /home/runner/work/COBECO/COBECO/backend
         run: |
-          pytest tests/unit --cov=src --cov-report=term-missing --cov-report=xml --cov-fail-under=25 -v
+          pytest tests/unit --cov=src --cov-report=term-missing --cov-report=xml --cov-fail-under=80 -v
 
       # --- Upload Coverage ---
       - name: Upload coverage to Codecov

@@ -287,17 +287,22 @@ class ProdutoModel(Base):
     unidade: Mapped[str] = mapped_column(String(10), nullable=False)
     ativo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     criado_em: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
+    categoria_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("categorias.id"), nullable=True, index=True
+    )
 
     # Relacionamentos
     itens_lista: Mapped[list["ItemListaModel"]] = relationship("ItemListaModel")
     fornecedores: Mapped[list["FornecedorProdutoModel"]] = relationship(
         "FornecedorProdutoModel", back_populates="produto"
     )
+    categoria: Mapped["CategoriaModel"] = relationship("CategoriaModel")
 
     __table_args__ = (
         Index("ix_produto_nome", "nome"),
         Index("ix_produto_marca", "marca"),
         Index("ix_produto_nome_fulltext", "nome", mysql_prefix="FULLTEXT"),
+        Index("ix_produto_categoria", "categoria_id"),
     )
 
     def to_domain(self) -> "Produto":

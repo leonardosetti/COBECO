@@ -36,14 +36,15 @@ export const test = base.extend<TestFixtures>({
 
   testUser: async ({}, use) => {
     const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 8);
     const user: CadastroData = {
-      nome_usuario: `testuser_${timestamp}`,
-      email: `test_${timestamp}@example.com`,
+      nome_usuario: `testuser${timestamp}${random}`,
+      email: `test${timestamp}${random}@example.com`,
       nome: `Test User ${timestamp}`,
       senha: 'Senha@123',
       confirmar_senha: 'Senha@123',
-      pergunta_seguranca: 'nome_mae',
-      resposta_seguranca: 'Maria Silva',
+      pergunta_seguranca: 'cidade',
+      resposta_seguranca: 'Fluffy',
     };
     await use(user);
   },
@@ -61,22 +62,21 @@ export const test = base.extend<TestFixtures>({
       }
     });
 
+    // Register user (auto-logs in after registration)
     await cadastroPage.goto();
-    await cadastroPage.cadastrar(testUser);
-
-    await loginPage.goto();
-    await loginPage.login(testUser.nome_usuario, testUser.senha);
+    const toast = await cadastroPage.cadastrar(testUser);
+    console.log('Registration toast:', toast);
+    
+    // Wait for registration to complete and navigation to categorias
+    await page.waitForURL('**/#/categorias', { timeout: 20000 });
+    await page.waitForLoadState('networkidle');
+    // Give header time to render after hash change
+    await page.waitForTimeout(2000);
+    
+    // Wait for logout button to appear in header (user is logged in after registration)
+    await page.waitForSelector('[data-action="sair"]', { state: 'visible', timeout: 20000 });
 
     await use(page);
-
-    await page.evaluate(() => {
-      try {
-        localStorage.clear();
-        sessionStorage.clear();
-      } catch (e) {
-        // Ignore security errors
-      }
-    });
   },
 });
 

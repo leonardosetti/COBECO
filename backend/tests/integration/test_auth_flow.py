@@ -16,7 +16,7 @@ class TestCadastroUsuario:
 
     @pytest.mark.asyncio
     async def test_cadastrar_usuario_sucesso(self, client):
-        """HP1: Cadastro com dados válidos retorna 201"""
+        """HP1: Cadastro com dados válidos retorna 201 com tokens de acesso"""
         payload = {
             "nome_usuario": "joaosilva",
             "email": "joao@teste.com",
@@ -31,8 +31,10 @@ class TestCadastroUsuario:
 
         assert response.status_code == 201
         data = response.json()
-        assert "usuario_id" in data
-        assert data["message"] == "Conta criada com sucesso"
+        assert "access_token" in data
+        assert "refresh_token" in data
+        assert data["token_type"] == "bearer"
+        assert "expires_in" in data
 
     @pytest.mark.asyncio
     async def test_cadastrar_usuario_duplicado_nome_usuario(self, client):
@@ -196,21 +198,30 @@ class TestRefreshToken:
             json={"nome_usuario": test_user["username"], "senha": test_user["password"]},
         )
         assert login_resp.status_code == 200
-        cookies = login_resp.cookies
-
+        
+        # Extrai o refresh_token do body da resposta de login (o cookie httpOnly não é acessível via JS,
+        # mas no teste podemos obter do body da resposta de login)
+        login_data = login_resp.json()
+        refresh_token = login_data.get("refresh_token")
+        assert refresh_token is not None
+        
         # Primeiro refresh - deve funcionar e rotacionar o cookie
-        response = await client.post("/auth/refresh", cookies=cookies)
+        # Passa o refresh_token explicitamente no header Cookie (limitação do httpx/ASGITransport com cookies httpOnly)
+        headers = {"Cookie": f"refresh_token={refresh_token}"}
+        response = await client.post("/auth/refresh", headers=headers)
         assert response.status_code == 200
         data = response.json()
         assert "access_token" in data
         assert data["token_type"] == "bearer"
         assert data["expires_in"] == 900
-        # Novo cookie deve estar presente
-        assert "refresh_token" in response.cookies
-
+        
         # Segundo refresh com o NOVO cookie - deve funcionar (rotação funcionando)
-        cookies = response.cookies
-        response2 = await client.post("/auth/refresh", cookies=cookies)
+        # Extrai o novo refresh_token do cookie da resposta
+        new_refresh_token = response.cookies.get("refresh_token")
+        assert new_refresh_token is not None
+        
+        headers2 = {"Cookie": f"refresh_token={new_refresh_token}"}
+        response2 = await client.post("/auth/refresh", headers=headers2)
         assert response2.status_code == 200
         assert "refresh_token" in response2.cookies
 
