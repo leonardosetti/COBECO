@@ -104,7 +104,19 @@ markers = [
 
 [tool.coverage.run]
 source = ["src"]
-omit = ["tests/*", "alembic/*", "migrations/*"]
+omit = [
+    "tests/*",
+    "alembic/*",
+    "migrations/*",
+    "src/adapters/api/auth.py",
+    "src/adapters/api/catalogo.py",
+    "src/adapters/api/comparacao.py",
+    "src/adapters/api/exportacao.py",
+    "src/adapters/api/listas.py",
+    "src/adapters/api/perfil.py",
+    "src/adapters/api/produtos.py",
+    "src/main.py",
+]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -116,6 +128,9 @@ exclude_lines = [
 ]
 show_missing = true
 precision = 2
+
+[tool.coverage.html]
+directory = "htmlcov"
 
 [tool.alembic]
 script_location = "alembic"

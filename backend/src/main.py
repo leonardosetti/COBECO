@@ -31,23 +31,10 @@ logger = structlog.get_logger()
 # Security Headers Middleware
 # ============================================================
 async def security_headers_middleware(request: Request, call_next):
-    """Adiciona headers de segurança (CSP, HSTS, etc.)"""
+    """Adiciona headers de segurança (exceto CSP — gerenciado pelo nginx proxy)"""
     response = await call_next(request)
 
-    # Content Security Policy
-    response.headers["Content-Security-Policy"] = (
-        "default-src 'self'; "
-        "script-src 'self'; "
-        "style-src 'self' 'unsafe-inline'; "
-        "img-src 'self' data:; "
-        "font-src 'self'; "
-        "connect-src 'self'; "
-        "frame-ancestors 'none'; "
-        "base-uri 'self'; "
-        "form-action 'self'"
-    )
-
-    # Security Headers
+    # Security Headers (sem CSP — nginx proxy gerencia)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"

@@ -81,27 +81,28 @@ INSERT INTO `fornecedores_categorias` (`fornecedor_id`, `categoria_id`) VALUES
   (10, 2);
 
 -- Produtos (20 — protótipo DOC-03)
-INSERT INTO `produtos` (`id`, `nome`, `unidade`, `ativo`) VALUES
-  (1, 'Arroz Tipo 1 5kg', 'un', TRUE),
-  (2, 'Feijão Preto 1kg', 'un', TRUE),
-  (3, 'Óleo de Soja 900ml', 'un', TRUE),
-  (4, 'Café Torrado e Moído 500g', 'un', TRUE),
-  (5, 'Açúcar Refinado 1kg', 'un', TRUE),
-  (6, 'Leite Integral UHT 1L', 'un', TRUE),
-  (7, 'Macarrão Espaguete 500g', 'un', TRUE),
-  (8, 'Molho de Tomate 340g', 'un', TRUE),
-  (9, 'Farinha de Trigo 1kg', 'un', TRUE),
-  (10, 'Ovos Brancos (dúzia)', 'dz', TRUE),
-  (11, 'Detergente Neutro 500ml', 'un', TRUE),
-  (12, 'Papel Toalha 2 rolos', 'un', TRUE),
-  (13, 'Liquidificador 2 Velocidades', 'un', TRUE),
-  (14, 'Notebook i5 8GB', 'un', TRUE),
-  (15, 'Martelo de Unha 25mm', 'un', TRUE),
-  (16, 'Parafuso Philips 5mm (cx)', 'cx', TRUE),
-  (17, 'Camiseta Algodão M', 'un', TRUE),
-  (18, 'Calça Jeans 40', 'un', TRUE),
-  (19, 'Vaso de Barro 20cm', 'un', TRUE),
-  (20, 'Cadeira de Escritório', 'un', TRUE);
+-- categoria_id atribuído conforme seed protótipo
+INSERT INTO `produtos` (`id`, `nome`, `unidade`, `ativo`, `categoria_id`) VALUES
+  (1, 'Arroz Tipo 1 5kg', 'un', TRUE, 1),
+  (2, 'Feijão Preto 1kg', 'un', TRUE, 1),
+  (3, 'Óleo de Soja 900ml', 'un', TRUE, 1),
+  (4, 'Café Torrado e Moído 500g', 'un', TRUE, 1),
+  (5, 'Açúcar Refinado 1kg', 'un', TRUE, 1),
+  (6, 'Leite Integral UHT 1L', 'un', TRUE, 1),
+  (7, 'Macarrão Espaguete 500g', 'un', TRUE, 1),
+  (8, 'Molho de Tomate 340g', 'un', TRUE, 1),
+  (9, 'Farinha de Trigo 1kg', 'un', TRUE, 1),
+  (10, 'Ovos Brancos (dúzia)', 'dz', TRUE, 1),
+  (11, 'Detergente Neutro 500ml', 'un', TRUE, 1),
+  (12, 'Papel Toalha 2 rolos', 'un', TRUE, 1),
+  (13, 'Liquidificador 2 Velocidades', 'un', TRUE, 11),
+  (14, 'Notebook i5 8GB', 'un', TRUE, 4),
+  (15, 'Martelo de Unha 25mm', 'un', TRUE, 8),
+  (16, 'Parafuso Philips 5mm (cx)', 'cx', TRUE, 7),
+  (17, 'Camiseta Algodão M', 'un', TRUE, 2),
+  (18, 'Calça Jeans 40', 'un', TRUE, 2),
+  (19, 'Vaso de Barro 20cm', 'un', TRUE, 10),
+  (20, 'Cadeira de Escritório', 'un', TRUE, 6);
 
 -- Preços e estoque (regra do protótipo: base * FATOR[f] * (1 + sin*0.03))
 INSERT INTO `fornecedores_produtos` (`fornecedor_id`, `produto_id`, `preco`, `estoque`, `ativo`) VALUES

@@ -286,6 +286,7 @@ const state = {
   categoriasDisponiveis: [],
   categoriasVisiveis: [],
   categoriaBusca: '',
+  categoriasSort: 'alfabetico', // 'alfabetico' | 'area' | 'frequencia'
   areasSelecionadas: [], // pré-filtro de grandes áreas (multi-seleção)
   areasGrandes: [],      // grandes áreas carregadas do backend
   fornecedoresDisponiveis: [],
@@ -298,7 +299,12 @@ const state = {
   resultado: null,
   busca: '',
   coberturaPorFornecedor: {}, // mapa fid -> percentual (calculado antes de clicar em Calcular)
+  ready: false,          // indica se o carregamento inicial terminou
 };
+
+// Promise que resolve quando o boot inicial termina
+let readyResolve;
+state.readyPromise = new Promise((resolve) => { readyResolve = resolve; });
 
 class ApiClient {
   static async request(endpoint, options = {}) {
@@ -324,8 +330,9 @@ class ApiClient {
     const q = '?produtos=' + produtoIds.join(',') + (fornecedorIds ? '&fornecedores=' + fornecedorIds.join(',') : '');
     return this.request('/catalogo/fornecedores/disponibilidade-lote' + q);
   }
-  static buscarProdutos(q, limit = 10) {
-    return this.request('/catalogo/produtos/autocomplete?q=' + encodeURIComponent(q) + '&limit=' + limit);
+  static buscarProdutos(q, limit = 10, categoria_ids = []) {
+    const catParam = categoria_ids.length ? '&categorias=' + categoria_ids.join(',') : '';
+    return this.request('/catalogo/produtos/autocomplete?q=' + encodeURIComponent(q) + '&limit=' + limit + catParam);
   }
   static calcularOrcamentoEfemera(data) {
     return this.request('/comparacao/calcular-efemera', {
@@ -364,7 +371,7 @@ async function carregarAreasGrandes() {
 async function carregarProdutos(categoriaIds = []) {
   try {
     const prods = await ApiClient.listarProdutos(categoriaIds);
-    if (prods && prods.length) state.produtos = prods.map(p => ({ id: p.id, nome: p.nome, un: p.unidade || 'un' }));
+    if (prods && prods.length) state.produtos = prods.map(p => ({ id: p.id, nome: p.nome, un: p.unidade || 'un', categoria_id: p.categoria_id }));
     else state.produtos = [];
   } catch (e) { state.produtos = []; }
 }
@@ -466,8 +473,23 @@ function totalCategorias() {
   return state.categoriasDisponiveis.length;
 }
 
+const VIEW_TO_HASH = {
+  home: '#/',
+  categorias: '#/categorias',
+  lista: '#/lista',
+  fornecedores: '#/fornecedores',
+  resultados: '#/resultados',
+  vencedora: '#/vencedora',
+  login: '#/login',
+  cadastro: '#/cadastrar',
+};
+
 function go(view) {
   state.view = view;
+  const hash = VIEW_TO_HASH[view] || '#/';
+  if (window.location.hash !== hash) {
+    window.location.hash = hash;
+  }
   render();
   window.scrollTo({ top: 0 });
 }
@@ -554,27 +576,61 @@ function vHome() {
 
 function vCategorias() {
   const totalCats = totalCategorias();
+  
+  // Build accordion HTML for each large area with its categories
   const areasHTML = state.areasGrandes.length
-    ? `<div class="areas-bar"><strong>Grandes áreas:</strong>
-      ${state.areasGrandes.map(a => `<label class="area-cb"><input type="checkbox" class="area-cb-input" value="${a.id}" ${state.areasSelecionadas.includes(a.id) ? 'checked' : ''}> ${esc(a.nome)}</label>`).join('')}
-      <button class="btn btn-ghost btn-sm" data-action="area-limpar">Limpar áreas</button></div>`
+    ? `<div class="areas-accordion">
+        ${state.areasGrandes.map((area, idx) => {
+          const areaCats = state.categoriasDisponiveis.filter(c => area.categorias.includes(c.id));
+          const selectedInArea = areaCats.filter(c => state.categorias.includes(c.id)).length;
+          const totalInArea = areaCats.length;
+          return `
+          <details class="area-accordion-item" id="area-${area.id}" ${idx === 0 ? 'open' : ''}>
+            <summary class="area-accordion-summary">
+              <input type="checkbox" class="area-cb-input" value="${area.id}" ${state.areasSelecionadas.includes(area.id) ? 'checked' : ''} aria-label="${esc(area.nome)}">
+              <span class="area-name">${esc(area.nome)}</span>
+              <span class="area-count">${selectedInArea}/${totalInArea}</span>
+              <span class="accordion-chevron">▼</span>
+            </summary>
+            <div class="area-cat-grid" role="group" aria-label="${esc(area.nome)}">
+              ${areaCats.map(c => `<label class="cat-card ${state.categorias.includes(c.id) ? 'sel' : ''}" data-catcard="${c.id}">
+                <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id) ? 'checked' : ''}>
+                <span class="ci">${c.ic}</span><span class="cn">${esc(c.nome)}</span>
+              </label>`).join('')}
+            </div>
+          </details>`;
+        }).join('')}
+        <button class="btn btn-ghost btn-sm mt" data-action="area-limpar">Limpar todas as áreas</button>
+      </div>`
     : `<div class="areas-bar" style="color:#9ca3af;font-size:13px">Grandes áreas não carregadas.</div>`;
+
+  const sortOptions = [
+    { value: 'alfabetico', label: '🔤 Alfabético' },
+    { value: 'area', label: '📂 Por área grande' },
+    { value: 'frequencia', label: '📊 Por frequência' },
+  ];
+
   return `<div class="container page">
     <div class="page-head"><span class="kicker">Passo 1 de 5 · Pré-filtro</span>
       <h1>Selecione as categorias</h1>
-      <p>Escolha uma ou mais categorias macro para filtrar os fornecedores. Mínimo: 1 categoria (RF12). Use as grandes áreas para enxergar o catálogo; a seleção fica em memória (transitória).</p></div>
+      <p>Escolha uma ou mais categorias macro para filtrar os fornecedores. Mínimo: 1 categoria (RF12). Use as grandes áreas para navegar; a seleção fica em memória (transitória).</p></div>
     ${stepperHTML(1)}
     <div class="card card-pad">
       ${areasHTML}
       <div class="toolbar">
         <span class="count-chip ${state.categorias.length ? 'ok' : ''}" id="cat-count">${state.categorias.length} categoria(s) selecionada(s) · ${totalCats} disponíveis</span>
-        <div><button class="btn btn-ghost btn-sm" data-action="cat-all">Selecionar todas</button>
-        <button class="btn btn-ghost btn-sm" data-action="cat-none">Limpar</button></div>
-      </div>
-        <div class="search-box"><label>Buscar categoria (semântica)</label>
-          <input type="text" id="busca-cat" value="${esc(state.categoriaBusca)}" placeholder="Ex.: roupas, camiseta, pá, rastelo" autocomplete="off" role="combobox">
+        <div class="toolbar-right">
+          <select id="cat-sort" class="select-sm" data-action="cat-sort" aria-label="Ordenar categorias">
+            ${sortOptions.map(o => `<option value="${o.value}" ${state.categoriasSort === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}
+          </select>
+          <button class="btn btn-ghost btn-sm" data-action="cat-all">Selecionar todas</button>
+          <button class="btn btn-ghost btn-sm" data-action="cat-none">Limpar</button>
         </div>
-      <div class="cat-grid" role="group" aria-label="Categorias macro">
+      </div>
+      <div class="search-box"><label>Buscar categoria (semântica)</label>
+        <input type="text" id="busca-cat" value="${esc(state.categoriaBusca)}" placeholder="Ex.: roupas, camiseta, pá, rastelo" autocomplete="off" role="combobox">
+      </div>
+      <div class="cat-grid" role="group" aria-label="Categorias macro" id="cat-grid">
         ${(state.categoriasVisiveis.length ? state.categoriasVisiveis : []).map(c => `<label class="cat-card ${state.categorias.includes(c.id) ? 'sel' : ''}" data-catcard="${c.id}">
           <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id) ? 'checked' : ''}>
           <span class="ci">${c.ic}</span><span class="cn">${esc(c.nome)}</span></label>`).join('')}
@@ -598,8 +654,97 @@ function recalcularVisiveis(baseCats) {
   const selecionadas = state.categoriasDisponiveis.filter(c => state.categorias.includes(c.id));
   const mescladas = [...baseCats];
   selecionadas.forEach(s => { if (!baseIds.has(s.id)) mescladas.push(s); });
-  state.categoriasVisiveis = mescladas;
-  render();
+  
+  // Aplica ordenação
+  const sortFn = {
+    alfabetico: (a, b) => a.nome.localeCompare(b.nome, 'pt-BR'),
+    area: (a, b) => {
+      // Ordena por área grande (usa a primeira área que contém a categoria)
+      const areaA = state.areasGrandes.find(ar => ar.categorias.includes(a.id));
+      const areaB = state.areasGrandes.find(ar => ar.categorias.includes(b.id));
+      const idxA = areaA ? state.areasGrandes.indexOf(areaA) : 999;
+      const idxB = areaB ? state.areasGrandes.indexOf(areaB) : 999;
+      if (idxA !== idxB) return idxA - idxB;
+      return a.nome.localeCompare(b.nome, 'pt-BR');
+    },
+    frequencia: (a, b) => {
+      // Ordena por frequência de uso (categorias já selecionadas primeiro, depois alfabético)
+      const selA = state.categorias.includes(a.id) ? 0 : 1;
+      const selB = state.categorias.includes(b.id) ? 0 : 1;
+      if (selA !== selB) return selA - selB;
+      return a.nome.localeCompare(b.nome, 'pt-BR');
+    },
+  }[state.categoriasSort] || ((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+  
+  state.categoriasVisiveis = mescladas.sort(sortFn);
+  // Atualiza apenas o grid de categorias e barra de áreas sem full render (preserva foco no input)
+  atualizarCategoriasVisiveis();
+}
+
+// Atualiza apenas DOM das categorias visíveis e áreas — sem full render
+function atualizarCategoriasVisiveis(preserveFocus = true) {
+  // Salva referência ao input de busca se precisar preservar foco
+  const buscaInput = preserveFocus ? document.getElementById('busca-cat') : null;
+  const hadFocus = buscaInput && document.activeElement === buscaInput;
+
+  // Atualiza contador
+  const countEl = document.getElementById('cat-count');
+  if (countEl) {
+    const totalCats = state.categoriasDisponiveis.length;
+    countEl.textContent = `${state.categorias.length} categoria(s) selecionada(s) · ${totalCats} disponíveis`;
+    countEl.className = `count-chip ${state.categorias.length ? 'ok' : ''}`;
+  }
+
+  // Atualiza grid de categorias (fallback para busca)
+  const grid = document.getElementById('cat-grid');
+  if (grid) {
+    grid.innerHTML = (state.categoriasVisiveis.length ? state.categoriasVisiveis : []).map(c => `
+      <label class="cat-card ${state.categorias.includes(c.id) ? 'sel' : ''}" data-catcard="${c.id}">
+        <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id) ? 'checked' : ''}>
+        <span class="ci">${c.ic}</span><span class="cn">${esc(c.nome)}</span>
+      </label>
+    `).join('');
+  }
+
+  // Atualiza accordion de áreas (novo layout)
+  const areasAccordion = document.querySelector('.areas-accordion');
+  if (areasAccordion && state.areasGrandes.length) {
+    areasAccordion.innerHTML = state.areasGrandes.map((area, idx) => {
+      const areaCats = state.categoriasDisponiveis.filter(c => area.categorias.includes(c.id));
+      const selectedInArea = areaCats.filter(c => state.categorias.includes(c.id)).length;
+      const totalInArea = areaCats.length;
+      return `
+      <details class="area-accordion-item" id="area-${area.id}" ${idx === 0 ? 'open' : ''}>
+        <summary class="area-accordion-summary">
+          <input type="checkbox" class="area-cb-input" value="${area.id}" ${state.areasSelecionadas.includes(area.id) ? 'checked' : ''} aria-label="${esc(area.nome)}">
+          <span class="area-name">${esc(area.nome)}</span>
+          <span class="area-count">${selectedInArea}/${totalInArea}</span>
+          <span class="accordion-chevron">▼</span>
+        </summary>
+        <div class="area-cat-grid" role="group" aria-label="${esc(area.nome)}">
+          ${areaCats.map(c => `<label class="cat-card ${state.categorias.includes(c.id) ? 'sel' : ''}" data-catcard="${c.id}">
+            <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id) ? 'checked' : ''}>
+            <span class="ci">${c.ic}</span><span class="cn">${esc(c.nome)}</span>
+          </label>`).join('')}
+        </div>
+      </details>`;
+    }).join('') + `<button class="btn btn-ghost btn-sm mt" data-action="area-limpar">Limpar todas as áreas</button>`;
+  }
+
+  // Atualiza select de ordenação
+  const sortSelect = document.getElementById('cat-sort');
+  if (sortSelect) sortSelect.value = state.categoriasSort;
+
+  // Atualiza botão continuar
+  const btn = document.getElementById('btn-to-lista');
+  if (btn) btn.disabled = !state.categorias.length;
+
+  // Restaura foco no input de busca se estava focado
+  if (hadFocus && buscaInput) {
+    buscaInput.focus();
+    const len = buscaInput.value.length;
+    buscaInput.setSelectionRange(len, len);
+  }
 }
 
 function areasParaCategorias(areaIds) {
@@ -800,7 +945,7 @@ function vLogin() {
       <div class="field"><label>Usuário</label><input type="text" id="l-user" placeholder="usuário"></div>
       <div class="field"><label>Senha</label><input type="password" id="l-pass" placeholder="senha"></div>
       <button class="btn btn-pri btn-lg btn-block" data-action="login" data-primary>Entrar</button>
-    </form><div class="auth-foot">Não tem conta? <button class="linklike" data-action="page-cadastro">Criar conta</button></div></div></div>`;
+    </form><div class="auth-foot">Não tem conta? <button class="linklike" data-action="page-cadastro">Criar conta</button> | <button class="linklike" data-action="page-recuperar-senha">Esqueci a senha</button></div></div></div>`;
 }
 
 function vCadastro() {
@@ -859,6 +1004,7 @@ async function handleCadastro() {
     if (res?.access_token) {
       state.user = { nome_usuario: data.nome_usuario };
       showToast('Conta criada e login automático realizado!', 'success');
+      await promoverListaSeHouverRascunho();
       go('categorias');
     }
   } catch (e) {
@@ -893,6 +1039,7 @@ async function handleLogin() {
     if (res?.access_token) {
       state.user = { nome_usuario: data.nome_usuario };
       showToast('Login realizado com sucesso!', 'success');
+      await promoverListaSeHouverRascunho();
       go('categorias');
     }
   } catch (e) {
@@ -946,6 +1093,92 @@ function concluirJornada() {
   showToast('Lista concluída. Inicie uma nova lista.', 'success');
 }
 
+// ============================================================
+// HANDLER: Salvar Lista (RF08/UC14/UC17)
+// ============================================================
+async function handleSalvarLista() {
+  if (!state.lista.itens.length) {
+    showToast('Adicione ≥1 item à lista antes de salvar.', 'error');
+    return;
+  }
+  if (!state.lista.nome.trim()) {
+    showToast('Informe um nome para a lista.', 'error');
+    return;
+  }
+
+  const logado = !!state.user;
+
+  if (logado) {
+    // Usuário logado: salvar lista diretamente
+    await salvarListaLogado();
+  } else {
+    // Usuário não logado: modal para cadastrar/logar e promover lista efêmera
+    const registrar = await Modal.confirm(
+      'Salvar listas requer conta. Deseja se cadastrar agora? Sua lista em andamento será preservada.',
+      { title: 'Salvar lista', confirmText: 'Cadastrar', cancelText: 'Entrar', variant: 'primary' }
+    );
+    if (registrar) {
+      go('cadastro');
+    } else {
+      go('login');
+    }
+    // Após login/cadastro, o fluxo de promover é feito automaticamente via sessionStorage
+    // (ver handleCadastro/handleLogin que chamam promoverListaSeHouverRascunho)
+  }
+}
+
+async function salvarListaLogado() {
+  const btn = document.querySelector('[data-action="salvar-lista"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Salvando…'; }
+
+  try {
+    const payload = {
+      nome: state.lista.nome,
+      itens: state.lista.itens.map(i => ({ produto_id: i.pid, quantidade: i.qtd })),
+      categorias: state.categorias,
+    };
+    const res = await ApiClient.request('/listas', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+    if (res?.id) {
+      showToast('Lista salva com sucesso!', 'success');
+      limparRascunho();
+      go('home');
+    }
+  } catch (e) {
+    showToast(e.message || 'Erro ao salvar lista.', 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar lista'; }
+  }
+}
+
+async function promoverListaSeHouverRascunho() {
+  const jornada = sessionStorage.getItem('cobeco_jornada');
+  if (!jornada) return;
+  try {
+    const d = JSON.parse(jornada);
+    if (d.rascunho?.lista?.itens?.length) {
+      const payload = {
+        nome: d.rascunho.lista.nome || 'Lista importada',
+        itens: d.rascunho.lista.itens.map(i => ({ produto_id: i.pid, quantidade: i.qtd })),
+        categorias: d.rascunho.categorias || [],
+      };
+      const res = await ApiClient.request('/listas/promover-efemera', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      if (res?.id) {
+        showToast('Lista efêmera promovida e salva!', 'success');
+        sessionStorage.removeItem('cobeco_jornada');
+        go('home');
+      }
+    }
+  } catch (e) {
+    // Silencioso - usuário pode salvar manualmente depois
+  }
+}
+
 document.addEventListener('click', (e) => {
   const t = e.target;
   if (t.classList.contains('cat-cb')) {
@@ -980,9 +1213,19 @@ document.addEventListener('click', (e) => {
     case 'nav-dash': case 'nav-perfil': showToast('Em construção (wireframe).', 'info'); break;
     case 'page-login': go('login'); break;
     case 'page-cadastro': go('cadastro'); break;
-    case 'sair': state.user = null; showToast('Saiu.', 'info'); render(); break;
+    case 'page-recuperar-senha': {
+      state.view = 'cadastro';
+      const hash = '#/recuperar-senha';
+      if (window.location.hash !== hash) {
+        window.location.hash = hash;
+      }
+      render();
+      window.scrollTo({ top: 0 });
+    } break;
+    case 'sair': state.user = null; showToast('Saiu.', 'info'); go('home'); break;
     case 'cat-all': state.categorias = state.categoriasDisponiveis.map(c => c.id); render(); break;
     case 'cat-none': state.categorias = []; render(); break;
+    case 'cat-sort': state.categoriasSort = el.value; recalcularVisiveis(areasParaCategorias(state.areasSelecionadas)); break;
     case 'area-limpar': state.areasSelecionadas = []; recalcularVisiveis(areasParaCategorias([])); break;
     case 'to-lista': if (!state.categorias.length) { showToast('Selecione ≥1 categoria.', 'error'); return; } carregarProdutos(state.categorias); go('lista'); break;
     case 'goto-step': { const destino = el.dataset.step; if (destino === 'fornecedores' && state.lista.itens.length) { carregarFornecedores(state.categorias).then(() => carregarCoberturaFornecedores().then(() => go(destino))); } else { go(destino); } break; }
@@ -992,6 +1235,7 @@ document.addEventListener('click', (e) => {
     case 'to-fornecedores': if (!state.lista.itens.length) { showToast('Adicione ≥1 item.', 'error'); return; } carregarFornecedores(state.categorias).then(() => carregarCoberturaFornecedores().then(() => go('fornecedores'))); break;
     case 'forn-all': state.fornecedores = fornecedoresElegiveis().slice(0, 10).map(f => f.id); refreshFornecedores(); break;
     case 'forn-clear': state.fornecedores = []; refreshFornecedores(); break;
+    case 'salvar-lista': handleSalvarLista(); break;
     case 'calcular': {
       if (state.fornecedores.length < 2) { showToast('Selecione ≥2 fornecedores.', 'error'); return; }
       const btn = el; btn.disabled = true; btn.textContent = 'Calculando…';
@@ -1021,6 +1265,14 @@ document.addEventListener('click', (e) => {
   }
 });
 
+document.addEventListener('change', (e) => {
+  const el = e.target;
+  if (el.id === 'cat-sort') {
+    state.categoriasSort = el.value;
+    recalcularVisiveis(areasParaCategorias(state.areasSelecionadas));
+  }
+});
+
 document.addEventListener('input', (e) => {
   const t = e.target;
   if (t.id === 'nome-lista') { state.lista.nome = t.value; persistJornada(); }
@@ -1037,14 +1289,17 @@ async function updateSugestoes() {
   sugTimer = setTimeout(async () => {
     if (!q.length) { box.innerHTML = ''; return; }
     try {
-      const res = await ApiClient.buscarProdutos(q, 10);
+      const res = await ApiClient.buscarProdutos(q, 10, state.categorias);
       const hits = (res || []).slice(0, 10);
       box.innerHTML = hits.length
         ? '<div class="sug">' + hits.map(p => `<div class="sug-item" data-action-add="${p.id}"><span>${esc(p.nome)}</span><span class="un">${p.un || 'un'}</span><span class="rel">${Math.round((p.relevancia || 0) * 100)}% relevância</span></div>`).join('') + '</div>'
         : '<div class="sug-empty">Nenhum produto encontrado.</div>';
     } catch (e) {
-      // Fallback para busca local se a API falhar
-      const hits = state.produtos.filter(p => norm(p.nome).includes(q)).slice(0, 10);
+      // Fallback para busca local se a API falhar - filtra também por categorias selecionadas
+      const hits = state.produtos
+        .filter(p => norm(p.nome).includes(q))
+        .filter(p => state.categorias.length === 0 || state.categorias.includes(p.categoria_id))
+        .slice(0, 10);
       box.innerHTML = hits.length ? '<div class="sug">' + hits.map(p => `<div class="sug-item" data-action-add="${p.id}"><span>${esc(p.nome)}</span><span class="un">${p.un}</span></div>`).join('') + '</div>' : '<div class="sug-empty">Nenhum produto encontrado.</div>';
     }
   }, 300);
@@ -1063,7 +1318,13 @@ async function buscarCategoriasUI() {
       const res = await ApiClient.buscarCategorias(q);
       const base = (res || []).map(c => ({ id: c.id, nome: c.nome, ic: '📂' }));
       // RF26: busca nunca esconde categorias já selecionadas
-      recalcularVisiveis(base);
+      const baseIds = new Set(base.map(c => c.id));
+      const selecionadas = state.categoriasDisponiveis.filter(c => state.categorias.includes(c.id));
+      const mescladas = [...base];
+      selecionadas.forEach(s => { if (!baseIds.has(s.id)) mescladas.push(s); });
+      state.categoriasVisiveis = mescladas;
+      // Atualização parcial do DOM — preserva foco no input de busca
+      atualizarCategoriasVisiveis(true);
     } catch (e) { recalcularVisiveis(areasParaCategorias(state.areasSelecionadas)); }
   }, 300);
 }
@@ -1122,6 +1383,35 @@ function refreshFornecedores() {
 }
 
 // ============================================================
+// HASH ROUTING — suporta URLs como /#/login, /#/cadastrar, etc.
+// ============================================================
+async function handleHash() {
+  await state.readyPromise; // espera o boot inicial terminar
+  const hash = window.location.hash.slice(1); // remove '#'
+  const path = hash.split('?')[0]; // remove query string
+  const viewMap = {
+    '/login': 'login',
+    '/cadastrar': 'cadastro',
+    '/recuperar-senha': 'cadastro', // usa cadastro para recuperação
+    '/recuperar-senha/confirmar': 'cadastro',
+    '/criar-lista': 'categorias',
+    '/comparar': 'categorias',
+    '/dashboard': 'dashboard',
+    '/perfil': 'perfil',
+    '/': 'home',
+    '': 'home',
+  };
+  const view = viewMap[path] || 'home';
+  if (state.view !== view) {
+    state.view = view;
+    render();
+    window.scrollTo({ top: 0 });
+  }
+}
+
+window.addEventListener('hashchange', handleHash);
+
+// ============================================================
 // BOOT
 // ============================================================
 document.addEventListener("DOMContentLoaded", async () => {
@@ -1131,10 +1421,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     await carregarProdutos();
     loadJornada();
     if (state.areasSelecionadas.length) recalcularVisiveis(areasParaCategorias(state.areasSelecionadas));
-    render();
-  } catch (e) { document.getElementById('main').innerHTML = '<div style="color:red">Erro: ' + e.message + '</div>'; }
+    state.ready = true;
+    readyResolve();
+    handleHash(); // navega conforme hash na URL inicial
+  } catch (e) { 
+    state.ready = true;
+    readyResolve();
+    document.getElementById('main').innerHTML = '<div style="color:red">Erro: ' + e.message + '</div>'; 
+  }
 });
 
 window.state = state;
 window.refreshFornecedores = refreshFornecedores;
 window.refreshListaUI = refreshListaUI;
+window.appReady = state.readyPromise;

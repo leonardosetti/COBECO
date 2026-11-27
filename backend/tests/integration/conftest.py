@@ -7,7 +7,7 @@ import os
 # a primeira chamada congela os valores; sem isso, DEBUG fica False e
 # openapi_url=None, quebrando testes de contrato quando rodados juntos).
 os.environ.setdefault("SECRET_KEY", "test-secret-key-for-ci-only-32chars")
-os.environ.setdefault("DATABASE_URL", "mysql+asyncmy://test:test@localhost:3306/cobeco_test")
+os.environ.setdefault("DATABASE_URL", "mysql+asyncmy://cobeco:cobeco@cobeco-db-stage:3306/cobeco_stage")
 os.environ.setdefault("JWT_ALGORITHM", "HS256")
 os.environ.setdefault("ACCESS_TOKEN_EXPIRE_MINUTES", "15")
 os.environ.setdefault("REFRESH_TOKEN_EXPIRE_DAYS", "7")
@@ -118,7 +118,14 @@ INSERT INTO `produto_classes` (`id`, `classe_nome`, `termos_busca`, `marcas_refe
   (3, 'Óleo', '["óleo", "óleo de soja"]', '["Liza", "Soya"]', 'Mercado', TRUE);
 
 -- Create FULLTEXT index for autocomplete (idempotent)
-DROP INDEX `ix_produto_nome_fulltext` ON `produtos`;
+-- MySQL doesn't support DROP INDEX IF EXISTS, so we use a workaround
+SET @idx_exists = (SELECT COUNT(*) FROM information_schema.STATISTICS 
+    WHERE table_schema = DATABASE() AND table_name = 'produtos' AND index_name = 'ix_produto_nome_fulltext');
+SET @sql = IF(@idx_exists > 0, 'DROP INDEX `ix_produto_nome_fulltext` ON `produtos`', 'SELECT 1');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
 ALTER TABLE `produtos` ADD FULLTEXT INDEX `ix_produto_nome_fulltext` (`nome`);
 
 INSERT INTO `fornecedores_produtos` (`fornecedor_id`, `produto_id`, `preco`, `estoque`, `ativo`) VALUES

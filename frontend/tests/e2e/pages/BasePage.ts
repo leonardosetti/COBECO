@@ -17,6 +17,9 @@ export abstract class BasePage {
   async waitForLoad(): Promise<void> {
     await this.page.waitForLoadState('networkidle');
     await this.page.waitForSelector('main', { state: 'visible', timeout: 10000 });
+    // Aguarda o app estar pronto (carregamento inicial + hash routing)
+    await this.page.waitForFunction(() => window.appReady instanceof Promise);
+    await this.page.evaluate(() => window.appReady);
   }
 
   async click(locator: Locator | string): Promise<void> {

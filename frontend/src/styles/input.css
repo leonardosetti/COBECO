@@ -272,6 +272,93 @@
   .form-row {
     @apply grid grid-cols-1 md:grid-cols-2 gap-4;
   }
+
+  /* Category Grid (responsive) */
+  .cat-grid {
+    @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3;
+  }
+
+  .cat-card {
+    @apply flex items-center gap-2 p-3 rounded-lg border border-gray-200 bg-white cursor-pointer hover:border-primary-300 hover:bg-primary-50 transition-colors duration-150;
+  }
+
+  .cat-card.sel {
+    @apply border-primary-500 bg-primary-50 ring-2 ring-primary-200;
+  }
+
+  .cat-card .ci {
+    @apply text-lg;
+  }
+
+  .cat-card .cn {
+    @apply text-sm font-medium text-gray-900 truncate;
+  }
+
+  .cat-cb {
+    @apply w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 focus:ring-2;
+  }
+
+  /* Areas Accordion */
+  .areas-accordion {
+    @apply space-y-2;
+  }
+
+  .area-accordion-item {
+    @apply border border-gray-200 rounded-lg bg-white overflow-hidden;
+  }
+
+  .area-accordion-summary {
+    @apply flex items-center gap-3 p-4 cursor-pointer list-none bg-gray-50 border-b border-gray-100 hover:bg-gray-100 transition-colors;
+  }
+
+  .area-accordion-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .area-accordion-summary:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-inset;
+  }
+
+  .area-name {
+    @apply flex-1 font-medium text-gray-900;
+  }
+
+  .area-count {
+    @apply text-sm text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full;
+  }
+
+  .accordion-chevron {
+    @apply text-gray-400 transition-transform duration-200;
+  }
+
+  .area-accordion-item[open] .accordion-chevron {
+    @apply rotate-180;
+  }
+
+  .area-cat-grid {
+    @apply p-4 space-y-2 border-t border-gray-100;
+  }
+
+  .area-cat-grid .cat-card {
+    @apply border-gray-100 hover:border-primary-200;
+  }
+
+  .area-cat-grid .cat-card.sel {
+    @apply border-primary-300;
+  }
+
+  .area-cb-input {
+    @apply w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 focus:ring-2;
+  }
+
+  /* Sort select */
+  .select-sm {
+    @apply px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+  }
+
+  .toolbar-right {
+    @apply flex items-center gap-2;
+  }
 }
 
 @layer utilities {
