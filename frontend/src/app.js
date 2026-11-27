@@ -307,10 +307,28 @@ let readyResolve;
 state.readyPromise = new Promise((resolve) => { readyResolve = resolve; });
 
 class ApiClient {
+  static accessToken = null;
+  
+  static setAccessToken(token) {
+    this.accessToken = token;
+  }
+  
+  static clearAccessToken() {
+    this.accessToken = null;
+  }
+  
   static async request(endpoint, options = {}) {
     const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    if (this.accessToken) {
+      headers['Authorization'] = 'Bearer ' + this.accessToken;
+    }
     const response = await fetch(API_BASE + endpoint, { ...options, headers, credentials: 'include' });
-    if (response.status === 401) { showToast('Sessão expirada.', 'warning'); return null; }
+    if (response.status === 401) { 
+      showToast('Sessão expirada.', 'warning'); 
+      this.clearAccessToken();
+      state.user = null;
+      return null; 
+    }
     const data = await response.json().catch(() => ({}));
     if (!response.ok) { throw new Error(data.detail || 'Erro ' + response.status); }
     return data;
@@ -340,9 +358,10 @@ class ApiClient {
     });
   }
   static exportarPDFVencedora(data) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (this.accessToken) headers['Authorization'] = 'Bearer ' + this.accessToken;
     return fetch(API_BASE + '/export/pdf/vencedora', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      credentials: 'include', body: JSON.stringify(data),
+      method: 'POST', headers, credentials: 'include', body: JSON.stringify(data),
     }).then((r) => { if (!r.ok) throw new Error('Erro ao gerar PDF'); return r.blob(); });
   }
 }
@@ -956,7 +975,7 @@ function vCadastro() {
       <div class="field"><label>Email</label><input type="email" id="c-email" placeholder="email@exemplo.com"></div>
       <div class="field"><label>Senha</label><input type="password" id="c-senha" placeholder="mín. 8 · 1 maiúscula · 1 número · 1 especial"></div>
       <div class="field"><label>Confirmar senha</label><input type="password" id="c-conf"></div>
-      <div class="field"><label>Pergunta de segurança</label><select id="c-perg"><option value="">Selecione…</option><option value="pet">Qual seu pet?</option><option value="cidade">Cidade natal?</option><option value="escola">Escola?</option></select></div>
+      <div class="field"><label>Pergunta de segurança</label><select id="c-perg"><option value="">Selecione…</option><option value="meu_pet">Qual seu pet?</option><option value="cidade_natal">Cidade natal?</option><option value="escola_primaria">Escola?</option></select></div>
       <div class="field"><label>Resposta</label><input type="text" id="c-resp" placeholder="mín. 3"></div>
       <button class="btn btn-pri btn-lg btn-block" data-action="cadastrar" data-primary>Criar conta</button>
     </form><div class="auth-foot">Já tem conta? <button class="linklike" data-action="page-login">Entrar</button></div></div></div>`;
@@ -1002,6 +1021,7 @@ async function handleCadastro() {
       body: JSON.stringify(data),
     });
     if (res?.access_token) {
+      ApiClient.setAccessToken(res.access_token);
       state.user = { nome_usuario: data.nome_usuario };
       showToast('Conta criada e login automático realizado!', 'success');
       await promoverListaSeHouverRascunho();
@@ -1037,6 +1057,7 @@ async function handleLogin() {
       body: JSON.stringify(data),
     });
     if (res?.access_token) {
+      ApiClient.setAccessToken(res.access_token);
       state.user = { nome_usuario: data.nome_usuario };
       showToast('Login realizado com sucesso!', 'success');
       await promoverListaSeHouverRascunho();
@@ -1222,7 +1243,7 @@ document.addEventListener('click', (e) => {
       render();
       window.scrollTo({ top: 0 });
     } break;
-    case 'sair': state.user = null; showToast('Saiu.', 'info'); go('home'); break;
+    case 'sair': ApiClient.clearAccessToken(); state.user = null; showToast('Saiu.', 'info'); go('home'); break;
     case 'cat-all': state.categorias = state.categoriasDisponiveis.map(c => c.id); render(); break;
     case 'cat-none': state.categorias = []; render(); break;
     case 'cat-sort': state.categoriasSort = el.value; recalcularVisiveis(areasParaCategorias(state.areasSelecionadas)); break;
@@ -1392,10 +1413,15 @@ async function handleHash() {
   const viewMap = {
     '/login': 'login',
     '/cadastrar': 'cadastro',
-    '/recuperar-senha': 'cadastro', // usa cadastro para recuperação
+    '/recuperar-senha': 'cadastro',
     '/recuperar-senha/confirmar': 'cadastro',
     '/criar-lista': 'categorias',
     '/comparar': 'categorias',
+    '/categorias': 'categorias',
+    '/lista': 'lista',
+    '/fornecedores': 'fornecedores',
+    '/resultados': 'resultados',
+    '/vencedora': 'vencedora',
     '/dashboard': 'dashboard',
     '/perfil': 'perfil',
     '/': 'home',
@@ -1404,9 +1430,9 @@ async function handleHash() {
   const view = viewMap[path] || 'home';
   if (state.view !== view) {
     state.view = view;
-    render();
-    window.scrollTo({ top: 0 });
   }
+  render();
+  window.scrollTo({ top: 0 });
 }
 
 window.addEventListener('hashchange', handleHash);

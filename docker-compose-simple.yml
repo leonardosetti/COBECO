@@ -67,8 +67,11 @@ services:
     container_name: cobeco-proxy
     ports:
       - "8380:8380"
+      - "8443:8443"
     volumes:
       - ./proxy/config-nginx-0003-proxy-nginx-v1.0.conf:/etc/nginx/nginx.conf:ro
+      - ./100.98.53.79+3.pem:/etc/nginx/certs/cert.pem:ro
+      - ./100.98.53.79+3-key.pem:/etc/nginx/certs/key.pem:ro
     depends_on:
       - frontend
       - backend
