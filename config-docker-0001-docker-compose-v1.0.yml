@@ -163,7 +163,7 @@ services:
     ports:
       - "8380:8380"
     volumes:
-      - ./proxy/config-nginx-0003-proxy-nginx-v1.0.conf:/etc/nginx/nginx.conf:ro
+      - ./proxy/config-nginx-0002-nginx-dev-v1.0.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - frontend
       - backend
