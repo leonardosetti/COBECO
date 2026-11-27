@@ -108,28 +108,55 @@ CATEGORIA_GATILHOS: dict[str, list[str]] = {
     "calçados": ["tênis", "sapato", "sandália", "bota", "chinelo", "rasteira", "salto", "coturno", "sneaker", "esporte", "corrida", "caminhada", "futebol", "mocassim", "scarpin", "peep toe", "ankle boot", "over the knee", "bota cano curto", "bota cano longo", "bota cano médio", "bota country", "bota chelsea", "bota tratorada", "tênis running", "tênis training", "tênis lifestyle", "tênis basquete", "tênis skate", "tênis casual", "sapato social", "sapato oxford", "sapato derby", "sapato loafer", "sapato monk strap", "sandália rasteira", "sandália salto", "sandália plataforma", "sandália gladiadora", "sandália papete", "chinelo slide", "chinelo dedo", "chinelo nuvem", "crocs", "birkenstock", "havaianas", "ipanema", "rider"],
     
     # ===== CHAVES GENÉRICAS (busca ampla por prefixo/semelhança) =====
-    "construção": ["cimento", "tijolo", "tinta", "cano", "construção", "obra", "material", "reformar", "pedreiro", "mestre de obras", "engenharia", "arquitetura"],
-    "jardim": ["pá", "rastelo", "jardim", "planta", "vaso", "adubo", "jardinagem", "flor", "grama", "horta", "paisagismo", "jardineiro"],
-    "ferramenta": ["martelo", "serrote", "chave", "alicate", "furadeira", "ferramenta", "reparo", "consertar", "manutenção", "oficina"],
-    "informática": ["computador", "notebook", "periférico", "impressora", "processador", "pc", "ti", "tecnologia", "sistema", "programa", "código", "desenvolvedor"],
-    "eletrônico": ["celular", "tablet", "eletrônico", "smartphone", "fone", "carregador", "gadget", "tech", "dispositivo", "aparelho", "smart"],
-    "eletro": ["geladeira", "fogão", "máquina", "micro-ondas", "eletrodoméstico", "eletro", "doméstico", "cozinha", "lavanderia", "eletroportátil"],
-    "móvel": ["sofá", "cadeira", "mesa", "armário", "cama", "móvel", "estofado", "mobília", "decorar", "mobiliário", "decoracao"],
-    "livro": ["livro", "revista", "leitura", "didático", "literatura", "romance", "autor", "biblioteca", "escrita", "autor", "publicação"],
-    "papelaria": ["caderno", "caneta", "papelaria", "escritório", "papel", "lápis", "material escolar", "escola", "escrita", "desenho", "arte", "artesanal"],
-    "pet": ["ração", "cachorro", "gato", "pet", "petisco", "animal", "bicho", "veterinário", "banho", "tosa", "pet shop"],
-    "auto": ["filtro", "óleo", "vela", "pastilha", "automotivo", "carro", "moto", "veículo", "peça", "mecânica", "oficina", "revisão", "troca óleo"],
-    "pneu": ["pneu", "roda", "calibragem", "balanceamento", "alinhamento", "aro", "pneus", "rodas", "borracha", "câmara", "válvula", "rodízio"],
-    "moda": ["camisa", "calça", "vestido", "saia", "blusa", "moda", "roupa", "vestir", "estilo", "tendência", "fashion", "look", "outfit", "vestuário"],
-    "calçado": ["tênis", "sapato", "sandália", "calçado", "bota", "chinelo", "rasteira", "salto", "coturno", "sneaker", "esporte", "corrida", "caminhada", "futebol"],
-    "higiene": ["sabonete", "shampoo", "papel higiênico", "higiene", "pessoal", "banho", "creme dental", "escova", "fio dental", "enxaguante", "desodorante", "perfume", "cosmético", "beleza"],
-    "limpeza": ["detergente", "sabão", "desinfetante", "limpeza", "lavar", "multiuso", "álcool", "sanitária", "água sanitária", "cloro", "limpa vidros", "lustra móveis", "cera", "removedor"],
-    "bebida": ["refrigerante", "suco", "cerveja", "água", "bebida", "drink", "líquido", "refri", "isotônico", "energético", "chá", "café", "leite", "iogurte bebível"],
-    "iluminação": ["lâmpada", "lustre", "refletor", "iluminação", "led", "luminária", "spot", "trilho", "abajur", "pendente", "plafon", "embutir", "externo", "interno", "dimerizável", "rgb"],
-    "supermercado": ["arroz", "feijão", "açúcar", "óleo", "massa", "supermercado", "mercearia", "alimento", "mantimento", "comida", "cereal", "grão"],
-    "vestuário": ["roupas", "camiseta", "camisa", "calça", "calçado", "sapato", "moda", "roupa", "vestir", "traje", "blusa", "vestido", "saia", "bermuda", "moletom", "jaqueta", "jeans", "social", "polo"],
-    "automotivos": ["carro", "moto", "veículo", "automotivo", "peça", "filtro", "óleo", "vela", "pastilha", "freio", "amortecedor", "bateria", "correia", "pneu", "roda", "calibragem", "balanceamento", "aro"],
-    "decoração": ["quadro", "tapete", "vaso", "luminaire", "enfeite", "decoração", "decorar", "adorno", "ornamento", "arte", "espelho", "cortina", "almofada", "vela", "aroma"],
+    # Nomes prefixados com '_' para não colidir com nomes de categorias reais acima
+    "_construção": ["cimento", "tijolo", "tinta", "cano", "construção", "obra", "material", "reformar", "pedreiro", "mestre de obras", "engenharia", "arquitetura"],
+    "_jardim": ["pá", "rastelo", "jardim", "planta", "vaso", "adubo", "jardinagem", "flor", "grama", "horta", "paisagismo", "jardineiro"],
+    "_ferramenta": ["martelo", "serrote", "chave", "alicate", "furadeira", "ferramenta", "reparo", "consertar", "manutenção", "oficina"],
+    "_informática": ["computador", "notebook", "periférico", "impressora", "processador", "pc", "ti", "tecnologia", "sistema", "programa", "código", "desenvolvedor"],
+    "_eletrônico": ["celular", "tablet", "eletrônico", "smartphone", "fone", "carregador", "gadget", "tech", "dispositivo", "aparelho", "smart"],
+    "_eletro": ["geladeira", "fogão", "máquina", "micro-ondas", "eletrodoméstico", "eletro", "doméstico", "cozinha", "lavanderia", "eletroportátil"],
+    "_móvel": ["sofá", "cadeira", "mesa", "armário", "cama", "móvel", "estofado", "mobília", "decorar", "mobiliário", "decoracao"],
+    "_livro": ["livro", "revista", "leitura", "didático", "literatura", "romance", "autor", "biblioteca", "escrita", "autor", "publicação"],
+    "_papelaria": ["caderno", "caneta", "papelaria", "escritório", "papel", "lápis", "material escolar", "escola", "escrita", "desenho", "arte", "artesanal"],
+    "_pet": ["ração", "cachorro", "gato", "pet", "petisco", "animal", "bicho", "veterinário", "banho", "tosa", "pet shop"],
+    "_auto": ["filtro", "óleo", "vela", "pastilha", "automotivo", "carro", "moto", "veículo", "peça", "mecânica", "oficina", "revisão", "troca óleo"],
+    "_pneu": ["pneu", "roda", "calibragem", "balanceamento", "alinhamento", "aro", "pneus", "rodas", "borracha", "câmara", "válvula", "rodízio"],
+    "_moda": ["camisa", "calça", "vestido", "saia", "blusa", "moda", "roupa", "vestir", "estilo", "tendência", "fashion", "look", "outfit", "vestuário"],
+    "_calçado": ["tênis", "sapato", "sandália", "calçado", "bota", "chinelo", "rasteira", "salto", "coturno", "sneaker", "esporte", "corrida", "caminhada", "futebol"],
+    "_higiene": ["sabonete", "shampoo", "papel higiênico", "higiene", "pessoal", "banho", "creme dental", "escova", "fio dental", "enxaguante", "desodorante", "perfume", "cosmético", "beleza"],
+    "_limpeza": ["detergente", "sabão", "desinfetante", "limpeza", "lavar", "multiuso", "álcool", "sanitária", "água sanitária", "cloro", "limpa vidros", "lustra móveis", "cera", "removedor"],
+    "_bebida": ["refrigerante", "suco", "cerveja", "água", "bebida", "drink", "líquido", "refri", "isotônico", "energético", "chá", "café", "leite", "iogurte bebível"],
+    "_iluminação": ["lâmpada", "lustre", "refletor", "iluminação", "led", "luminária", "spot", "trilho", "abajur", "pendente", "plafon", "embutir", "externo", "interno", "dimerizável", "rgb"],
+    "_supermercado": ["arroz", "feijão", "açúcar", "óleo", "massa", "supermercado", "mercearia", "alimento", "mantimento", "comida", "cereal", "grão"],
+    "_vestuário": ["roupas", "camiseta", "camisa", "calça", "calçado", "sapato", "moda", "roupa", "vestir", "traje", "blusa", "vestido", "saia", "bermuda", "moletom", "jaqueta", "jeans", "social", "polo"],
+    "_automotivos": ["carro", "moto", "veículo", "automotivo", "peça", "filtro", "óleo", "vela", "pastilha", "freio", "amortecedor", "bateria", "correia", "pneu", "roda", "calibragem", "balanceamento", "aro"],
+    "_decoração": ["quadro", "tapete", "vaso", "luminaire", "enfeite", "decoração", "decorar", "adorno", "ornamento", "arte", "espelho", "cortina", "almofada", "vela", "aroma"],
+}
+
+# Chaves genéricas separadas (prefixo '_') para busca ampla
+GENERIC_CATEGORIA_GATILHOS: dict[str, list[str]] = {
+    "_construção": ["cimento", "tijolo", "tinta", "cano", "construção", "obra", "material", "reformar", "pedreiro", "mestre de obras", "engenharia", "arquitetura"],
+    "_jardim": ["pá", "rastelo", "jardim", "planta", "vaso", "adubo", "jardinagem", "flor", "grama", "horta", "paisagismo", "jardineiro"],
+    "_ferramenta": ["martelo", "serrote", "chave", "alicate", "furadeira", "ferramenta", "reparo", "consertar", "manutenção", "oficina"],
+    "_informática": ["computador", "notebook", "periférico", "impressora", "processador", "pc", "ti", "tecnologia", "sistema", "programa", "código", "desenvolvedor"],
+    "_eletrônico": ["celular", "tablet", "eletrônico", "smartphone", "fone", "carregador", "gadget", "tech", "dispositivo", "aparelho", "smart"],
+    "_eletro": ["geladeira", "fogão", "máquina", "micro-ondas", "eletrodoméstico", "eletro", "doméstico", "cozinha", "lavanderia", "eletroportátil"],
+    "_móvel": ["sofá", "cadeira", "mesa", "armário", "cama", "móvel", "estofado", "mobília", "decorar", "mobiliário", "decoracao"],
+    "_livro": ["livro", "revista", "leitura", "didático", "literatura", "romance", "autor", "biblioteca", "escrita", "autor", "publicação"],
+    "_papelaria": ["caderno", "caneta", "papelaria", "escritório", "papel", "lápis", "material escolar", "escola", "escrita", "desenho", "arte", "artesanal"],
+    "_pet": ["ração", "cachorro", "gato", "pet", "petisco", "animal", "bicho", "veterinário", "banho", "tosa", "pet shop"],
+    "_auto": ["filtro", "óleo", "vela", "pastilha", "automotivo", "carro", "moto", "veículo", "peça", "mecânica", "oficina", "revisão", "troca óleo"],
+    "_pneu": ["pneu", "roda", "calibragem", "balanceamento", "alinhamento", "aro", "pneus", "rodas", "borracha", "câmara", "válvula", "rodízio"],
+    "_moda": ["camisa", "calça", "vestido", "saia", "blusa", "moda", "roupa", "vestir", "estilo", "tendência", "fashion", "look", "outfit", "vestuário"],
+    "_calçado": ["tênis", "sapato", "sandália", "calçado", "bota", "chinelo", "rasteira", "salto", "coturno", "sneaker", "esporte", "corrida", "caminhada", "futebol"],
+    "_higiene": ["sabonete", "shampoo", "papel higiênico", "higiene", "pessoal", "banho", "creme dental", "escova", "fio dental", "enxaguante", "desodorante", "perfume", "cosmético", "beleza"],
+    "_limpeza": ["detergente", "sabão", "desinfetante", "limpeza", "lavar", "multiuso", "álcool", "sanitária", "água sanitária", "cloro", "limpa vidros", "lustra móveis", "cera", "removedor"],
+    "_bebida": ["refrigerante", "suco", "cerveja", "água", "bebida", "drink", "líquido", "refri", "isotônico", "energético", "chá", "café", "leite", "iogurte bebível"],
+    "_iluminação": ["lâmpada", "lustre", "refletor", "iluminação", "led", "luminária", "spot", "trilho", "abajur", "pendente", "plafon", "embutir", "externo", "interno", "dimerizável", "rgb"],
+    "_supermercado": ["arroz", "feijão", "açúcar", "óleo", "massa", "supermercado", "mercearia", "alimento", "mantimento", "comida", "cereal", "grão"],
+    "_vestuário": ["roupas", "camiseta", "camisa", "calça", "calçado", "sapato", "moda", "roupa", "vestir", "traje", "blusa", "vestido", "saia", "bermuda", "moletom", "jaqueta", "jeans", "social", "polo"],
+    "_automotivos": ["carro", "moto", "veículo", "automotivo", "peça", "filtro", "óleo", "vela", "pastilha", "freio", "amortecedor", "bateria", "correia", "pneu", "roda", "calibragem", "balanceamento", "aro"],
+    "_decoração": ["quadro", "tapete", "vaso", "luminaire", "enfeite", "decoração", "decorar", "adorno", "ornamento", "arte", "espelho", "cortina", "almofada", "vela", "aroma"],
 }
 
 # Mapeamento de grandes áreas para categorias macro (RF27/RF28).
@@ -209,7 +236,7 @@ class CategoriaRepositoryImpl(CategoriaRepository):
         Match priority:
         1. Nome da categoria contém o termo (ex: "vestuário" em "Vestuário Masculino")
         2. Termo está nos gatilhos da categoria (ex: "roupas" -> "vestuário masculino")
-        3. Chave genérica de CATEGORIA_GATILHOS contém o termo (ex: "roupas" -> chave "vestuário")
+        3. Chave genérica de GENERIC_CATEGORIA_GATILHOS contém o termo (ex: "roupas" -> chave "_vestuário")
         """
         from sqlalchemy import select
 
@@ -234,13 +261,15 @@ class CategoriaRepositoryImpl(CategoriaRepository):
                 categorias_por_sinonimo[cat.id] = cat
                 continue
             
-            # 3. Match em chaves genéricas de CATEGORIA_GATILHOS (para busca ampla)
-            # Ex: buscar "roupas" encontra chave "vestuário" que tem "roupas" nos gatilhos
-            for chave, gatilhos_gen in CATEGORIA_GATILHOS.items():
-                if chave in nome or nome in chave:  # ex: "vestuário" in "vestuário masculino"
-                    if t in gatilhos_gen or any(g.startswith(t) or t.startswith(g) for g in gatilhos_gen if g):
-                        categorias_por_sinonimo[cat.id] = cat
-                        break
+            # 3. Match em chaves genéricas de GENERIC_CATEGORIA_GATILHOS (para busca ampla)
+            # Ex: buscar "roupas" encontra chave "_vestuário" que tem "roupas" nos gatilhos
+            for chave, gatilhos_gen in GENERIC_CATEGORIA_GATILHOS.items():
+                chave_sem_prefixo = chave[1:] if chave.startswith("_") else chave
+                if (chave_sem_prefixo in nome or nome in chave_sem_prefixo) and (
+                    t in gatilhos_gen or any(g.startswith(t) or t.startswith(g) for g in gatilhos_gen if g)
+                ):  # ex: "vestuário" in "vestuário masculino"
+                    categorias_por_sinonimo[cat.id] = cat
+                    break
 
         mescladas = {**categorias_por_sinonimo, **categorias_por_nome}
         return list(mescladas.values())
@@ -332,7 +361,7 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         )
         return list(result.scalars().all())
 
-    async def autocomplete(self, query: str, limit: int = 10, categoria_ids: list[int] | None = None):
+    async def autocomplete(self, query: str, limit: int = 10, categoria_ids: list[int] | None = None):  # noqa: PLR0912
         """Busca híbrida Full-Text Search: FULLTEXT (nome) + marca (FULLTEXT) + expansão semântica via produto_classes (FULLTEXT).
 
         Retorna resultados ordenados por relevância (score do MATCH/AGAINST, BOOLEAN MODE).
@@ -372,7 +401,7 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         result = await self.session.execute(fulltext_sql, params)
         rows = result.mappings().all()
         produtos = [ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows]
-        for p, r in zip(produtos, rows):
+        for p, r in zip(produtos, rows, strict=False):
             p.relevancia = float(r["relevancia"])
 
         if len(produtos) >= limit:
@@ -397,7 +426,7 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         result = await self.session.execute(marca_sql, params)
         rows = result.mappings().all()
         produtos.extend(ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows)
-        for p, r in zip(produtos[len(produtos) - len(rows):], rows):
+        for p, r in zip(produtos[len(produtos) - len(rows):], rows, strict=False):
             p.relevancia = float(r["relevancia"])
 
         if len(produtos) >= limit:
@@ -474,7 +503,7 @@ class ProdutoRepositoryImpl(ProdutoRepository):
                     )
                     rows = result.mappings().all()
                     novos = [ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows]
-                    for p, r in zip(novos, rows):
+                    for p, r in zip(novos, rows, strict=False):
                         p.relevancia = float(r["relevancia"])
                     produtos.extend(novos)
 
@@ -508,7 +537,7 @@ class ProdutoRepositoryImpl(ProdutoRepository):
             select(FornecedorProdutoModel.fornecedor_id)
             .distinct()
             .where(
-                FornecedorProdutoModel.ativo == True,
+                FornecedorProdutoModel.ativo,
                 FornecedorProdutoModel.estoque > 0,
             )
         )
@@ -516,14 +545,14 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         result = await self.session.execute(
             select(ProdutoModel)
             .where(
-                ProdutoModel.ativo == True,
+                ProdutoModel.ativo,
                 ProdutoModel.categoria_id.in_(categoria_ids),
                 # Garante que existe pelo menos um fornecedor ativo com estoque
                 ProdutoModel.id.in_(
                     select(FornecedorProdutoModel.produto_id)
                     .where(
                         FornecedorProdutoModel.fornecedor_id.in_(sub_fornecedores),
-                        FornecedorProdutoModel.ativo == True,
+                        FornecedorProdutoModel.ativo,
                         FornecedorProdutoModel.estoque > 0,
                     )
                 )

@@ -84,8 +84,10 @@ class TestCategoriaBuscaSemantica:
 
     def test_gatilhos_cobrem_exemplos_requisitados(self):
         # roupas/camiseta -> Vestuário ; pá/rastelo -> Jardinagem e Ferramentas
-        assert "roupas" in CATEGORIA_GATILHOS["vestuário"]
-        assert "camiseta" in CATEGORIA_GATILHOS["vestuário"]
+        # Chaves genéricas estão em GENERIC_CATEGORIA_GATILHOS com prefixo '_'
+        from src.adapters.api.catalogo import GENERIC_CATEGORIA_GATILHOS
+        assert "roupas" in GENERIC_CATEGORIA_GATILHOS["_vestuário"]
+        assert "camiseta" in GENERIC_CATEGORIA_GATILHOS["_vestuário"]
         assert "pá" in CATEGORIA_GATILHOS["jardinagem"] and "pá" in CATEGORIA_GATILHOS["ferramentas"]
         assert "rastelo" in CATEGORIA_GATILHOS["jardinagem"] and "rastelo" in CATEGORIA_GATILHOS["ferramentas"]
 

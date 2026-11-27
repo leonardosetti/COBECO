@@ -71,7 +71,7 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         )
         return list(result.scalars().all())
 
-    async def autocomplete(self, query: str, limit: int = 10):
+    async def autocomplete(self, query: str, limit: int = 10):  # noqa: PLR0912
         """Busca híbrida Full-Text Search: FULLTEXT (nome) + marca (FULLTEXT) + expansão semântica via produto_classes (FULLTEXT).
 
         Retorna resultados ordenados por relevância (score do MATCH/AGAINST, BOOLEAN MODE).
@@ -101,7 +101,7 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         result = await self.session.execute(fulltext_sql, {"query": f"+{q_sanitized}*", "limit": limit})
         rows = result.mappings().all()
         produtos = [ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows]
-        for p, r in zip(produtos, rows):
+        for p, r in zip(produtos, rows, strict=False):
             p.relevancia = float(r["relevancia"])
 
         if len(produtos) >= limit:
@@ -126,7 +126,7 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         )
         rows = result.mappings().all()
         produtos.extend(ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows)
-        for p, r in zip(produtos[len(produtos) - len(rows):], rows):
+        for p, r in zip(produtos[len(produtos) - len(rows):], rows, strict=False):
             p.relevancia = float(r["relevancia"])
 
         if len(produtos) >= limit:
@@ -200,7 +200,7 @@ class ProdutoRepositoryImpl(ProdutoRepository):
                     )
                     rows = result.mappings().all()
                     novos = [ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows]
-                    for p, r in zip(novos, rows):
+                    for p, r in zip(novos, rows, strict=False):
                         p.relevancia = float(r["relevancia"])
                     produtos.extend(novos)
 
