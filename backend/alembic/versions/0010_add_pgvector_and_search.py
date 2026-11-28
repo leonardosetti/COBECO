@@ -15,8 +15,8 @@ depends_on = None
 
 
 def upgrade() -> None:
-    # 1. Extensão pgvector
-    op.execute("CREATE EXTENSION IF NOT EXISTS pgvector")
+    # 1. Extensão vector (pgvector)
+    op.execute("CREATE EXTENSION IF NOT EXISTS vector")
 
     # 2. Colunas tsvector (texto) — mantidas por trigger
     op.add_column(
@@ -153,5 +153,5 @@ def downgrade() -> None:
     op.drop_column('produtos', 'marca_tsv')
     op.drop_column('produtos', 'nome_tsv')
 
-    # 3. Remover extensão pgvector (se não houver dependências)
-    op.execute("DROP EXTENSION IF EXISTS pgvector")
+    # 3. Remover extensão vector (se não houver dependências)
+    op.execute("DROP EXTENSION IF EXISTS vector")
