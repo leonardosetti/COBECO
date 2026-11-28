@@ -266,6 +266,73 @@ class ProdutoRepositoryImpl(ProdutoRepository):
 
         return produtos[:limit]
 
+    async def busca_semantica(
+        self,
+        query_embedding: list[float],
+        limit: int = 10,
+        categoria_ids: list[int] | None = None,
+    ):
+        """Busca semântica via pgvector (distância cosseno <=>).
+
+        Retorna produtos ordenados por similaridade semântica com o vetor de consulta.
+        """
+        from sqlalchemy import text
+
+        # Cláusula WHERE adicional para filtro de categoria
+        cat_where = ""
+        cat_params = {}
+        if categoria_ids:
+            cat_where = " AND categoria_id IN :categoria_ids"
+            cat_params = {"categoria_ids": tuple(categoria_ids)}
+
+        # Converte embedding Python para literal SQL pgvector
+        emb_str = "[" + ",".join(f"{float(v):.6f}" for v in query_embedding) + "]"
+
+        sql = text(f"""
+            SELECT id, nome, marca, unidade, ativo, criado_em,
+                   (embedding <=> :query_embedding::vector) AS distancia
+            FROM produtos
+            WHERE ativo = true
+              AND embedding IS NOT NULL
+              {cat_where}
+            ORDER BY distancia ASC
+            LIMIT :limit
+        """)
+        params = {"query_embedding": emb_str, "limit": limit, **cat_params}
+        result = await self.session.execute(sql, params)
+        rows = result.mappings().all()
+        produtos = [
+            ProdutoModel(**{k: v for k, v in dict(r).items() if k != "distancia"})
+            for r in rows
+        ]
+        for p, r in zip(produtos, rows):
+            # Converte distância cosseno (0=idêntico, 2=oposto) em score 0-1
+            p.relevancia = max(0.0, 1.0 - float(r["distancia"]))
+
+        return produtos[:limit]
+
+    def fusao_rrf(
+        self,
+        resultados_textuais: list,
+        resultados_semanticos: list,
+        k: int = 60,
+        limite: int = 10,
+    ):
+        """Fusão Recíproca de Ranqueamento (RRF) entre busca textual e semântica.
+
+        Combina rankings de tsvector e pgvector em uma lista unificada ordenada.
+        """
+        scores = {}
+        for lista_resultados in (resultados_textuais, resultados_semanticos):
+            for rank, p in enumerate(lista_resultados):
+                pid = p.id
+                if pid not in scores:
+                    scores[pid] = {"produto": p, "score": 0.0}
+                scores[pid]["score"] += 1.0 / (k + rank + 1)
+
+        ordenados = sorted(scores.values(), key=lambda x: x["score"], reverse=True)
+        return [item["produto"] for item in ordenados[:limite]]
+
     async def listar_ativos(self):
         result = await self.session.execute(
             select(ProdutoModel).where(ProdutoModel.ativo).order_by(ProdutoModel.nome)
@@ -512,7 +579,27 @@ async def autocomplete_produtos(
     repo: ProdutoRepository = Depends(get_produto_repo),
 ):
     categoria_ids = [int(c) for c in categorias.split(",")] if categorias else None
-    produtos = await repo.autocomplete(q, limit, categoria_ids)
+
+    # Busca textual (tsvector + GIN, português)
+    resultados_textuais = await repo.autocomplete(q, limit, categoria_ids)
+
+    # Busca semântica (pgvector) quando serviço de embeddings disponível
+    try:
+        from src.services.embedding import get_embedding_service
+
+        emb_service = get_embedding_service()
+        query_embedding = emb_service.gerar(q)
+        resultados_semanticos = await repo.busca_semantica(
+            query_embedding, limit, categoria_ids
+        )
+        # Fusão RRF textual + semântica
+        produtos = repo.fusao_rrf(
+            resultados_textuais, resultados_semanticos, limite=limit
+        )
+    except Exception:
+        # Fallback: apenas busca textual se serviço indisponível
+        produtos = resultados_textuais
+
     return [ProdutoResponse.model_validate(p) for p in produtos]
 
 
