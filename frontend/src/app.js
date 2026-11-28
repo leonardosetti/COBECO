@@ -285,7 +285,6 @@ const state = {
   categorias: [],
   categoriasDisponiveis: [],
   categoriasVisiveis: [],
-  categoriaBusca: '',
   categoriasSort: 'alfabetico', // 'alfabetico' | 'area' | 'frequencia'
   areasSelecionadas: [], // pré-filtro de grandes áreas (multi-seleção)
   areasGrandes: [],      // grandes áreas carregadas do backend
@@ -335,7 +334,6 @@ class ApiClient {
   }
   static listarCategorias() { return this.request('/catalogo/categorias'); }
   static listarAreasGrandes() { return this.request('/catalogo/areas-grandes'); }
-  static buscarCategorias(q) { return this.request('/catalogo/categorias/busca?q=' + encodeURIComponent(q)); }
   static listarProdutos(categorias = []) {
     const q = categorias.length ? '?categorias=' + categorias.join(',') : '';
     return this.request('/catalogo/produtos' + q);
@@ -646,15 +644,12 @@ function vCategorias() {
           <button class="btn btn-ghost btn-sm" data-action="cat-none">Limpar</button>
         </div>
       </div>
-      <div class="search-box"><label>Buscar categoria (semântica)</label>
-        <input type="text" id="busca-cat" value="${esc(state.categoriaBusca)}" placeholder="Ex.: roupas, camiseta, pá, rastelo" autocomplete="off" role="combobox">
-      </div>
       <div class="cat-grid" role="group" aria-label="Categorias macro" id="cat-grid">
         ${(state.categoriasVisiveis.length ? state.categoriasVisiveis : []).map(c => `<label class="cat-card ${state.categorias.includes(c.id) ? 'sel' : ''}" data-catcard="${c.id}">
           <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id) ? 'checked' : ''}>
           <span class="ci">${c.ic}</span><span class="cn">${esc(c.nome)}</span></label>`).join('')}
       </div>
-      <div class="tip">ℹ️ <b>Como funciona:</b> os fornecedores exibidos na próxima etapa pertencem às categorias selecionadas. Categorias já escolhidas permanecem visíveis mesmo durante a busca (RF26).</div>
+      <div class="tip">ℹ️ <b>Como funciona:</b> os fornecedores exibidos na próxima etapa pertencem às categorias selecionadas.</div>
       <div class="row-between mt">
         <button class="btn btn-ghost" data-action="nav-home">← Voltar</button>
         <div>
@@ -696,16 +691,12 @@ function recalcularVisiveis(baseCats) {
   }[state.categoriasSort] || ((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
   
   state.categoriasVisiveis = mescladas.sort(sortFn);
-  // Atualiza apenas o grid de categorias e barra de áreas sem full render (preserva foco no input)
+  // Atualiza apenas o grid de categorias e barra de áreas sem full render
   atualizarCategoriasVisiveis();
 }
 
 // Atualiza apenas DOM das categorias visíveis e áreas — sem full render
-function atualizarCategoriasVisiveis(preserveFocus = true) {
-  // Salva referência ao input de busca se precisar preservar foco
-  const buscaInput = preserveFocus ? document.getElementById('busca-cat') : null;
-  const hadFocus = buscaInput && document.activeElement === buscaInput;
-
+function atualizarCategoriasVisiveis() {
   // Atualiza contador
   const countEl = document.getElementById('cat-count');
   if (countEl) {
@@ -714,7 +705,7 @@ function atualizarCategoriasVisiveis(preserveFocus = true) {
     countEl.className = `count-chip ${state.categorias.length ? 'ok' : ''}`;
   }
 
-  // Atualiza grid de categorias (fallback para busca)
+  // Atualiza grid de categorias
   const grid = document.getElementById('cat-grid');
   if (grid) {
     grid.innerHTML = (state.categoriasVisiveis.length ? state.categoriasVisiveis : []).map(c => `
@@ -757,13 +748,6 @@ function atualizarCategoriasVisiveis(preserveFocus = true) {
   // Atualiza botão continuar
   const btn = document.getElementById('btn-to-lista');
   if (btn) btn.disabled = !state.categorias.length;
-
-  // Restaura foco no input de busca se estava focado
-  if (hadFocus && buscaInput) {
-    buscaInput.focus();
-    const len = buscaInput.value.length;
-    buscaInput.setSelectionRange(len, len);
-  }
 }
 
 function areasParaCategorias(areaIds) {
@@ -1298,7 +1282,6 @@ document.addEventListener('input', (e) => {
   const t = e.target;
   if (t.id === 'nome-lista') { state.lista.nome = t.value; persistJornada(); }
   else if (t.id === 'busca') { state.busca = t.value; updateSugestoes(); }
-  else if (t.id === 'busca-cat') { state.categoriaBusca = t.value; buscarCategoriasUI(); }
   else if (t.id === 'slider-disp') { state.filtroDisp = +t.value; document.getElementById('slider-out').textContent = t.value + '%'; refreshFornecedores(); }
 });
 
@@ -1326,29 +1309,6 @@ async function updateSugestoes() {
   }, 300);
 }
 
-let catTimer = null;
-async function buscarCategoriasUI() {
-  const q = norm(state.categoriaBusca);
-  clearTimeout(catTimer);
-  if (!q.length) {
-    recalcularVisiveis(areasParaCategorias(state.areasSelecionadas));
-    return;
-  }
-  catTimer = setTimeout(async () => {
-    try {
-      const res = await ApiClient.buscarCategorias(q);
-      const base = (res || []).map(c => ({ id: c.id, nome: c.nome, ic: '📂' }));
-      // RF26: busca nunca esconde categorias já selecionadas
-      const baseIds = new Set(base.map(c => c.id));
-      const selecionadas = state.categoriasDisponiveis.filter(c => state.categorias.includes(c.id));
-      const mescladas = [...base];
-      selecionadas.forEach(s => { if (!baseIds.has(s.id)) mescladas.push(s); });
-      state.categoriasVisiveis = mescladas;
-      // Atualização parcial do DOM — preserva foco no input de busca
-      atualizarCategoriasVisiveis(true);
-    } catch (e) { recalcularVisiveis(areasParaCategorias(state.areasSelecionadas)); }
-  }, 300);
-}
 
 document.addEventListener('click', (e) => {
   const s = e.target.closest('[data-action-add]');
