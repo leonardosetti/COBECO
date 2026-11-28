@@ -34,6 +34,7 @@ from sqlalchemy import (
     UniqueConstraint,
     func,
 )
+from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.adapters.db.database import Base
@@ -284,13 +285,13 @@ class ProdutoModel(Base):
     __tablename__ = "produtos"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    nome: Mapped[str] = mapped_column(String(200), nullable=False, index=True)
-    marca: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    nome: Mapped[str] = mapped_column(String(200), nullable=False)
+    marca: Mapped[str | None] = mapped_column(String(100), nullable=True)
     unidade: Mapped[str] = mapped_column(String(10), nullable=False)
     ativo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     criado_em: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
     categoria_id: Mapped[int | None] = mapped_column(
-        Integer, ForeignKey("categorias.id"), nullable=True, index=True
+        Integer, ForeignKey("categorias.id"), nullable=True
     )
 
     # Relacionamentos
@@ -300,8 +301,8 @@ class ProdutoModel(Base):
     )
     categoria: Mapped["CategoriaModel"] = relationship("CategoriaModel")
 
-    nome_tsv: Mapped[str | None] = mapped_column(Text, nullable=True)
-    marca_tsv: Mapped[str | None] = mapped_column(Text, nullable=True)
+    nome_tsv: Mapped[TSVECTOR | None] = mapped_column(TSVECTOR, nullable=True)
+    marca_tsv: Mapped[TSVECTOR | None] = mapped_column(TSVECTOR, nullable=True)
     embedding: Mapped[list[float] | None] = mapped_column(
         Vector(settings.EMBEDDING_DIM), nullable=True
     )
@@ -312,12 +313,6 @@ class ProdutoModel(Base):
         Index("ix_produto_nome_tsv", "nome_tsv", postgresql_using="gin"),
         Index("ix_produto_marca_tsv", "marca_tsv", postgresql_using="gin"),
         Index("ix_produto_categoria", "categoria_id"),
-        Index(
-            "ix_produto_embedding",
-            "embedding",
-            postgresql_using="hnsw",
-            postgresql_with={"m": 16, "ef_construction": 64},
-        ),
     )
 
     def to_domain(self) -> "Produto":
@@ -343,9 +338,9 @@ class ProdutoClasseModel(Base):
     classe_nome: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     termos_busca: Mapped[list[str]] = mapped_column(JSON, nullable=False)
     marcas_referencia: Mapped[list[str]] = mapped_column(JSON, nullable=False)
-    categoria_macro: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
-    termos_busca_tsv: Mapped[str | None] = mapped_column(Text, nullable=True)
-    marcas_referencia_tsv: Mapped[str | None] = mapped_column(Text, nullable=True)
+    categoria_macro: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    termos_busca_tsv: Mapped[TSVECTOR | None] = mapped_column(TSVECTOR, nullable=True)
+    marcas_referencia_tsv: Mapped[TSVECTOR | None] = mapped_column(TSVECTOR, nullable=True)
     ativo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     criado_em: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
     atualizado_em: Mapped[datetime] = mapped_column(
@@ -360,12 +355,6 @@ class ProdutoClasseModel(Base):
         Index("ix_produto_classes_categoria_macro", "categoria_macro"),
         Index("ix_produto_classes_termos_tsv", "termos_busca_tsv", postgresql_using="gin"),
         Index("ix_produto_classes_marcas_tsv", "marcas_referencia_tsv", postgresql_using="gin"),
-        Index(
-            "ix_produto_classes_embedding",
-            "embedding",
-            postgresql_using="hnsw",
-            postgresql_with={"m": 16, "ef_construction": 64},
-        ),
     )
 
 
