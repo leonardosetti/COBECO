@@ -13,8 +13,8 @@ from typing import Final, Literal
 
 # ruff: noqa: TRY003
 
-Profile = Literal["baseline", "expanded"]
-_UNIT_PATTERN: Final = re.compile(r"^(un|kg|L|m)$")
+Profile = Literal["baseline", "expanded", "semantica"]
+_UNIT_PATTERN: Final = re.compile(r"^(un|kg|L|m|g|ml)$")
 _SPACE_PATTERN: Final = re.compile(r"\s+")
 _CNPJ_PATTERN: Final = re.compile(r"^\d{2}\.\d{3}\.\d{3}/0001-\d{2}$")
 _CENT: Final = Decimal("0.01")
@@ -37,6 +37,13 @@ _EXPECTED_COUNTS: Final[dict[Profile, dict[str, int]]] = {
         "produtos": 2_600,
         "precos": 31_200,
         "relacoes": 312,
+    },
+    "semantica": {
+        "categorias": 12,
+        "fornecedores": 14,
+        "produtos": 60,
+        "precos": 82,
+        "relacoes": 32,
     },
 }
 
@@ -69,6 +76,7 @@ class Product:
     id: int
     category_id: int
     name: str
+    marca: str | None
     unit: str
     price: Decimal
 
@@ -414,6 +422,40 @@ _VARIANT_FACTORS: Final[tuple[Decimal, ...]] = (
     Decimal("1.25"),
     Decimal("1.30"),
 )
+
+# Marcas por categoria (para seed realista de marca)
+_CATEGORY_BRANDS: Final[dict[int, tuple[str, ...]]] = {
+    1: ("Tio João", "Camil", "Nome", "Carolino", "Tio Jorge"),          # Mercado
+    2: ("Hering", "Renner", "C&A", "Zara", "Riachuelo"),                 # Vestuário
+    3: ("Bosch", "Mobil", "Shell", "Ipiranga", "Petrobras"),            # Automotivos
+    4: ("Dell", "HP", "Lenovo", "Logitech", "Kingston"),                # Informática
+    5: ("Portobello", "Donalisa", "Oxford", "Tecnisa", "Portobello"),  # Decoração
+    6: ("Tok&Stok", "Etna", "Mobly", "Madesa", "Kappesberg"),          # Móveis
+    7: ("Votoran", "InterCement", "Tigre", "Amanco", "Deca"),           # Materiais Construção
+    8: ("Tramontina", "Stanley", "Bosch", "Makita", "Dewalt"),         # Ferramentas
+    9: ("Companhia das Letras", "Saraiva", "Rocco", "Intrínseca", "HarperCollins"),  # Livros
+    10: ("Vasap", "Truper", "Gardena", "Stihl", "Husqvarna"),           # Jardinagem
+    11: ("Brastemp", "Consul", "Electrolux", "LG", "Samsung"),          # Eletrodomésticos
+    12: ("Coca-Cola", "Ambev", "Nestlé", "Suvalan", "Garoto"),          # Bebidas
+    13: ("Ypê", "OMO", "Bombril", "Veja", "Sanytol"),                   # Limpeza e Higiene
+    14: ("Nike", "Adidas", "Vans", "Melissa", "Arezzo"),                # Calçados e Bolsas
+    15: ("Ray-Ban", "Oakley", "Casio", "Citizen", "Seiko"),             # Óculos e Relógios
+    16: ("Samsung", "Apple", "Motorola", "Xiaomi", "Sony"),             # Celulares
+    17: ("Sony", "Microsoft", "Nintendo", "Logitech", "Razer"),         # Games
+    18: ("Caloi", "Groove", "Sense", "Absolute", "Shimano"),            # Bicicletas
+    19: ("Neosaldina", "Dorflex", "Buscopan", "Medley", "Eurofarma"),   # Farmácia
+    20: ("Nivea", "L'Oréal", "Natura", "O Boticário", "Dove"),          # Beleza
+    21: ("BIC", "Faber-Castell", "Tilibra", "Pilot", "Stabilo"),        # Papelaria
+    22: ("Nike", "Adidas", "Asics", "Mizuno", "Under Armour"),          # Esportes
+    23: ("Nautika", "Moringa", "Guepardo", "Deuter", "Sea to Summit"),  # Camping
+    24: ("Lego", "Mattel", "Hasbro", "Estrela", "Fisher-Price"),        # Brinquedos
+    25: ("Pedigree", "Whiskas", "Royal Canin", "Premier", "Golden"),    # Pet
+    26: ("Kraft", "Smurfit Kappa", "DS Smith", "WestRock", "International Paper"),  # Embalagens
+}
+
+# Marcas padrão para categorias não mapeadas
+_DEFAULT_BRANDS: Final[tuple[str, ...]] = ("Genérico", "Marca Própria", "White Label")
+
 _CATEGORY_BASE_PRICES: Final[dict[int, Decimal]] = {
     1: Decimal("12.90"),
     2: Decimal("39.90"),
@@ -595,13 +637,17 @@ def _build_baseline() -> SeedDataset:
     product_id = 1
     for category_id, quantity in _BASELINE_PRODUCT_GROUPS:
         category = categories[category_id - 1]
+        brands = _CATEGORY_BRANDS.get(category_id, _DEFAULT_BRANDS)
         for product_index in range(quantity):
             name = category.products[product_index]
+            # Atribui marca de forma determinística baseada no product_id
+            marca = brands[(product_id - 1) % len(brands)]
             products.append(
                 Product(
                     id=product_id,
                     category_id=category_id,
                     name=name,
+                    marca=marca,
                     unit=_infer_unit(name),
                     price=_base_price(category_id, product_index),
                 )
@@ -672,16 +718,20 @@ def _build_expanded() -> SeedDataset:
     products: list[Product] = []
     product_id = 1
     for category in categories:
+        brands = _CATEGORY_BRANDS.get(category.id, _DEFAULT_BRANDS)
         for product_index, base_name in enumerate(category.products):
             for variant_index, variant in enumerate(_VARIANTS):
                 price = _money(
                     _base_price(category.id, product_index) * _VARIANT_FACTORS[variant_index]
                 )
+                # Marca determinística: varia por produto base, não por variante
+                marca = brands[product_index % len(brands)]
                 products.append(
                     Product(
                         id=product_id,
                         category_id=category.id,
                         name=f"{category.name} - {base_name} - {variant}",
+                        marca=marca,
                         unit=_infer_unit(base_name),
                         price=price,
                     )
@@ -717,6 +767,169 @@ def _build_expanded() -> SeedDataset:
         profile="expanded",
         categories=categories,
         suppliers=tuple(suppliers),
+        products=tuple(products),
+        offers=tuple(offers),
+        supplier_categories=supplier_categories,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Perfil "semantica" — dados de borda para validar a semântica de negócio
+# (RF12-RF16): categoria órfã, coberturas 0/50/100%, empate de preço com
+# cobertura diferente, produto sem preço em nenhum fornecedor, estoque 0.
+# ---------------------------------------------------------------------------
+
+_SEMANTICA_CATEGORIES: Final[tuple[tuple[int, str, str, str], ...]] = (
+    (1, "Mercado", "Alimentação e hogar", "Supermercados, mercearias e atacados"),
+    (2, "Vestuário", "Moda e acessórios", "Roupas, calçados e acessórios"),
+    (3, "Automotivos", "Mobilidade", "Peças, acessórios e serviços automotivos"),
+    (4, "Informática", "Tecnologia e comunicação", "Computadores, periféricos e eletrônicos"),
+    (5, "Decoração", "Casa e construção", "Itens de decoração e artigos para casa"),
+    (6, "Móveis", "Casa e construção", "Móveis residenciais e corporativos"),
+    (7, "Materiais de Construção e Ferragens", "Casa e construção", "Materiais de construção, ferramentas e ferragens"),
+    (8, "Ferramentas", "Casa e construção", "Ferramentas manuais, elétricas e de medição"),
+    (9, "Livros", "Cultura e entretenimento", "Livros, revistas e publicações"),
+    (10, "Jardinagem", "Casa e construção", "Plantas, ferramentas e artigos de jardim"),
+    (11, "Eletrodomésticos", "Casa e construção", "Eletrodomésticos de linha branca e marrom"),
+    (12, "Brinquedos", "Infância, pet e consumo operacional", "Brinquedos e produtos infantis"),  # órfã
+)
+
+# (id, nome, cnpj_raiz, [categoria_ids])
+_SEMANTICA_SUPPLIERS: Final[tuple[tuple[int, str, str, tuple[int, ...]], ...]] = (
+    (1, "Carrefour", "99000111", (1, 2, 3, 5, 11, 4)),
+    (2, "Extra", "00111222", (1, 2, 9, 11)),
+    (3, "Pão de Açúcar", "66777888", (1,)),
+    (4, "Magazine Luiza", "77888999", (11, 4, 6)),
+    (5, "Casas Bahia", "88999000", (11, 4, 6)),
+    (6, "Leroy Merlin", "11222333", (7, 8, 10, 5)),
+    (7, "Etna", "22333444", (5, 6)),
+    (8, "C&A", "33444555", (2,)),
+    (9, "Renner", "44455666", (2,)),
+    (10, "Hering", "55666777", (2,)),
+    (11, "Brinquedos da Feliz", "10000001", (12,)),  # só categoria órfã
+    (12, "Mercado Popular", "20000002", (1, 12)),
+    (13, "Informática Total", "30000003", (4,)),
+    (14, "Mercado e Informática", "40000004", (1, 4)),
+)
+
+# (categoria_id, quantidade_de_produtos) -> 5 por categoria = 60 produtos
+_SEMANTICA_PRODUCT_GROUPS: Final[tuple[tuple[int, int], ...]] = tuple(
+    (cid, 5) for cid in range(1, 13)
+)
+
+# fornecedor_id -> [produto_ids] com variação de cobertura
+# Produto 1 (Arroz, id 1): Carrefour, Extra, Pão de Açúcar (100% para mercado)
+# Produto 2 (Feijão, id 2): Carrefour, Extra (empate de preço com Pão de Açúcar? não, preço diferente)
+# Para empate de preço total + cobertura diferente: produto 10 (Ovos) preço igual em Carrefour e Extra
+_SEMANTICA_CATALOGO: Final[dict[int, list[int]]] = {
+    1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],   # Carrefour: 12 produtos
+    2: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11],           # Extra: 10 produtos (sem 4, 12)
+    3: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],    # Pão de Açúcar: 12 produtos
+    4: [13, 14, 15, 16, 17],                       # Magalu: 5 (informática/móveis)
+    5: [13, 14, 15, 16, 17],                       # Casas Bahia: 5
+    6: [18, 19, 20, 21, 22],                       # Leroy: 5 (construção/ferramentas/jardinagem/decoração)
+    7: [23, 24, 25, 26],                           # Etna: 4 (decoração/móveis)
+    8: [27, 28, 29],                               # C&A: 3 (vestuário)
+    9: [30, 31, 32],                               # Renner: 3 (vestuário)
+    10: [33, 34, 35],                              # Hering: 3 (vestuário)
+    11: [36, 37, 38, 39, 40],                      # Brinquedos da Feliz: 5 (categoria órfã 12)
+    12: [1, 2, 36, 37, 38],                        # Mercado Popular: 5 (mercado + brinquedos)
+    13: [41, 42, 43, 44, 45],                      # Informática Total: 5 (informática)
+    14: [1, 41, 42, 43, 44],                       # Mercado e Informática: 5 (mercado + informática)
+}
+
+# Fator de preço por fornecedor (para criar empates e variações)
+_SEMANTICA_FATOR: Final[dict[int, float]] = {
+    1: 1.00, 2: 1.00, 3: 1.10, 4: 0.95, 5: 1.05, 6: 0.90, 7: 1.00, 8: 1.00,
+    9: 1.00, 10: 1.00, 11: 1.00, 12: 0.98, 13: 1.02, 14: 1.00,
+}
+
+# Estoque: 0 em alguns itens para simular indisponibilidade
+_SEMANTICA_STOCK_ZERO: Final[set[tuple[int, int]]] = {
+    (4, 14), (6, 20), (11, 38),  # estoque zero (indisponível)
+}
+
+# Preços iguais propositalmente para gerar empate de preço total com cobertura diferente
+# Produto 1 (id 1) preço 10.00 em Carrefour (1) e Extra (2) — mesmo preço, mesma cobertura parcial
+# Ajuste: cobrimos via fatores iguais para 1 e 2 no produto 1
+
+
+def _semantica_category(cid: int, nome: str, segmento: str, descricao: str) -> Categoria:
+    return Category(
+        id=cid,
+        name=normalize_text(nome),
+        segment=normalize_text(segmento),
+        description=normalize_text(descricao),
+        products=(),
+    )
+
+
+def _semantica_supplier(sid: int, nome: str, cnpj_raiz: str, categories: tuple[int, ...]) -> Supplier:
+    return Supplier(
+        id=sid,
+        name=normalize_text(nome),
+        cnpj=make_cnpj(cnpj_raiz),
+        categories=tuple(sorted(categories)),
+    )
+
+
+def _build_semantica() -> SeedDataset:
+    categories = tuple(
+        _semantica_category(cid, nome, seg, desc)
+        for cid, nome, seg, desc in _SEMANTICA_CATEGORIES
+    )
+
+    suppliers = tuple(
+        _semantica_supplier(sid, nome, cnpj, cats)
+        for sid, nome, cnpj, cats in _SEMANTICA_SUPPLIERS
+    )
+
+    products: list[Product] = []
+    product_id = 1
+    for category_id, quantity in _SEMANTICA_PRODUCT_GROUPS:
+        category = categories[category_id - 1]
+        for _ in range(quantity):
+            products.append(
+                Product(
+                    id=product_id,
+                    category_id=category_id,
+                    name=normalize_text(f"{category.name} Item {product_id}"),
+                    marca=normalize_text("Genérica"),
+                    unit="un",
+                    price=_money(Decimal("10.00") + Decimal(product_id)),
+                )
+            )
+            product_id += 1
+
+    # Montar ofertas com base no catálogo, fator de preço e estoque
+    offers: list[Offer] = []
+    for fid, pids in _SEMANTICA_CATALOGO.items():
+        fator = _SEMANTICA_FATOR[fid]
+        for pid in pids:
+            produto = products[pid - 1]
+            preco = _money(produto.price * Decimal(str(fator)))
+            estoque = 0 if (fid, pid) in _SEMANTICA_STOCK_ZERO else _stock(fid, pid)
+            offers.append(
+                Offer(
+                    supplier_id=fid,
+                    product_id=pid,
+                    price=preco,
+                    stock=estoque,
+                )
+            )
+
+    supplier_categories = tuple(
+        sorted(
+            (supplier.id, category_id)
+            for supplier in suppliers
+            for category_id in supplier.categories
+        )
+    )
+
+    return SeedDataset(
+        profile="semantica",
+        categories=categories,
+        suppliers=suppliers,
         products=tuple(products),
         offers=tuple(offers),
         supplier_categories=supplier_categories,
@@ -793,7 +1006,208 @@ def build_dataset(profile: Profile) -> SeedDataset:
         dataset = _build_baseline()
     elif profile == "expanded":
         dataset = _build_expanded()
+    elif profile == "semantica":
+        dataset = _build_semantica()
     else:
         raise ValueError(f"perfil inválido: {profile}")
     validate_dataset(dataset)
     return dataset
+
+
+# ============================================================
+# Seed data para produto_classes (Mapeamento Semântico Marca -> Classe)
+# ============================================================
+
+_PRODUTO_CLASSES_SEED: Final[tuple[dict, ...]] = (
+    # Alimentos - Mercearia
+    {
+        "classe_nome": "Amido de Milho",
+        "termos_busca": ["amido de milho", "maizena", "maisena", "amido milho"],
+        "marcas_referencia": ["Maizena", "Amafil", "Yoki", "Dr. Oetker", "Camil"],
+        "categoria_macro": "Mercearia",
+    },
+    {
+        "classe_nome": "Palha de Aço",
+        "termos_busca": ["palha de aço", "bombril", "esponja aço", "lã de aço"],
+        "marcas_referencia": ["Bombril", "Assolan", "Scotch-Brite", "Bombril", "Climax"],
+        "categoria_macro": "Limpeza e Higiene",
+    },
+    {
+        "classe_nome": "Cachaça / Aguardente",
+        "termos_busca": ["cachaça", "aguardente", "pinga", "51", "caninha"],
+        "marcas_referencia": ["51", "Velho Barreiro", "Ypióca", "Salo", "Minas Gerais"],
+        "categoria_macro": "Bebidas",
+    },
+    {
+        "classe_nome": "Molho de Tomate",
+        "termos_busca": ["molho de tomate", "pomarola", "molho tomate", "extrato tomate"],
+        "marcas_referencia": ["Pomarola", "Elefante", "Qualitá", "Heinz", "Predilecta"],
+        "categoria_macro": "Mercearia",
+    },
+    {
+        "classe_nome": "Arroz Tipo 1",
+        "termos_busca": ["arroz", "arroz tipo 1", "arroz branco", "arroz agulhinha"],
+        "marcas_referencia": ["Tio João", "Camil", "Nome", "Carolino", "Tio Jorge"],
+        "categoria_macro": "Mercearia",
+    },
+    {
+        "classe_nome": "Feijão Preto",
+        "termos_busca": ["feijão preto", "feijao", "feijão carioca", "feijão preto tipo 1"],
+        "marcas_referencia": ["Camil", "Kicaldo", "Feijão Bom", "Tio João", "Nome"],
+        "categoria_macro": "Mercearia",
+    },
+    {
+        "classe_nome": "Óleo de Soja",
+        "termos_busca": ["óleo de soja", "oleo soja", "óleo cozinha", "óleo 900ml"],
+        "marcas_referencia": ["Liza", "Soya", "Cargill", "Bunge", "Predilecta"],
+        "categoria_macro": "Mercearia",
+    },
+    {
+        "classe_nome": "Açúcar Cristal",
+        "termos_busca": ["açúcar", "acucar", "açúcar cristal", "açúcar refinado"],
+        "marcas_referencia": ["União", "Camil", "Caravelas", "Da Barra", "São Vicente"],
+        "categoria_macro": "Mercearia",
+    },
+    {
+        "classe_nome": "Café Torrado",
+        "termos_busca": ["café", "cafe", "café torrado", "café moído", "café grão"],
+        "marcas_referencia": ["Melitta", "Pilão", "3 Corações", "Santa Clara", "Café do Ponto"],
+        "categoria_macro": "Mercearia",
+    },
+    {
+        "classe_nome": "Leite Integral",
+        "termos_busca": ["leite", "leite integral", "leite uht", "leite longa vida"],
+        "marcas_referencia": ["Itambé", "Piracanjuba", "Nestlé", "Paralat", "Mococa"],
+        "categoria_macro": "Mercearia",
+    },
+    # Limpeza
+    {
+        "classe_nome": "Detergente Líquido",
+        "termos_busca": ["detergente", "detergente liquido", "sabão louça", "lava louças"],
+        "marcas_referencia": ["Ypê", "Minerva", "Limpol", "Assolan", "Finish"],
+        "categoria_macro": "Limpeza e Higiene",
+    },
+    {
+        "classe_nome": "Sabão em Pó",
+        "termos_busca": ["sabão em pó", "sabao po", "sabão roupa", "detergente po"],
+        "marcas_referencia": ["OMO", "Ariel", "Tixan", "Brilhante", "Ypê"],
+        "categoria_macro": "Limpeza e Higiene",
+    },
+    {
+        "classe_nome": "Amaciante",
+        "termos_busca": ["amaciante", "amaciante roupa", "suavizante"],
+        "marcas_referencia": ["Comfort", "Ypê", "Minerva", "Downy", "Fofo"],
+        "categoria_macro": "Limpeza e Higiene",
+    },
+    {
+        "classe_nome": "Papel Higiênico",
+        "termos_busca": ["papel higienico", "papel higiênico", "papel toilet", "papel rolo"],
+        "marcas_referencia": ["Personal", "Neve", "Duetto", "Elite", "Personal VIP"],
+        "categoria_macro": "Limpeza e Higiene",
+    },
+    # Bebidas
+    {
+        "classe_nome": "Refrigerante Cola",
+        "termos_busca": ["refrigerante", "coca cola", "pepsi", "cola", "guarana"],
+        "marcas_referencia": ["Coca-Cola", "Pepsi", "Guaraná Antarctica", "Tubaina", "Fanta"],
+        "categoria_macro": "Bebidas",
+    },
+    {
+        "classe_nome": "Cerveja",
+        "termos_busca": ["cerveja", "skol", "brahma", "antartica", "heineken"],
+        "marcas_referencia": ["Skol", "Brahma", "Antarctica", "Heineken", "Itaipava"],
+        "categoria_macro": "Bebidas",
+    },
+    # Higiene/Beleza
+    {
+        "classe_nome": "Shampoo",
+        "termos_busca": ["shampoo", "xampu", "shampoo cabelo", "lavar cabelo"],
+        "marcas_referencia": ["Nivea", "L'Oréal", "Pantene", "Dove", "Seda"],
+        "categoria_macro": "Beleza e Cuidados Pessoais",
+    },
+    {
+        "classe_nome": "Sabonete",
+        "termos_busca": ["sabonete", "sabonete liquido", "sabonete barra", "sabão corpo"],
+        "marcas_referencia": ["Dove", "Nivea", "Protex", "Palmolive", "Granado"],
+        "categoria_macro": "Beleza e Cuidados Pessoais",
+    },
+    {
+        "classe_nome": "Protetor Solar",
+        "termos_busca": ["protetor solar", "filtro solar", "bloqueador solar", "protetor fps"],
+        "marcas_referencia": ["Nivea", "La Roche-Posay", "Avène", "Sundown", "Australian Gold"],
+        "categoria_macro": "Beleza e Cuidados Pessoais",
+    },
+    # Farmácia
+    {
+        "classe_nome": "Analgésico / Dipirona",
+        "termos_busca": ["dipirona", "novalgina", "analgésico", "dor", "dor de cabeça"],
+        "marcas_referencia": ["Novalgina", "Dorflex", "Anador", "Medley", "Genérico"],
+        "categoria_macro": "Farmácia e Saúde",
+    },
+    # Informática/Eletrônicos
+    {
+        "classe_nome": "Notebook",
+        "termos_busca": ["notebook", "laptop", "computador portátil", "ultrabook"],
+        "marcas_referencia": ["Dell", "HP", "Lenovo", "Asus", "Acer"],
+        "categoria_macro": "Informática",
+    },
+    {
+        "classe_nome": "Smartphone",
+        "termos_busca": ["smartphone", "celular", "iphone", "android", "telefone"],
+        "marcas_referencia": ["Samsung", "Apple", "Motorola", "Xiaomi", "Sony"],
+        "categoria_macro": "Celulares e Telecomunicações",
+    },
+    # Automotivo
+    {
+        "classe_nome": "Óleo de Motor",
+        "termos_busca": ["óleo motor", "oleo motor", "lubrificante motor", "oleo 5w30", "oleo 20w50"],
+        "marcas_referencia": ["Mobil", "Shell", "Castrol", "Valvoline", "Ipiranga"],
+        "categoria_macro": "Automotivos",
+    },
+    # Pet
+    {
+        "classe_nome": "Ração para Cães",
+        "termos_busca": ["ração cães", "ração cachorro", "ração pet", "ração premium"],
+        "marcas_referencia": ["Pedigree", "Royal Canin", "Premier", "Golden", "Whiskas"],
+        "categoria_macro": "Pet",
+    },
+    {
+        "classe_nome": "Ração para Gatos",
+        "termos_busca": ["ração gatos", "ração gato", "ração felina"],
+        "marcas_referencia": ["Whiskas", "Royal Canin", "Premier", "Golden", "Pedigree"],
+        "categoria_macro": "Pet",
+    },
+    # Ferramentas
+    {
+        "classe_nome": "Furadeira/Parafusadeira",
+        "termos_busca": ["furadeira", "parafusadeira", "furadeira impacto", "parafusadeira bateria"],
+        "marcas_referencia": ["Bosch", "Makita", "DeWalt", "Black+Decker", "Stanley"],
+        "categoria_macro": "Ferramentas",
+    },
+)
+
+
+def build_produto_classes_seed() -> list[dict]:
+    """Retorna lista de dicts prontos para INSERT na tabela produto_classes."""
+    return [
+        {
+            "classe_nome": item["classe_nome"],
+            "termos_busca": item["termos_busca"],
+            "marcas_referencia": item["marcas_referencia"],
+            "categoria_macro": item["categoria_macro"],
+            "ativo": True,
+        }
+        for item in _PRODUTO_CLASSES_SEED
+    ]
+
+
+def validate_produto_classes_seed(classes: list[dict]) -> None:
+    """Validações básicas do seed de classes."""
+    nomes = [c["classe_nome"] for c in classes]
+    if len(nomes) != len(set(nomes)):
+        raise ValueError("classe_nome duplicado no seed de produto_classes")
+    for c in classes:
+        if not c["termos_busca"] or not isinstance(c["termos_busca"], list):
+            raise ValueError(f"termos_busca inválido para {c['classe_nome']}")
+        if not c["marcas_referencia"] or not isinstance(c["marcas_referencia"], list):
+            raise ValueError(f"marcas_referencia inválido para {c['classe_nome']}")

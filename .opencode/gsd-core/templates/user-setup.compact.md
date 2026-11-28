@@ -50,7 +50,7 @@ After completing setup, verify with:
 ```
 
 Expected results:
-- [What sdoc-arch-0006-uc-v1cess looks like]
+- [What success looks like]
 
 ---
 
@@ -103,7 +103,7 @@ user_setup:
 |-----------------------------------|--------------------------------|
 | `npm install stripe` | Create Stripe account |
 | Write webhook handler code | Get API keys from dashboard |
-| Create `config-env-0001-env-example-v1.0.local` file strdoc-arch-0006-uc-v1ture | Copy actual secret values |
+| Create `config-env-0001-env-example-v1.0.local` file structure | Copy actual secret values |
 | Run `stripe listen` | Authenticate Stripe CLI (browser OAuth) |
 | Configure config-npm-0001-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0-v1.0.json | Access external service dashboards |
 | Write any code | Retrieve secrets from third-party systems |
@@ -151,8 +151,8 @@ Complete these items for Stripe integration to function.
     - `customer.subscription.updated`
     - `customer.subscription.deleted`
 
-- [ ] **Create proddoc-arch-0006-uc-v1ts and prices** (if using subscription tiers)
-  - Location: Stripe Dashboard → Proddoc-arch-0006-uc-v1ts → Add proddoc-arch-0006-uc-v1t
+- [ ] **Create products and prices** (if using subscription tiers)
+  - Location: Stripe Dashboard → Products → Add product
   - Create each subscription tier
   - Copy Price IDs to:
     - `STRIPE_STARTER_PRICE_ID`

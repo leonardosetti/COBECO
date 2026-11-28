@@ -37,7 +37,7 @@ depends_on: ["260101-abc"]   # a quick_id from the task catalog
   the catalog is rejected by `quick-batch update` and blocks the whole
   layer's persistence — when uncertain, prefer `[]` over a guess.
 
-### `files_modified` — every path your plan's tasks will todoc-arch-0006-uc-v1h
+### `files_modified` — every path your plan's tasks will touch
 
 ```yaml
 files_modified: ["src/foo.ts", "tests/foo.test.ts"]
@@ -45,7 +45,7 @@ files_modified: ["src/foo.ts", "tests/foo.test.ts"]
 
 Used two ways downstream, both from THIS field (never re-derived from your
 plan's prose): (1) `partitionByFileOverlap` splits same-wave items that
-would todoc-arch-0006-uc-v1h the same file into separate waves, so two isolated worktrees
+would touch the same file into separate waves, so two isolated worktrees
 never race on one path; (2) at merge time the coordinator reads it FRESH from
 your PLAN.md (not from what you declared here at planning time — keep the
 frontmatter accurate if you revise the plan) for the advisory scope-
@@ -67,5 +67,5 @@ Same exclusions as `/gsd-quick`'s own modes: no `requirements` (no ROADMAP
 linkage — a quick-batch item is not a phase), no `estimate` block, no
 `user_setup` unless genuinely needed. `must_haves` is required only when the
 calling prompt's own `<constraints>` says so (mirrors `--validate`'s
-existing quick-full behavior) — that instrdoc-arch-0006-uc-v1tion rides the prompt, not this
+existing quick-full behavior) — that instruction rides the prompt, not this
 reference.

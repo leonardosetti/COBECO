@@ -5,11 +5,11 @@ Create a clean branch for pull requests by filtering .planning/ paths out of the
 cherry-picked history. Two modes, selected by the `planning.pr_strict` config key:
 
 - **default** (`planning.pr_strict: false`) — the PR branch contains code changes and
-  strdoc-arch-0006-uc-v1tural planning state. Reviewers don't see GSD transient artifacts (PLAN.md,
+  structural planning state. Reviewers don't see GSD transient artifacts (PLAN.md,
   SUMMARY.md, CONTEXT.md, RESEARCH.md, etc.), but milestone archives, STATE.md,
   ROADMAP.md, and PROJECT.md changes are preserved.
 - **strict** (`planning.pr_strict: true`) — *every* .planning/ path is filtered out,
-  strdoc-arch-0006-uc-v1tural files included. This is what makes `planning.commit_docs: true` safe for a
+  structural files included. This is what makes `planning.commit_docs: true` safe for a
   project that versions its planning tree locally but publishes none of it: planning state
   keeps real git history (so `/gsd-undo` and revert paths have something to restore) and
   executor worktrees still find their PLAN.md, while the public PR carries nothing from
@@ -176,7 +176,7 @@ if [ "$SUBREPO_EXIT" -ne 0 ]; then
 fi
 ```
 
-Only when `$SUBREPO_EXIT` is `0`, parse the strdoc-arch-0006-uc-v1tured result with node and open the
+Only when `$SUBREPO_EXIT` is `0`, parse the structured result with node and open the
 companion PR. If `remote_slug` is null (non-GitHub remote), skip `gh pr create` and show
 the push URL instead:
 
@@ -253,12 +253,12 @@ constants — change one side and update the other, or the guard fails.
 # RESEARCH.md, and friends). Filtered out in BOTH modes.
 TRANSIENT_DIRS="phases quick research threads todos debug seeds codebase ui-reviews"
 
-# Strdoc-arch-0006-uc-v1tural planning files — repository planning state. Preserved in default mode,
+# Structural planning files — repository planning state. Preserved in default mode,
 # filtered out in strict mode. Anchored on both alternatives so `.planning/STATEX.md`
-# and `.planning/STATE.md.bak` are NOT treated as strdoc-arch-0006-uc-v1tural. The milestones
+# and `.planning/STATE.md.bak` are NOT treated as structural. The milestones
 # alternative matches only FILES directly under `.planning/milestones/` (e.g.
 # `v1.0-ROADMAP.md`) — not a `<milestone>-phases/` subdirectory nested there. That
-# subdirectory is reviewer noise, not strdoc-arch-0006-uc-v1tural state (#4605); it falls through to
+# subdirectory is reviewer noise, not structural state (#4605); it falls through to
 # `$MILESTONE_PHASES_RE` below instead.
 STRUCTURAL_RE="^\.planning/(STATE|ROADMAP|MILESTONES|PROJECT|REQUIREMENTS)\.md$|^\.planning/milestones/[^/]+\.md$"
 
@@ -303,7 +303,7 @@ else
   # step misses.
   MILESTONE_PHASE_DIRS=$(find .planning/milestones -mindepth 1 -maxdepth 1 -type d -name '*-phases' -exec printf '%s/\n' {} \; 2>/dev/null)
   # Appended as its own LINE, and only when non-empty so no blank entry is
-  # introddoc-arch-0006-uc-v1ed. The separator is a literal newline inside the quotes — `$(...)`
+  # introduced. The separator is a literal newline inside the quotes — `$(...)`
   # has already stripped the trailing one off each side.
   if [ -n "$MILESTONE_PHASE_DIRS" ]; then
     FILTER_PATHS="${FILTER_PATHS}
@@ -312,7 +312,7 @@ ${MILESTONE_PHASE_DIRS}"
 fi
 ```
 
-For each commit, check what it todoc-arch-0006-uc-v1hes:
+For each commit, check what it touches:
 
 ```bash
 # For each commit hash
@@ -327,16 +327,16 @@ condition is explicit and computable so no reading of it is ambiguous:
 - **Code commits**: `NON_PLANNING > 0` and `PLANNING_COUNT == 0` → INCLUDE (both modes)
 - **Mixed code+planning commits**: `NON_PLANNING > 0` and `PLANNING_COUNT > 0` → INCLUDE (both
   modes; the planning paths are filtered out by `create_pr_branch`, not the commit)
-- **Strdoc-arch-0006-uc-v1tural-only planning commits**: `NON_PLANNING == 0` and `STRUCTURAL == PLANNING_COUNT`
-  and `PLANNING_COUNT > 0` (every `.planning/` file todoc-arch-0006-uc-v1hed is strdoc-arch-0006-uc-v1tural) → INCLUDE in
-  **default** mode; **EXCLUDE** in strict mode, which has no strdoc-arch-0006-uc-v1tural carve-out
+- **Structural-only planning commits**: `NON_PLANNING == 0` and `STRUCTURAL == PLANNING_COUNT`
+  and `PLANNING_COUNT > 0` (every `.planning/` file touched is structural) → INCLUDE in
+  **default** mode; **EXCLUDE** in strict mode, which has no structural carve-out
 - **Mixed planning commits (#4447)**: `NON_PLANNING == 0` and `STRUCTURAL > 0` and
-  `STRUCTURAL < PLANNING_COUNT` (some but not all `.planning/` files todoc-arch-0006-uc-v1hed are strdoc-arch-0006-uc-v1tural —
-  the rest are transient and/or the "other" bdoc-arch-0006-uc-v1ket, e.g. `config.json`/`intel/`) → INCLUDE in
-  **default** mode (the transient-dir subset of the non-strdoc-arch-0006-uc-v1tural paths is filtered out by
+  `STRUCTURAL < PLANNING_COUNT` (some but not all `.planning/` files touched are structural —
+  the rest are transient and/or the "other" bucket, e.g. `config.json`/`intel/`) → INCLUDE in
+  **default** mode (the transient-dir subset of the non-structural paths is filtered out by
   `create_pr_branch`'s universal per-commit filter exactly as for a mixed code+planning commit;
-  any "other" non-strdoc-arch-0006-uc-v1tural, non-transient path — `config.json`, `intel/`, etc. — is simply
-  preserved, same as default mode already does for sdoc-arch-0006-uc-v1h paths on any commit); **EXCLUDE** in
+  any "other" non-structural, non-transient path — `config.json`, `intel/`, etc. — is simply
+  preserved, same as default mode already does for such paths on any commit); **EXCLUDE** in
   strict mode
 - **Transient-only planning commits**: `NON_PLANNING == 0` and `STRUCTURAL == 0` and
   `PLANNING_COUNT > 0` → EXCLUDE (both modes)
@@ -345,11 +345,11 @@ In strict mode this collapses to a single rule: `NON_PLANNING > 0` → INCLUDE, 
 
 Display analysis:
 ```
-Commits to include: {N} (code changes{, + strdoc-arch-0006-uc-v1tural planning — default mode only})
+Commits to include: {N} (code changes{, + structural planning — default mode only})
 Commits to exclude: {N} (planning-only)
 Mixed commits: {N} (code + planning — included, planning paths filtered)
-Strdoc-arch-0006-uc-v1tural planning commits: {N} ({included|excluded — strict mode})
-Mixed planning commits: {N} ({included — strdoc-arch-0006-uc-v1tural + transient/other, planning paths filtered|excluded — strict mode})
+Structural planning commits: {N} ({included|excluded — strict mode})
+Mixed planning commits: {N} ({included — structural + transient/other, planning paths filtered|excluded — strict mode})
 ```
 </step>
 
@@ -368,7 +368,7 @@ has**, in both the index and the working tree. That is stricter than simply un-s
 both halves matter:
 
 - `git rm -r -f --ignore-unmatch` clears the index entry (including an unmerged one) and
-  removes the file the pick just wrote. It only ever todoc-arch-0006-uc-v1hes paths that are in the index, so
+  removes the file the pick just wrote. It only ever touches paths that are in the index, so
   a genuinely untracked planning file of the user's is never harmed.
 - `git checkout HEAD --` then restores whatever the target branch legitimately tracks at
   those paths. **Without this, un-staging a path the target branch already tracks records a
@@ -376,7 +376,7 @@ both halves matter:
   that would be the base's entire `.planning/` tree.
 
 Leaving the filtered file behind in the working tree is not an option either: a later commit
-todoc-arch-0006-uc-v1hing the same planning path makes `git cherry-pick` abort with *"untracked working tree
+touching the same planning path makes `git cherry-pick` abort with *"untracked working tree
 files would be overwritten by merge"*, and every remaining commit is silently dropped.
 
 ```bash
@@ -385,7 +385,7 @@ files would be overwritten by merge"*, and every remaining commit is silently dr
 # one iteration there.
 for HASH in $(printf '%s' "$INCLUDED_COMMITS"); do
   # A modify/delete conflict on a filtered path is EXPECTED and is resolved below — the
-  # filtered path is absent from HEAD by constrdoc-arch-0006-uc-v1tion. Do not treat it as a failure here.
+  # filtered path is absent from HEAD by construction. Do not treat it as a failure here.
   git cherry-pick --no-commit "$HASH" || true
 
   # One path per LINE, not per space (#4605) — a discovered `<milestone>-phases/`
@@ -400,19 +400,19 @@ for HASH in $(printf '%s' "$INCLUDED_COMMITS"); do
 $FILTER_PATHS
 FILTER_PATHS_EOF
 
-  # #4606: a conflict on a "third bdoc-arch-0006-uc-v1ket" path (`.planning/` — not `$FORBIDDEN_RE`
-  # transient, not `$STRUCTURAL_RE` strdoc-arch-0006-uc-v1tural — the same bdoc-arch-0006-uc-v1ket `verify`'s
+  # #4606: a conflict on a "third bucket" path (`.planning/` — not `$FORBIDDEN_RE`
+  # transient, not `$STRUCTURAL_RE` structural — the same bucket `verify`'s
   # `$OTHER` reports) is not a real conflict either, and needs its own
-  # resolution distinct from the filter loop above. Sdoc-arch-0006-uc-v1h a path is never
-  # per-commit replayed by classification — a commit todoc-arch-0006-uc-v1hing ONLY a
-  # third-bdoc-arch-0006-uc-v1ket path is EXCLUDEd — so when a LATER included commit (strdoc-arch-0006-uc-v1tural
+  # resolution distinct from the filter loop above. Such a path is never
+  # per-commit replayed by classification — a commit touching ONLY a
+  # third-bucket path is EXCLUDEd — so when a LATER included commit (structural
   # or code + that same path) reuses it, the diff's context can predate
   # whatever the PR branch actually has, and cherry-pick reports a genuine
   # content conflict on a path this command was never asked to filter.
-  # `git checkout --theirs` resolves it correctly by constrdoc-arch-0006-uc-v1tion: in a
+  # `git checkout --theirs` resolves it correctly by construction: in a
   # cherry-pick's 3-way merge, "theirs" IS $HASH's own content for that path —
   # exactly the chained final value the path is owed, the same guarantee
-  # `create_pr_branch` already gives strdoc-arch-0006-uc-v1tural files. A path $HASH deletes has
+  # `create_pr_branch` already gives structural files. A path $HASH deletes has
   # no "theirs" blob to check out, so fall back to accepting the deletion (the
   # `verify` step's `$PLANNING_DELETIONS` gate independently catches this if
   # `$TARGET` ever legitimately tracked that path).
@@ -430,7 +430,7 @@ FILTER_PATHS_EOF
   #
   # The unmerged list is snapshotted, then read one path PER LINE. `for P in
   # $(git diff --name-only --diff-filter=U)` would split it on IFS instead: a
-  # third-bdoc-arch-0006-uc-v1ket path containing a space (`.planning/My Notes.md`) becomes the
+  # third-bucket path containing a space (`.planning/My Notes.md`) becomes the
   # fragments `.planning/My` and `Notes.md`, neither of which names the real
   # conflicted file, so nothing is resolved and the run aborts with exactly the
   # #4606 failure this block exists to prevent. Same word-split class as #4109.
@@ -500,8 +500,8 @@ git checkout "$CURRENT_BRANCH"
 <step name="verify">
 Assert against the **active mode's** contract — `$FORBIDDEN_RE`, the same declaration
 `create_pr_branch` filtered on. Counting every `.planning/` path unconditionally would
-contradict default mode, which is specified to preserve strdoc-arch-0006-uc-v1tural files: a correct run
-would report itself as failed on every phase that todoc-arch-0006-uc-v1hed STATE.md, which is every phase.
+contradict default mode, which is specified to preserve structural files: a correct run
+would report itself as failed on every phase that touched STATE.md, which is every phase.
 
 ```bash
 DIFF_PATHS=$(git diff --name-only "$TARGET".."$PR_BRANCH")
@@ -514,12 +514,12 @@ PR_COMMITS=$(git rev-list --count "$TARGET".."$PR_BRANCH")
 # #3679: a DELETED planning path is never legitimate — this workflow only ever
 # excludes content a cherry-picked commit ADDED; pre-existing target-tracked
 # planning files must survive byte-identical. Name-only counting cannot see
-# status (a deleted strdoc-arch-0006-uc-v1tural/allowed path verifies clean there), so gate on
+# status (a deleted structural/allowed path verifies clean there), so gate on
 # deletions explicitly, across every planning category.
 PLANNING_DELETIONS=$(git diff --name-status --no-renames "$TARGET".."$PR_BRANCH" | grep "^D" | grep -c "\.planning/" || true)
 
 # Default mode preserves anything under .planning/ that is neither transient nor
-# strdoc-arch-0006-uc-v1tural — config.json, intel/, workstreams/. That is deliberate and unchanged, but it
+# structural — config.json, intel/, workstreams/. That is deliberate and unchanged, but it
 # must not be silent: report it so the user can choose strict mode knowingly.
 OTHER=$(echo "$DIFF_PATHS" | grep "^\.planning/" | grep -Ev "$FORBIDDEN_RE" | grep -Ev "$STRUCTURAL_RE" || true)
 ```
@@ -552,7 +552,7 @@ Or use /gsd-ship to create the PR automatically.
 
 When `$OTHER` is non-empty (default mode only — strict forbids all of it), append:
 ```
-ℹ️  These .planning/ paths are neither transient nor strdoc-arch-0006-uc-v1tural, so default mode keeps them:
+ℹ️  These .planning/ paths are neither transient nor structural, so default mode keeps them:
 {OTHER}
     Set `planning.pr_strict: true` to keep every .planning/ path out of the PR branch.
 ```
@@ -560,7 +560,7 @@ When `$OTHER` is non-empty (default mode only — strict forbids all of it), app
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Working tree was clean before the PR branch was created
 - [ ] PR branch created from target
 - [ ] Planning-only commits excluded
@@ -570,4 +570,4 @@ When `$OTHER` is non-empty (default mode only — strict forbids all of it), app
 - [ ] Every included commit landed — none dropped by a failed cherry-pick
 - [ ] Commit messages preserved from original
 - [ ] User shown next steps
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

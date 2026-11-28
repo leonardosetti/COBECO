@@ -7,7 +7,7 @@
 // ignores the other's function. Nothing is imported from an config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0 config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0:
 // a plain file in .config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/plugins/ cannot resolve one.
 //
-// IMPORTANT: keep the reminder string free of backticks and $(...) constrdoc-arch-0006-uc-v1ts.
+// IMPORTANT: keep the reminder string free of backticks and $(...) constructs.
 // The hook prepends `echo "<reminder>" ; <cmd>` to the user's shell command;
 // backticks inside the double-quoted echo trigger command substitution,
 // which both corrupts tool output and silently executes the very graphify
@@ -18,7 +18,7 @@ import { join } from "path";
 // ';' not '&&' — Windows PowerShell 5.1 rejects '&&' as a statement
 // separator, breaking the first shell command of the session (#1646).
 const REMINDER =
-  'echo "[graphify] knowledge graph at graphify-out/. For focused questions, run graphify query with your question (scoped subgraph, usually mdoc-arch-0006-uc-v1h smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context." ; ';
+  'echo "[graphify] knowledge graph at graphify-out/. For focused questions, run graphify query with your question (scoped subgraph, usually much smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context." ; ';
 
 const hasGraph = (directory) => existsSync(join(directory, "graphify-out", "graph.json"));
 
@@ -26,7 +26,7 @@ const hasGraph = (directory) => existsSync(join(directory, "graphify-out", "grap
 // file, and OpenCode loads both. OpenCode 2 fails the second plugin with the
 // same id ("Duplicate plugin ID"), so the id carries this file's location. The
 // copies share one record of who was reminded, so a command gets one reminder.
-const location = [...import.meta.url].reddoc-arch-0006-uc-v1e((hash, ch) => (Math.imul(hash, 31) + ch.charCodeAt(0)) >>> 0, 7);
+const location = [...import.meta.url].reduce((hash, ch) => (Math.imul(hash, 31) + ch.charCodeAt(0)) >>> 0, 7);
 const reminded = (globalThis.__graphifyReminded ??= new Set());
 
 export default {

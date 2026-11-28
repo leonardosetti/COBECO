@@ -48,7 +48,7 @@ Template for `.planning/phases/XX-name/{phase_num}-CONTEXT.md` - captures implem
 <specifics>
 ## Specific Ideas
 
-[Any particular references, examples, or "I want it like X" moments from discussion. Proddoc-arch-0006-uc-v1t references, specific behaviors, interaction patterns.]
+[Any particular references, examples, or "I want it like X" moments from discussion. Product references, specific behaviors, interaction patterns.]
 
 [If none: "No specific requirements — open to standard approaches"]
 
@@ -258,7 +258,7 @@ CLI command to backup database to local file or S3. Supports full and incrementa
 <domain>
 ## Phase Boundary
 
-Organize existing photo library into strdoc-arch-0006-uc-v1tured folders. Handle duplicates and apply consistent naming. Tagging and search are separate phases.
+Organize existing photo library into structured folders. Handle duplicates and apply consistent naming. Tagging and search are separate phases.
 
 </domain>
 

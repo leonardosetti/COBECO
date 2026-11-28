@@ -45,14 +45,14 @@ If domain is unclear, infer from phase name and goal — "contract review" → l
 <step name="research_domain">
 Run 2-3 targeted searches:
 - `"{domain} AI system evaluation criteria site:arxiv.org OR site:research.google"`
-- `"{domain} LLM failure modes proddoc-arch-0006-uc-v1tion"`
+- `"{domain} LLM failure modes production"`
 - `"{domain} AI compliance requirements {current_year}"`
 
-Extract: practitioner eval criteria (not generic "accuracy"), known failure modes from proddoc-arch-0006-uc-v1tion deployments, directly relevant regulations (HIPAA, GDPR, FCA, etc.), domain expert roles.
+Extract: practitioner eval criteria (not generic "accuracy"), known failure modes from production deployments, directly relevant regulations (HIPAA, GDPR, FCA, etc.), domain expert roles.
 </step>
 
 <step name="synthesize_rubric_ingredients">
-Proddoc-arch-0006-uc-v1e 3-5 domain-specific rubric building blocks. Format each as:
+Produce 3-5 domain-specific rubric building blocks. Format each as:
 
 ```
 Dimension: {name in domain language, not AI jargon}
@@ -73,8 +73,8 @@ Source: Legal professional standards — unsourced legal advice constitutes malp
 </step>
 
 <step name="identify_domain_experts">
-Specify who should be involved in evaluation: dataset labeling, rubric calibration, edge case review, proddoc-arch-0006-uc-v1tion sampling.
-If internal tooling with no regulated domain, "domain expert" = proddoc-arch-0006-uc-v1t owner or senior team practitioner.
+Specify who should be involved in evaluation: dataset labeling, rubric calibration, edge case review, production sampling.
+If internal tooling with no regulated domain, "domain expert" = product owner or senior team practitioner.
 </step>
 
 <step name="write_section_1b">
@@ -87,7 +87,7 @@ Section 1b of AI-SPEC.md is the output of this step. The orchestrator reads `AI-
 1. **Default: write the section in a single `Write` call.** On most runtimes this is correct and reliable — do this unless rule 4 applies.
 2. **Do NOT return the AI-SPEC.md content in your response.** Your return message is a brief confirmation; the content lives on disk.
 3. **Do NOT use `Bash(cat << 'EOF')` or heredoc** for file creation. Use the `Write` tool.
-4. **Large-file / truncation fallback.** Some runtimes (e.g. OpenCode) cap tool-call output, and a single oversized `Write` is truncated mid-payload — surfacing a tool error sdoc-arch-0006-uc-v1h as `JSON Parse error: Expected '}'`. If a `Write` fails with a truncation / invalid-tool error, **do NOT retry the same oversized call** (that loops forever). Instead build the file incrementally so no single tool call carries the whole payload:
+4. **Large-file / truncation fallback.** Some runtimes (e.g. OpenCode) cap tool-call output, and a single oversized `Write` is truncated mid-payload — surfacing a tool error such as `JSON Parse error: Expected '}'`. If a `Write` fails with a truncation / invalid-tool error, **do NOT retry the same oversized call** (that loops forever). Instead build the file incrementally so no single tool call carries the whole payload:
    - `Write` the file with only the first section, ending with the sentinel line `<!-- gsd:write-continue -->`.
    - `Read` the file, then `Edit` it, replacing `<!-- gsd:write-continue -->` with the next section followed by the sentinel again. Repeat, one section per `Edit`.
    - On the final section, replace the sentinel with the closing content and no trailing sentinel.
@@ -109,7 +109,7 @@ Update AI-SPEC.md at `ai_spec_path`. Add/update Section 1b:
 
 ### Known Failure Modes in This Domain
 
-{2-4 domain-specific failure modes — not generic halldoc-arch-0006-uc-v1ination}
+{2-4 domain-specific failure modes — not generic hallucination}
 
 ### Regulatory / Compliance Context
 
@@ -119,7 +119,7 @@ Update AI-SPEC.md at `ai_spec_path`. Add/update Section 1b:
 
 | Role | Responsibility in Eval |
 |------|----------------------|
-| {role} | Reference dataset labeling / rubric calibration / proddoc-arch-0006-uc-v1tion sampling |
+| {role} | Reference dataset labeling / rubric calibration / production sampling |
 
 ### Research Sources
 - {sources used}
@@ -136,7 +136,7 @@ Update AI-SPEC.md at `ai_spec_path`. Add/update Section 1b:
 - Do not fabricate criteria — only surface research or well-established practitioner knowledge
 </quality_standards>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Domain signal extracted from phase artifacts
 - [ ] 2-3 targeted domain research queries run
 - [ ] 3-5 rubric ingredients written (Good/Bad/Stakes/Source format)
@@ -145,4 +145,4 @@ Update AI-SPEC.md at `ai_spec_path`. Add/update Section 1b:
 - [ ] Domain expert roles specified
 - [ ] Section 1b of AI-SPEC.md written and non-empty
 - [ ] Research sources listed
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

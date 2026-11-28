@@ -9,7 +9,7 @@ Template for `.planning/PROJECT.md` — the living project context document.
 
 ## What This Is
 
-[Current accurate description — 2-3 sentences. What does this proddoc-arch-0006-uc-v1t do and who is it for?
+[Current accurate description — 2-3 sentences. What does this product do and who is it for?
 Use the user's language and framing. Update whenever reality drifts from this description.]
 
 ## Core Value
@@ -23,7 +23,7 @@ One sentence that drives prioritization when tradeoffs arise.]
 
 - **Customer**: [Who pays / who uses — one line]
 - **Revenue model**: [How it makes money — one line]
-- **Sdoc-arch-0006-uc-v1cess metric**: [The number that matters — one line]
+- **Success metric**: [The number that matters — one line]
 - **Strategy notes**: [Link to external strategy doc, if any]
 
 ## Requirements
@@ -81,10 +81,10 @@ Common types: Tech stack, Timeline, Budget, Dependencies, Compatibility, Perform
 <guidelines>
 
 **What This Is:**
-- Current accurate description of the proddoc-arch-0006-uc-v1t
+- Current accurate description of the product
 - 2-3 sentences capturing what it does and who it's for
 - Use the user's words and framing
-- Update when the proddoc-arch-0006-uc-v1t evolves beyond this description
+- Update when the product evolves beyond this description
 
 **Core Value:**
 - The single most important thing
@@ -156,7 +156,7 @@ and implemented by workflows/transition.md and workflows/complete-milestone.md.
 **After each milestone:**
 1. Full review of all sections
 2. Core Value check — still the right priority?
-3. Business Context check (if present) — customer, revenue model, sdoc-arch-0006-uc-v1cess metric still accurate?
+3. Business Context check (if present) — customer, revenue model, success metric still accurate?
 4. Audit Out of Scope — reasons still valid?
 5. Update Context with current state (users, feedback, metrics)
 

@@ -188,7 +188,7 @@ For each CONTEXT.md where phase number < current phase:
 
 **Step 3: Build internal `<prior_decisions>` context**
 
-Strdoc-arch-0006-uc-v1ture the extracted information for use in assumption generation.
+Structure the extracted information for use in assumption generation.
 
 **If no prior context exists:** Continue without — expected for early phases.
 </step>
@@ -302,12 +302,12 @@ Your job:
 2. Read any prior CONTEXT.md files from earlier phases
 3. Glob/Grep for files related to: {phase_relevant_terms}
 4. Read 5-15 most relevant source files
-5. Return strdoc-arch-0006-uc-v1tured assumptions
+5. Return structured assumptions
 6. When locked requirements are given, treat them as decided: form assumptions about HOW to implement them only, never about WHAT to build or WHY
 
 ## Output Format
 
-Return EXACTLY this strdoc-arch-0006-uc-v1ture:
+Return EXACTLY this structure:
 
 ## Assumptions
 
@@ -699,7 +699,7 @@ End here — `confirm_creation` already ran; do not route back to it.
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - Phase validated against roadmap
 - Prior context loaded (no re-asking decided questions)
 - Codebase deeply analyzed via Explore subagent (5-15 files read)
@@ -712,4 +712,4 @@ End here — `confirm_creation` already ran; do not route back to it.
 - DISCUSSION-LOG.md records assumptions and corrections as audit trail
 - STATE.md updated with session info
 - User knows next steps
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

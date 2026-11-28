@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: cobeco-db
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --max-connections=100
+    environment:
+      MYSQL_DATABASE: cobeco
+      MYSQL_USER: cobeco
+      MYSQL_PASSWORD: cobeco
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - cobeco-db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - cobeco-data
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: config-docker-0003-backend-dockerfile-v1.0
+    container_name: cobeco-backend
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      DATABASE_URL: mysql+asyncmy://cobeco:cobeco@cobeco-db:3306/cobeco
+      SECRET_KEY: cobeco-secret-key-min-32-chars-for-jwt-signing
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 15
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+      PYTHONPATH: /app
+      DEBUG: "true"
+    networks:
+      - cobeco-data
+      - cobeco-edge
+    volumes:
+      - ./backend:/app
+    expose:
+      - "8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: config-docker-0004-frontend-dockerfile-v1.0
+    container_name: cobeco-frontend
+    command: nginx -g "daemon off;"
+    networks:
+      - cobeco-edge
+    volumes:
+      - ./frontend:/app
+    expose:
+      - "80"
+
+  proxy:
+    image: nginx:alpine
+    container_name: cobeco-proxy
+    ports:
+      - "8380:8380"
+      - "8443:8443"
+    volumes:
+      - ./proxy/config-nginx-0003-proxy-nginx-v1.0.conf:/etc/nginx/nginx.conf:ro
+      - ./100.98.53.79+3.pem:/etc/nginx/certs/cert.pem:ro
+      - ./100.98.53.79+3-key.pem:/etc/nginx/certs/key.pem:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - cobeco-edge
+
+networks:
+  cobeco-data:
+    name: cobeco-data
+    driver: bridge
+  cobeco-edge:
+    name: cobeco-edge
+    driver: bridge
+
+volumes:
+  cobeco-db-data:
+    name: cobeco-db-data

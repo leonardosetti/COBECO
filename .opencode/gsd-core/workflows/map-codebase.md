@@ -1,16 +1,16 @@
 @/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/response-language-directive.md
 
 <purpose>
-Orchestrate parallel codebase mapper agents to analyze codebase and proddoc-arch-0006-uc-v1e strdoc-arch-0006-uc-v1tured documents in .planning/codebase/
+Orchestrate parallel codebase mapper agents to analyze codebase and produce structured documents in .planning/codebase/
 
 Each agent has fresh context, explores a specific focus area, and **writes documents directly**. The orchestrator only receives confirmation + line counts, then writes a summary.
 
-Output: .planning/codebase/ folder with 7 strdoc-arch-0006-uc-v1tured documents about the codebase state.
+Output: .planning/codebase/ folder with 7 structured documents about the codebase state.
 </purpose>
 
 <available_agent_types>
 Valid GSD subagent types (use exact names — do not fall back to 'general-purpose'):
-- gsd-codebase-mapper — Maps project strdoc-arch-0006-uc-v1ture and dependencies
+- gsd-codebase-mapper — Maps project structure and dependencies
 </available_agent_types>
 
 <philosophy>
@@ -47,7 +47,7 @@ operates in **incremental-remap mode**:
 
 **Explicit contract — propagate `--paths` through a single normalized
 variable.** Downstream steps (`spawn_agents`, `sequential_mapping`, and any
-Agent-mode prompt constrdoc-arch-0006-uc-v1tion) MUST use `${PATH_SCOPE_HINT}` to ensure every
+Agent-mode prompt construction) MUST use `${PATH_SCOPE_HINT}` to ensure every
 mapper receives the same deterministic scope. Without this contract
 incremental-remap can silently regress to a whole-repo scan.
 
@@ -108,7 +108,7 @@ What's next?
 
 Wait for user response.
 
-If "Refresh": Delete .planning/codebase/, continue to create_strdoc-arch-0006-uc-v1ture
+If "Refresh": Delete .planning/codebase/, continue to create_structure
 If "Update": Ask which documents to update, then record the selection for the
 stamp step below and continue to spawn_agents (filtered):
 
@@ -121,14 +121,14 @@ If "Skip": Exit workflow
 
 `UPDATED_DOCS` narrows `stamp_codebase_map`. Leave it empty on every other
 path (Refresh, first run, `--paths`), which regenerate all seven documents.
-An Update run does not todoc-arch-0006-uc-v1h the documents the user did not select, so
+An Update run does not touch the documents the user did not select, so
 stamping those at HEAD would claim a freshness they do not have.
 
 **If doesn't exist:**
-Continue to create_strdoc-arch-0006-uc-v1ture.
+Continue to create_structure.
 </step>
 
-<step name="create_strdoc-arch-0006-uc-v1ture">
+<step name="create_structure">
 Create .planning/codebase/ directory:
 
 ```bash
@@ -211,7 +211,7 @@ Agent(
   prompt="Focus: arch
 Today's date: {date}
 
-Analyze this codebase architecture and directory strdoc-arch-0006-uc-v1ture.
+Analyze this codebase architecture and directory structure.
 
 Write these documents to {codebase_dir}/:
 - ARCHITECTURE.md - Pattern, layers, data flow, abstractions, entry points
@@ -241,7 +241,7 @@ Analyze this codebase for coding conventions and testing patterns.
 
 Write these documents to {codebase_dir}/:
 - CONVENTIONS.md - Code style, naming, patterns, error handling
-- TESTING.md - Framework, strdoc-arch-0006-uc-v1ture, mocking, coverage
+- TESTING.md - Framework, structure, mocking, coverage
 
 IMPORTANT: Set all date stamps (`**Analysis Date:**`, footer `*... analysis: ...*`, `<!-- refreshed: ... -->`) to {date}, overwriting any existing date.
 
@@ -311,7 +311,7 @@ Ready for orchestrator summary.
 
 **What you receive:** Just file paths and line counts. NOT document contents.
 
-If any agent failed, note the failure and continue with sdoc-arch-0006-uc-v1cessful documents.
+If any agent failed, note the failure and continue with successful documents.
 
 Continue to verify_output.
 </step>
@@ -333,14 +333,14 @@ Perform all 4 mapping passes sequentially:
 - Write `.planning/codebase/INTEGRATIONS.md` — External APIs, databases, auth providers, webhooks
 
 **Pass 2: Architecture Focus**
-- Explore directory strdoc-arch-0006-uc-v1ture, entry points, module boundaries, data flow
+- Explore directory structure, entry points, module boundaries, data flow
 - Write `.planning/codebase/ARCHITECTURE.md` — Pattern, layers, data flow, abstractions, entry points
 - Write `.planning/codebase/STRUCTURE.md` — Directory layout, key locations, naming conventions
 
 **Pass 3: Quality Focus**
 - Explore code style, error handling patterns, test files, CI config
 - Write `.planning/codebase/CONVENTIONS.md` — Code style, naming, patterns, error handling
-- Write `.planning/codebase/TESTING.md` — Framework, strdoc-arch-0006-uc-v1ture, mocking, coverage
+- Write `.planning/codebase/TESTING.md` — Framework, structure, mocking, coverage
 
 **Pass 4: Concerns Focus**
 - Explore TODOs, known issues, fragile areas, security patterns
@@ -352,7 +352,7 @@ Continue to verify_output.
 </step>
 
 <step name="verify_output">
-Verify all documents created sdoc-arch-0006-uc-v1cessfully:
+Verify all documents created successfully:
 
 ```bash
 ls -la .planning/codebase/
@@ -381,13 +381,13 @@ every mapping run, incremental (`--paths`) and full alike. `--files` narrows it
 to the documents an Update run actually refreshed; `--paths` needs no narrowing
 because all seven are regenerated, just scoped in content.
 
-**Why this is a shell step and not an instrdoc-arch-0006-uc-v1tion to the mapper.** The stamp is
+**Why this is a shell step and not an instruction to the mapper.** The stamp is
 the only machine-readable freshness marker: the `verify codebase-drift` gate
 reads it to decide what to diff HEAD against. The human-readable markers the
 mapper writes (`**Analysis Date:**`, `<!-- refreshed: ... -->`) are restamped
 unconditionally on an Update run, so a mapper that decides its work is already
 done and rewrites only the dates still looks fresh to a human. Leaving the
-machine-readable stamp to the same agent reproddoc-arch-0006-uc-v1es exactly the failure the
+machine-readable stamp to the same agent reproduces exactly the failure the
 stamp exists to detect. A shell step cannot be skipped by a confident agent.
 
 The command is non-blocking: it emits `skipped` with a `reason` outside a git
@@ -465,7 +465,7 @@ Created .planning/codebase/:
 - ARCHITECTURE.md ([N] lines) - System design and patterns
 - STRUCTURE.md ([N] lines) - Directory layout and organization
 - CONVENTIONS.md ([N] lines) - Code style and patterns
-- TESTING.md ([N] lines) - Test strdoc-arch-0006-uc-v1ture and practices
+- TESTING.md ([N] lines) - Test structure and practices
 - INTEGRATIONS.md ([N] lines) - External services and APIs
 - CONCERNS.md ([N] lines) - Technical debt and issues
 
@@ -494,7 +494,7 @@ End workflow.
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - .planning/codebase/ directory created
 - If Agent tool available: 4 parallel gsd-codebase-mapper agents spawned with run_in_background=true
 - If Agent tool NOT available: 4 sequential mapping passes performed inline (never using browser_subagent)
@@ -502,4 +502,4 @@ End workflow.
 - No empty documents (each should have >20 lines)
 - Clear completion summary with line counts
 - User offered clear next steps in GSD style
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

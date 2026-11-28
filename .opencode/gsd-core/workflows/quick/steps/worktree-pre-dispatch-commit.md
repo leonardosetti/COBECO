@@ -38,7 +38,7 @@ workflow:
 **Step 5.6: Pre-dispatch artifact commit (worktree mode only)**
 
 When `USE_WORKTREES !== "false"`, commit PLAN.md — plus CONTEXT.md and/or RESEARCH.md
-when the discussion/research phases proddoc-arch-0006-uc-v1ed them — to the current branch **before**
+when the discussion/research phases produced them — to the current branch **before**
 spawning the executor. This ensures the worktree inherits these artifacts at its branch
 HEAD so the executor can read them via a worktree-rooted path — avoiding the main-repo
 path priming that triggers CC #36182 path-resolution drift, and avoiding the locked
@@ -56,7 +56,7 @@ if [ "${USE_WORKTREES}" != "false" ]; then
   COMMIT_DOCS=$(gsd_run query config-get commit_docs --raw 2>/dev/null || echo "true")
   if [ "$COMMIT_DOCS" != "false" ]; then
     # pre-dispatch plan commit — PLAN.md is always in scope. CONTEXT.md/RESEARCH.md
-    # join it only when their phase actually ran AND actually proddoc-arch-0006-uc-v1ed a file — a
+    # join it only when their phase actually ran AND actually produced a file — a
     # mode flag alone is not proof the file exists (#4996). An array (not a
     # space-joined string) keeps each path a single git argument under `set -u`
     # word-splitting rules (ShellCheck SC2086).

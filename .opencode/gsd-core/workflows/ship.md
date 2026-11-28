@@ -2,7 +2,7 @@
 step: ship
 points: ship:pre, ship:post
 agent-roles: orchestrator
-proddoc-arch-0006-uc-v1es:
+produces:
 consumes: UAT.md
 -->
 <purpose>
@@ -114,7 +114,7 @@ Verify the work is ready to ship:
    ```bash
    which gh && gh auth status 2>&1
    ```
-   If `gh` not found or not authenticated: provide setup instrdoc-arch-0006-uc-v1tions and exit.
+   If `gh` not found or not authenticated: provide setup instructions and exit.
 
 6. **Capability ship gates and steps (generic dispatch).**
 
@@ -131,7 +131,7 @@ Verify the work is ready to ship:
 
    **For each active entry where `kind == "gate"`** (process in array order), following `gsd-core/references/loop-hook-dispatch.md`. Every gate is visited exactly once by this loop — the named branches below are specializations *within* it, never a separate pass, so no gate is evaluated twice.
 
-   **Step 1 — evaluate the gate's `check`.** Dispatch by check shape; read the hook's `check` object in-context to pick the branch (the registry validates exactly one of `query`/`predicate`/`agentVerdict`). Two capability IDs carry a bespoke evaluation whose fail-closed semantics the declared predicate alone does not reproddoc-arch-0006-uc-v1e — take their branch, then rejoin at step 2:
+   **Step 1 — evaluate the gate's `check`.** Dispatch by check shape; read the hook's `check` object in-context to pick the branch (the registry validates exactly one of `query`/`predicate`/`agentVerdict`). Two capability IDs carry a bespoke evaluation whose fail-closed semantics the declared predicate alone does not reproduce — take their branch, then rejoin at step 2:
 
    - **`capId == "security"`** — enforce against `SECURITY_FILE`:
      - **`SECURITY_FILE` is empty** → `block: true`, `SECURITY_SHIP_GATE_NO_REVIEW`:
@@ -191,7 +191,7 @@ Verify the work is ready to ship:
    - **`onError == "halt"`** → stop the ship. Do NOT push, do NOT create a PR. Surface: `⚠ Gate check command failed ({hook.capId}): command error. Resolve before shipping.`
    - **`onError == "skip"`** → record a warning naming the `capId`, then continue to the next gate. Do NOT read `GATE_RESULT.block`.
 
-   **Step 2 — read the gate's `block` decision.** Only reached when the check proddoc-arch-0006-uc-v1ed a verdict.
+   **Step 2 — read the gate's `block` decision.** Only reached when the check produced a verdict.
 
    - **`blocking == true` and `block == true`** → HALT the ship — do NOT push, do NOT create a PR — surfacing that gate's own message:
      ```
@@ -282,7 +282,7 @@ Read append-only project-specific PRD/PR body sections from config:
 CUSTOM_PR_SECTIONS=$(gsd_run query config-get ship.pr_body_sections --default '[]' 2>/dev/null || echo '[]')
 ```
 
-`ship.pr_body_sections` is an onboarding-time extension point for teams that need extra PRD-style sections sdoc-arch-0006-uc-v1h as `User Stories & Acceptance Criteria`, `Risks & Dependencies`, `Sdoc-arch-0006-uc-v1cess Metrics`, `Release Criteria`, or `Stakeholder Review & Approval`.
+`ship.pr_body_sections` is an onboarding-time extension point for teams that need extra PRD-style sections such as `User Stories & Acceptance Criteria`, `Risks & Dependencies`, `Success Metrics`, `Release Criteria`, or `Stakeholder Review & Approval`.
 
 Use these sections for lean/agile PRD material that should travel with the PR without making the core `/gsd-ship` body configurable:
 
@@ -319,14 +319,14 @@ Example configured sections:
   {
     "heading": "Stakeholder Review & Approval",
     "enabled": false,
-    "template": "- Proddoc-arch-0006-uc-v1t owner approval pending for {phase_name}."
+    "template": "- Product owner approval pending for {phase_name}."
   }
 ]
 ```
 
 **8. TDD Audit section:**
 
-Reconstrdoc-arch-0006-uc-v1t the per-commit TDD gate trail before squash-merge discards it. Walk the PR branch's own commits (merges excluded) and read each commit's `gate-status:` trailer with Git's native trailer machinery — never a raw `%B` grep, which would also match the string written in prose:
+Reconstruct the per-commit TDD gate trail before squash-merge discards it. Walk the PR branch's own commits (merges excluded) and read each commit's `gate-status:` trailer with Git's native trailer machinery — never a raw `%B` grep, which would also match the string written in prose:
 
 ```bash
 # Anchor on the merge-base so a stale local ${BASE_BRANCH} ref cannot over-count.
@@ -419,7 +419,7 @@ If `REVIEW_CMD` is non-empty and not `"null"`, run the external review:
    ```
 
 3. **Build review prompt and pipe to command via stdin:**
-   Constrdoc-arch-0006-uc-v1t a review prompt containing the diff, diff stats, and phase context, then pipe it to the configured command:
+   Construct a review prompt containing the diff, diff stats, and phase context, then pipe it to the configured command:
    ```bash
    REVIEW_PROMPT="You are reviewing a pull request.\n\nDiff stats:\n${DIFF_STATS}\n\nPhase context:\n${STATE_STATUS}\n\nFull diff:\n${DIFF}\n\nRespond with JSON: { \"verdict\": \"APPROVED\" or \"REVISE\", \"confidence\": 0-100, \"summary\": \"...\", \"issues\": [{\"severity\": \"...\", \"file\": \"...\", \"line_range\": \"...\", \"description\": \"...\", \"suggestion\": \"...\"}] }"
    # #2358: a per-run temp file (not a shared, unqualified path) so concurrent
@@ -443,7 +443,7 @@ If `REVIEW_CMD` is non-empty and not `"null"`, run the external review:
    On failure, warn with stderr output and fall through to the manual review flow below.
 
 5. **Parse JSON result:**
-   If the command sdoc-arch-0006-uc-v1ceeded, parse the JSON output and report the verdict:
+   If the command succeeded, parse the JSON output and report the verdict:
    ```bash
    # Parse verdict and summary from REVIEW_OUTPUT JSON
    VERDICT=$(echo "${REVIEW_OUTPUT}" | node -e "
@@ -489,7 +489,7 @@ Report the PR URL and suggest: "Review the diff at {url}/files"
 </step>
 
 <step name="track_shipping">
-Update STATE.md to reflect the shipping action. Write the activity line only, with its description; do not write `Status`. At ship time the Current Position block already describes the next phase, and `Status` feeds the frontmatter `status` field, so a free-text value sdoc-arch-0006-uc-v1h as "Phase N shipped" does not belong there (#5165).
+Update STATE.md to reflect the shipping action. Write the activity line only, with its description; do not write `Status`. At ship time the Current Position block already describes the next phase, and `Status` feeds the frontmatter `status` field, so a free-text value such as "Phase N shipped" does not belong there (#5165).
 
 ```bash
 gsd_run query state.update "Last Activity" "$(date +%Y-%m-%d) -- Phase ${PHASE_NUMBER} shipped as PR #${PR_NUMBER}"
@@ -580,11 +580,11 @@ Read the `activeHooks` array directly from `SHIP_POST_HOOKS_JSON` in-context (do
 
   With a resolved model (`{HOOK_AGENT_MODEL}` is the value the command above printed; `${…}` are bound shell variables):
 
-  `Agent(subagent_type=ref.agent, prompt="Ship-time capability hook for phase ${PHASE_NUMBER}. Phase dir: ${PHASE_DIR}. Consume: ${consumed_files}. Follow your agent instrdoc-arch-0006-uc-v1tions.", model="{HOOK_AGENT_MODEL}")`
+  `Agent(subagent_type=ref.agent, prompt="Ship-time capability hook for phase ${PHASE_NUMBER}. Phase dir: ${PHASE_DIR}. Consume: ${consumed_files}. Follow your agent instructions.", model="{HOOK_AGENT_MODEL}")`
 
   When it resolved to `inherit` or empty, drop the parameter:
 
-  `Agent(subagent_type=ref.agent, prompt="Ship-time capability hook for phase ${PHASE_NUMBER}. Phase dir: ${PHASE_DIR}. Consume: ${consumed_files}. Follow your agent instrdoc-arch-0006-uc-v1tions.")`
+  `Agent(subagent_type=ref.agent, prompt="Ship-time capability hook for phase ${PHASE_NUMBER}. Phase dir: ${PHASE_DIR}. Consume: ${consumed_files}. Follow your agent instructions.")`
 - If `ref.skill` is set, dispatch with `Skill(skill="gsd-${ref.skill}", args="${PHASE_NUMBER} --auto ${GSD_WS}")` (prepend `gsd-` to `ref.skill`).
 
 Each dispatch is best-effort: if it errors, record a warning and continue — never re-raise (`onError: skip`).
@@ -622,10 +622,10 @@ After shipping:
 - /gsd-execute-phase {next} — continue to next phase
 </offer_next>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Preflight checks passed (verification, clean tree, branch, remote, gh)
 - [ ] Branch pushed to remote
 - [ ] PR created with rich auto-generated body
 - [ ] STATE.md updated with shipping status
 - [ ] User knows PR number and next steps
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

@@ -1,6 +1,6 @@
 # Thinking Models: Research Cluster
 
-Strdoc-arch-0006-uc-v1tured reasoning models for the **researcher** and **synthesizer** agents. Apply these at decision points during research and synthesis, not continuously. Each model counters a specific documented failure mode.
+Structured reasoning models for the **researcher** and **synthesizer** agents. Apply these at decision points during research and synthesis, not continuously. Each model counters a specific documented failure mode.
 
 Source: Curated from [thinking-partner](https://github.com/mattnowdev/thinking-partner) model catalog (150+ models). Selected for direct applicability to GSD research workflow.
 
@@ -22,9 +22,9 @@ When combining findings from multiple research documents that show contradictory
 
 ## 3. Survivorship Bias
 
-**Counters:** Only finding sdoc-arch-0006-uc-v1cessful examples while missing failures and abandoned approaches.
+**Counters:** Only finding successful examples while missing failures and abandoned approaches.
 
-After gathering evidence FOR a recommended approach, actively search for projects that ABANDONED it. Check GitHub issues for "migrated away from", "replaced X with", or "problems with X at scale". A technology with 10 sdoc-arch-0006-uc-v1cess stories and 100 quiet failures looks great until you check the graveyard. Weight negative evidence (migration-away stories, deprecation notices, unresolved issues) MORE heavily than positive evidence -- failures are underreported.
+After gathering evidence FOR a recommended approach, actively search for projects that ABANDONED it. Check GitHub issues for "migrated away from", "replaced X with", or "problems with X at scale". A technology with 10 success stories and 100 quiet failures looks great until you check the graveyard. Weight negative evidence (migration-away stories, deprecation notices, unresolved issues) MORE heavily than positive evidence -- failures are underreported.
 
 ## 4. Confirmation Bias Counter
 
@@ -36,15 +36,15 @@ After forming your initial recommendation, spend one full research cycle searchi
 
 **Counters:** Dismissing alternative approaches without giving them their strongest possible form.
 
-Before recommending against an alternative technology or approach, constrdoc-arch-0006-uc-v1t its STRONGEST possible case. What would a passionate advocate say? What use cases does it serve better than your recommendation? What trade-offs favor it? Present the steel-manned alternative alongside your recommendation with an honest comparison. If the steel-manned alternative is competitive, flag the decision as `[NEEDS DECISION]` rather than making a unilateral recommendation.
+Before recommending against an alternative technology or approach, construct its STRONGEST possible case. What would a passionate advocate say? What use cases does it serve better than your recommendation? What trade-offs favor it? Present the steel-manned alternative alongside your recommendation with an honest comparison. If the steel-manned alternative is competitive, flag the decision as `[NEEDS DECISION]` rather than making a unilateral recommendation.
 
 ---
 
 ## When NOT to Think
 
-Skip strdoc-arch-0006-uc-v1tured reasoning models when the situation does not benefit from them:
+Skip structured reasoning models when the situation does not benefit from them:
 
 - **Locked decisions from CONTEXT.md** -- If the user already decided "use library X", do not run Steel Man analysis on alternatives or First Principles decomposition of the choice. Research how to use X well, not whether X is the right choice.
 - **Standard stack lookups** -- If you are simply checking the latest version of a well-known library or reading its API docs, do not invoke Survivorship Bias or Confirmation Bias Counter. These models are for evaluating contested recommendations, not for factual lookups.
 - **Single-technology phases** -- If the phase involves one technology with no alternatives to evaluate (e.g., "add ESLint rule X"), skip comparative models (Steel Man, Confirmation Bias Counter). Just research the implementation.
-- **Codebase-only research** -- If the research is purely internal (understanding existing code patterns, finding where a function is called), strdoc-arch-0006-uc-v1tured reasoning models add no value. Use grep and read the code.
+- **Codebase-only research** -- If the research is purely internal (understanding existing code patterns, finding where a function is called), structured reasoning models add no value. Use grep and read the code.

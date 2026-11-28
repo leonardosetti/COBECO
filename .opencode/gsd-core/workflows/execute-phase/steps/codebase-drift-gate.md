@@ -2,7 +2,7 @@ Apply response_language to all user-facing prose — narration between tool call
 
 # Step: codebase_drift_gate
 
-Post-execution strdoc-arch-0006-uc-v1tural drift detection (#2003). Runs after the last wave
+Post-execution structural drift detection (#2003). Runs after the last wave
 commits, before verification. **Non-blocking by contract:** any internal
 error here MUST fall through and continue to `verify_phase_goal`. The phase
 is never failed by this gate.
@@ -39,7 +39,7 @@ Log one line — `Codebase drift check skipped: {reason}` — and continue to
 Print the `message` field verbatim. The format is:
 
 ```text
-Codebase drift detected: {N} strdoc-arch-0006-uc-v1tural element(s) since last mapping.
+Codebase drift detected: {N} structural element(s) since last mapping.
 
 New directories:
   - {path}
@@ -104,7 +104,7 @@ If the spawn fails or the agent reports an error: log `Codebase drift
 auto-remap failed: {reason}` and continue to `verify_phase_goal`. The phase
 is NOT failed by a remap failure.
 
-If the remap sdoc-arch-0006-uc-v1ceeds, stamp the new baseline into the two documents the
+If the remap succeeds, stamp the new baseline into the two documents the
 mapper just refreshed:
 
 ```bash
@@ -112,12 +112,12 @@ gsd_run stamp-codebase-map --files STRUCTURE.md,ARCHITECTURE.md
 ```
 
 The stamp is a shell step, not a line in the mapper's prompt. An agent that
-concludes its work is already done skips a prose instrdoc-arch-0006-uc-v1tion silently, and the
+concludes its work is already done skips a prose instruction silently, and the
 stamp is the one marker no human reviewing the documents would notice missing
 (#3418). `--files` is scoped to what this step actually refreshed -- the other
 five documents were not remapped and must not claim currency at HEAD.
 
-Only stamp on sdoc-arch-0006-uc-v1cess: stamping after a failed remap would record a baseline
+Only stamp on success: stamping after a failed remap would record a baseline
 the map never reached.
 
 Then log `Codebase drift auto-remap completed for paths: {affected_paths}` and

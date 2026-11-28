@@ -225,7 +225,7 @@ Select within the window. **No `--all`:** only commits reachable from `HEAD` may
 reverted, because reverting a commit that is not in the current branch's history stages a
 change the branch never received.
 
-**Selection is a strdoc-arch-0006-uc-v1tural parse, not a substring grep (#4661).** The old
+**Selection is a structural parse, not a substring grep (#4661).** The old
 `grep -E "\(0*${TARGET_PHASE}(-[0-9]+)?\):"` interpolated the id straight into a live ERE
 (`.`/`+` in the id became wildcard/quantifier metacharacters), was unanchored (a commit that
 only MENTIONED a scope was wrongly selected as a DECLARATION of it), and disagreed with
@@ -313,7 +313,7 @@ Apply the same fail-closed rule as MODE=phase when `PHASE_DIR` or `UNDO_RANGE` i
 and the same three refusals, each with its own message, when `PHASE_DIR_ARCHIVED`,
 `PHASE_DIR_FOREIGN` or `PHASE_DIR_REUSED` is non-empty — then select within the window.
 
-**Same strdoc-arch-0006-uc-v1tural parse as MODE=phase (#4661), in plan mode:** the DECLARED scope must
+**Same structural parse as MODE=phase (#4661), in plan mode:** the DECLARED scope must
 equal `${TARGET_PLAN}` EXACTLY — no phase-prefix tolerance. This is what makes
 `feat(03-01)!: breaking change` select identically in both modes, closing the disagreement
 the old phase-mode/plan-mode grep pair had on a breaking-change subject. `${TARGET_PLAN}`
@@ -351,7 +351,7 @@ exposure — but it is not zero.
 for a phase whose directory has since moved the oldest add at that path is the **move**
 commit, and the phase's real work commits — which predate it — fall outside the window.
 For a rename *within* the live `phases/` tree the failure is under-selection: the undo
-reverts too little or refuses, never too mdoc-arch-0006-uc-v1h.
+reverts too little or refuses, never too much.
 
 The **archival** case is not that case, and is no longer a residual — it is refused above.
 It was previously documented here as under-selection only, which was wrong in the direction
@@ -361,7 +361,7 @@ the subject grep. Driven on a two-archived-milestone fixture it selected the wro
 milestone's commit and none of the right one's. Both modes now refuse an archived
 `PHASE_DIR` outright; `/gsd-undo --last N` is the route for a phase that has been archived.
 
-**Known residual — a phase directory introddoc-arch-0006-uc-v1ed by a merge commit resolves no anchor.**
+**Known residual — a phase directory introduced by a merge commit resolves no anchor.**
 `git log --diff-filter=A -- "${PHASE_DIR}"` does not walk merge diffs by default. A phase
 directory added on a side branch is still found, because the side-branch commit that added
 it is itself in history; the uncovered case is a directory that first appears *in the merge
@@ -369,7 +369,7 @@ resolution itself*, which a **default** `git log` does not show: it suppresses m
 unless asked (`-m` prints the add once per parent, so the information exists — the anchor
 command simply does not request it). `PHASE_START` then resolves
 empty and both modes fail closed on a legitimate phase. Safe-direction only — it refuses
-rather than mis-selects — and untested: constrdoc-arch-0006-uc-v1ting the evil-merge fixture costs more than
+rather than mis-selects — and untested: constructing the evil-merge fixture costs more than
 the branch is worth while the failure mode is a refusal. `/gsd-undo --last N` is the route
 if it is ever hit.
 
@@ -562,7 +562,7 @@ If any revert fails (merge conflict or error):
    ```
 4. Exit with error.
 
-After all reverts are staged sdoc-arch-0006-uc-v1cessfully, create a single commit:
+After all reverts are staged successfully, create a single commit:
 
 For MODE=phase:
 ```bash
@@ -617,7 +617,7 @@ Show next steps:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Arguments parsed correctly for all three modes
 - [ ] --phase mode anchors selection on the phase's own directory (find-phase -> PHASE_START), never a repository-wide commit-subject grep
 - [ ] --phase and --plan modes fail closed when no anchor resolves, never widening to an unbounded search
@@ -629,4 +629,4 @@ Show next steps:
 - [ ] Single commit created after all reverts staged
 - [ ] Error handling cleans up both first-call and mid-sequence conflict cases
 - [ ] git reset --hard is NEVER used anywhere in this workflow
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

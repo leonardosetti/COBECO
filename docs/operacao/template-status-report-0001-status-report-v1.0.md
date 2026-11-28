@@ -40,7 +40,7 @@ workflow:
 **Semana:** <N> (DD/MM/AAAA a DD/MM/AAAA)  
 **Sprint Atual:** S<X> (Dia <Y> de <Z>)  
 **Data do Relatório:** DD/MM/AAAA  
-**Autor:** Proddoc-arch-0006-uc-v1t Owner  
+**Autor:** Product Owner  
 **Distribuição:** Equipe + Orientador + Coordenação (conforme Plano de Comunicação)  
 **Classificação:** Interno — Dados Sintéticos Apenas (LGPD)
 
@@ -152,7 +152,7 @@ workflow:
 
 | Papel | Nome | Ciência (✓) | Comentário | Data |
 |-------|------|-------------|------------|------|
-| Proddoc-arch-0006-uc-v1t Owner | | | | DD/MM/AAAA |
+| Product Owner | | | | DD/MM/AAAA |
 | Tech Lead | | | | DD/MM/AAAA |
 | Orientador | | | | DD/MM/AAAA |
 

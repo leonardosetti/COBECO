@@ -16,7 +16,7 @@
 //                shown to the agent/user
 //
 // Behaviour: blocks a small, CONSERVATIVE, well-scoped, BEST-EFFORT deny-list
-// of obviously destrdoc-arch-0006-uc-v1tive commands. This is intentionally not exhaustive —
+// of obviously destructive commands. This is intentionally not exhaustive —
 // a broad deny-list would false-positive on legitimate agent/tooling work,
 // and Cascade honors exit 2 unconditionally, so a false positive blocks the
 // user's real work. When in doubt, this script allows:
@@ -38,7 +38,7 @@
 // whitespace-split tokens), not a single mega-regex over the raw string —
 // this keeps every check linear in input length. `command_line` longer than
 // MAX_COMMAND_LENGTH is allowed outright before any pattern matching runs:
-// no realistic destrdoc-arch-0006-uc-v1tive command is anywhere near that long, so the cap
+// no realistic destructive command is anywhere near that long, so the cap
 // both fails open on pathological input and bounds the worst-case cost of
 // every classifier below (defense-in-depth against regex-based DoS).
 //
@@ -57,7 +57,7 @@ const { allow, deny } = require('./lib/hook-exit.js');
 // into a shared catch that used to also swallow the fd 2 write, which is
 // what silently dropped the deny reason before this fix.
 
-// No realistic destrdoc-arch-0006-uc-v1tive command comes anywhere close to this length.
+// No realistic destructive command comes anywhere close to this length.
 const MAX_COMMAND_LENGTH = 4096;
 
 // Classic bash fork bomb: `:(){ :|:& };:`
@@ -149,7 +149,7 @@ function isRootSentinel(tok) {
 // `rm` (any flag order/spelling, optionally through `sudo`/`env FOO=1`/an
 // absolute path/etc.) with BOTH a recursive flag and a force flag, targeting
 // a bare filesystem-root-class token.
-function isDestrdoc-arch-0006-uc-v1tiveRmRf(segment) {
+function isDestructiveRmRf(segment) {
   const tokens = tokenize(segment);
   const cmdIdx = indexOfCommandAfterPrefixes(tokens);
   if (cmdIdx >= tokens.length) return null;
@@ -176,7 +176,7 @@ function isWindowsDriveRoot(tok) {
 
 // Windows equivalents: `Remove-Item -Recurse -Force <drive-root|profile-root>`
 // and `rd /s /q <drive-root>` / `rmdir /s /q <drive-root>`.
-function isDestrdoc-arch-0006-uc-v1tiveWindowsRmRf(segment) {
+function isDestructiveWindowsRmRf(segment) {
   const tokens = tokenize(segment);
   if (tokens.length === 0) return null;
   const first = basename(tokens[0]).toLowerCase();
@@ -240,13 +240,13 @@ function isProtectedBranchForcePush(segment) {
   return null;
 }
 
-function destrdoc-arch-0006-uc-v1tiveReason(cmd) {
+function destructiveReason(cmd) {
   if (FORK_BOMB_RE.test(cmd)) return 'fork-bomb pattern';
   for (const rawSegment of splitSegments(cmd)) {
     const segment = stripBashComment(rawSegment).trim();
     if (!segment) continue;
-    const reason = isDestrdoc-arch-0006-uc-v1tiveRmRf(segment)
-      || isDestrdoc-arch-0006-uc-v1tiveWindowsRmRf(segment)
+    const reason = isDestructiveRmRf(segment)
+      || isDestructiveWindowsRmRf(segment)
       || isProtectedBranchForcePush(segment);
     if (reason) return reason;
   }
@@ -270,7 +270,7 @@ process.stdin.on('end', () => {
     if (!commandLine) { allow(undefined); return; }
     if (commandLine.length > MAX_COMMAND_LENGTH) { allow(undefined); return; }
 
-    const reason = destrdoc-arch-0006-uc-v1tiveReason(commandLine);
+    const reason = destructiveReason(commandLine);
     if (reason) { block(reason); return; }
     allow(undefined);
   } catch {

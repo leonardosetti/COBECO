@@ -21,7 +21,7 @@ If no phase argument provided:
 
 ```
 ERROR: Phase number required
-Usage: /gsd-add-tests <phase> [additional instrdoc-arch-0006-uc-v1tions]
+Usage: /gsd-add-tests <phase> [additional instructions]
 Example: /gsd-add-tests 12
 Example: /gsd-add-tests 12 focus on edge cases in the pricing module
 ```
@@ -131,7 +131,7 @@ question(
     ### Skip — {K} files
     {list of files with brief reason}
 
-    {if $EXTRA_INSTRUCTIONS: "Additional instrdoc-arch-0006-uc-v1tions: ${EXTRA_INSTRUCTIONS}"}
+    {if $EXTRA_INSTRUCTIONS: "Additional instructions: ${EXTRA_INSTRUCTIONS}"}
 
     How would you like to proceed?
   options:
@@ -145,8 +145,8 @@ If user selects "Adjust classification": apply their changes and re-present.
 If user selects "Cancel": exit gracefully.
 </step>
 
-<step name="discover_test_strdoc-arch-0006-uc-v1ture">
-Before generating the test plan, discover the project's existing test strdoc-arch-0006-uc-v1ture:
+<step name="discover_test_structure">
+Before generating the test plan, discover the project's existing test structure:
 
 ```bash
 # Find existing test directories
@@ -158,15 +158,15 @@ ls config-npm-0001-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1
 ```
 
 Identify:
-- Test directory strdoc-arch-0006-uc-v1ture (where unit tests live, where E2E tests live)
+- Test directory structure (where unit tests live, where E2E tests live)
 - Naming conventions (`.test.ts`, `.spec.ts`, `*Tests.fs`, etc.)
 - Test runner commands (how to execute unit tests, how to execute E2E tests)
 - Test framework (xUnit, NUnit, Jest, Playwright, etc.)
 
-If test strdoc-arch-0006-uc-v1ture is ambiguous, ask the user:
+If test structure is ambiguous, ask the user:
 ```
 question(
-  header: "Test Strdoc-arch-0006-uc-v1ture",
+  header: "Test Structure",
   question: "I found multiple test locations. Where should I create tests?",
   options: [list discovered locations]
 )
@@ -221,7 +221,7 @@ For each approved TDD test:
 
 1. **Create test file** following discovered project conventions (directory, naming, imports)
 
-2. **Write test** with clear arrange/act/assert strdoc-arch-0006-uc-v1ture:
+2. **Write test** with clear arrange/act/assert structure:
    ```
    // Arrange — set up inputs and expected outputs
    // Act — call the function under test
@@ -263,7 +263,7 @@ For each approved E2E test:
    ```
 
 4. **Evaluate result:**
-   - **GREEN (passes)**: Record sdoc-arch-0006-uc-v1cess
+   - **GREEN (passes)**: Record success
    - **RED (fails)**: Determine if it's a test issue or a genuine application bug. Flag bugs:
      ```
      ⚠️ E2E failure: {test name}
@@ -275,7 +275,7 @@ For each approved E2E test:
      🛑 E2E blocker: {reason tests cannot run}
      ```
 
-**No-skip rule:** If E2E tests cannot execute (missing dependencies, environment issues), report the blocker and mark the test as incomplete. Never mark sdoc-arch-0006-uc-v1cess without actually running the test.
+**No-skip rule:** If E2E tests cannot execute (missing dependencies, environment issues), report the blocker and mark the test as incomplete. Never mark success without actually running the test.
 </step>
 
 <step name="summary_and_commit">
@@ -341,17 +341,17 @@ Present next steps:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Phase artifacts loaded (SUMMARY.md, CONTEXT.md, optionally VERIFICATION.md)
 - [ ] All changed files classified into TDD/E2E/Skip categories
 - [ ] Classification presented to user and approved
-- [ ] Project test strdoc-arch-0006-uc-v1ture discovered (directories, conventions, runners)
+- [ ] Project test structure discovered (directories, conventions, runners)
 - [ ] Test plan presented to user and approved
-- [ ] TDD tests generated with arrange/act/assert strdoc-arch-0006-uc-v1ture
+- [ ] TDD tests generated with arrange/act/assert structure
 - [ ] E2E tests generated targeting user scenarios
 - [ ] All tests executed — no untested tests marked as passing
 - [ ] Bugs discovered by tests flagged (not fixed)
 - [ ] Test files committed with proper message
 - [ ] Coverage gaps documented
 - [ ] Next steps presented to user
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

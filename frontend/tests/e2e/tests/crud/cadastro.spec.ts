@@ -11,12 +11,12 @@ test.describe('CRUD - Cadastro de Usuário (UC01/RF01)', () => {
       await cadastroPage.expectCadastroFormVisible();
       const toast = await cadastroPage.cadastrar(userData);
       
-      // Verifica se chegou na página de login
-      await loginPage.expectLoginFormVisible();
+      // Verifica se chegou na página de categorias (auto-login após cadastro)
+      await expect(cadastroPage.page).toHaveURL(/#\/categorias/);
       
       // Toast pode ter aparecido antes do redirect
       if (toast) {
-        expect(toast.toLowerCase()).toMatch(/conta criada|sdoc-arch-0006-uc-v1esso|redirecion/);
+        expect(toast.toLowerCase()).toMatch(/conta criada|sucesso|redirecion/);
       }
     });
 
@@ -26,7 +26,7 @@ test.describe('CRUD - Cadastro de Usuário (UC01/RF01)', () => {
       await cadastroPage.goto();
       await cadastroPage.cadastrar(userData);
       
-      await loginPage.expectLoginFormVisible();
+      await expect(cadastroPage.page).toHaveURL(/#\/categorias/);
     });
 
     test('deve exigir todos os campos obrigatórios', async ({ cadastroPage }) => {

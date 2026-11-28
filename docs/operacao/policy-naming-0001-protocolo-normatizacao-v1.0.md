@@ -178,7 +178,7 @@ workflow:
 |-------------|----------------------------------------|
 | `doc-adr` | Contexto, Decisão, Alternativas, Consequências, Conformidade Constitution, Aprovação CCB |
 | `spec-func` | Resolução Conflitos, Regras Negócio, Contrato API, Modelagem Dados, Segurança, Critérios Aceite, Testes |
-| `doc-prd` | Visão, Objetivos, Escopo, Stakeholders, Métricas Sdoc-arch-0006-uc-v1esso, Riscos, Roadmap |
+| `doc-prd` | Visão, Objetivos, Escopo, Stakeholders, Métricas Sucesso, Riscos, Roadmap |
 | `doc-rfc` | Problema, Proposta, Alternativas, Impacto, Plano Implementação, Decisão |
 | `doc-cr` | Motivo, Impacto, Plano Migração, Rollback, Validação, Aprovação |
 | `runbook-*` | Objetivo, Pré-requisitos, Passos, Validação, Rollback, Contatos, Referências |

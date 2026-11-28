@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     default-libmysqlclient-dev \
     default-mysql-client \
     pkg-config \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # ============================================================
@@ -33,11 +34,18 @@ ENV PATH=/usr/local/bin:$PATH
 # Copia código da aplicação
 COPY . .
 
+# Renomeia alembic config para nome padrão
+RUN cp config-alembic-0001-alembic-v1.0.ini alembic.ini
+
 # Usuário não-root para segurança
 RUN useradd --create-home --shell /bin/bash appuser && \
     chown -R appuser:appuser /app
 USER appuser
 
 EXPOSE 8000
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
 
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]

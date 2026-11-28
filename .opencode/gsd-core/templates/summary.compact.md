@@ -191,7 +191,7 @@ None - no external service configuration required.
 <one_liner_rules>
 The one-liner MUST be substantive:
 
-**Good:** "JWT auth with refresh rotation using jose library" · "Prisma schema with User, Session, and Proddoc-arch-0006-uc-v1t models" · "Dashboard with real-time metrics via Server-Sent Events"
+**Good:** "JWT auth with refresh rotation using jose library" · "Prisma schema with User, Session, and Product models" · "Dashboard with real-time metrics via Server-Sent Events"
 
 **Bad:** "Phase complete" · "Authentication implemented" · "Foundation finished" · "All tasks done"
 

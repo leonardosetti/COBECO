@@ -29,9 +29,9 @@
     ],
     "code-review": [
       {
-        "id": "strdoc-arch-0006-uc-v1tural-pre-pass",
+        "id": "structural-pre-pass",
         "when": "state:fallow-enabled",
-        "read": "gsd-core/workflows/code-review/steps/strdoc-arch-0006-uc-v1tural-pre-pass.md"
+        "read": "gsd-core/workflows/code-review/steps/structural-pre-pass.md"
       },
       {
         "id": "dispatch-fix",

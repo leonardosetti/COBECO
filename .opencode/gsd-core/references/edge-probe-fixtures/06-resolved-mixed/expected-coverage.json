@@ -5,9 +5,9 @@
       "category": "adjacency",
       "status": "resolved",
       "verification": "explicit",
-      "resolution": "AC#6: todoc-arch-0006-uc-v1hing intervals merge",
+      "resolution": "AC#6: touching intervals merge",
       "reason": null,
-      "probe": "When two things are exactly equal or just todoc-arch-0006-uc-v1h, do they merge, collide, or separate?"
+      "probe": "When two things are exactly equal or just touch, do they merge, collide, or separate?"
     },
     {
       "requirement_id": "R1",

@@ -44,7 +44,7 @@ workflow:
 **Branch:** `main`  
 **CI Run:** `<GitHub Actions Run ID / URL>` — ✅ Verde  
 **Cobertura Testes:** XX% (unit) + YY% (E2E críticos)  
-**Autor:** Proddoc-arch-0006-uc-v1t Owner  
+**Autor:** Product Owner  
 **Aprovado por:** CCB (Gate 3)
 
 ---
@@ -135,11 +135,11 @@ workflow:
 | Lint (ruff) | 0 erros | 0 | 🟢 Pass |
 | Type Check (mypy) | 0 erros | 0 | 🟢 Pass |
 | Segurança (bandit) | 0 achados | 0 | 🟢 Pass |
-| Docker Build | Sdoc-arch-0006-uc-v1esso | Sdoc-arch-0006-uc-v1esso | 🟢 Pass |
+| Docker Build | Sucesso | Sucesso | 🟢 Pass |
 
 ---
 
-## 10. Como Atualizar (Upgrade Instrdoc-arch-0006-uc-v1tions)
+## 10. Como Atualizar (Upgrade Instructions)
 
 ### Desenvolvimento / Homologação
 ```bash

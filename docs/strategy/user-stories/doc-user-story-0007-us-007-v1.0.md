@@ -69,7 +69,7 @@ Então o sistema faz POST /v1/listas com {nome: "Compras", itens: [...]}
 E usa transação MySQL: BEGIN → INSERT listas → INSERT itens_lista → COMMIT
 E retorna 201 com {id: 123, nome: "Compras", criado_em: "..."}
 E limpa a lista efêmera do sessionStorage
-E redireciona para "Minhas Listas" com toast "Lista salva com sdoc-arch-0006-uc-v1esso"
+E redireciona para "Minhas Listas" com toast "Lista salva com sucesso"
 ```
 
 ### Cenário 2: Validação — categorias pré-selecionadas (UC03)
@@ -103,7 +103,7 @@ E loga erro no backend
 
 | # | Critério | Tipo | Auto? | Teste | Status |
 |---|----------|------|-------|-------|--------|
-| AC-01 | Salvar lista autenticado → transação BEGIN/COMMIT, limpa sessionStorage | Funcional | Sim | `test_salvar_lista_sdoc-arch-0006-uc-v1esso.py` | ✅ |
+| AC-01 | Salvar lista autenticado → transação BEGIN/COMMIT, limpa sessionStorage | Funcional | Sim | `test_salvar_lista_sucesso.py` | ✅ |
 | AC-02 | Valida categorias pré-selecionadas → 400 se vazio | Funcional | Sim | `test_salvar_lista_sem_categorias.py` | ✅ |
 | AC-03 | Produto inexistente → 400 + rollback | Funcional | Sim | `test_salvar_lista_produto_invalido.py` | ✅ |
 | AC-04 | Erro DB → rollback + 500 + log | Não-funcional | Sim | `test_salvar_lista_db_error.py` | ✅ |
@@ -117,7 +117,7 @@ E loga erro no backend
 |---------|-----------|--------|------|-------|--------|--------|
 | TA-060 | Backend: POST /v1/listas — transação explícita, valida categorias, itens, FKs | Backend | 4 | Nicholas | ✅ | `feat/UC-14-salvar-lista` |
 | TA-061 | Backend: Verificar categorias selecionadas (session/state) antes de persistir | Backend | 2 | Nicholas | ✅ | `feat/UC-14-salvar-lista` |
-| TA-062 | Testes unit: sdoc-arch-0006-uc-v1esso, validações, rollback, concorrência | Backend | 3 | Nicolas | ✅ | `feat/UC-14-salvar-lista` |
+| TA-062 | Testes unit: sucesso, validações, rollback, concorrência | Backend | 3 | Nicolas | ✅ | `feat/UC-14-salvar-lista` |
 | TA-063 | Frontend: Botão "Salvar" na página Nova Lista → loading, toast, redirect | Frontend | 3 | Eduardo | ✅ | `feat/UC-14-salvar-lista` |
 
 ---
@@ -127,7 +127,7 @@ E loga erro no backend
 - [x] Transação MySQL explícita (BEGIN/COMMIT/ROLLBACK)
 - [x] Validação categorias pré-selecionadas (regra de negócio)
 - [x] FK checks: usuario_id, produto_id válidos
-- [x] Limpa sessionStorage `cobeco_lista_efemera` após sdoc-arch-0006-uc-v1esso
+- [x] Limpa sessionStorage `cobeco_lista_efemera` após sucesso
 - [x] Testes ≥80%, Code review, CI, CCB
 
 ---

@@ -41,7 +41,7 @@ workflow:
 **Data:** 14/11/2026  
 **Status:** APROVADO PARA EXECUÇÃO  
 **Responsável:** QA Lead / Tech Lead  
-**Aprovação:** Proddoc-arch-0006-uc-v1t Owner + Tech Lead + Arquiteto  
+**Aprovação:** Product Owner + Tech Lead + Arquiteto  
 
 ---
 
@@ -116,7 +116,7 @@ Definir a estratégia, escopo, recursos, cronograma e critérios de aceite para 
 | Módulo | Arquivos | Casos de Teste | RFs |
 |--------|----------|----------------|-----|
 | **Entities** | `test_entities.py`, `test_value_objects.py` | Validações `__post_init__`, imutabilidade VOs, regras de negócio | RF01, RF06, RF08, RF10, RF11 |
-| **UseCases Auth** | `test_cadastrar_usuario.py`, `test_login.py`, `test_logout.py`, `test_recuperar_senha.py` | Sdoc-arch-0006-uc-v1esso, falhas, edge cases, rate limit, token expiry | RF01–RF04 |
+| **UseCases Auth** | `test_cadastrar_usuario.py`, `test_login.py`, `test_logout.py`, `test_recuperar_senha.py` | Sucesso, falhas, edge cases, rate limit, token expiry | RF01–RF04 |
 | **UseCases Listas** | `test_criar_lista.py`, `test_editar_lista.py`, `test_excluir_lista.py`, `test_listar_por_usuario.py` | Transações, confirmação exclusão, paginação, soft delete | RF07–RF11 |
 | **UseCases Comparação** | `test_calcular_orcamento.py`, `test_buscar_precos.py` | Ordenação ASC, slider disponibilidade, cache 5min, timeout 10s | RF15, RF16 |
 | **UseCases Export** | `test_gerar_pdf_lista.py` | A4, nome arquivo, visitante sem auth, <5s (100 itens) | RF17 |
@@ -164,7 +164,7 @@ Definir a estratégia, escopo, recursos, cronograma e critérios de aceite para 
 | **Navegação** | `tests/crud/navegacao.spec.ts` 🆕 | Hash routing, deep links, guards auth, 404 |
 | **Responsividade** | `tests/crud/responsividade.spec.ts` 🆕 | 1024px, 1440px, 1920px, breakpoint único |
 | **Acessibilidade** | `tests/crud/a11y.spec.ts` 🆕 | axe-core: labels, contraste, tab order, ARIA, landmarks |
-| **Estados** | `tests/crud/estados.spec.ts` 🆕 | Loading, empty states, toasts error/sdoc-arch-0006-uc-v1cess, retry |
+| **Estados** | `tests/crud/estados.spec.ts` 🆕 | Loading, empty states, toasts error/success, retry |
 
 **Browsers:** Chromium (P0), Firefox (P1), WebKit (P1)  
 **Viewport:** 1280×720 (desktop-first ≥1024px)  
@@ -357,7 +357,7 @@ Definir a estratégia, escopo, recursos, cronograma e critérios de aceite para 
 
 | Papel | Nome | Assinatura | Data |
 |-------|------|------------|------|
-| **Proddoc-arch-0006-uc-v1t Owner** | _________________________ | _______________ | __/__/2026 |
+| **Product Owner** | _________________________ | _______________ | __/__/2026 |
 | **Tech Lead** | _________________________ | _______________ | __/__/2026 |
 | **Arquiteto de Software** | _________________________ | _______________ | __/__/2026 |
 | **QA Lead** | _________________________ | _______________ | __/__/2026 |

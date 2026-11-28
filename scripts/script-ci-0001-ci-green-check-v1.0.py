@@ -100,7 +100,7 @@ def check_required_workflows(runs: list[dict]) -> tuple[bool, list[str]]:
         
         if status != 'completed':
             failed.append(f"{required}: EM ANDAMENTO ({status}) - {latest.get('html_url', '')}")
-        elif conclusion != 'sdoc-arch-0006-uc-v1cess':
+        elif conclusion != 'success':
             failed.append(f"{required}: FALHOU ({conclusion}) - {latest.get('html_url', '')}")
     
     return len(failed) == 0, failed
@@ -180,9 +180,9 @@ def main() -> int:
         print("   Verifique se CI foi triggerado (.github/workflows/config-ci-0001-github-actions-v1.0.yml)")
         return 1
     
-    sdoc-arch-0006-uc-v1cess, failed = check_required_workflows(runs)
+    success, failed = check_required_workflows(runs)
     
-    if sdoc-arch-0006-uc-v1cess:
+    if success:
         print("✅ Todos workflows obrigatórios passaram (verde). Push autorizado.")
         return 0
     
@@ -200,9 +200,9 @@ def main() -> int:
     if has_pending:
         print(f"\n⏳ Há workflows pendentes. Aguardando completar (max {MAX_WAIT_SECONDS}s)...")
         print("   Pressione Ctrl+C para cancelar e push manual (git push --no-verify)")
-        sdoc-arch-0006-uc-v1cess, failed = wait_for_workflows(owner, repo, branch, MAX_WAIT_SECONDS)
-        if sdoc-arch-0006-uc-v1cess:
-            print("✅ CI completou com sdoc-arch-0006-uc-v1esso durante a espera. Push autorizado.")
+        success, failed = wait_for_workflows(owner, repo, branch, MAX_WAIT_SECONDS)
+        if success:
+            print("✅ CI completou com sucesso durante a espera. Push autorizado.")
             return 0
     
     print("\n" + "=" * 60)

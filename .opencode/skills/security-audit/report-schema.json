@@ -118,7 +118,7 @@
           },
           "execution": {
             "type": "object",
-            "description": "Target-neutral reproddoc-arch-0006-uc-v1tion in the target's native interface.",
+            "description": "Target-neutral reproduction in the target's native interface.",
             "properties": {
               "attacker_perspective": {
                 "type": "string",
@@ -133,7 +133,7 @@
                   "type": "string"
                 }
               },
-              "instrdoc-arch-0006-uc-v1tions": {
+              "instructions": {
                 "type": "array",
                 "minItems": 1,
                 "items": {
@@ -148,7 +148,7 @@
                 "visibleContent": true
               }
             },
-            "required": ["attacker_perspective", "payloads", "instrdoc-arch-0006-uc-v1tions", "observed_result"],
+            "required": ["attacker_perspective", "payloads", "instructions", "observed_result"],
             "additionalProperties": false
           },
           "remediation": {

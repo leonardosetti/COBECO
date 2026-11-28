@@ -4,7 +4,7 @@
 **Data:** DD/MM/AAAA  
 **Projeto:** COBECO MVP  
 **Período:** DD/MM/AAAA a DD/MM/AAAA  
-**Autor:** Proddoc-arch-0006-uc-v1t Owner  
+**Autor:** Product Owner  
 **Aprovação:** CCB + Banca Avaliadora (Gate 4)
 
 ---
@@ -17,7 +17,7 @@ Por meio deste termo, declara-se oficialmente **ENCERRADO** o projeto **COBECO M
 
 ## 2. Objetivos vs. Resultados Alcançados
 
-| Objetivo (Project Charter) | Métrica de Sdoc-arch-0006-uc-v1esso | Resultado Alcançado | Status |
+| Objetivo (Project Charter) | Métrica de Sucesso | Resultado Alcançado | Status |
 |----------------------------|-------------------|---------------------|--------|
 | Entregar MVP funcional (18 RFs) | 100% RFs Done no GitHub Projects | <XX%> | ☐ Atingido ☐ Parcial ☐ Não atingido |
 | Cobertura de testes ≥ 80% | `pytest --cov-fail-under=80` | <XX%> | ☐ Atingido ☐ Parcial ☐ Não atingido |
@@ -123,7 +123,7 @@ Por meio deste termo, declara-se oficialmente **ENCERRADO** o projeto **COBECO M
 3. **RAID Log atualização manual** — Automatizar coleta de riscos do GitHub Issues/PRs.
 4. **Testes E2E frágeis** — Alguns flaky no Playwright; investir em seletores estáveis + retry.
 5. **Estimativa de tarefas** — Subestimamos complexidade do cálculo orçamento (UC06); usar Planning Poker.
-6. **Comunicação com orientador** — Reuniões quinzenais foram podoc-arch-0006-uc-v1as; semanais curtas (15min) seriam melhores.
+6. **Comunicação com orientador** — Reuniões quinzenais foram poucas; semanais curtas (15min) seriam melhores.
 
 ### 6.3 Surpresas (Surprise)
 1. **MySQL InnoDB FK cascade** — Comportamento `ON DELETE CASCADE` em `itens_lista` apaga itens ao deletar lista (soft delete não cascateia). Documentado no DER.

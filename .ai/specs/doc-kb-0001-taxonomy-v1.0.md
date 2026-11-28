@@ -45,7 +45,7 @@ title: <titulo em PT-BR>
 version: MAJOR.MINOR.PATCH          # bump semantico (Secao 4)
 class: <uma das 10 classes da Secao 2>   # EXATAMENTE uma; classes sao ortogonais
 status: draft | active | ratified | archived    # enum do ciclo Secao 4
-owner: <agent-custodio-slug>        # custodia constitdoc-arch-0006-uc-v1ional Art. 4
+owner: <agent-custodio-slug>        # custodia constitucional Art. 4
 derived-from:                       # fontes upstream: caminhos ou IDs (ledger/parcelas)
   - <path|id>
 last-revised: YYYY-MM-DD
@@ -93,7 +93,7 @@ Regras:
 | `docs/conhecimento/drafts/` (27 arq.) | vivos → `okb`/`glossario` via merge; `[legacy]/*` e variantes v2.1/v3.1 → `archived` | draft | Dedupe pendente de CCB (caveat do frontmatter desta spec) |
 | `docs/diagramas/` (6 areas, PNG+SVG) | `diagrama` → mantem caminho | active | Exigir svg/mermaid source por area (DoR da classe) |
 | `docs/metricas/baseline.md` (0B), `docs/dependencias/registro.md` (0B) | `log-baseline` → in loco | draft/arquivo | Popular no M1: dependencias do stack canon quando codificar |
-| `docs/archive/` (88 arq. legacy) | `archived` → mantem caminho | archived | Sem acao; sujeito apenas a auditoria/sdoc-arch-0006-uc-v1esao, nunca reativado como fonte viva |
+| `docs/archive/` (88 arq. legacy) | `archived` → mantem caminho | archived | Sem acao; sujeito apenas a auditoria/sucesao, nunca reativado como fonte viva |
 
 Principio normativo de migracao: **uma fonte viva por conteudo**. Arquivos co-irmãos (docx/PNG/PDF) sao DERIVADOS do `.md`/SVG canônico e permanecem junto do fonte (ou em archive); nunca dois `.md` vivos com o mesmo proposito.
 
@@ -106,16 +106,16 @@ draft ──> active ──> ratified ──┐
                                └──> archived (imutavel; nova versao viva pode substitui-lo)
 ```
 
-1. `draft`: em constrdoc-arch-0006-uc-v1ao. Consumo pelo DAG restrito a interrogacao; nunca merge/commit de codigo a partir dele.
+1. `draft`: em construcao. Consumo pelo DAG restrito a interrogacao; nunca merge/commit de codigo a partir dele.
 2. `active`: conteudo validado pelos gates da Secao 6. O DAG consome (Secao 5).
 3. `ratified`: ratificacao humana em CCB (Art. 5). Minimo obrigatorio: constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon, ADRs, TAP/plano-mestre; demais classes ratificaveis quando a CCB decidir. Ratificado = passivel de auditoria.
-4. `archived`: terminal; so acessivel para auditoria/sdoc-arch-0006-uc-v1esao (Art. 8.2); nenhum link ativo o cita como fonte.
+4. `archived`: terminal; so acessivel para auditoria/sucesao (Art. 8.2); nenhum link ativo o cita como fonte.
 5. `Nomenclatura`: `MAJOR.MINOR.PATCH` — MAJOR: altera contrato ou alcance do artefato (ex.: nova classe taxonomica → nova versao da taxonomy); MINOR: conteudo substancial novo (ex.: corpo de um plano 0B preenchido); PATCH: correcao/clarificacao sem mudanca semantica. Cada edicao registra: bump no frontmatter + entrada de changelog no rodape do artefato (persona DO-04).
-6. **Versão unica por artefato vivo:** um path canônico live carrega EXATAMENTE UMA versão. Divergencias existentes (Plano-de-Projeto v1.0 vs v1.1; OKB v2.1/v3.1) resolvem-se: versao mais recente prevalece como canonica; versoes anteriores movem-se para `docs/archive/legacy-backups/` com frontmatter `derived-from` apontando para a sdoc-arch-0006-uc-v1esora. **Nunca reativar versao arquivada como canonica** (gate da auditoria F-11).
+6. **Versão unica por artefato vivo:** um path canônico live carrega EXATAMENTE UMA versão. Divergencias existentes (Plano-de-Projeto v1.0 vs v1.1; OKB v2.1/v3.1) resolvem-se: versao mais recente prevalece como canonica; versoes anteriores movem-se para `docs/archive/legacy-backups/` com frontmatter `derived-from` apontando para a sucesora. **Nunca reativar versao arquivada como canonica** (gate da auditoria F-11).
 
 # 5. FORNECIMENTO PARA O CICLO SDD (como o SDD v2 consome a taxonomia)
 
-1. **Ingresso (o canal):** `.ai/specs/` e o UNICO canal de especificacoes para o DAG SDD (Art. 6.1, REQ-13/F-06). Nenhum trabalho de constrdoc-arch-0006-uc-v1ao (code) nasce de backlog, conversa ou artefato fora do canal; planos (`docs/planos/`) alimentam SPECS, nunca o codigo diretamente.
+1. **Ingresso (o canal):** `.ai/specs/` e o UNICO canal de especificacoes para o DAG SDD (Art. 6.1, REQ-13/F-06). Nenhum trabalho de construcao (code) nasce de backlog, conversa ou artefato fora do canal; planos (`docs/planos/`) alimentam SPECS, nunca o codigo diretamente.
 2. **Consumo (durante o ciclo):** cada spec declara no frontmatter `derived-from` os artefatos consultados com `class` + `version`; o ciclo v2 (`sdd-cycle.sh`) valida este inventario antes do dispatch.
 3. **Gap-declarado (P-08):** qualquer spec pode declarar:
    `UNKNOWN-GAP: <topico>; acao: <artefato-alvo>`

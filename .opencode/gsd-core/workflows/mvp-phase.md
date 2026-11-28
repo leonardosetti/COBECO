@@ -127,7 +127,7 @@ a) Restate the story to the user:
 
 > "Your story: «${USER_STORY}»
 >
-> This story has [signal description, e.g., 'two compound capabilities joined by and']. Splitting it into multiple phases will proddoc-arch-0006-uc-v1e a cleaner Walking Skeleton and reddoc-arch-0006-uc-v1e the risk of mid-phase scope creep.
+> This story has [signal description, e.g., 'two compound capabilities joined by and']. Splitting it into multiple phases will produce a cleaner Walking Skeleton and reduce the risk of mid-phase scope creep.
 >
 > Want to walk through SPIDR splitting?"
 
@@ -149,7 +149,7 @@ c) Walk through the chosen axis with **one** targeted question (not all five). F
 
 Free-text response. Workflow parses to identify the split.
 
-d) Proddoc-arch-0006-uc-v1e a split proposal. Example:
+d) Produce a split proposal. Example:
 
 > "Proposed split (Paths axis):
 > - **Phase ${PHASE} (this one):** Happy path — ${HAPPY_STORY}
@@ -206,7 +206,7 @@ The Walking Skeleton gate (also from Phase 1) will fire automatically if `${PHAS
 
 ## 8. Surface deferred phase splits (if any)
 
-If SPIDR proddoc-arch-0006-uc-v1ed a split in step 4, append a final user-facing message:
+If SPIDR produced a split in step 4, append a final user-facing message:
 
 > "**SPIDR split deferred phases.**
 >

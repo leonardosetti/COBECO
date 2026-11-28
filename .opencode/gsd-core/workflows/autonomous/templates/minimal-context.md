@@ -15,7 +15,7 @@
 ## Implementation Decisions
 
 ### the agent's Discretion
-All implementation choices are at the agent's discretion — discuss phase was skipped per user setting. Use ROADMAP phase goal, sdoc-arch-0006-uc-v1cess criteria, and codebase conventions to guide decisions.
+All implementation choices are at the agent's discretion — discuss phase was skipped per user setting. Use ROADMAP phase goal, success criteria, and codebase conventions to guide decisions.
 
 </decisions>
 
@@ -29,7 +29,7 @@ Codebase context will be gathered during plan-phase research.
 <specifics>
 ## Specific Ideas
 
-No specific requirements — discuss phase skipped. Refer to ROADMAP phase description and sdoc-arch-0006-uc-v1cess criteria.
+No specific requirements — discuss phase skipped. Refer to ROADMAP phase description and success criteria.
 
 </specifics>
 

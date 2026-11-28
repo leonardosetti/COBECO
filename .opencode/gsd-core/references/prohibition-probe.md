@@ -3,7 +3,7 @@
 Shared reference for the spec/requirements phase. Companion to
 `@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/edge-probe.md`: `edge-probe` reaches the
 **data/behavior-shape axis** (boundaries, adjacency, encoding, ordering) — the things a
-feature must *do*. This reference reaches the orthogonal **must-NOT axis** (proddoc-arch-0006-uc-v1t, values,
+feature must *do*. This reference reaches the orthogonal **must-NOT axis** (product, values,
 safety, ethics) — the things a feature must *never silently become*. The edge-probe caught
 0/8 of these in controlled testing because it is the wrong instrument: a shape taxonomy
 cannot surface "the reminder must not shame the user." Walk each requirement through the
@@ -12,7 +12,7 @@ one state.
 
 This doc is written in generic `requirements → checks → verifier` terms with no
 tool-specific vocabulary, so it is portable: copy it into any spec/requirements process.
-A short mapping table at the end binds it to common host strdoc-arch-0006-uc-v1tures.
+A short mapping table at the end binds it to common host structures.
 
 ## Why front-of-pipeline
 
@@ -54,8 +54,8 @@ requirement:
 > does not forbid?*
 
 This question is model-robust (17/17 holistic surfacing including smaller models in the N18
-experiment). It deliberately over-proddoc-arch-0006-uc-v1es: ~10 raw candidates per requirement, including
-routine engineering items. That over-proddoc-arch-0006-uc-v1tion is intentional — recall first.
+experiment). It deliberately over-produces: ~10 raw candidates per requirement, including
+routine engineering items. That over-production is intentional — recall first.
 
 **Stage 2 — Precision (one-pass classifier).** Filter the raw Stage-1 list in a single pass.
 The rule is a drop/keep split:
@@ -65,7 +65,7 @@ The rule is a drop/keep split:
   empty list", "must return a primitive not an object", "must not leak a file handle". These
   belong to the edge-probe or to ordinary code review, not here.
 - **KEEP values / safety / ethics items** — anything that, if violated, makes the feature do
-  something the author would object to on proddoc-arch-0006-uc-v1t, fairness, privacy, transparency, or
+  something the author would object to on product, fairness, privacy, transparency, or
   safety grounds: "must not use shaming framing", "must not proxy on protected attributes",
   "must not store raw PII in plaintext".
 
@@ -86,7 +86,7 @@ emit a one-line breadcrumb and stop:
 
 The breadcrumb reads like: *"prototype-pollution is canon — covered by /gsd-secure-phase +
 eslint; not minted here."* This keeps the surfaced list to the ~2–3 **bespoke** items that
-no other tool would catch — the manipulative-framing prohibition, the proddoc-arch-0006-uc-v1t-specific
+no other tool would catch — the manipulative-framing prohibition, the product-specific
 fairness constraint — which is the whole value of the probe. Minting canon items both
 duplicates other tooling and drowns the bespoke signal (ADR-550 Decision 6).
 
@@ -106,7 +106,7 @@ lifecycle is identical to the edge-probe, the verification tiers differ):
   (this REPLACES the edge-probe's `explicit | backstop`):
   - **test** — the prohibition can be mechanically checked (a negative test, a lint rule, an
     assertion that the audit log contains no raw SSN). A checkable assertion exists.
-  - **judgment** — the prohibition is real but cannot be reddoc-arch-0006-uc-v1ed to a mechanical test (a
+  - **judgment** — the prohibition is real but cannot be reduced to a mechanical test (a
     human/LLM judgment that the framing is not manipulative). It records intent and routes
     to a judgment-based review rather than a green/red test.
 
@@ -122,14 +122,14 @@ lifecycle is identical to the edge-probe, the verification tiers differ):
     never a silent pass.
 
     **Machine-proven fail-first (#1279).** `failFirst` is now **machine-proven, not caller-attested**:
-    before a clean pass greens, the proddoc-arch-0006-uc-v1er independently runs the wired check against a KNOWN
+    before a clean pass greens, the producer independently runs the wired check against a KNOWN
     VIOLATION and confirms it goes RED (any other outcome — passes-on-violation, can't-prove, throws,
     times out, no violation source — hard-gates). The violation is sourced from a descriptor field:
     - **`violationFixture`** — an author-supplied path to a KNOWN-BAD subject. For `lint-rule`: a file
       whose content violates `rule`; the prover lints it and requires the rule id to appear in the
       JSON report (the rule must have teeth). For `node-test`: a subject the negative test exercises,
       expected to drive it RED.
-    - **`GSD_PROHIB_SUBJECT`** — the node-test subject-injection convention: the proddoc-arch-0006-uc-v1er spawns the
+    - **`GSD_PROHIB_SUBJECT`** — the node-test subject-injection convention: the producer spawns the
       negative test with `GSD_PROHIB_SUBJECT=<violationFixture>` in the child env; the test reads that
       env var to locate its subject-under-test and is expected to go red against the violating subject.
     - **lint-fixture authoring gotcha** — the violating fixture must actually trigger the rule. For the
@@ -160,7 +160,7 @@ the author wires it when the negative test or lint rule already exists) and is r
 **five flat scalar keys** on the `must_haves.prohibitions` item — never a nested `check: {}`
 object:
 
-- `check_kind` — `node-test` | `lint-rule` (which proddoc-arch-0006-uc-v1er mechanism runs the check).
+- `check_kind` — `node-test` | `lint-rule` (which producer mechanism runs the check).
 - `check_target` — the test file (`node-test`) or the file the rule runs against (`lint-rule`).
 - `check_rule` — the `ruleId` to filter on, **lint-rule only** (absent for `node-test`).
 - `check_violation_fixture` — path to a KNOWN-BAD subject the #1279 prover runs the check against to
@@ -181,7 +181,7 @@ end-to-end through the projection alone.
 
 **Fail-closed + backward-compat.** A partial descriptor (`lint-rule` missing `check_rule`), an
 unknown `check_kind`, an **absent** descriptor, OR a descriptor with **no `check_violation_fixture`**
-falls through to the proddoc-arch-0006-uc-v1er's fail-closed paths (`located: false`, or located-but-unprovable) —
+falls through to the producer's fail-closed paths (`located: false`, or located-but-unprovable) —
 never a silent green. A prohibition with no descriptor parses and disposes byte-identically to today.
 `failFirst` is **not** sourced from the descriptor and is **demoted** (machine-proven fail-first
 DELIVERED in #1279 — no path greens on attestation alone, FF-08); the `dispositionForProhibition`
@@ -220,16 +220,16 @@ both the reference implementation and any third-party port emit.
 
 ## Generic mapping (requirements → checks → verifier)
 
-| Host strdoc-arch-0006-uc-v1ture | "requirement" | a `resolved`/`test` prohibition becomes | a `resolved`/`judgment` prohibition becomes |
+| Host structure | "requirement" | a `resolved`/`test` prohibition becomes | a `resolved`/`judgment` prohibition becomes |
 |----------------|---------------|------------------------------------------|----------------------------------------------|
 | GSD SPEC | a SPEC Requirement | a SPEC acceptance criterion (marked prohibition) that `plan-phase` lifts into `must_haves.prohibitions` | a `must_haves.prohibitions` item routed to judgment review |
 | Gherkin feature | a Scenario | a negative `Then` assertion / tagged negative scenario | a tagged scenario routed to manual review |
 | OpenAPI operation | an operation | a contract test asserting the forbidden behavior never occurs | a documented constraint flagged for review |
 | Docstring contract | a documented behavior | a negative assertion in the contract test | a documented must-NOT for reviewers |
 
-The portable invariant: a `resolved`/`test` prohibition proddoc-arch-0006-uc-v1es **a checkable negative the
+The portable invariant: a `resolved`/`test` prohibition produces **a checkable negative the
 verifier iterates over** (GSD: a `must_haves.prohibitions` item with a test); a
-`resolved`/`judgment` prohibition proddoc-arch-0006-uc-v1es a recorded intent routed to judgment review. An
+`resolved`/`judgment` prohibition produces a recorded intent routed to judgment review. An
 `unresolved` prohibition is an explicit assumption the downstream planner must surface, not
 silently drop.
 
@@ -237,7 +237,7 @@ silently drop.
 
 A single requirement to send a daily habit reminder. The edge-probe sees a `stateful`
 requirement and asks about idempotency; the prohibition-probe asks the adversarial question
-and surfaces what the reminder must never *become*. Stage 1 over-proddoc-arch-0006-uc-v1es ("must not spam",
+and surfaces what the reminder must never *become*. Stage 1 over-produces ("must not spam",
 "must not throw on a deleted habit", "must not use shaming framing"); Stage 2 drops the
 routine-engineering items and keeps the one genuine values prohibition:
 
@@ -258,14 +258,14 @@ routine-engineering items and keeps the one genuine values prohibition:
 }
 ```
 
-The kept prohibition is `judgment`-tier: "manipulative framing" cannot be reddoc-arch-0006-uc-v1ed to a
+The kept prohibition is `judgment`-tier: "manipulative framing" cannot be reduced to a
 mechanical test, so it records intent and routes to judgment review — but it is now an
 explicit acceptance criterion the spec must clear, not an unwritten assumption.
 
 ## Worked example (clean-utility)
 
 A pure utility requirement — "deduplicate a list of integers" — has no user-facing surface,
-no values/safety/ethics dimension. Stage 1 still over-proddoc-arch-0006-uc-v1es ("must not mutate the input",
+no values/safety/ethics dimension. Stage 1 still over-produces ("must not mutate the input",
 "must not change order"), but every candidate is routine engineering that Stage 2 drops (and
 the edge-probe already owns). The correct precision outcome is an empty prohibition list — a
 zero, not a false positive:
@@ -278,12 +278,12 @@ zero, not a false positive:
 ```
 
 This is the precision discipline that keeps the probe from crying wolf: a utility with no
-intent surface proddoc-arch-0006-uc-v1es zero prohibitions, so a non-empty list always carries signal.
+intent surface produces zero prohibitions, so a non-empty list always carries signal.
 
 ## Worked example (multi-prohibition)
 
 A loan-decision requirement is the high-stakes case: it surfaces several distinct
-prohibitions across categories. Stage 1 proddoc-arch-0006-uc-v1es a long list including canon items
+prohibitions across categories. Stage 1 produces a long list including canon items
 (prototype-pollution, generic GDPR retention) that canon-referral breadcrumbs out; Stage 2
 keeps the three bespoke values/safety items — a `fairness` constraint, a `privacy` constraint
 (`test`-tier, mechanically checkable against the audit log), and a `transparency` constraint:

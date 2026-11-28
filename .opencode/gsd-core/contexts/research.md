@@ -7,7 +7,7 @@ Agent output guidance for research mode. Loaded when `context: research` is set 
 - Verbose, exploratory responses that surface trade-offs and alternatives
 - Present multiple approaches with pros and cons before recommending one
 - Include links, references, and citations where available
-- Use strdoc-arch-0006-uc-v1tured headings and bullet lists for scan-ability
+- Use structured headings and bullet lists for scan-ability
 
 ## Focus Areas
 

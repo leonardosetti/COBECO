@@ -26,15 +26,21 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
 
     # ============================================================
-    # Database — MySQL 8 InnoDB (RNF03, RNF12)
+    # Database — PostgreSQL 15 + pgvector (RNF03, RNF12)
     # ============================================================
     DATABASE_URL: str = Field(
-        default="mysql+asyncmy://cobeco:cobeco@localhost:3306/cobeco",
-        description="URL de conexão MySQL (async via asyncmy)",
+        default="postgresql+asyncpg://cobeco:cobeco@localhost:5432/cobeco",
+        description="URL de conexão PostgreSQL (async via asyncpg)",
     )
     DATABASE_ECHO: bool = False
     DATABASE_POOL_SIZE: int = 10
     DATABASE_MAX_OVERFLOW: int = 20
+
+    # ============================================================
+    # Embeddings — sentence-transformers FOSS (RNFxx)
+    # ============================================================
+    EMBEDDING_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
+    EMBEDDING_DIM: int = 384
 
     # ============================================================
     # Authentication — JWT (RF01-RF06)
@@ -95,16 +101,9 @@ class Settings(BaseSettings):
     def validate_secret_key(cls, v: str) -> str:
         if not v or v == "gere_com_openssl_rand_hex_32":
             import secrets
+
             return secrets.token_hex(32)
         return v
-
-    @field_validator("DATABASE_URL")
-    @classmethod
-    def validate_database_url(cls, v: str) -> str:
-        if not v.startswith("mysql"):
-            raise ValueError("DATABASE_URL deve usar mysql+pymysql://")
-        return v
-
 
 @lru_cache
 def get_settings() -> Settings:

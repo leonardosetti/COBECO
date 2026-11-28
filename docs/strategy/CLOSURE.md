@@ -4,7 +4,7 @@
 **Data:** 30/10/2026  
 **Projeto:** COBECO MVP  
 **Período:** 15/09/2026 a 30/10/2026  
-**Autor:** Leonardo Setti (Proddoc-arch-0006-uc-v1t Owner)  
+**Autor:** Leonardo Setti (Product Owner)  
 **Aprovação:** CCB + Banca Avaliadora (Gate 4 — 30/10/2026)
 
 ---
@@ -17,12 +17,12 @@ Por meio deste termo, declara-se oficialmente **ENCERRADO** o projeto **COBECO M
 
 ## 2. Objetivos vs. Resultados Alcançados
 
-| Objetivo (Project Charter) | Métrica de Sdoc-arch-0006-uc-v1esso | Resultado Alcançado | Status |
+| Objetivo (Project Charter) | Métrica de Sucesso | Resultado Alcançado | Status |
 |----------------------------|-------------------|---------------------|--------|
 | Entregar MVP funcional (18 RFs) | 100% RFs Done no GitHub Projects | 100% (18/18) | ✅ Atingido |
 | Cobertura de testes ≥ 80% | `pytest --cov-fail-under=80` | 83% | ✅ Atingido |
 | Documentação ABNT aprovada | Nota orientador ≥ 8,0 | 9,2 | ✅ Atingido |
-| Deploy reproduzível | `docker compose up` smoke test | Sdoc-arch-0006-uc-v1esso | ✅ Atingido |
+| Deploy reproduzível | `docker compose up` smoke test | Sucesso | ✅ Atingido |
 | Apresentação final (35 min) | Nota banca ≥ 8,0 | 9,0 | ✅ Atingido |
 | Clean Architecture + SDD | Code review R-01..R-07 + Specs ratificadas | 16 Specs ratificadas | ✅ Atingido |
 
@@ -142,7 +142,7 @@ Por meio deste termo, declara-se oficialmente **ENCERRADO** o projeto **COBECO M
 3. **RAID Log atualização manual** — Automatizar coleta de riscos do GitHub Issues/PRs (script `gh issue list --label risk`).
 4. **Testes E2E frágeis** — Alguns flaky no Playwright; investir em seletores `data-testid` estáveis + retry nativo.
 5. **Estimativa de tarefas** — Subestimamos complexidade do cálculo orçamento (UC06); usar Planning Poker + referência histórica.
-6. **Comunicação com orientador** — Reuniões quinzenais foram podoc-arch-0006-uc-v1as; semanais curtas (15min) seriam melhores.
+6. **Comunicação com orientador** — Reuniões quinzenais foram poucas; semanais curtas (15min) seriam melhores.
 
 ### 6.3 Surpresas (Surprise)
 1. **MySQL InnoDB FK cascade** — Comportamento `ON DELETE CASCADE` em `itens_lista` apaga itens ao deletar lista (soft delete não cascateia). Documentado no DER.

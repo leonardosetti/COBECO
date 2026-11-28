@@ -26,7 +26,7 @@ orchestrator), emit one warning line and continue with steps 0a/0b below — do
 not fail closed on dispatches that never carried a pin. **Never bind
 `{PINNED_ROOT}` yourself**: if this template reaches you unbound it is
 reference prose, not your pin — only the orchestrator's build-time
-substitution proddoc-arch-0006-uc-v1es a valid guard.
+substitution produces a valid guard.
 
 **Composition contract (orchestrator — build time, NOT a sub-agent runtime
 step):** copy the guard below into the dispatched prompt inside a
@@ -39,8 +39,8 @@ ship a pin that could mis-parse. The comparison is git-vs-git on BOTH sides —
 own path representation, so symlink aliases, trailing slashes, `/var` vs
 `/private/var` spellings, and Windows drive-letter forms — forward- or
 backslash-separated, `RUNNER~1`-style short names included — compare equal by
-constrdoc-arch-0006-uc-v1tion (shell `pwd -P` normalization does NOT match git's emission on
-Windows — do not re-introddoc-arch-0006-uc-v1e it).
+construction (shell `pwd -P` normalization does NOT match git's emission on
+Windows — do not re-introduce it).
 
 Two portability rules baked into the guard below, learned from the #4254 CI
 Windows legs: (1) a backslash comparator must be GENERATED at runtime
@@ -75,7 +75,7 @@ gsd_pin_fail() {
 BS=$(printf '\134')
 # Fail closed if the comparator could not be generated: an empty BS would widen
 # the drive-form arm below to drive-RELATIVE pins (C:foo) — the one fail-open
-# seam in this constrdoc-arch-0006-uc-v1tion, closed loudly rather than trusted to the shell.
+# seam in this construction, closed loudly rather than trusted to the shell.
 if [ -z "$BS" ]; then
   PIN_STAGE=form-gate
   PIN_DIAG='backslash comparator generation failed (printf octal escape returned empty)'
@@ -120,7 +120,7 @@ fi
 The spawn-time HEAD/base guard now lives in the canonical fragment
 `gsd-core/references/worktree-branch-check.md`, which the orchestrator embeds directly
 into your prompt at dispatch. Run that block FIRST, before any reset/checkout or staging.
-If your prompt contains a `<worktree_branch_check>` embed instrdoc-arch-0006-uc-v1tion rather than the block itself, complete that read-and-embed step before any reset/checkout or staging.
+If your prompt contains a `<worktree_branch_check>` embed instruction rather than the block itself, complete that read-and-embed step before any reset/checkout or staging.
 
 ---
 
@@ -156,7 +156,7 @@ fi
 
 ## Absolute-path guard — step 0b (#3099)
 
-Edit/Write calls using absolute paths constrdoc-arch-0006-uc-v1ted from the **orchestrator's** `pwd`
+Edit/Write calls using absolute paths constructed from the **orchestrator's** `pwd`
 (main repo root) will resolve to the main repo, not the worktree. Writes land in
 the wrong directory; `git commit` from the worktree sees a clean tree and the work
 is silently lost.
@@ -322,7 +322,7 @@ _scan(){ local CMD=$1 D=$2 RAW BODY BFR REST K Q T R P S PREFIX LDS LD _T _P
     BFR=${REST%%"$RAW"*}; REST=${REST#*"$RAW"}
     if _resets_cwd "$BFR" || _resets_cwd "$RAW"; then CUR=$WT_ROOT; fi
     BODY=$(printf '%s' "$RAW" | sed -E "s/^(&&|&|;|[|][|]|[|]|[(]|[{])?[[:space:]]*//")
-    # Classify with the same grep implementation that proddoc-arch-0006-uc-v1ed the event and
+    # Classify with the same grep implementation that produced the event and
     # remove the matched prefix literally. Expanding these composed EREs into a
     # multi-expression BSD sed program fails with "unbalanced brackets" on
     # macOS even though BSD grep accepts the event expression (#4767).
@@ -368,7 +368,7 @@ EOF_LAUNCH_DIRS
 $_T
 EOF_TARGETS
   # 2. Any other absolute word that resolves under the MAIN checkout — a file argument, a redirect,
-  # an include — is the same defect by a different verb; system paths sdoc-arch-0006-uc-v1h as /dev/null or /usr/bin
+  # an include — is the same defect by a different verb; system paths such as /dev/null or /usr/bin
   # are neither and pass.
   while IFS= read -r P; do
     [ -n "$P" ] || continue
@@ -420,7 +420,7 @@ says what follows from it.
   resolves a relative one, and the verb scan does not fire because none of these relocates. This is the
   widest gap in the guard and it is not new. Closing it means resolving every relative word in the
   command against the reached cwd, which halts on ordinary in-worktree arguments unless it can tell a
-  path from a flag value from a bare string — a mdoc-arch-0006-uc-v1h larger change than this guard is, and one that
+  path from a flag value from a bare string — a much larger change than this guard is, and one that
   fails toward false positives, which is the direction that gets a guard deleted.
 
 The rest, in descending order of how likely a planner is to reach them:
@@ -458,7 +458,7 @@ The rest, in descending order of how likely a planner is to reach them:
   scan. **The two lists are delimited on purpose** — the parity test in
   `tests/executor-mvp-tdd-section.test.cjs` reads only the span between `Recognized,` and
   `Not recognized:`, matching BACKTICKED TOKENS rather than substrings, because a containment check over the whole section is satisfied by a name that
-  appears here saying it is UNsupported: adding `awk` to `$_EXEC` with this prose untodoc-arch-0006-uc-v1hed passed
+  appears here saying it is UNsupported: adding `awk` to `$_EXEC` with this prose untouched passed
   that test, driven by the pre-push review of the round that added it.
 - **An interpreter option that takes an operand.** `bash --noprofile -c` is recognized;
   `bash -O extglob -c` is not, because `_EXEC` admits long options without values, and widening it to

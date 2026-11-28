@@ -121,7 +121,7 @@ workflow:
 - `[BACKEND-P1]` **UC16: Gerenciar Perfil (RF06)**  
   *Descrição:* Formulário para alterar email, nome e senha (exigir senha atual). Transação ACID para atualizações simultâneas.
 - `[FRONTEND-P1]` **UI/UX: Feedback Visual Global (RNF05)**  
-  *Descrição:* Implementar componente de Toast (sdoc-arch-0006-uc-v1esso/erro), estados de loading (skeletons) e modais de confirmação.
+  *Descrição:* Implementar componente de Toast (sucesso/erro), estados de loading (skeletons) e modais de confirmação.
 
 #### 🛡️ Sprint 5: Buffer, QA e Demo (Dias 25-30)
 - `[TEST-P0]` **Cobertura de Testes Unitários ≥80% (RNF06)**  

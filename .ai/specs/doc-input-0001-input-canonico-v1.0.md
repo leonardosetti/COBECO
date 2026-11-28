@@ -104,4 +104,4 @@ Em conflito com camada superior, prevalece a hierarquia do Art. 2 da constitutio
 - Agentes são conselho, nunca veto ao humano.
 - Revisão humana obrigatória antes de merge.
 - Parcel JSON obrigatório ao final de tarefa complexa.
-- Kill switch constitdoc-arch-0006-uc-v1ional e operacional.
+- Kill switch constitucional e operacional.

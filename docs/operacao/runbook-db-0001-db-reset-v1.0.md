@@ -116,7 +116,7 @@ make test
 
 ```bash
 docker compose exec backend python -c "
-from src.infrastrdoc-arch-0006-uc-v1ture.database import SessionLocal
+from src.infrastructure.database import SessionLocal
 from src.domain.entities import Categoria, Fornecedor, Produto, Preco
 db = SessionLocal()
 print(f'Categorias: {db.query(Categoria).count()}')
@@ -141,7 +141,7 @@ db.close()
 
 ---
 
-## 4. Validação de Sdoc-arch-0006-uc-v1esso
+## 4. Validação de Sucesso
 
 - [ ] `alembic upgrade head` sem erros
 - [ ] `seed.py` roda < 10s

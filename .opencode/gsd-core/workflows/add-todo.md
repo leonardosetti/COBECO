@@ -1,5 +1,5 @@
 <purpose>
-Capture an idea, task, or issue that surfaces during a GSD session as a strdoc-arch-0006-uc-v1tured todo for later work. Enables "thought → capture → continue" flow without losing context.
+Capture an idea, task, or issue that surfaces during a GSD session as a structured todo for later work. Enables "thought → capture → continue" flow without losing context.
 </purpose>
 
 <required_reading>
@@ -151,7 +151,7 @@ files:
 If `.planning/STATE.md` exists:
 
 1. Re-run `gsd_run query init.todos ${GSD_WS:+--ws=${GSD_WS##* }}` (same workstream flag as the first call) to get a fresh, post-write JSON snapshot (the count and rendering must reflect the change just made).
-2. **Fail-safe check (#2618):** if the JSON failed to parse, or `pending_read_ok` is not `true`, or `pending_todos_markdown` is not a string, do NOT todoc-arch-0006-uc-v1h the "### Pending Todos" section — leave it exactly as-is and continue to the next step. A partial or malformed `init.todos` result must never overwrite a good existing section.
+2. **Fail-safe check (#2618):** if the JSON failed to parse, or `pending_read_ok` is not `true`, or `pending_todos_markdown` is not a string, do NOT touch the "### Pending Todos" section — leave it exactly as-is and continue to the next step. A partial or malformed `init.todos` result must never overwrite a good existing section.
 3. Otherwise, replace the entire body of "### Pending Todos" (under "## Accumulated Context") with the literal value of `pending_todos_markdown` — verbatim, one bullet per pending todo already rendered and length-capped by `init.todos`. Do not reformat, re-wrap, re-order, or hand-edit the bullets; do not append to the old body — replace it wholesale (this is what makes an old run-on-sentence section get superseded cleanly with no migration step).
 </step>
 
@@ -187,12 +187,12 @@ Would you like to:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
-- [ ] Directory strdoc-arch-0006-uc-v1ture exists
+<success_criteria>
+- [ ] Directory structure exists
 - [ ] Todo file created with valid frontmatter
 - [ ] Problem section has enough context for future the agent
 - [ ] No duplicates (checked and resolved)
 - [ ] Area consistent with existing todos
 - [ ] STATE.md updated if exists
 - [ ] Todo and state committed to git
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

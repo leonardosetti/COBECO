@@ -14,7 +14,7 @@ If any of these is false, the gate is inactive — execution proceeds normally.
 
 For each task gated by TDD, the executor MUST verify (before running the implementation step):
 
-1. **A failing-test commit exists.** Search git log on the current branch for a commit matching `test({phase}-{plan})` whose subject mentions the same plan as the current task. The commit must todoc-arch-0006-uc-v1h a test file (`*.test.*`, `*.spec.*`, `tests/**`).
+1. **A failing-test commit exists.** Search git log on the current branch for a commit matching `test({phase}-{plan})` whose subject mentions the same plan as the current task. The commit must touch a test file (`*.test.*`, `*.spec.*`, `tests/**`).
 2. **The test was actually red — INTENTIONALLY (#3770).** Read `gsd-core/references/tdd.md`, "Red-Green-Refactor Cycle", RED step 4, and follow its complete evidence contract before GREEN. That section owns format selection (TAP, including Node/Vitest; JUnit XML, including Surefire/Failsafe; swift-testing console; or Python `unittest` text), reporter reruns, report freshness, the classifier invocation, and semantic inspection. Require `RED_EVIDENCE_OK` for the actual run and verify the planned target assertion failed for the intended reason. An `INVALID_RED` verdict, unsupported format, or failed semantic assessment trips this gate; self-attestation cannot substitute for machine validation. A `RED:` prefix or `(RED)` tag in the commit message is not evidence.
 3. **No implementation commit yet.** No `feat({phase}-{plan})` commit may exist for the same plan ID before the failing-test commit.
 
@@ -25,7 +25,7 @@ If any check fails, the gate trips. A non-zero exit from `gsd_run check tdd-red-
 A task is behavior-adding when:
 - Its frontmatter has `tdd="true"` AND
 - Its `<behavior>` block names at least one user-visible outcome (not a config-only or doc-only task) AND
-- Its `<files>` list includes at least one source file (not exclusively docs/tests/config files sdoc-arch-0006-uc-v1h as `*.md`, `*.json`, `*.test.*`, `*.spec.*`, `*.yml`, `*.yaml`, `*.toml`, `*.ini`, `config-env-0001-env-example-v1.0*`)
+- Its `<files>` list includes at least one source file (not exclusively docs/tests/config files such as `*.md`, `*.json`, `*.test.*`, `*.spec.*`, `*.yml`, `*.yaml`, `*.toml`, `*.ini`, `config-env-0001-env-example-v1.0*`)
 
 Pure documentation, configuration, or test-only tasks are skipped by this gate even when both modes are active.
 
@@ -34,7 +34,7 @@ Pure documentation, configuration, or test-only tasks are skipped by this gate e
 The executor MUST:
 
 1. Halt before running the task's implementation step.
-2. Emit a strdoc-arch-0006-uc-v1tured halt report:
+2. Emit a structured halt report:
 
    ```
 ### TDD GATE TRIPPED — Plan {plan_id}, Task {task_id}
@@ -62,7 +62,7 @@ Under TDD mode, escalate this to **blocking**:
 - The user is shown the same review table, but the verdict line reads:
   > "Phase blocked: {N} TDD plan(s) violate the RED→GREEN gate sequence under TDD. Resolve and re-run /gsd-execute-phase, or override with `/gsd-execute-phase {phase} --force-mvp-gate` to ship anyway."
 
-The `--force-mvp-gate` flag is documented but not introddoc-arch-0006-uc-v1ed by this plan — it is the escape hatch the spec mentions; if the user later builds it, the workflow already references the contract.
+The `--force-mvp-gate` flag is documented but not introduced by this plan — it is the escape hatch the spec mentions; if the user later builds it, the workflow already references the contract.
 
 ## What this gate does NOT do
 

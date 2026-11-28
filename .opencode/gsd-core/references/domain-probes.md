@@ -38,7 +38,7 @@ When the user mentions a technology area, use these probes to ask insightful fol
 | "charts" or "graphs" | Interactive or static? Drill-down capability? Export to CSV/PDF? |
 | "metrics" or "KPIs" | Refresh strategy -- real-time, periodic polling, or on-demand? Acceptable staleness? |
 | "admin panel" | Role-based visibility? Which actions beyond viewing (edit, delete, approve)? |
-| "mobile" or "responsive" | Simplified mobile view or full parity? Todoc-arch-0006-uc-v1h interactions for charts? |
+| "mobile" or "responsive" | Simplified mobile view or full parity? Touch interactions for charts? |
 
 ---
 
@@ -50,7 +50,7 @@ When the user mentions a technology area, use these probes to ask insightful fol
 | "endpoints" or "routes" | Versioning strategy (URL path, header, query param)? Breaking change policy? |
 | "pagination" | Cursor-based or offset? Expected result set sizes? Stable ordering guarantee? |
 | "rate limiting" | Per-user, per-IP, or per-API-key? Burst allowance? How to communicate limits to clients? |
-| "errors" | Strdoc-arch-0006-uc-v1tured error format? Error codes vs. messages? How mdoc-arch-0006-uc-v1h detail in proddoc-arch-0006-uc-v1tion errors? |
+| "errors" | Structured error format? Error codes vs. messages? How much detail in production errors? |
 
 ---
 

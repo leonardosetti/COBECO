@@ -176,7 +176,7 @@
   exit_status: 0
   timestamp: 2026-11-02 23:33:42+00:00
   notes: 'Propagar impositivamente PostgreSQL 15+ a planos (OKB-C-22): plano-integral:77, plano-riscos:91,
-    plano-proddoc-arch-0006-uc-v1ao-agentes:16. SQLite apenas como fixture de teste isolado. kill_switch: inherited'
+    plano-producao-agentes:16. SQLite apenas como fixture de teste isolado. kill_switch: inherited'
   deprecated: true
   motivo_descarte: historico pre-saneamento — descartado para uso operacional real
   arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)
@@ -285,7 +285,7 @@
   exit_status: 0
   timestamp: 2026-11-02 23:57:39+00:00
   notes: 'EXECUÇÃO DEFINITIVA: propagar PostgreSQL 15+ impositivo a planos (OKB-C-22): plano-integral:77,
-    plano-riscos:91, plano-proddoc-arch-0006-uc-v1ao-agentes:16. SQLite apenas fixture isolado. kill_switch: inherited'
+    plano-riscos:91, plano-producao-agentes:16. SQLite apenas fixture isolado. kill_switch: inherited'
   deprecated: true
   motivo_descarte: historico pre-saneamento — descartado para uso operacional real
   arquivo_origem: ledger.yaml (antes do saneamento de 05/11/2026)

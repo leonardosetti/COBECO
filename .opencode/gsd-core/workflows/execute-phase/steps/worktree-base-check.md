@@ -8,7 +8,7 @@ of the repository, so it degrades a GSD-created worktree exactly as a harness-cr
 auto-degrade prints a one-line warning to stderr and falls through to the sequential path so
 executors do not hit the exit-42 worktree-branch-check halt. Setting `worktree.baseRef:"head"`
 restores parallel execution on both isolation models: GSD-created worktrees (Codex, OpenCode,
-Kimi, Kimi Code) fork from the orchestrator HEAD by constrdoc-arch-0006-uc-v1tion, and harness-created ones do so
+Kimi, Kimi Code) fork from the orchestrator HEAD by construction, and harness-created ones do so
 where the harness honors the setting — measured on Claude Code from all three settings layers
 (#4588; #48's earlier finding that it did not predates upstream claude-code#54940), unmeasured on
 Cursor. On a harness-created run with no observation, a Claude Code `WorktreeCreate` hook in any

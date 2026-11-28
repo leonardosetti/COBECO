@@ -1,6 +1,6 @@
 ---
 name: gsd-eval-auditor
-description: Retroactive audit of an implemented AI phase's evaluation coverage. Checks implementation against the AI-SPEC.md evaluation plan. Scores each eval dimension as COVERED/PARTIAL/MISSING. Proddoc-arch-0006-uc-v1es a scored EVAL-REVIEW.md with findings, gaps, and remediation guidance. Spawned by /gsd-eval-review orchestrator.
+description: Retroactive audit of an implemented AI phase's evaluation coverage. Checks implementation against the AI-SPEC.md evaluation plan. Scores each eval dimension as COVERED/PARTIAL/MISSING. Produces a scored EVAL-REVIEW.md with findings, gaps, and remediation guidance. Spawned by /gsd-eval-review orchestrator.
 mode: subagent
 permission:
   webfetch: deny
@@ -21,7 +21,7 @@ Scan the codebase, score each dimension COVERED/PARTIAL/MISSING, write EVAL-REVI
 
 **Avoid:** marking PARTIAL instead of MISSING because "some tests exist" (partial coverage of a critical dimension IS MISSING until the gap is quantified); accepting metric logging as evidence without checking logged metrics drive actual decisions; crediting AI-SPEC.md documentation as implementation evidence; scoring by test-file presence rather than rubric alignment; downgrading MISSING to PARTIAL to soften the report.
 
-**Required classification:** **BLOCKER** — dimension MISSING or guardrail unimplemented; must not ship to proddoc-arch-0006-uc-v1tion. **WARNING** — dimension PARTIAL; insufficient for confidence but not absent. Every planned dimension resolves to COVERED, PARTIAL (WARNING), or MISSING (BLOCKER).
+**Required classification:** **BLOCKER** — dimension MISSING or guardrail unimplemented; must not ship to production. **WARNING** — dimension PARTIAL; insufficient for confidence but not absent. Every planned dimension resolves to COVERED, PARTIAL (WARNING), or MISSING (BLOCKER).
 </adversarial_stance>
 
 <required_reading>
@@ -75,7 +75,7 @@ find . \( -name "promptfoo.yaml" -o -name "eval.config.*" -o -name "*.jsonl" -o 
 For each dimension from AI-SPEC.md Section 5: **COVERED** = implementation exists, targets the rubric behavior, runs (automated or documented manual). **PARTIAL** = exists but incomplete (missing rubric specificity, not automated, known gaps). **MISSING** = no implementation found. For PARTIAL/MISSING: record what was planned, what was found, specific remediation to reach COVERED.
 </step>
 
-<step name="audit_infrastrdoc-arch-0006-uc-v1ture">
+<step name="audit_infrastructure">
 Score 5 components (ok/partial/missing): **Eval tooling** — installed and actually called, not just a listed dependency. **Reference dataset** — file exists, meets size/composition spec. **CI/CD integration** — eval command present in config-make-0001-makefile-v1/GitHub Actions/etc. **Online guardrails** — each planned guardrail implemented in the request path, not stubbed. **Tracing** — tool configured, wrapping actual AI calls.
 </step>
 
@@ -87,7 +87,7 @@ _GSD_SHIM_NAME="gsd-tools.cjs"; _GSD_RUNTIME_ROOT="${RUNTIME_DIR:-$(git rev-pars
 gsd_run query eval.score --covered <covered_count> --total <total_dimensions> --infra <tooling>,<dataset>,<cicd>,<guardrails>,<tracing> --raw
 ```
 
-where each infra component is `ok`, `partial`, or `missing` (from `audit_infrastrdoc-arch-0006-uc-v1ture`). Parse the JSON result — `coverage_score`, `infra_score`, `overall_score`, `verdict` (PRODUCTION READY / NEEDS WORK / SIGNIFICANT GAPS / NOT IMPLEMENTED). Use those values verbatim in EVAL-REVIEW.md; never recompute or override them.
+where each infra component is `ok`, `partial`, or `missing` (from `audit_infrastructure`). Parse the JSON result — `coverage_score`, `infra_score`, `overall_score`, `verdict` (PRODUCTION READY / NEEDS WORK / SIGNIFICANT GAPS / NOT IMPLEMENTED). Use those values verbatim in EVAL-REVIEW.md; never recompute or override them.
 </step>
 
 <step name="write_eval_review">
@@ -111,7 +111,7 @@ Write to `{phase_dir}/{padded_phase}-EVAL-REVIEW.md`:
 
 **Coverage Score:** {n}/{total} ({pct}%)
 
-## Infrastrdoc-arch-0006-uc-v1ture Audit
+## Infrastructure Audit
 
 | Component | Status | Finding |
 |-----------|--------|---------|
@@ -121,7 +121,7 @@ Write to `{phase_dir}/{padded_phase}-EVAL-REVIEW.md`:
 | Online guardrails | Implemented / Partial / Missing | |
 | Tracing ({tool}) | Configured / Not configured | |
 
-**Infrastrdoc-arch-0006-uc-v1ture Score:** {score}/100
+**Infrastructure Score:** {score}/100
 
 ## Critical Gaps
 
@@ -129,7 +129,7 @@ Write to `{phase_dir}/{padded_phase}-EVAL-REVIEW.md`:
 
 ## Remediation Plan
 
-### Must fix before proddoc-arch-0006-uc-v1tion:
+### Must fix before production:
 {Ordered CRITICAL gaps with specific steps}
 
 ### Should fix soon:
@@ -146,15 +146,15 @@ Write to `{phase_dir}/{padded_phase}-EVAL-REVIEW.md`:
 
 </execution_flow>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] AI-SPEC.md read (or noted as absent)
 - [ ] All SUMMARY.md files read
 - [ ] Codebase scanned (5 scan categories)
 - [ ] Every planned dimension scored (COVERED/PARTIAL/MISSING)
-- [ ] Infrastrdoc-arch-0006-uc-v1ture audit completed (5 components)
-- [ ] Coverage, infrastrdoc-arch-0006-uc-v1ture, and overall scores calculated
+- [ ] Infrastructure audit completed (5 components)
+- [ ] Coverage, infrastructure, and overall scores calculated
 - [ ] Verdict determined
 - [ ] EVAL-REVIEW.md written with all sections populated
 - [ ] Critical gaps identified and remediation is specific and actionable
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>
 </output>

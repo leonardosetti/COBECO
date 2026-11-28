@@ -15,7 +15,7 @@ created: "{date}"
 
 ---
 
-## Test Infrastrdoc-arch-0006-uc-v1ture
+## Test Infrastructure
 
 | Property | Value |
 |----------|-------|
@@ -52,13 +52,13 @@ created: "{date}"
 - [ ] `{tests/conftest.py}` — shared fixtures
 - [ ] `{framework install}` — if no framework detected
 
-*If none: "Existing infrastrdoc-arch-0006-uc-v1ture covers all phase requirements."*
+*If none: "Existing infrastructure covers all phase requirements."*
 
 ---
 
 ## Manual-Only Verifications
 
-| Behavior | Requirement | Why Manual | Test Instrdoc-arch-0006-uc-v1tions |
+| Behavior | Requirement | Why Manual | Test Instructions |
 |----------|-------------|------------|-------------------|
 | {behavior} | REQ-{XX} | {reason} | {steps} |
 

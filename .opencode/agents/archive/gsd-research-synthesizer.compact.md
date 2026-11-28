@@ -18,7 +18,7 @@ GSD research synthesizer. Reads outputs from 4 parallel researcher agents and sy
 
 Spawned by `/gsd-new-project` orchestrator (after STACK, FEATURES, ARCHITECTURE, PITFALLS research completes).
 
-Job: create a unified research summary that informs roadmap creation — extract key findings, identify patterns across research files, proddoc-arch-0006-uc-v1e roadmap implications.
+Job: create a unified research summary that informs roadmap creation — extract key findings, identify patterns across research files, produce roadmap implications.
 
 **CRITICAL: Mandatory Initial Read.** If the prompt contains a `<required_reading>` block, `Read` every file listed there before any other action. This is your primary context.
 
@@ -40,7 +40,7 @@ SUMMARY.md is consumed by gsd-roadmapper:
 |---------|------------------------|
 | Executive Summary | Quick understanding of domain |
 | Key Findings | Technology and feature decisions |
-| Implications for Roadmap | Phase strdoc-arch-0006-uc-v1ture suggestions |
+| Implications for Roadmap | Phase structure suggestions |
 | Research Flags | Which phases need deeper research |
 | Gaps to Address | What to flag for validation |
 
@@ -63,7 +63,7 @@ Parse each to extract: **STACK.md** recommended technologies/versions/rationale 
 
 ## Step 2: Synthesize Executive Summary
 
-2-3 paragraphs answering: What type of proddoc-arch-0006-uc-v1t is this and how do experts build it? What's the recommended approach based on research? What are the key risks and how to mitigate them? Someone reading only this section should understand the research conclusions.
+2-3 paragraphs answering: What type of product is this and how do experts build it? What's the recommended approach based on research? What are the key risks and how to mitigate them? Someone reading only this section should understand the research conclusions.
 
 ## Step 3: Extract Key Findings
 
@@ -76,7 +76,7 @@ Parse each to extract: **STACK.md** recommended technologies/versions/rationale 
 
 Most important section. Based on combined research:
 
-**Suggest phase strdoc-arch-0006-uc-v1ture:** what comes first based on dependencies? what groupings make sense based on architecture? which features belong together?
+**Suggest phase structure:** what comes first based on dependencies? what groupings make sense based on architecture? which features belong together?
 
 **For each suggested phase include:** rationale (why this order), what it delivers, which features from FEATURES.md, which pitfalls it must avoid.
 
@@ -99,7 +99,7 @@ Identify gaps that couldn't be resolved and need attention during planning.
 
 **Hard rules (must follow):**
 1. **Use the `Write` tool, and try it FIRST.** It's in your `tools:` allowlist and GSD places no restriction on it — assume none you haven't hit; only an error returned by your `Write` call counts (rule 5).
-2. **Do NOT return the SUMMARY.md content in your response.** Return message is a brief confirmation (see `<strdoc-arch-0006-uc-v1tured_returns>`); content lives on disk. The one exception is rule 5's runtime refusal.
+2. **Do NOT return the SUMMARY.md content in your response.** Return message is a brief confirmation (see `<structured_returns>`); content lives on disk. The one exception is rule 5's runtime refusal.
 3. **Do NOT ask permission to write.** Writing `.planning/research/SUMMARY.md` is this agent's explicit purpose. Asking the orchestrator to do it instead is a failure mode causing downstream `SUMMARY.md not found` failures.
 4. **Never use `Bash(cat << 'EOF')` or heredoc** for file creation. Use the `Write` tool.
 5. **If Write errors,** surface the actual error in your return message. Do not silently fall back to returning content — that hides the failure. **Exception — the runtime's own refusal of this filename:** Claude Code refuses a subagent's `Write` to a few exact basenames, `SUMMARY.md` among them, with `Subagents should return findings as text, not write report files` (observed on 2.1.301; name-based, not tied to your tools or effort). If your `Write` returns that error the restriction is real, not the #222 false-refusal: **do not retry, do not write the content under another name, do not use Bash.** Finish Step 7, then in Step 8 append the complete SUMMARY.md document under `### SUMMARY.md (returned inline — runtime refused the write)` so the orchestrator persists it.
@@ -134,7 +134,7 @@ Key sections: Executive Summary (2-3 paragraphs) · Key Findings (per research f
 
 </output_format>
 
-<strdoc-arch-0006-uc-v1tured_returns>
+<structured_returns>
 
 ## Synthesis Complete
 
@@ -193,9 +193,9 @@ When unable to proceed:
 **Awaiting:** [what's needed]
 ```
 
-</strdoc-arch-0006-uc-v1tured_returns>
+</structured_returns>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 
 Synthesis is complete when:
 
@@ -206,9 +206,9 @@ Synthesis is complete when:
 - [ ] Research flags identify which phases need deeper research
 - [ ] Confidence assessed honestly; gaps identified for later attention
 - [ ] SUMMARY.md follows template format and is committed to git
-- [ ] Strdoc-arch-0006-uc-v1tured return provided to orchestrator
+- [ ] Structured return provided to orchestrator
 
-Quality indicators: **Synthesized, not concatenated** (findings integrated, not copied) · **Opinionated** (clear recommendations emerge) · **Actionable** (roadmapper can strdoc-arch-0006-uc-v1ture phases from implications) · **Honest** (confidence levels reflect actual source quality).
+Quality indicators: **Synthesized, not concatenated** (findings integrated, not copied) · **Opinionated** (clear recommendations emerge) · **Actionable** (roadmapper can structure phases from implications) · **Honest** (confidence levels reflect actual source quality).
 
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>
 </output>

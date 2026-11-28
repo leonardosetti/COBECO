@@ -10,7 +10,7 @@ which investigation technique to use, **replacing** (not appending to) the flat
 The 11 investigation techniques are all still here — they are the *routed
 targets*, not an undifferentiated list. But picking the right technique ad hoc
 wastes cycles or actively misleads: a deterministic **Bohrbug** wants
-reproddoc-arch-0006-uc-v1tion + fault localization + bisection; a **Heisenbug/Mandelbug** will
+reproduction + fault localization + bisection; a **Heisenbug/Mandelbug** will
 *disappear or change* under naive repro-and-inspect and wants record-replay or
 stability-stress; a **concurrency** bug wants the atomicity/order/deadlock
 checklist before general techniques. Classification takes one sentence and
@@ -22,7 +22,7 @@ Record `bug_class` in Current Focus (lowercase-kebab value: `bohrbug`,
 `heisenbug-mandelbug`, or `concurrency` — prose may use title-case for
 readability) as one of:
 
-- **Bohrbug** — solid, deterministic, always reproddoc-arch-0006-uc-v1es under the same inputs
+- **Bohrbug** — solid, deterministic, always reproduces under the same inputs
   (named for the Bohr atom: solid, localized, easy to pin down).
 - **Heisenbug / Mandelbug** — transient, non-deterministic, changes under
   observation; **Mandelbug** specifically covers aging-related failures
@@ -32,7 +32,7 @@ readability) as one of:
   al. 2008 classification) arising from interleaved execution.
 
 If the class is genuinely unclear after one observation, gather one more piece
-of evidence (does it reproddoc-arch-0006-uc-v1e on immediate retry? does it depend on uptime?)
+of evidence (does it reproduce on immediate retry? does it depend on uptime?)
 rather than forcing a guess — but record the leading candidate as `bug_class`
 and revise it as evidence accumulates.
 
@@ -40,10 +40,10 @@ and revise it as evidence accumulates.
 
 | bug_class | Route to | Revoke if already run |
 |---|---|---|
-| **Bohrbug** | deterministic reproddoc-arch-0006-uc-v1tion → **SBFL (Phase 1.25)** → git bisect → binary search | — |
+| **Bohrbug** | deterministic reproduction → **SBFL (Phase 1.25)** → git bisect → binary search | — |
 | **Heisenbug / Mandelbug** | record-replay (`rr`) → stability-stress → statistical sampling; for Mandelbug, look for resource-exhaustion / uptime-dependent patterns | **SBFL** — if Phase 1.25 already ran, **mark its Evidence entry revoked** (flaky spectrum poisons `failed(s)`) |
 | **Concurrency** | the atomicity / order / deadlock checklist (below) FIRST, then general techniques | — |
-| **General (any class — situation-cued)** | Binary search (large codebase), Working backwards (known desired output), Differential debugging (worked-before/works-elsewhere), Delta debugging (large change set), Comment out everything (many possible causes), Follow the indirection (constrdoc-arch-0006-uc-v1ted paths/URLs/keys), Rubber ddoc-arch-0006-uc-v1k (confused), Observability first (always, before changes) | — |
+| **General (any class — situation-cued)** | Binary search (large codebase), Working backwards (known desired output), Differential debugging (worked-before/works-elsewhere), Delta debugging (large change set), Comment out everything (many possible causes), Follow the indirection (constructed paths/URLs/keys), Rubber duck (confused), Observability first (always, before changes) | — |
 
 The class-routed rows decide which technique to reach for **first**. The
 General lane holds the situational techniques that apply regardless of class —
@@ -65,7 +65,7 @@ Run this BEFORE general techniques:
 
 1. **Atomicity** — is a read-modify-write non-atomic? (check-then-act without a
    lock, missing compare-and-swap, a "get then set" across an await/yield)
-2. **Order** — can two operations legally interleave to proddoc-arch-0006-uc-v1e the bad state?
+2. **Order** — can two operations legally interleave to produce the bad state?
    (missing happens-before / synchronization; publish-before-init; init order
    across async boundaries)
 3. **Deadlock** — circular wait on locks/resources? (hold-and-wait, no

@@ -10,7 +10,7 @@ so it is portable: copy it into any verification process.
 
 A verifier is trustworthy on **inferable** checks — defects determined by the stated spec. On a
 **non-inferable** check the correct answer is *not derivable from the spec alone* (e.g. "does `[1,2]`
-todoc-arch-0006-uc-v1hing `[2,3]` merge?", "is a 'character' a grapheme or a code unit?"). On these the verifier *does
+touching `[2,3]` merge?", "is a 'character' a grapheme or a code unit?"). On these the verifier *does
 not know that it does not know*: measured behavior is a **confident PASS on the blind-spot check ~100%
 of the time** (mean confidence ~0.93), because a model cannot self-detect a gap it does not perceive.
 
@@ -45,7 +45,7 @@ For each `must_haves.truths` item:
 - **Explicit evidence** = a wired held-out/property-based test that passes, or a behavior the verifier
   directly observed. Symbol presence + wiring is **not** explicit evidence for a non-inferable truth.
 - **Never silent, never a hard halt.** *Interactive:* the abstained item routes to the end-of-phase
-  human checkpoint. *Autonomous (AFK):* it proddoc-arch-0006-uc-v1es a prominent `unverified — held-out test
+  human checkpoint. *Autonomous (AFK):* it produces a prominent `unverified — held-out test
   recommended` flag and the completion line reads "complete with N unverified non-inferable checks";
   the run neither silently passes the blind spot nor hard-halts.
 - **Distinguishable reason.** The abstain disposition carries `reason: insufficient_spec` so the
@@ -53,7 +53,7 @@ For each `must_haves.truths` item:
 
 This is the verify-time half of ADR-550 Decision 4 (the never-silent-pass disposition), applied to the
 edge `backstop` truth tier instead of the prohibition judgment tier — the same machinery, opposite
-polarity (must-HAVE under-specified vs must-NOT irreddoc-arch-0006-uc-v1ible).
+polarity (must-HAVE under-specified vs must-NOT irreducible).
 
 ## Deterministic engine surface
 
@@ -77,7 +77,7 @@ Abstention is **model-tier dependent** and this is a standing cost, not an assum
 - The **budget tier (`haiku`)** is the least flag-responsive (1/2, inconsistent) and **degrades toward
   current behavior** (confident false-pass). Run honest-verifier on a capable tier; treat the budget
   tier as best-effort. Re-validate when the `gsd-verifier` model tier changes or a new budget model is
-  adopted (captured as a test so a tier regression is caught, not discovered in proddoc-arch-0006-uc-v1tion).
+  adopted (captured as a test so a tier regression is caught, not discovered in production).
 
 ## Evidence and scope (stated honestly)
 

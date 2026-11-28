@@ -338,11 +338,11 @@ Quick commands:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Current config read from `$GSD_CONFIG_PATH`
 - [ ] User presented with three sections: Search Integrations, Review CLI Routing, Agent Skills Injection
 - [ ] API keys written plaintext only to `config.json`; never echoed, never logged, never displayed
 - [ ] Masked confirmation table uses `****<last-4>` for set keys and `(unset)` for null
 - [ ] `agent_skills.<agent-type>` slugs validated against `[a-zA-Z0-9_-]+` before write; `review.models.<cli>` slugs accepted only from the registry-derived settable set; skill lists written as JSON arrays (never comma-joined strings)
 - [ ] Config merge preserves all keys outside the three sections this workflow owns
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

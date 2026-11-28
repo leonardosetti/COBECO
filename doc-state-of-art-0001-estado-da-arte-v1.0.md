@@ -433,7 +433,7 @@ COBECO/
 │   │   ├── adapters/           # Repositories, controllers, presenters
 │   │   │   ├── api/            # FastAPI routers
 │   │   │   └── db/             # SQLAlchemy models, repositories
-│   │   └── infrastrdoc-arch-0006-uc-v1ture/     # External services, migrations
+│   │   └── infrastructure/     # External services, migrations
 │   ├── tests/
 │   │   ├── unit/
 │   │   ├── integration/
@@ -494,7 +494,7 @@ services:
     command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       migrate:
-        condition: service_completed_sdoc-arch-0006-uc-v1cessfully
+        condition: service_completed_successfully
     environment:
       DATABASE_URL: mysql+pymysql://cobeco:cobeco@db:3306/cobeco
       SECRET_KEY: ${SECRET_KEY}
@@ -667,7 +667,7 @@ jobs:
 | Art. 1.2 | FOSS 100%, CPU-local, zero cloud, zero CUDA | ⚠️ Parcial | Nemotron é cloud API — **exceção CCB necessária** (Art. 5.1) |
 | Art. 1.3 | Escopo congelado: 18 RFs, 29 UCs, 8 tabelas | ✅ | SSOT v3.2 aprovado |
 | Art. 3.1 | KISS: dados mockados, UI desktop-first | ✅ | board-roadmap-0001-roadmap-canon alinhado |
-| Art. 3.2 | Clean Architecture 4 camadas | ⏳ Pendente | Scaffold backend com domain/usecases/adapters/infrastrdoc-arch-0006-uc-v1ture |
+| Art. 3.2 | Clean Architecture 4 camadas | ⏳ Pendente | Scaffold backend com domain/usecases/adapters/infrastructure |
 | Art. 3.3 | ACID: transações explícitas, InnoDB | ✅ | MySQL 8 InnoDB no board-roadmap-0001-roadmap-canon |
 | Art. 3.4 | SDD: spec + handoff par | ✅ | 15 specs + 56 handoffs ativos |
 | Art. 3.5 | LGPD: dados sintéticos apenas | ✅ | Seed sem PII real |

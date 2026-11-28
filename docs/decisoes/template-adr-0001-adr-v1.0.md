@@ -47,7 +47,7 @@ workflow:
 
 ## Contexto
 
-Descreva o problema ou decisão a ser tomada. Quais forças estão em jogo? Quais restrições existem (tempo, orçamento, stack, normas constitdoc-arch-0006-uc-v1ionais)?
+Descreva o problema ou decisão a ser tomada. Quais forças estão em jogo? Quais restrições existem (tempo, orçamento, stack, normas constitucionais)?
 
 ---
 
@@ -107,7 +107,7 @@ Descreva a decisão tomada, de forma clara e direta.
 
 | Papel | Nome | Assinatura | Data |
 |---|---|---|---|
-| CCB Chair / Proddoc-arch-0006-uc-v1t Owner |  |  |  |
+| CCB Chair / Product Owner |  |  |  |
 | Tech Lead |  |  |  |
 | Arquiteto de Software |  |  |  |
 

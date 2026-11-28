@@ -63,7 +63,7 @@ para **não perder meus itens e continuar de onde parei**.
 ### Cenário 1: Login com lista efêmera → modal promoção
 ```gherkin
 Dado que sou visitante com lista efêmera em sessionStorage (3 itens)
-Quando faço login com sdoc-arch-0006-uc-v1esso (POST /v1/auth/login)
+Quando faço login com sucesso (POST /v1/auth/login)
 Então o sistema detecta lista efêmera no sessionStorage
 E exibe modal "Você tem uma lista em andamento. Deseja salvá-la?"
 Com botões: "Salvar no banco" / "Manter efêmera" / "Descartar"
@@ -74,7 +74,7 @@ Com botões: "Salvar no banco" / "Manter efêmera" / "Descartar"
 Dado que modal de promoção está aberto
 Quando clico "Salvar no banco"
 Então o sistema reutiliza POST /v1/listas (doc-user-story-0007-us-007) com os itens da sessionStorage
-E em sdoc-arch-0006-uc-v1esso: limpa sessionStorage, fecha modal, toast "Lista salva!", redireciona Minhas Listas
+E em sucesso: limpa sessionStorage, fecha modal, toast "Lista salva!", redireciona Minhas Listas
 E em falha: mantém modal aberto, mostra erro, opção tentar novamente
 ```
 
@@ -99,7 +99,7 @@ E toast "Lista descartada"
 ### Cenário 5: Login sem lista efêmera → sem modal
 ```gherkin
 Dado que faço login sem ter lista efêmera
-Quando login sdoc-arch-0006-uc-v1esso
+Quando login sucesso
 Então NÃO exibe modal de promoção
 E redireciona normal para Dashboard
 ```

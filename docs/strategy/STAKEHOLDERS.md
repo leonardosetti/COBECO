@@ -2,7 +2,7 @@
 
 **Versão:** 1.0  
 **Data:** 13/11/2026  
-**Responsável:** Leonardo Setti (Proddoc-arch-0006-uc-v1t Owner)  
+**Responsável:** Leonardo Setti (Product Owner)  
 **Frequência de Atualização:** A cada Sprint Review
 
 ---
@@ -11,14 +11,14 @@
 
 | # | Nome | Organização / Papel | Categoria | Interesse | Poder | Influência | Engajamento Atual | Engajamento Desejado | Estratégia de Comunicação |
 |---|------|---------------------|-----------|-----------|-------|------------|-------------------|----------------------|---------------------------|
-| 1 | Leonardo Setti | Proddoc-arch-0006-uc-v1t Owner / Tech Lead (Aluno) | Interno / Decisor | Alto | Alto | Alto | Lidera | Liderar | Daily standup, Sprint Review, 1:1 semanal, Code review |
+| 1 | Leonardo Setti | Product Owner / Tech Lead (Aluno) | Interno / Decisor | Alto | Alto | Alto | Lidera | Liderar | Daily standup, Sprint Review, 1:1 semanal, Code review |
 | 2 | Fabrício Cabral | Dev Backend 1 (Aluno) | Interno / Executor | Médio | Baixo | Médio | Executa | Executar | Daily standup, Pair programming (Auth, PDF) |
 | 3 | Nicholas Anthony | Dev Backend 2 / Arquiteto (Aluno) | Interno / Técnico | Alto | Médio | Alto | Decide técnico + Executa | Decidir técnico + Executar | Daily standup, ADR review, Code review, Pair programming (Listas, Comparação) |
 | 4 | Eduardo Passarelli | Dev Frontend (Aluno) | Interno / Executor | Médio | Baixo | Médio | Executa | Executar | Daily standup, Pair programming (UI), Design review |
 | 5 | Nicolas Mallouk | QA Lead / Dev Backend (Aluno) | Interno / Qualidade | Médio | Baixo | Médio | Valida + Executa | Validar + Executar | Sprint Review, Test Plan review, Pair programming (Seed, Testes) |
 | 6 | Orientador Acadêmico | Governança Externa (Professor) | Externo / Governança | Alto | Alto | Alto | Aprova marcos | Aprovar marcos | Sprint Review quinzenal (30min), Email status semanal |
 | 7 | Banca Avaliadora (3 profs) | Avaliação Final | Externo / Avaliador | Alto | Alto | Alto | Avalia final | Avaliar final | Apresentação final 35min (Gate 3/4) |
-| 8 | Coordenação Curso ADS | Patrocinador Institdoc-arch-0006-uc-v1ional | Externo / Patrocinador | Médio | Alto | Médio | Informado | Informar | Status Report mensal (email) |
+| 8 | Coordenação Curso ADS | Patrocinador Institucional | Externo / Patrocinador | Médio | Alto | Médio | Informado | Informar | Status Report mensal (email) |
 | 9 | FATEC Taquaritinga | Instituição | Externo / Patrocinador | Baixo | Alto | Baixo | Informado | Informar | Relatório final (Sharepoint) |
 
 ---
@@ -33,10 +33,10 @@
 ### Poder / Influência
 - **Alto**: Pode decidir, vetar ou alterar rumo do projeto
 - **Médio**: Pode influenciar decisões, mas não decide sozinho
-- **Baixo**: Podoc-arch-0006-uc-v1a ou nenhuma capacidade de mudança
+- **Baixo**: Pouca ou nenhuma capacidade de mudança
 
 ### Engajamento
-- **Liderar**: Responsável pelo sdoc-arch-0006-uc-v1esso, toma decisões-chave
+- **Liderar**: Responsável pelo sucesso, toma decisões-chave
 - **Decidir técnico**: Autoridade em decisões de arquitetura/tech
 - **Executar**: Mão na massa, entrega tarefas
 - **Validar**: Verifica qualidade, aprova entregas técnicas

@@ -26,6 +26,8 @@ _seed_data = _carregar_seed_data()
 Profile = _seed_data.Profile
 SeedDataset = _seed_data.SeedDataset
 build_dataset = _seed_data.build_dataset
+build_produto_classes_seed = _seed_data.build_produto_classes_seed
+validate_produto_classes_seed = _seed_data.validate_produto_classes_seed
 
 Row = tuple[str, ...]
 T = TypeVar("T")
@@ -84,6 +86,7 @@ def render_sql(dataset: SeedDataset) -> str:
         "DELETE FROM `listas`;",
         "DELETE FROM `usuarios`;",
         "DELETE FROM `produtos`;",
+        "DELETE FROM `produto_classes`;",
         "DELETE FROM `fornecedores`;",
         "DELETE FROM `categorias`;",
         "",
@@ -97,6 +100,7 @@ def render_sql(dataset: SeedDataset) -> str:
         "categorias",
         "fornecedores",
         "produtos",
+        "produto_classes",
     ):
         statements.append(f"ALTER TABLE `{table}` AUTO_INCREMENT = 1;")
 
@@ -145,10 +149,31 @@ def render_sql(dataset: SeedDataset) -> str:
     statements.extend(
         _insert_statements(
             "produtos",
-            ("id", "nome", "unidade", "ativo"),
+            ("id", "nome", "marca", "unidade", "ativo"),
             tuple(
-                (str(product.id), _sql_string(product.name), _sql_string(product.unit), "TRUE")
+                (str(product.id), _sql_string(product.name), _sql_string(product.marca or ""), _sql_string(product.unit), "TRUE")
                 for product in dataset.products
+            ),
+        )
+    )
+
+    statements.extend(["", "-- Classes de Produto (Mapeamento Semântico Marca -> Classe)"])
+    produto_classes = build_produto_classes_seed()
+    validate_produto_classes_seed(produto_classes)
+    import json
+    statements.extend(
+        _insert_statements(
+            "produto_classes",
+            ("classe_nome", "termos_busca", "marcas_referencia", "categoria_macro", "ativo"),
+            tuple(
+                (
+                    _sql_string(c["classe_nome"]),
+                    _sql_string(json.dumps(c["termos_busca"], ensure_ascii=False)),
+                    _sql_string(json.dumps(c["marcas_referencia"], ensure_ascii=False)),
+                    _sql_string(c["categoria_macro"] or ""),
+                    "TRUE",
+                )
+                for c in produto_classes
             ),
         )
     )
@@ -180,6 +205,7 @@ def render_sql(dataset: SeedDataset) -> str:
             "SELECT 'categorias' AS tabela, COUNT(*) AS quantidade FROM `categorias`",
             "UNION ALL SELECT 'fornecedores', COUNT(*) FROM `fornecedores`",
             "UNION ALL SELECT 'produtos', COUNT(*) FROM `produtos` WHERE `ativo` = TRUE",
+            "UNION ALL SELECT 'produto_classes', COUNT(*) FROM `produto_classes` WHERE `ativo` = TRUE",
             "UNION ALL SELECT 'precos', COUNT(*) FROM `fornecedores_produtos` WHERE `ativo` = TRUE",
             "UNION ALL SELECT 'relacoes', COUNT(*) FROM `fornecedores_categorias`;",
             "",
@@ -197,7 +223,7 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Gera o seed SQL determinístico do COBECO")
     parser.add_argument(
         "--profile",
-        choices=("baseline", "expanded"),
+        choices=("baseline", "expanded", "semantica"),
         default="baseline",
         help="perfil de seed (padrão: baseline)",
     )

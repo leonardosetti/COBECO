@@ -42,7 +42,7 @@ workflow:
 **Data:** 30/10/2026  
 **Autor:** Leonardo Setti (Tech Lead / PO)  
 **Fonte:** Post-Mortem (27/10/2026), Retrospectivas de Sprint, RAID Log, Team Feedback  
-**Classificação:** Interno — Conhecimento Institdoc-arch-0006-uc-v1ional  
+**Classificação:** Interno — Conhecimento Institucional  
 **Objetivo:** Capturar conhecimento tácito e explícito para reutilização em projetos futuros da equipe/FATEC
 
 ---
@@ -93,7 +93,7 @@ workflow:
 ### 2.2 Clean Architecture 4 Camadas (Manual) — Disciplina > Framework
 > **Liçao:** **Clean Architecture manual em FastAPI exige convenção + code review, mas dá controle total.**
 >
-> **Contexto:** FastAPI não impõe Clean Arch (diferente de NestJS). Definimos: `domain/` (entities + rules), `usecases/`, `adapters/` (repos, pdf, auth), `infrastrdoc-arch-0006-uc-v1ture/` (config, migrations, seed), `api/` (routers). Code review (R-01..R-07) verifica Dependency Rule.
+> **Contexto:** FastAPI não impõe Clean Arch (diferente de NestJS). Definimos: `domain/` (entities + rules), `usecases/`, `adapters/` (repos, pdf, auth), `infrastructure/` (config, migrations, seed), `api/` (routers). Code review (R-01..R-07) verifica Dependency Rule.
 >
 > **Resultado:** 0 vazamento de framework no Domain. Testes unitários puros (mock adapters). Troca de DB/ORM seria trivial.
 >
@@ -210,7 +210,7 @@ workflow:
 ## 5. Lições de Ferramentas e Automação
 
 ### 5.1 Mermaid C4 Diagrams = Docs-as-Code Real
-> **Liçao:** **Diagramas Mermaid no repo (renderizam no GitHub) substituem ferramentas externas (Draw.io, Ldoc-arch-0006-uc-v1idchart).**
+> **Liçao:** **Diagramas Mermaid no repo (renderizam no GitHub) substituem ferramentas externas (Draw.io, Lucidchart).**
 >
 > **Vantagens:** Versionados (diff no PR), zero licença, zero sync manual, acessíveis, vive junto ao código.
 >
@@ -319,7 +319,7 @@ workflow:
 
 **Localização:** `docs/auditorias/audit-lessons-0001-lessons-learned-v1.0.md` (repo Git)  
 **Backup:** Sharepoint FATEC / pasta do projeto  
-**Retenção:** Permanente — Conhecimento institdoc-arch-0006-uc-v1ional FATEC ADS
+**Retenção:** Permanente — Conhecimento institucional FATEC ADS
 
 ---
 

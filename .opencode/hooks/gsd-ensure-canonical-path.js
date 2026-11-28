@@ -119,7 +119,7 @@ function createDirLink(target, linkPath, platform) {
 
 /**
  * Does `linkPath` already correctly point at `expectedTarget`?
- * Used to make the hook idempotent — a correct link is left untodoc-arch-0006-uc-v1hed.
+ * Used to make the hook idempotent — a correct link is left untouched.
  */
 function linkPointsAt(linkPath, expectedTarget) {
   try {
@@ -135,7 +135,7 @@ function linkPointsAt(linkPath, expectedTarget) {
  * Ensure the canonical `~/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/` path exposes the bundled subdirs.
  *
  * Pure, dependency-injected core so tests drive it with a fake home, fake
- * plugin root, and explicit platform. Returns a strdoc-arch-0006-uc-v1tured result describing
+ * plugin root, and explicit platform. Returns a structured result describing
  * exactly what happened (never throws for ordinary conditions — only truly
  * unexpected I/O errors propagate, and the thin CLI wrapper swallows those so
  * a hook failure never blocks a session).
@@ -259,7 +259,7 @@ function ensureCanonicalPath(opts = {}) {
         }
       } else {
         // A REAL file or directory the user (or a classic install) owns. NEVER
-        // clobber it — preserve it untodoc-arch-0006-uc-v1hed. This is the USER-PROFILE.md /
+        // clobber it — preserve it untouched. This is the USER-PROFILE.md /
         // partially-real-canonical-dir safety case.
         preserved.push(sub);
         continue;

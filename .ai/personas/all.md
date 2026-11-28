@@ -328,7 +328,7 @@ wc -c .ai/specs/*.md
 wc -c .ai/specs/tap.md .ai/specs/eap.md .ai/specs/requisitos.md
 ```
 
-Se estiverem com 0 bytes (provável, pois foram criadas com `todoc-arch-0006-uc-v1h`), o OpenCode continuará sem contexto de domínio. Recomendo popular as specs em seguida (posso fornecer os blocos de conteúdo derivados do TAP v3 consolidado).
+Se estiverem com 0 bytes (provável, pois foram criadas com `touch`), o OpenCode continuará sem contexto de domínio. Recomendo popular as specs em seguida (posso fornecer os blocos de conteúdo derivados do TAP v3 consolidado).
 
 ### 5.2 Retestar o OpenCode
 
@@ -360,10 +360,10 @@ Adicionar em `docs/conhecimento/licoes-aprendidas/MF1-licoes.md`:
 **Domínio PMBOK 7ª**: Trabalho do Projeto + Abordagem de Desenvolvimento
 
 ### O que aconteceu
-As personas SDD (.ai/personas/*.md) foram criadas com `todoc-arch-0006-uc-v1h` durante a reestruturação formal, mas permaneceram com 0 bytes. O symlink `active.md` nunca foi criado. O OpenCode, sem contexto SDD, caiu em fallback para modelo cloud padrão ("big-pickle"), respondendo em inglês sem aderência ao projeto.
+As personas SDD (.ai/personas/*.md) foram criadas com `touch` durante a reestruturação formal, mas permaneceram com 0 bytes. O symlink `active.md` nunca foi criado. O OpenCode, sem contexto SDD, caiu em fallback para modelo cloud padrão ("big-pickle"), respondendo em inglês sem aderência ao projeto.
 
 ### Causa raiz
-1. Criação de arquivos-âncora sem conteúdo (apenas `todoc-arch-0006-uc-v1h`)
+1. Criação de arquivos-âncora sem conteúdo (apenas `touch`)
 2. Ausência de verificação pós-criação (`wc -l` ou `wc -c`)
 3. Perda de conteúdo populado durante reestruturação paralela (LA-001)
 4. Symlink runtime `active.md` não criado

@@ -1,13 +1,13 @@
 # Regression-Test Hardening — Shrinking + Oracle + Boundaries
 
 Loaded by `gsd-debugger` via `@-include` from Test-First Debugging (and referenced
-from Minimal Reproddoc-arch-0006-uc-v1tion). Extends the regression test from a symptom-check
+from Minimal Reproduction). Extends the regression test from a symptom-check
 into a **root-cause check** — which is exactly what the Phase 1A fix-acceptance
 guardrail needs to bite.
 
 ## Why this exists
 
-The existing Minimal Reproddoc-arch-0006-uc-v1tion + Test-First Debugging steps minimize by hand
+The existing Minimal Reproduction + Test-First Debugging steps minimize by hand
 and default to a shallow "didn't crash / error gone" assertion. Two failure
 modes follow: (1) the regression seed is a noisy, large input that's hard to
 reason about and hides the real defect; (2) a weak oracle (implicit "no crash")
@@ -31,7 +31,7 @@ auto-minimize the counterexample:
 noisy repro. The minimized seed is comprehensible, exposes the precise defect
 shape, and is what the regression test asserts against. **Preserve the original
 noisy repro as a secondary reference** (an Evidence pointer or a comment) — a
-shrinker reddoc-arch-0006-uc-v1es along the path it explored and may discard alternate-trigger
+shrinker reduces along the path it explored and may discard alternate-trigger
 paths an integration bug needs to surface.
 
 **Test provenance (security):** the "failing input" often comes from the bug
@@ -40,7 +40,7 @@ from a sanitized description, never lift a repro script verbatim. See the
 test-provenance rule in `debugger-fix-acceptance.md`.
 
 **Degradation (Gall):** no PBT framework available → the existing **manual
-minimization** in Minimal Reproddoc-arch-0006-uc-v1tion step 5 already applies; log the
+minimization** in Minimal Reproduction step 5 already applies; log the
 framework's absence in Evidence so the oracle/boundary steps below carry the
 hardened path. The shrinking step is additive; its absence is logged, never a
 silent pass. The oracle-classification and boundary steps below are prompt-level
@@ -58,7 +58,7 @@ path or a custom generator; a pathological input space can run for minutes. Boun
   `numRuns=100`, Hypothesis `max_examples=100`) without explicit justification;
   prefer the default budget and degrade to manual minimization if it proves
   insufficient. An attacker-controlled bug report describing a pathological input
-  space must not inddoc-arch-0006-uc-v1e an unbounded run.
+  space must not induce an unbounded run.
 - **argv, not shell** — pass fast-check/Hypothesis arguments as an argv array,
   never a shell-interpolated string.
 
@@ -89,7 +89,7 @@ entire justification.
 **Scope:** these four types cover **deterministic** bugs. A non-deterministic
 bug (Heisenbug/Mandelbug per the bug-taxonomy) whose only signal is a
 distributional property needs a **statistical** oracle (run N times, assert a
-distribution) — but sdoc-arch-0006-uc-v1h bugs route to record-replay/stability-stress per
+distribution) — but such bugs route to record-replay/stability-stress per
 `debugger-bug-taxonomy.md`, not to this Test-First path. If you land here on a
 non-deterministic failure, re-classify and reroute.
 
@@ -98,7 +98,7 @@ non-deterministic failure, re-classify and reroute.
 After the fix, generate boundary-adjacent cases **around the fixed defect's
 equivalence class** — the single reported value misses the adjacent off-by-one:
 
-- **Off-by-one** — `N-1`, `N`, `N+1` around the boundary the fix todoc-arch-0006-uc-v1hed.
+- **Off-by-one** — `N-1`, `N`, `N+1` around the boundary the fix touched.
 - **Min/max** — `0`, `length`, empty range, the max representable value.
 - **Empty / singleton** — `[]`, `[x]`, `""`, `"c"`.
 

@@ -58,7 +58,7 @@ trace:
   - .ai/handoffs/hf-exec-0602-consulta-de-dominio-v1.0.md (RESPOSTA — PARCELA DE CONSULTA TA-0046 / agent-ui-ux-advisor, :32-45 — insumo normativo meio-duplex, incorporado)
   - .ai/handoffs/hf-exec-0609-spec-008-frontend-web-responsive-v1-v1.0.md (envelope desta emissão, :17, :19-25)
   - docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md (:33 item B.1; :58 item D.1; :36 item B.4; :37 item B.5)
-  - docs/planos/plano-granular/plano-proddoc-arch-0006-uc-v1ao-agentes.md (:121-131 onda 4 — A.11 agent-ui-ux-advisor :129 → A.12 agent-frontend-dev :130)
+  - docs/planos/plano-granular/plano-producao-agentes.md (:121-131 onda 4 — A.11 agent-ui-ux-advisor :129 → A.12 agent-frontend-dev :130)
   - Verificação local de filesystem (2026-11-05): src/frontend/templates/index.html = tela de simulação funcional (era 0 B); src/frontend/static/ vazio; src/frontend/templates/invoice.html = 4996 B; schemas em src/shared/schemas.py:445-654
   - ratificada CCB 05/11/2026 (instrumento RAT-2026-11-05-A16)
 ---
@@ -73,7 +73,7 @@ Fonte única das decisões da camada `front`. Em conflito, vale a hierarquia do 
 
 ## 1. Contexto e origem
 
-Item **B.1** da lista de specs pendentes (docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:33): "nenhuma spec de frontend existe (só `spec-005` define a camada `front`)", com escopo derivado da onda 4 (A.11 `agent-ui-ux-advisor` → A.12 `agent-frontend-dev`, docs/planos/plano-granular/plano-proddoc-arch-0006-uc-v1ao-agentes.md:129-130; item D.1, :58). REQ-06 exige "Interface web responsiva FOSS — Chrome/Firefox/Edge ult. 2 versões" na fase N5.3 (.ai/specs/spec-req-0001-requisitos-review-round-1-v1.0.md:67).
+Item **B.1** da lista de specs pendentes (docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:33): "nenhuma spec de frontend existe (só `spec-005` define a camada `front`)", com escopo derivado da onda 4 (A.11 `agent-ui-ux-advisor` → A.12 `agent-frontend-dev`, docs/planos/plano-granular/plano-producao-agentes.md:129-130; item D.1, :58). REQ-06 exige "Interface web responsiva FOSS — Chrome/Firefox/Edge ult. 2 versões" na fase N5.3 (.ai/specs/spec-req-0001-requisitos-review-round-1-v1.0.md:67).
 
 Estado atual verificado (2026-11-03): `src/frontend/templates/index.html` tem **0 B** e `src/frontend/static/` está **vazio** (fato também registrado em .ai/specs/spec-arch-0001-container-layers-v1.0.md:30); `src/frontend/templates/invoice.html` existe (4996 B) e permanece sob custódia do **Back** como insumo do `POST /v1/invoice` (spec-005:68). Ou seja: greenfield de UI — esta SPEC define o **primeiro template real de navegador** e o inventário de `src/frontend/` (parcela TA-0046, item 5, .ai/handoffs/hf-exec-0602-consulta-de-dominio-v1.0.md:41).
 
@@ -133,7 +133,7 @@ Cada tela (simulação, invoice form) especifica os quatro estados (norma da par
 | **empty** | Primeiro carregamento: só o formulário curto; região de resultado ausente; instrução do primeiro passo visível | Formulário vazio com obrigatórios marcados (§6.4) |
 | **loading** | Submit desabilitado + indicador visível; orçamento de tempo: simulação E2E ≤3s P95 (REQ-05, spec-002:66; leitura C-07 — 2s chamada API, 3s E2E, spec-002:126) | Indicador enquanto o PDF é gerado; orçamento ≤3s/documento (REQ-04, spec-002:65) |
 | **error** | 400: mensagens por campo a partir de `details[].field` (spec-004:82-87); 503 `rates_unavailable`: mensagem global com affordance de retry; `details` nunca ecoa o valor enviado (spec-004:93) | 400: por campo; 503 `pdf_unavailable`: mensagem global com retry (spec-004:90) |
-| **sdoc-arch-0006-uc-v1cess** | Partial `_simulation_result.html` + `_rate_quote.html` + `notice` (spec-004:77); se `quote.stale == true`, indicador visual de defasagem (§2) | Download do PDF acionado (`Content-Disposition: attachment`, spec-004:130) com confirmação visual |
+| **success** | Partial `_simulation_result.html` + `_rate_quote.html` + `notice` (spec-004:77); se `quote.stale == true`, indicador visual de defasagem (§2) | Download do PDF acionado (`Content-Disposition: attachment`, spec-004:130) com confirmação visual |
 
 Regra transversal: nenhuma tela permanece em estado indefinido — todo desfecho da API (200/400/500/503, spec-004:79-93) tem render correspondente; 500 `internal_error` renderiza mensagem genérica sem traceback nem dados do usuário (spec-004:91).
 
@@ -172,7 +172,7 @@ Vínculo normativo: cada rótulo renderizado corresponde a **exatamente um** cam
 
 1. Formulário (`POST /v1/invoice`, spec-004:67): reutiliza os campos de simulação (§6.2, `InvoiceRequest.simulation: SimulationRequest`, spec-004:75) e adiciona os campos de parte e documento: `issuer` e `client` como `InvoiceParty` — `name` (1–120, obrigatório), `tax_id` (≤40, opcional), `address` (≤240, opcional; spec-004:74) — mais `invoice_number` (1–40), `issue_date` (date) e `description` (1–500; spec-004:75).
 2. **Nenhum valor monetário é aceito/confirmado do cliente:** o Back recalcula a simulação recebida (spec-004:130); a UI não exibe nem simula campos de resultado editáveis.
-3. Sdoc-arch-0006-uc-v1esso: resposta é `application/pdf` com `Content-Disposition: attachment; filename="invoice.pdf"` (spec-004:130) — a UI aciona o download e confirma (§5).
+3. Sucesso: resposta é `application/pdf` com `Content-Disposition: attachment; filename="invoice.pdf"` (spec-004:130) — a UI aciona o download e confirma (§5).
 4. **Dependência GAP-04:** o modelo canônico de dados da invoice (campos bancários, CPF/CNPJ, período) está pendente (spec-002:103; item B.4, docs/analise/LISTA-SPECS-PENDENTES-2026-11-02.md:36) — campos de invoice **além** do contrato `spec-004` §3: `UNKNOWN - verify` (a emitir na spec de modelo de dados da rodada 1). Política de numeração (`invoice_number` pré-preenchido/travado?) e ciclo de vida Rascunho/Finalizada (doc-user-story-0016-us-016/doc-user-story-0017-us-017, spec-002:178-179): pendentes de ratificação CCB → `UNKNOWN - verify`.
 
 ### 6.4 Minimização LGPD nos formulários (P-04, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:90)
@@ -208,10 +208,10 @@ Numeração sequencial a partir de US-022 (precedente spec-005:232). **Nota de g
 ### US-022 — foss-responsive-template-base
 **Narrativa:** Como usuário, quero acessar o sistema por interface web responsiva 100% FOSS servida pela camada `front`, para trabalhar a partir de qualquer desktop (doc-user-story-0005-us-005, spec-002:162).
 **Cenários:** 1. Dado `docker compose up --build` com a stack separada (spec-005:111), Quando abro `127.0.0.1:8080`, Então `index.html` renderiza tela de simulação com `lang="pt-BR"`, skip-link e zero recursos remotos no network inspector. 2. Dado viewport de 360px, Quando navego pelas duas telas, Então não há scroll horizontal nem quebra funcional (§8). 3. Dado JS desabilitado, Quando submeto o formulário, Então o fluxo completa server-side (R-INT-05).
-**Rastreabilidade:** REQ-06 (spec-002:67) + REQ-15 (spec-002:76) + ADR-001-stack.md:34 + spec-005:62. **Dependências:** separação de camadas (doc-user-story-0018-us-018, spec-005:236). **Atribuição:** agent-frontend-dev (A.12, plano-proddoc-arch-0006-uc-v1ao-agentes.md:130). **Status:** `candidate`.
+**Rastreabilidade:** REQ-06 (spec-002:67) + REQ-15 (spec-002:76) + ADR-001-stack.md:34 + spec-005:62. **Dependências:** separação de camadas (doc-user-story-0018-us-018, spec-005:236). **Atribuição:** agent-frontend-dev (A.12, plano-producao-agentes.md:130). **Status:** `candidate`.
 
 ### US-023 — simulation-screen-flow-states
-**Narrativa:** Como profissional que fatura em moeda estrangeira, quero simular USD/EUR→BRL na tela de simulação com estados loading/empty/error/sdoc-arch-0006-uc-v1cess, para saber o valor recebível (doc-user-story-0001-us-001, spec-002:158).
+**Narrativa:** Como profissional que fatura em moeda estrangeira, quero simular USD/EUR→BRL na tela de simulação com estados loading/empty/error/success, para saber o valor recebível (doc-user-story-0001-us-001, spec-002:158).
 **Cenários:** 1. Dado formulário válido com os 5 regimes, Quando submeto, Então a trilha bruto→despesas→líquido renderiza com 2 casas (6 no câmbio efetivo) e o `notice` integral (§6.1-6.2). 2. Dado payload inválido, Quando o Back responde 400, Então cada `details[].field` recebe mensagem junto ao campo, sem eco do valor (§5; spec-004:93). 3. Dado fontes indisponíveis e sem cache, Quando o Back responde 503 `rates_unavailable`, Então mensagem global com retry é exibida (§5; spec-004:89).
 **Rastreabilidade:** REQ-01..03, REQ-05 (spec-002:62-66) + spec-004:66,73,77. **Dependências:** US-022; contrato `/v1` (spec-004 §3). **Atribuição:** agent-frontend-dev. **Status:** `candidate`.
 
@@ -226,13 +226,13 @@ Numeração sequencial a partir de US-022 (precedente spec-005:232). **Nota de g
 |---|---|---|
 | AC-1 | Navegação por teclado: 100% dos interativos das 2 telas alcançáveis/operáveis; foco visível (A2, A8) | Roteiro manual estruturado |
 | AC-2 | Contraste ≥4.5:1 em todos os pares texto/fundo (A1) | Medição local (inspeção calculada) |
-| AC-3 | Estados: as 2 telas implementam empty/loading/error/sdoc-arch-0006-uc-v1cess conforme §5 | Render por fixture + inspeção |
+| AC-3 | Estados: as 2 telas implementam empty/loading/error/success conforme §5 | Render por fixture + inspeção |
 | AC-4 | Fluxo de simulação completo sem quebra funcional em Chrome/Firefox/Edge (últ. 2 versões) (§8; REQ-06) | Matriz manual de browsers |
 | AC-5 | Fluxo completo com JS desabilitado (R-INT-05) | Browsers com JS off |
 | AC-6 | Zero requisição fora de `127.0.0.1:8080` durante o uso (R-INT-04) | Network inspector local |
 | AC-7 | Labels 1:1: todo rótulo renderizado consta da tabela §6.2 e mapeia campo de schema; nenhum campo extra | Revisão contra spec-004:71-75 |
 | AC-8 | Números pt-BR: 2 casas nos monetários, 6 no câmbio/cotação; datas/hora pt-BR (§6.2) | Render de fixture |
-| AC-9 | 400 por campo via `details[].field`; 503 com retry; `notice` integral no sdoc-arch-0006-uc-v1esso (§5, §6.1) | Render por fixture de erro |
+| AC-9 | 400 por campo via `details[].field`; 503 com retry; `notice` integral no sucesso (§5, §6.1) | Render por fixture de erro |
 | AC-10 | Sem scroll horizontal em 360px; desktop sem quebra (§8) | Inspeção de viewport |
 | AC-11 | Contrato `/v1` inalterado: `tests/integration/test_api_contract.py` e `test_openapi.py` seguem verdes após a separação | Suíte de contrato existente (spec-005:179,226) |
 | AC-12 | `static/` sem asset de licença não-OSI; sem webfont remota (R-INT-04; REQ-15, spec-002:76) | Revisão + scanner FOSS do CI (ci.yml `foss-compliance`) |
@@ -253,7 +253,7 @@ Testes automatizados desta camada: render server-side dos templates por fixture 
 | Parcela TA-0046 (hf-exec-0602:32-45) | §§1, 3, 5, 7, 8 (insumo normativo incorporado) |
 | GAP-03/GAP-04/GAP-06 (spec-002:102-105) | §2, §6.3 (`UNKNOWN - verify`) |
 | doc-user-story-0007-us-007/doc-user-story-0016-us-016/doc-user-story-0017-us-017 (spec-002:177-179) | §2, §6.3 (condicionais — `UNKNOWN - verify`) |
-| Onda 4 A.11→A.12 (plano-proddoc-arch-0006-uc-v1ao-agentes.md:129-130) | §§1, 9 (atribuição) |
+| Onda 4 A.11→A.12 (plano-producao-agentes.md:129-130) | §§1, 9 (atribuição) |
 
 ## 12. Fora de escopo (YAGNI — P-11, constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-0001-constitution-0001-constitution-canon-0001-constitution-0001-constitution-canon-canon-canon-canon.md:104)
 
@@ -273,7 +273,7 @@ Testes automatizados desta camada: render server-side dos templates por fixture 
 
 ## CHANGELOG
 
-- 0.1.0 — 2026-11-03 (TA-0053, hf-exec-0609): emissão inicial. Normas da camada `front` (R-INT-01..08); inventário de `src/frontend/` e templates-alvo; estados de tela (empty/loading/error/sdoc-arch-0006-uc-v1cess); registro de labels 1:1 com os schemas da spec-004; fluxos `POST /v1/simulate` e `POST /v1/invoice` com minimização P-04; acessibilidade baseline A1..A8; matriz de browsers REQ-06 (Chrome/Firefox/Edge últ. 2 versões); parcela TA-0046 (hf-exec-0602:32-45) incorporada como insumo normativo; tabela de conflitos (HTMX vs vanilla, default spread/IOF, stale banner, custódia invoice.html, mobile, e2e); 3 stories candidatas US-022..US-024; 13 ACs verificáveis; lacunas declaradas: GAP-03 (ratificação da fórmula), GAP-04 (modelo de dados invoice), GAP-06 (TTL/stale), ratificação doc-user-story-0007-us-007/016/017, whitelist HTMX via ADR, destino de evidências UAT (spec-005:342), e2e de UI nesta onda.
+- 0.1.0 — 2026-11-03 (TA-0053, hf-exec-0609): emissão inicial. Normas da camada `front` (R-INT-01..08); inventário de `src/frontend/` e templates-alvo; estados de tela (empty/loading/error/success); registro de labels 1:1 com os schemas da spec-004; fluxos `POST /v1/simulate` e `POST /v1/invoice` com minimização P-04; acessibilidade baseline A1..A8; matriz de browsers REQ-06 (Chrome/Firefox/Edge últ. 2 versões); parcela TA-0046 (hf-exec-0602:32-45) incorporada como insumo normativo; tabela de conflitos (HTMX vs vanilla, default spread/IOF, stale banner, custódia invoice.html, mobile, e2e); 3 stories candidatas US-022..US-024; 13 ACs verificáveis; lacunas declaradas: GAP-03 (ratificação da fórmula), GAP-04 (modelo de dados invoice), GAP-06 (TTL/stale), ratificação doc-user-story-0007-us-007/016/017, whitelist HTMX via ADR, destino de evidências UAT (spec-005:342), e2e de UI nesta onda.
 - 0.2.0 — 2026-11-05 (refinamento de ratificação, Grupo A): frontmatter atualizado ao padrão TA-0031 ratificado (adicionado `wave: WS-4`, `trace`; `version` 0.1.0 → 0.2.0). `src/frontend/templates/index.html` agora é tela de simulação funcional (era 0 B, commit `abc7350`), chamando `POST /v1/simulate` pela mesma origem via proxy `127.0.0.1:8080`. GAP-04 (modelo de dados invoice) fechado por ADR-016 D4 (RAT-2026-11-05-A16-D4, spec-007 ratificada). Destino de evidências UAT fechado = `docs/uat/` (pendência #6 resolvida). Aderência ao padrão de nomenclatura `spec-NNN-specname.spec.md` confirmada (ADR-018, RAT-2026-11-05-A18). Nenhuma decisão de negócio de §§1–12 reescrita. **Ratificada CCB 05/11/2026 (instrumento RAT-2026-11-05-A16)**.
 
 ## CAMADAS FUNDAMENTAIS — MAPA (TA-0031)

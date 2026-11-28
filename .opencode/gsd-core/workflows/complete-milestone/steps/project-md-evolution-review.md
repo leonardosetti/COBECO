@@ -50,7 +50,7 @@ if [ -e "${_SUMMARIES[0]}" ]; then cat "${_SUMMARIES[@]}"; fi
 
 1. **"What This Is" accuracy:**
    - Compare current description to what was built
-   - Update if proddoc-arch-0006-uc-v1t has meaningfully changed
+   - Update if product has meaningfully changed
 
 2. **Core Value check:**
    - Still the right priority? Did shipping reveal a different core value?
@@ -58,7 +58,7 @@ if [ -e "${_SUMMARIES[0]}" ]; then cat "${_SUMMARIES[@]}"; fi
 
 3. **Business Context check (only if the section is present):**
    - Skip entirely if PROJECT.md has no `## Business Context` section
-   - Customer, revenue model, and sdoc-arch-0006-uc-v1cess metric still accurate after shipping?
+   - Customer, revenue model, and success metric still accurate after shipping?
    - Update any field that drifted; refresh the linked strategy doc reference if it moved
 
 4. **Requirements audit:**

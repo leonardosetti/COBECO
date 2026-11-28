@@ -43,7 +43,7 @@ echo "$GSD_ARGS" | grep -qE '\-\-ws\s+\S+' && GSD_WS=$(echo "$GSD_ARGS" | grep -
 ## 1.5. Config Gate (feature disabled by default)
 
 An explicit dispatch from `/gsd-autonomous --converge` carries `--override-gate` (#4600): the
-operator's explicit flag overrides this gate for that run. Standalone invocation carries no sdoc-arch-0006-uc-v1h
+operator's explicit flag overrides this gate for that run. Standalone invocation carries no such
 flag and remains gated by the config below.
 
 ```bash
@@ -113,11 +113,11 @@ done
 if [ -z "$REVIEWER_FLAGS" ]; then
   DEFAULT_REVIEWERS_JSON=$(gsd_run query config-get review.default_reviewers 2>/dev/null || echo "")
   if ! command -v jq >/dev/null 2>&1; then
-    # jq is a documented proddoc-arch-0006-uc-v1tion dependency (review.md, detect_clis — the
+    # jq is a documented production dependency (review.md, detect_clis — the
     # "jq-dependent reviewer lanes" note). If it is absent we cannot inspect
     # the configured default (it is a JSON array, not a --raw/--pick scalar), so
     # fail safe with --codex and surface the reason rather than silently
-    # reproddoc-arch-0006-uc-v1ing the #2315 override under degraded conditions.
+    # reproducing the #2315 override under degraded conditions.
     echo "WARNING: jq not on PATH — cannot read review.default_reviewers; falling back to --codex (#2315)" >&2
     REVIEWER_FLAGS="--codex"
     REVIEWER_DISPLAY="--codex (jq missing; cannot read review.default_reviewers)"
@@ -183,7 +183,7 @@ Skill(skill="gsd-plan-phase", args="{PHASE} {GSD_WS}")
 Run plan-phase **inline** (do NOT wrap it in Agent()). The convergence orchestrator runs at depth 0 with Agent available, so inline plan-phase can spawn gsd-planner and gsd-plan-checker at depth 1 — the one level of nesting that works on Claude Code. Wrapping plan-phase in Agent() would push it to depth 1 where the Agent tool is absent, preventing it from spawning any sub-agents. Wait until plan-phase completes and PLAN.md files are committed before continuing.
 
 After plan-phase completes, verify plans were created. This asks "did initial
-planning write files to disk" — a planner-proddoc-arch-0006-uc-v1ed-nothing check, not
+planning write files to disk" — a planner-produced-nothing check, not
 outstanding-work counting — so it takes the PHYSICAL set (`plan_count_all`,
 `status: superseded` INCLUDED, #3218):
 ```bash
@@ -227,7 +227,7 @@ Where <N> is the integer count of HIGH-severity concerns that REMAIN UNRESOLVED 
 Where <M> is the integer count of actionable MEDIUM/LOW concerns that REMAIN UNRESOLVED because the latest PLAN.md files do not yet incorporate them or explicitly defer/reject them.
 
 Consensus gate (applies to NEWLY RAISED HIGHs only; evaluate before the counting rules below):
-  This gate engages ONLY when 2 or more reviewers actually ran and proddoc-arch-0006-uc-v1ed a review section this
+  This gate engages ONLY when 2 or more reviewers actually ran and produced a review section this
   cycle. With exactly one reviewer, skip this entire gate — a single reviewer's HIGH always counts,
   exactly as before.
 
@@ -300,10 +300,10 @@ These two sections MUST be the final content of your response, in this exact ord
 
 ### Source-grounding pass (config: `plan_review.source_grounding`, default on)
 
-Run this pass unless `plan_review.source_grounding` is `false`. It verifies every symbol the plan cites against the project source before approval, catching halldoc-arch-0006-uc-v1inated symbols at review time instead of execution time.
+Run this pass unless `plan_review.source_grounding` is `false`. It verifies every symbol the plan cites against the project source before approval, catching hallucinated symbols at review time instead of execution time.
 
-1. **Enumerate cited symbols.** List every referenced symbol by kind, quoting the plan line for each (coverage must be auditable): decorators (`@name`), classes/methods (`Class.method`), functions (`module.function`), CLI flags (`--name`), file paths, dataclass/strdoc-arch-0006-uc-v1t fields.
-2. **Exclude new artifacts.** Do NOT verify symbols the plan declares under its "Artifacts this phase proddoc-arch-0006-uc-v1es" section — those are created by this phase, not references to existing code.
+1. **Enumerate cited symbols.** List every referenced symbol by kind, quoting the plan line for each (coverage must be auditable): decorators (`@name`), classes/methods (`Class.method`), functions (`module.function`), CLI flags (`--name`), file paths, dataclass/struct fields.
+2. **Exclude new artifacts.** Do NOT verify symbols the plan declares under its "Artifacts this phase produces" section — those are created by this phase, not references to existing code.
 3. **Resolve each remaining symbol** using the effective authority adapter (resolved deterministically — see step 4a):
    - `grep` — ripgrep / Read the source; confirm the name appears as a real declaration.
    - `intel` — consult `.planning/intel/API-SURFACE.md` / `api-map.json` (only when `intel.enabled`).
@@ -348,22 +348,22 @@ Run this pass whenever the source-grounding pass ran — it is the second axis o
 
    | Fact class | Artifact pair | Authority | Decided by |
    |---|---|---|---|
-   | Sdoc-arch-0006-uc-v1cess criteria / must-have truths | ROADMAP.md Sdoc-arch-0006-uc-v1cess Criteria ↔ PLAN.md `must_haves.truths` | ROADMAP.md | judgment |
+   | Success criteria / must-have truths | ROADMAP.md Success Criteria ↔ PLAN.md `must_haves.truths` | ROADMAP.md | judgment |
    | Requirement IDs | ROADMAP.md `**Requirements:**` ↔ PLAN.md task requirement refs | ROADMAP.md | judgment |
    | Phase status | STATE.md status ↔ ROADMAP.md phase state | STATE.md | step 1 (deterministic) |
    | Glossary / domain term | CONTEXT.md `Decisions` ↔ PLAN.md usage of the term | CONTEXT.md | judgment |
 
 3. **Judge each judgment pair.** FLAG only when ALL THREE hold:
 
-   1. both sides name the *same* fact — same requirement ID, same sdoc-arch-0006-uc-v1cess criterion, or the same defined term; and
+   1. both sides name the *same* fact — same requirement ID, same success criterion, or the same defined term; and
    2. the two representations *contradict*, one asserting what the other denies, rather than differing in wording or in level of detail; and
    3. the pair is one of the judgment pairs above.
 
 4. **Record.** Emit each finding into `REVIEWS.md` beside the source-grounding coverage block, quoting both locations and naming the divergence and the authority, so the author can collapse the two copies to a single source of truth.
 
-**Do NOT flag:** a wording-only difference that asserts the same thing; a fact that appears in one artifact only — single-source is the target state, not a finding; a PLAN that ADDS a truth beyond the roadmap Sdoc-arch-0006-uc-v1cess Criteria, which is sanctioned (plans may add, never subtract); a `lag` verdict from step 1 — two non-terminal statuses a single lifecycle step apart, in either direction, since STATE.md is written at planning time independently of ROADMAP.md and can lead as readily as trail (a disagreement about *completion* is never lag, and step 1 already reports it as `drifted`); anything under CONTEXT.md's `the agent's Discretion` or `Deferred Ideas`, which are non-authoritative by design.
+**Do NOT flag:** a wording-only difference that asserts the same thing; a fact that appears in one artifact only — single-source is the target state, not a finding; a PLAN that ADDS a truth beyond the roadmap Success Criteria, which is sanctioned (plans may add, never subtract); a `lag` verdict from step 1 — two non-terminal statuses a single lifecycle step apart, in either direction, since STATE.md is written at planning time independently of ROADMAP.md and can lead as readily as trail (a disagreement about *completion* is never lag, and step 1 already reports it as `drifted`); anything under CONTEXT.md's `the agent's Discretion` or `Deferred Ideas`, which are non-authoritative by design.
 
-**Report once, not twice — these belong to `gsd-plan-checker`:** a PLAN that omits a roadmap Sdoc-arch-0006-uc-v1cess Criterion is scope reddoc-arch-0006-uc-v1tion (Dimension 7b); a requirement ID the ROADMAP never defines is requirement coverage (Dimension 1); two PLAN.md files in one phase disagreeing is cross-plan data contracts (Dimension 9).
+**Report once, not twice — these belong to `gsd-plan-checker`:** a PLAN that omits a roadmap Success Criterion is scope reduction (Dimension 7b); a requirement ID the ROADMAP never defines is requirement coverage (Dimension 1); two PLAN.md files in one phase disagreeing is cross-plan data contracts (Dimension 9).
 
 **Severity: advisory, never a blocker.** This pass never sets `hardBlock`, and its findings contribute to neither `HIGH_COUNT` nor `ACTIONABLE_COUNT` — a project carrying pre-existing drift must still be able to converge, or an advisory check becomes an endless replan loop.
 
@@ -378,7 +378,7 @@ if [ -z "${phase_dir}" ]; then
 fi
 REVIEWS_FILE="${phase_dir}/${padded_phase}-REVIEWS.md"
 if [ ! -f "${REVIEWS_FILE}" ] || [ ! -r "${REVIEWS_FILE}" ]; then
-  echo "ERROR: expected reviews file is not a readable file: '${REVIEWS_FILE}'. Confirm the phase directory resolved correctly before concluding the review agent proddoc-arch-0006-uc-v1ed nothing." >&2
+  echo "ERROR: expected reviews file is not a readable file: '${REVIEWS_FILE}'. Confirm the phase directory resolved correctly before concluding the review agent produced nothing." >&2
   exit 1
 fi
 ```
@@ -430,7 +430,7 @@ fi
 decision, capability guidance, or an existing plan constraint, recorded by `/gsd-plan-phase`
 together with the alternatives the planner considered. It is NOT counted by `CYCLE_SUMMARY`, so
 it must be read from the file directly — evaluate this BEFORE the converged branch below, or a
-run would write `planned-phase` and print the sdoc-arch-0006-uc-v1cess banner over a conflict nobody resolved:
+run would write `planned-phase` and print the success banner over a conflict nobody resolved:
 
 ```bash
 if [ ! -f "${REVIEWS_FILE}" ]; then
@@ -521,7 +521,7 @@ Display: `◆ Cycle {cycle}/{MAX_CYCLES} — {HIGH_COUNT} HIGH, {ACTIONABLE_COUN
 **Max cycles check:** If `cycle >= MAX_CYCLES`:
 
 **If `OPEN_CONFLICTS` > 0 (#3771): "Proceed anyway" is never offered.** An open plan-revision
-conflict is a blocker — this loop's whole purpose is to surface it rather than let a sdoc-arch-0006-uc-v1cess
+conflict is a blocker — this loop's whole purpose is to surface it rather than let a success
 banner paper over it, so escalation cannot end in the same silent acceptance a HIGH/actionable
 concern can. Only "Manual review" is available:
 
@@ -597,14 +597,14 @@ Display: `◆ Replanning inline with review feedback... (plan-phase runs here in
 Skill(skill="gsd-plan-phase", args="{PHASE} --reviews --skip-research {GSD_WS}")
 ```
 
-Run plan-phase **inline** (do NOT wrap it in Agent()). Same rationale as step 4: the convergence orchestrator runs at depth 0 with Agent available, so inline plan-phase can spawn gsd-planner and gsd-plan-checker at depth 1. Wrapping in Agent() pushes plan-phase to depth 1 where the Agent tool is absent — the replan loop can never proddoc-arch-0006-uc-v1e a revised plan when HIGHs are found. This is the root cause of bug #936. Actionable MEDIUM/LOW findings must be incorporated into executable PLAN.md content or explicitly deferred/rejected in the relevant PLAN.md before convergence can complete. The same holds for any open `## Plan-Revision Conflicts` entry (#3771): the replan must resolve it by adopting one of its recorded alternatives, overriding the named constraint, or amending the constraint — and mark the entry resolved. Re-running the planner against an unchanged conflict cannot resolve it and only burns a cycle. Wait until plan-phase completes (outputs '## PLANNING COMPLETE') and updated PLAN.md files are committed before continuing.
+Run plan-phase **inline** (do NOT wrap it in Agent()). Same rationale as step 4: the convergence orchestrator runs at depth 0 with Agent available, so inline plan-phase can spawn gsd-planner and gsd-plan-checker at depth 1. Wrapping in Agent() pushes plan-phase to depth 1 where the Agent tool is absent — the replan loop can never produce a revised plan when HIGHs are found. This is the root cause of bug #936. Actionable MEDIUM/LOW findings must be incorporated into executable PLAN.md content or explicitly deferred/rejected in the relevant PLAN.md before convergence can complete. The same holds for any open `## Plan-Revision Conflicts` entry (#3771): the replan must resolve it by adopting one of its recorded alternatives, overriding the named constraint, or amending the constraint — and mark the entry resolved. Re-running the planner against an unchanged conflict cannot resolve it and only burns a cycle. Wait until plan-phase completes (outputs '## PLANNING COMPLETE') and updated PLAN.md files are committed before continuing.
 
 After plan-phase completes → go back to **step 5a** (review again).
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
-- [ ] Config gate checked before running — exits with enable instrdoc-arch-0006-uc-v1tions if workflow.plan_review_convergence is false (an explicit `--override-gate` dispatch — how `/gsd-autonomous --converge` invokes this workflow — bypasses it for that run, #4600)
+<success_criteria>
+- [ ] Config gate checked before running — exits with enable instructions if workflow.plan_review_convergence is false (an explicit `--override-gate` dispatch — how `/gsd-autonomous --converge` invokes this workflow — bypasses it for that run, #4600)
 - [ ] Initial planning via inline Skill("gsd-plan-phase") if no plans exist — NOT wrapped in Agent() (bug #936: depth-1 Agent has no Agent tool)
 - [ ] Review via Agent → Skill("gsd-review") — isolated Agent is correct; gsd-review is a Bash leaf with no sub-agent spawns; {GSD_WS} forwarded
 - [ ] Replan via inline Skill("gsd-plan-phase --reviews") — NOT wrapped in Agent(); inline lets plan-phase spawn gsd-planner/gsd-plan-checker at depth 1
@@ -620,4 +620,4 @@ After plan-phase completes → go back to **step 5a** (review again).
 - [ ] OPEN_CONFLICTS read from REVIEWS.md and evaluated BEFORE the converged branch writes state or prints the banner
 - [ ] Stall detection reported when total unresolved review concern count is not decreasing
 - [ ] STATE.md updated on convergence completion
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

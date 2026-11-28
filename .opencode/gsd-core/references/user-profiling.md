@@ -19,23 +19,23 @@ This reference document defines detection heuristics for behavioral profiling ac
 
 `dimension_id: communication_style`
 
-**What we're measuring:** How the developer phrases requests, instrdoc-arch-0006-uc-v1tions, and feedback -- the strdoc-arch-0006-uc-v1tural pattern of their messages to the agent.
+**What we're measuring:** How the developer phrases requests, instructions, and feedback -- the structural pattern of their messages to the agent.
 
 **Rating spectrum:**
 
 | Rating | Description |
 |--------|-------------|
 | `terse-direct` | Short, imperative messages with minimal context. Gets to the point immediately. |
-| `conversational` | Medium-length messages mixing instrdoc-arch-0006-uc-v1tions with questions and thinking-aloud. Natural, informal tone. |
-| `detailed-strdoc-arch-0006-uc-v1tured` | Long messages with explicit strdoc-arch-0006-uc-v1ture -- headers, numbered lists, problem statements, pre-analysis. |
+| `conversational` | Medium-length messages mixing instructions with questions and thinking-aloud. Natural, informal tone. |
+| `detailed-structured` | Long messages with explicit structure -- headers, numbered lists, problem statements, pre-analysis. |
 | `mixed` | No dominant pattern; style shifts based on task type or project context. |
 
 **Signal patterns:**
 
 1. **Message length distribution** -- Average word count across messages. Terse < 50 words, conversational 50-200 words, detailed > 200 words.
 2. **Imperative-to-interrogative ratio** -- Ratio of commands ("fix this", "add X") to questions ("what do you think?", "should we?"). High imperative ratio suggests terse-direct.
-3. **Strdoc-arch-0006-uc-v1tural formatting** -- Presence of markdown headers, numbered lists, code blocks, or bullet points within messages. Frequent formatting suggests detailed-strdoc-arch-0006-uc-v1tured.
-4. **Context preambles** -- Whether the developer provides background/context before making a request. Preambles suggest conversational or detailed-strdoc-arch-0006-uc-v1tured.
+3. **Structural formatting** -- Presence of markdown headers, numbered lists, code blocks, or bullet points within messages. Frequent formatting suggests detailed-structured.
+4. **Context preambles** -- Whether the developer provides background/context before making a request. Preambles suggest conversational or detailed-structured.
 5. **Sentence completeness** -- Whether messages use full sentences or fragments/shorthand. Fragments suggest terse-direct.
 6. **Follow-up pattern** -- Whether the developer provides additional context in subsequent messages (multi-message requests suggest conversational).
 
@@ -43,7 +43,7 @@ This reference document defines detection heuristics for behavioral profiling ac
 
 1. If average message length < 50 words AND predominantly imperative mood AND minimal formatting --> `terse-direct`
 2. If average message length 50-200 words AND mix of imperative and interrogative AND occasional formatting --> `conversational`
-3. If average message length > 200 words AND frequent strdoc-arch-0006-uc-v1tural formatting AND context preambles present --> `detailed-strdoc-arch-0006-uc-v1tured`
+3. If average message length > 200 words AND frequent structural formatting AND context preambles present --> `detailed-structured`
 4. If message length variance is high (std dev > 60% of mean) AND no single pattern dominates (< 60% of messages match one style) --> `mixed`
 5. If pattern varies systematically by project type (e.g., terse in CLI projects, detailed in frontend) --> `mixed` with context-dependent note
 
@@ -58,11 +58,11 @@ This reference document defines detection heuristics for behavioral profiling ac
 
 - **terse-direct:** "fix the auth bug" / "add pagination to the list endpoint" / "this test is failing, make it pass"
 - **conversational:** "I'm thinking we should probably handle the error case here. What do you think about returning a 422 instead of a 500? The client needs to know it was a validation issue."
-- **detailed-strdoc-arch-0006-uc-v1tured:** "## Context\nThe auth flow currently uses session cookies but we need to migrate to JWT.\n\n## Requirements\n1. Access tokens (15min expiry)\n2. Refresh tokens (7-day)\n3. httpOnly cookies\n\n## What I've tried\nI looked at jose and jsonwebtoken..."
+- **detailed-structured:** "## Context\nThe auth flow currently uses session cookies but we need to migrate to JWT.\n\n## Requirements\n1. Access tokens (15min expiry)\n2. Refresh tokens (7-day)\n3. httpOnly cookies\n\n## What I've tried\nI looked at jose and jsonwebtoken..."
 
 **Context-dependent patterns:**
 
-When communication style varies systematically by project or task type, report the split rather than forcing a single rating. Example: "context-dependent: terse-direct for bug fixes and CLI tooling, detailed-strdoc-arch-0006-uc-v1tured for architecture and frontend work." Phase 3 orchestration resolves context-dependent splits by presenting the split to the user.
+When communication style varies systematically by project or task type, report the split rather than forcing a single rating. Example: "context-dependent: terse-direct for bug fixes and CLI tooling, detailed-structured for architecture and frontend work." Phase 3 orchestration resolves context-dependent splits by presenting the split to the user.
 
 ---
 
@@ -121,7 +121,7 @@ Decision speed often varies by stakes. A developer may be fast-intuitive for sty
 
 `dimension_id: explanation_depth`
 
-**What we're measuring:** How mdoc-arch-0006-uc-v1h explanation the developer wants alongside code -- their preference for understanding vs. speed.
+**What we're measuring:** How much explanation the developer wants alongside code -- their preference for understanding vs. speed.
 
 **Rating spectrum:**
 
@@ -129,13 +129,13 @@ Decision speed often varies by stakes. A developer may be fast-intuitive for sty
 |--------|-------------|
 | `code-only` | Wants working code with minimal or no explanation. Reads and understands code directly. |
 | `concise` | Wants brief explanation of approach with code. Key decisions noted, not exhaustive. |
-| `detailed` | Wants thorough walkthrough of the approach, reasoning, and code. Appreciates strdoc-arch-0006-uc-v1ture. |
-| `eddoc-arch-0006-uc-v1ational` | Wants deep conceptual explanation. Treats interactions as learning opportunities. |
+| `detailed` | Wants thorough walkthrough of the approach, reasoning, and code. Appreciates structure. |
+| `educational` | Wants deep conceptual explanation. Treats interactions as learning opportunities. |
 
 **Signal patterns:**
 
 1. **Explicit depth requests** -- "just show me the code", "explain why", "teach me about X", "skip the explanation"
-2. **Reaction to explanations** -- Does the developer skip past explanations? Ask for more detail? Say "too mdoc-arch-0006-uc-v1h"?
+2. **Reaction to explanations** -- Does the developer skip past explanations? Ask for more detail? Say "too much"?
 3. **Follow-up question depth** -- Surface-level follow-ups ("does it work?") vs. conceptual ("why this pattern over X?")
 4. **Code comprehension signals** -- Does the developer reference implementation details in their messages? This suggests they read and understand code directly.
 5. **"I know this" signals** -- Messages like "I'm familiar with X", "skip the basics", "I know how hooks work" indicate lower explanation preference.
@@ -144,8 +144,8 @@ Decision speed often varies by stakes. A developer may be fast-intuitive for sty
 
 1. If developer says "just the code" or "skip the explanation" AND rarely asks follow-up conceptual questions AND references code details directly --> `code-only`
 2. If developer accepts brief explanations without asking for more AND asks focused follow-ups about specific decisions --> `concise`
-3. If developer asks "why" questions AND requests walkthroughs AND appreciates strdoc-arch-0006-uc-v1tured explanations --> `detailed`
-4. If developer asks conceptual questions beyond the immediate task AND uses learning language ("I want to understand", "teach me") --> `eddoc-arch-0006-uc-v1ational`
+3. If developer asks "why" questions AND requests walkthroughs AND appreciates structured explanations --> `detailed`
+4. If developer asks conceptual questions beyond the immediate task AND uses learning language ("I want to understand", "teach me") --> `educational`
 
 **Confidence scoring:**
 
@@ -159,11 +159,11 @@ Decision speed often varies by stakes. A developer may be fast-intuitive for sty
 - **code-only:** "Just give me the implementation. I'll read through it." / "Skip the explanation, show the code."
 - **concise:** "Quick summary of the approach, then the code please." / "Why did you use a Map here instead of an object?"
 - **detailed:** "Walk me through this step by step. I want to understand the auth flow before we implement it."
-- **eddoc-arch-0006-uc-v1ational:** "Can you explain how JWT refresh token rotation works conceptually? I want to understand the security model, not just implement it."
+- **educational:** "Can you explain how JWT refresh token rotation works conceptually? I want to understand the security model, not just implement it."
 
 **Context-dependent patterns:**
 
-Explanation depth often correlates with domain familiarity. A developer may want code-only for well-known tech but eddoc-arch-0006-uc-v1ational for new domains. Report splits when observed: "context-dependent: code-only for React/TypeScript, detailed for database optimization."
+Explanation depth often correlates with domain familiarity. A developer may want code-only for well-known tech but educational for new domains. Report splits when observed: "context-dependent: code-only for React/TypeScript, detailed for database optimization."
 
 ---
 
@@ -245,7 +245,7 @@ Debugging approach may vary by urgency. A developer might be fix-first under dea
 1. If developer rarely mentions UI/UX AND focuses on logic, APIs, data AND defers styling ("we'll make it pretty later") --> `function-first`
 2. If developer includes basic UX requirements AND mentions usability but not pixel-perfection AND balances form with function --> `pragmatic`
 3. If developer provides specific design requirements AND mentions polish, animations, spacing AND treats UI bugs as seriously as logic bugs --> `design-conscious`
-4. If developer works primarily on CLI tools, APIs, or backend systems AND rarely or never works on frontend AND messages focus on data, performance, infrastrdoc-arch-0006-uc-v1ture --> `backend-focused`
+4. If developer works primarily on CLI tools, APIs, or backend systems AND rarely or never works on frontend AND messages focus on data, performance, infrastructure --> `backend-focused`
 
 **Confidence scoring:**
 
@@ -328,23 +328,23 @@ Vendor philosophy may shift based on project importance or domain. Personal proj
 | Rating | Description |
 |--------|-------------|
 | `scope-creep` | Frustrated when the agent does things that were not asked for. Wants bounded execution. |
-| `instrdoc-arch-0006-uc-v1tion-adherence` | Frustrated when the agent doesn't follow instrdoc-arch-0006-uc-v1tions precisely. Values exactness. |
+| `instruction-adherence` | Frustrated when the agent doesn't follow instructions precisely. Values exactness. |
 | `verbosity` | Frustrated when the agent over-explains or is too wordy. Wants conciseness. |
 | `regression` | Frustrated when the agent breaks working code while fixing something else. Values stability. |
 
 **Signal patterns:**
 
 1. **Correction language** -- "I didn't ask for that", "don't do X", "I said Y not Z", "why did you change this?"
-2. **Repetition patterns** -- Repeating the same instrdoc-arch-0006-uc-v1tion with emphasis suggests instrdoc-arch-0006-uc-v1tion-adherence frustration
+2. **Repetition patterns** -- Repeating the same instruction with emphasis suggests instruction-adherence frustration
 3. **Emotional tone shifts** -- Shift from neutral to terse, use of capitals, exclamation marks, explicit frustration words
-4. **"Don't" statements** -- "don't add extra features", "don't explain so mdoc-arch-0006-uc-v1h", "don't todoc-arch-0006-uc-v1h that file" -- what they prohibit reveals what frustrates them
+4. **"Don't" statements** -- "don't add extra features", "don't explain so much", "don't touch that file" -- what they prohibit reveals what frustrates them
 5. **Frustration recovery** -- How quickly the developer returns to neutral tone after a frustration event
 
 **Detection heuristics:**
 
 1. If developer corrects the agent for doing unrequested work AND uses language like "I only asked for X", "stop adding things", "stick to what I asked" --> `scope-creep`
-2. If developer repeats instrdoc-arch-0006-uc-v1tions AND corrects specific deviations from stated requirements AND emphasizes precision ("I specifically said...") --> `instrdoc-arch-0006-uc-v1tion-adherence`
-3. If developer asks the agent to be shorter AND skips explanations AND expresses annoyance at length ("too mdoc-arch-0006-uc-v1h", "just the answer") --> `verbosity`
+2. If developer repeats instructions AND corrects specific deviations from stated requirements AND emphasizes precision ("I specifically said...") --> `instruction-adherence`
+3. If developer asks the agent to be shorter AND skips explanations AND expresses annoyance at length ("too much", "just the answer") --> `verbosity`
 4. If developer expresses frustration at broken functionality AND checks for regressions AND says "you broke X while fixing Y" --> `regression`
 
 **Confidence scoring:**
@@ -357,9 +357,9 @@ Vendor philosophy may shift based on project importance or domain. Personal proj
 **Example quotes:**
 
 - **scope-creep:** "I asked you to fix the login bug, not refactor the entire auth module. Revert everything except the bug fix."
-- **instrdoc-arch-0006-uc-v1tion-adherence:** "I said to use a Map, not an object. I was specific about this. Please redo it with a Map."
-- **verbosity:** "Way too mdoc-arch-0006-uc-v1h explanation. Just show me the code change, nothing else."
-- **regression:** "The search was working fine before. Now after your 'fix' to the filter, search results are empty. Don't todoc-arch-0006-uc-v1h things I didn't ask you to change."
+- **instruction-adherence:** "I said to use a Map, not an object. I was specific about this. Please redo it with a Map."
+- **verbosity:** "Way too much explanation. Just show me the code change, nothing else."
+- **regression:** "The search was working fine before. Now after your 'fix' to the filter, search results are empty. Don't touch things I didn't ask you to change."
 
 **Context-dependent patterns:**
 
@@ -490,7 +490,7 @@ Recent sessions (last 30 days) should be weighted approximately 3x compared to o
 
 ### Rationale
 
-Developer styles evolve. A developer who was terse six months ago may now provide detailed strdoc-arch-0006-uc-v1tured context. Recent behavior is a more accurate reflection of current working style.
+Developer styles evolve. A developer who was terse six months ago may now provide detailed structured context. Recent behavior is a more accurate reflection of current working style.
 
 ### Application
 
@@ -523,13 +523,13 @@ When a specific dimension has insufficient data (even if total messages exceed t
 
 - Set confidence to `UNSCORED`
 - Set summary to: "Insufficient data -- no clear signals detected for this dimension."
-- Set claude_instrdoc-arch-0006-uc-v1tion to a neutral fallback: "No strong preference detected. Ask the developer when this dimension is relevant."
+- Set claude_instruction to a neutral fallback: "No strong preference detected. Ask the developer when this dimension is relevant."
 - Set evidence_quotes to empty array `[]`
 - Set evidence_count to `0`
 
 ### Questionnaire Supplement
 
-When operating in `hybrid` mode, the questionnaire fills gaps for dimensions where session analysis proddoc-arch-0006-uc-v1ed LOW or UNSCORED confidence. The questionnaire-derived ratings use:
+When operating in `hybrid` mode, the questionnaire fills gaps for dimensions where session analysis produced LOW or UNSCORED confidence. The questionnaire-derived ratings use:
 - **MEDIUM** confidence for strong, definitive picks
 - **LOW** confidence for "it varies" or ambiguous selections
 
@@ -554,7 +554,7 @@ The profiler agent must return JSON matching this exact schema, wrapped in `<ana
   ],
   "dimensions": {
     "communication_style": {
-      "rating": "terse-direct|conversational|detailed-strdoc-arch-0006-uc-v1tured|mixed",
+      "rating": "terse-direct|conversational|detailed-structured|mixed",
       "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
       "evidence_count": 0,
       "cross_project_consistent": true,
@@ -566,7 +566,7 @@ The profiler agent must return JSON matching this exact schema, wrapped in `<ana
         }
       ],
       "summary": "One to two sentence description of the observed pattern",
-      "claude_instrdoc-arch-0006-uc-v1tion": "Imperative directive for the agent: 'Match strdoc-arch-0006-uc-v1tured communication style' not 'You tend to provide strdoc-arch-0006-uc-v1tured context'"
+      "claude_instruction": "Imperative directive for the agent: 'Match structured communication style' not 'You tend to provide structured context'"
     },
     "decision_speed": {
       "rating": "fast-intuitive|deliberate-informed|research-first|delegator",
@@ -575,16 +575,16 @@ The profiler agent must return JSON matching this exact schema, wrapped in `<ana
       "cross_project_consistent": true,
       "evidence_quotes": [],
       "summary": "string",
-      "claude_instrdoc-arch-0006-uc-v1tion": "string"
+      "claude_instruction": "string"
     },
     "explanation_depth": {
-      "rating": "code-only|concise|detailed|eddoc-arch-0006-uc-v1ational",
+      "rating": "code-only|concise|detailed|educational",
       "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
       "evidence_count": 0,
       "cross_project_consistent": true,
       "evidence_quotes": [],
       "summary": "string",
-      "claude_instrdoc-arch-0006-uc-v1tion": "string"
+      "claude_instruction": "string"
     },
     "debugging_approach": {
       "rating": "fix-first|diagnostic|hypothesis-driven|collaborative",
@@ -593,7 +593,7 @@ The profiler agent must return JSON matching this exact schema, wrapped in `<ana
       "cross_project_consistent": true,
       "evidence_quotes": [],
       "summary": "string",
-      "claude_instrdoc-arch-0006-uc-v1tion": "string"
+      "claude_instruction": "string"
     },
     "ux_philosophy": {
       "rating": "function-first|pragmatic|design-conscious|backend-focused",
@@ -602,7 +602,7 @@ The profiler agent must return JSON matching this exact schema, wrapped in `<ana
       "cross_project_consistent": true,
       "evidence_quotes": [],
       "summary": "string",
-      "claude_instrdoc-arch-0006-uc-v1tion": "string"
+      "claude_instruction": "string"
     },
     "vendor_philosophy": {
       "rating": "pragmatic-fast|conservative|thorough-evaluator|opinionated",
@@ -611,16 +611,16 @@ The profiler agent must return JSON matching this exact schema, wrapped in `<ana
       "cross_project_consistent": true,
       "evidence_quotes": [],
       "summary": "string",
-      "claude_instrdoc-arch-0006-uc-v1tion": "string"
+      "claude_instruction": "string"
     },
     "frustration_triggers": {
-      "rating": "scope-creep|instrdoc-arch-0006-uc-v1tion-adherence|verbosity|regression",
+      "rating": "scope-creep|instruction-adherence|verbosity|regression",
       "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
       "evidence_count": 0,
       "cross_project_consistent": true,
       "evidence_quotes": [],
       "summary": "string",
-      "claude_instrdoc-arch-0006-uc-v1tion": "string"
+      "claude_instruction": "string"
     },
     "learning_style": {
       "rating": "self-directed|guided|documentation-first|example-driven",
@@ -629,7 +629,7 @@ The profiler agent must return JSON matching this exact schema, wrapped in `<ana
       "cross_project_consistent": true,
       "evidence_quotes": [],
       "summary": "string",
-      "claude_instrdoc-arch-0006-uc-v1tion": "string"
+      "claude_instruction": "string"
     }
   }
 }
@@ -644,9 +644,9 @@ The profiler agent must return JSON matching this exact schema, wrapped in `<ana
 - **`messages_analyzed`**: Total number of genuine user messages processed
 - **`message_threshold`**: Which threshold mode was triggered (`full`, `hybrid`, `insufficient`)
 - **`sensitive_excluded`**: Array of excluded sensitive content types with counts (empty array if none found)
-- **`claude_instrdoc-arch-0006-uc-v1tion`**: Must be written in imperative form directed at the agent. This field is how the profile becomes actionable.
-  - Good: "Provide strdoc-arch-0006-uc-v1tured responses with headers and numbered lists to match this developer's communication style."
-  - Bad: "You tend to like strdoc-arch-0006-uc-v1tured responses."
+- **`claude_instruction`**: Must be written in imperative form directed at the agent. This field is how the profile becomes actionable.
+  - Good: "Provide structured responses with headers and numbered lists to match this developer's communication style."
+  - Bad: "You tend to like structured responses."
   - Good: "Ask before making changes beyond the stated request -- this developer values bounded execution."
   - Bad: "The developer gets frustrated when you do extra work."
 
@@ -665,7 +665,7 @@ For each dimension, assess whether the observed pattern is consistent across the
 
 When `cross_project_consistent` is false, the summary must describe the split:
 
-- "Context-dependent: terse-direct for CLI/backend projects (gsd-tools, api-server), detailed-strdoc-arch-0006-uc-v1tured for frontend projects (dashboard, landing-page)."
+- "Context-dependent: terse-direct for CLI/backend projects (gsd-tools, api-server), detailed-structured for frontend projects (dashboard, landing-page)."
 - "Context-dependent: fast-intuitive for familiar tech (React, Node), research-first for new domains (Rust, ML)."
 
 The rating field should reflect the **dominant** pattern (most evidence). The summary describes the nuance.

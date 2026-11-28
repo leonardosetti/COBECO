@@ -427,7 +427,7 @@ Display final status with progress bar:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Dashboard displays all phases with correct status indicators (D/P/E/V columns)
 - [ ] Progress bar shows accurate completion percentage
 - [ ] Dependency resolution: blocked phases show which deps are missing
@@ -439,8 +439,8 @@ Display final status with progress bar:
 - [ ] Background agent completion triggers notification and dashboard refresh
 - [ ] Background agent errors present retry/skip options
 - [ ] All-complete state offers verify-work and complete-milestone
-- [ ] Exit shows final status with resume instrdoc-arch-0006-uc-v1tions
+- [ ] Exit shows final status with resume instructions
 - [ ] "Other" free-text input parsed for phase number and action
 - [ ] Manager loop continues until user exits or milestone completes
 - [ ] Queued section renders when `queued_phases` is non-empty; skipped when absent or empty
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

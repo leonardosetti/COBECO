@@ -104,7 +104,7 @@ Call question with threat table and options:
 **Auditor constraint — varies by register origin:**
 
 - `register_authored_at_plan_time: true` — **Verify mitigations exist** — do not scan for new threats. The register is complete; verify each threat's mitigation is present in the implementation.
-- `register_authored_at_plan_time: false` (retroactive-STRIDE mode) — **Retroactive-STRIDE: build a STRIDE register from implementation files first, then verify mitigations.** The phase was authored before formal threat modelling; the auditor must constrdoc-arch-0006-uc-v1t the register from scratch before verifying.
+- `register_authored_at_plan_time: false` (retroactive-STRIDE mode) — **Retroactive-STRIDE: build a STRIDE register from implementation files first, then verify mitigations.** The phase was authored before formal threat modelling; the auditor must construct the register from scratch before verifying.
 
 Substitute `{SECURITY_ASVS}` with the value of `$SECURITY_ASVS` and `{SECURITY_BLOCK_ON}` with the value of `$SECURITY_BLOCK_ON` resolved in Step 0 via `config-get`.
 
@@ -120,11 +120,11 @@ Print: `◆ Spawning security auditor... (runs in a subagent — no output until
 
 ```
 Agent(
-  prompt="Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-security-auditor.md for instrdoc-arch-0006-uc-v1tions.\n\n" +
+  prompt="Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-security-auditor.md for instructions.\n\n" +
     "<required_reading>{PLAN, SUMMARY, impl files, SECURITY.md}</required_reading>" +
     "<threat_register>{threat register}</threat_register>" +
     "<config>asvs_level: {SECURITY_ASVS}, block_on: {SECURITY_BLOCK_ON}</config>" +
-    "<constraints>Never modify implementation files. Verify mitigations exist — do not scan for new threats. Escalate implementation gaps. Return a strdoc-arch-0006-uc-v1tured verdict only — do NOT write SECURITY.md (the orchestrator owns the file write).</constraints>" +
+    "<constraints>Never modify implementation files. Verify mitigations exist — do not scan for new threats. Escalate implementation gaps. Return a structured verdict only — do NOT write SECURITY.md (the orchestrator owns the file write).</constraints>" +
     "${AGENT_SKILLS_AUDITOR}",
   subagent_type="gsd-security-auditor",
   model="{AUDITOR_MODEL}",
@@ -188,7 +188,7 @@ Display `/clear` reminder.
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Security enforcement checked — exit if false
 - [ ] Input state detected (A/B/C) — state C exits cleanly
 - [ ] PLAN.md threat model parsed, register built
@@ -201,5 +201,5 @@ Display `/clear` reminder.
 - [ ] All three return formats (SECURED/OPEN_THREATS/ESCALATE) handled
 - [ ] SECURITY.md created or updated
 - [ ] threats_open > 0 BLOCKS advancement (no next-phase routing emitted)
-- [ ] Results with routing presented on sdoc-arch-0006-uc-v1cess
-</sdoc-arch-0006-uc-v1cess_criteria>
+- [ ] Results with routing presented on success
+</success_criteria>

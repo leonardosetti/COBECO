@@ -1,10 +1,8 @@
 # COBECO Backend — RecuperarSenhaUseCase Unit Tests
 
 import pytest
-from unittest.mock import AsyncMock, MagicMock
-from src.domain.usecases import (
-    RecuperarSenhaUseCase, CredenciaisInvalidas
-)
+from unittest.mock import AsyncMock
+from src.domain.usecases import RecuperarSenhaUseCase, CredenciaisInvalidas
 from src.domain.entities import Usuario, Email, SenhaHash
 from src.config import settings
 
@@ -21,6 +19,7 @@ def mock_repo():
 def hash_senha_fn():
     def fn(senha: str) -> str:
         return f"hashed_{senha}"
+
     return fn
 
 
@@ -28,6 +27,7 @@ def hash_senha_fn():
 def rate_limiter_fn():
     async def fn(nome_usuario: str):
         pass
+
     return fn
 
 
@@ -35,6 +35,7 @@ def rate_limiter_fn():
 def verificar_senha_fn():
     def fn(senha: str, hash_valor: str) -> bool:
         return hash_valor == f"hashed_{senha}"
+
     return fn
 
 
@@ -51,7 +52,7 @@ class TestRecuperarSenhaUseCase:
         # Configura modo email (padrão)
         original_mode = settings.RECOVERY_MODE
         settings.RECOVERY_MODE = "email"
-        
+
         try:
             usuario = Usuario(
                 id=1,
@@ -77,7 +78,7 @@ class TestRecuperarSenhaUseCase:
         # Configura modo log (desenvolvimento)
         original_mode = settings.RECOVERY_MODE
         settings.RECOVERY_MODE = "log"
-        
+
         try:
             usuario = Usuario(
                 id=1,
@@ -113,7 +114,7 @@ class TestRecuperarSenhaUseCase:
     async def test_confirmar_reset_modo_log_token_valido(self, usecase, mock_repo):
         original_mode = settings.RECOVERY_MODE
         settings.RECOVERY_MODE = "log"
-        
+
         try:
             usuario = Usuario(
                 id=1,
@@ -127,16 +128,18 @@ class TestRecuperarSenhaUseCase:
             mock_repo.buscar_por_nome_usuario = AsyncMock(return_value=usuario)
             mock_repo.atualizar = AsyncMock(return_value=usuario)
 
-            # Em modo log, aceita qualquer token (dev)
+            # Em modo log, token obtido via solicitar_reset (uso único, 15 min)
+            token = await usecase.solicitar_reset("usuarioteste")
+            assert token is not None
             result = await usecase.confirmar_reset(
                 "usuarioteste",
-                "qualquer_token",
+                token,
                 "NovaSenha@456",
             )
 
             assert result.id == 1
             # hash_senha_fn returns string, not SenhaHash object
-            assert result.senha_hash == "hashed_NovaSenha@456"
+            assert result.senha_hash.valor == "hashed_NovaSenha@456"
             mock_repo.atualizar.assert_called_once()
         finally:
             settings.RECOVERY_MODE = original_mode
@@ -145,7 +148,7 @@ class TestRecuperarSenhaUseCase:
     async def test_confirmar_reset_modo_email_resposta_correta(self, usecase, mock_repo):
         original_mode = settings.RECOVERY_MODE
         settings.RECOVERY_MODE = "email"
-        
+
         try:
             usuario = Usuario(
                 id=1,
@@ -167,7 +170,7 @@ class TestRecuperarSenhaUseCase:
 
             assert result.id == 1
             # hash_senha_fn returns string, not SenhaHash object
-            assert result.senha_hash == "hashed_NovaSenha@456"
+            assert result.senha_hash.valor == "hashed_NovaSenha@456"
         finally:
             settings.RECOVERY_MODE = original_mode
 
@@ -175,7 +178,7 @@ class TestRecuperarSenhaUseCase:
     async def test_confirmar_reset_resposta_incorreta(self, usecase, mock_repo):
         original_mode = settings.RECOVERY_MODE
         settings.RECOVERY_MODE = "email"
-        
+
         try:
             usuario = Usuario(
                 id=1,

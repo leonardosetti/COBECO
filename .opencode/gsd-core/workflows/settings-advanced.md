@@ -304,7 +304,7 @@ question([
     options: [
       { label: "Keep current", description: "Leave command unchanged." },
       { label: "Clear (null)", description: "Unset the command." },
-      { label: "Enter command", description: "Shell command receiving phase prompt via stdin. Must proddoc-arch-0006-uc-v1e SUMMARY.md-compatible output." }
+      { label: "Enter command", description: "Shell command receiving phase prompt via stdin. Must produce SUMMARY.md-compatible output." }
     ]
   },
   {
@@ -631,7 +631,7 @@ anything not listed in Sections 1–8 MUST survive the update):
 }
 ```
 
-Never emit a full overwrite of the file that omits keys the user did not todoc-arch-0006-uc-v1h. Always
+Never emit a full overwrite of the file that omits keys the user did not touch. Always
 route each write through `gsd_run query config-set` so sibling preservation is handled by
 the central setter.
 </step>
@@ -868,7 +868,7 @@ UI/AI phase gates), use /gsd-settings.
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Current config read from resolved `$GSD_CONFIG_PATH`
 - [ ] Eight sections rendered (Planning, Execution, Discussion, Cross-AI, Git, Runtime/Output, Runtime Model Tiers, Model Policy)
 - [ ] Every field pre-selected to its current value (or documented default if absent)
@@ -886,4 +886,4 @@ UI/AI phase gates), use /gsd-settings.
 - [ ] Generic-provider path: per-tier manual model IDs; "Keep current" tiers are never written; provider=custom budget=null
 - [ ] model_policy written under the model_policy key in config.json, never as a top-level flat key
 - [ ] Confirmation table rendered listing all fields including model_policy.{provider,budget,high,medium,low}
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

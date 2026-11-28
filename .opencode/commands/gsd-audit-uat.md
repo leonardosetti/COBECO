@@ -7,7 +7,7 @@ tools:
   bash: true
 ---
 <objective>
-Scan all phases for pending, skipped, blocked, and human_needed UAT items. Cross-reference against codebase to detect stale documentation. Proddoc-arch-0006-uc-v1e prioritized human test plan.
+Scan all phases for pending, skipped, blocked, and human_needed UAT items. Cross-reference against codebase to detect stale documentation. Produce prioritized human test plan.
 </objective>
 
 <execution_context>

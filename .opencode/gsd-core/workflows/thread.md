@@ -37,7 +37,7 @@ _GSD_SHIM_NAME="gsd-tools.cjs"; _GSD_RUNTIME_ROOT="${RUNTIME_DIR:-$(git rev-pars
 - Read frontmatter `updated` field for the last-updated date
 - Read frontmatter `title` field (or fall back to first `# Thread:` heading) for the title
 
-**SECURITY:** File names read from filesystem. Before constrdoc-arch-0006-uc-v1ting any file path, sanitize the filename: strip non-printable characters, ANSI escape sequences, and path separators. Never pass raw filenames to shell commands via string interpolation.
+**SECURITY:** File names read from filesystem. Before constructing any file path, sanitize the filename: strip non-printable characters, ANSI escape sequences, and path separators. Never pass raw filenames to shell commands via string interpolation.
 
 Apply filter for LIST-OPEN (show only status=open or status=in_progress) or LIST-RESOLVED (show only status=resolved).
 
@@ -126,7 +126,7 @@ No agent spawn. STOP after printing.
 
 If $ARGUMENTS matches an existing thread name:
 
-**Sanitize first:** apply the same slug sanitization used by CLOSE and STATUS — strip any characters not matching `[a-z0-9-]`, reject slugs longer than 60 chars or containing `..` or `/`. If invalid, output "Invalid thread slug." and stop. Use the sanitized value as SLUG for all subsequent file path constrdoc-arch-0006-uc-v1tion.
+**Sanitize first:** apply the same slug sanitization used by CLOSE and STATUS — strip any characters not matching `[a-z0-9-]`, reject slugs longer than 60 chars or containing `..` or `/`. If invalid, output "Invalid thread slug." and stop. Use the sanitized value as SLUG for all subsequent file path construction.
 
 Check `.planning/threads/{SLUG}.md` exists. If not, fall through to CREATE mode.
 
@@ -223,7 +223,7 @@ GSD_ARGS=${GSD_ARGS%$'\n'}
 - The value is in Context and Next Steps — a cold-start session can pick up immediately
 - Threads can be promoted to phases or backlog items when they mature:
   /gsd-phase or /gsd-capture --backlog with context from the thread
-- Thread files live in .planning/threads/ — no collision with phases or other GSD strdoc-arch-0006-uc-v1tures
+- Thread files live in .planning/threads/ — no collision with phases or other GSD structures
 - Thread status values: `open`, `in_progress`, `resolved`
 </notes>
 

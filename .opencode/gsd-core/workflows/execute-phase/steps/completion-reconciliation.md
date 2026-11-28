@@ -42,7 +42,7 @@ COMMITS_SINCE_DISPATCH=$(git log "${EXPECTED_BRANCH}" --since="${DISPATCH_TS}" -
 **If `COMMITS_SCOPE_RC` is non-zero** (`69` `UNAVAILABLE`: the commit scope could not be resolved, #5170): the commit probe has no answer. Do not read the empty `COMMITS_FOUND` as "no matching commits", do not route to the failure handler on it, and do not re-dispatch an executor: surface `⚠ Commit probe unavailable for {Plan ID} (evaluation-scope exit {COMMITS_SCOPE_RC})` and stop for the user.
 
 **If SUMMARY.md exists AND matching commits are found:** the agent completed
-sdoc-arch-0006-uc-v1cessfully — treat the plan as complete WITHOUT requiring another terminal child
+successfully — treat the plan as complete WITHOUT requiring another terminal child
 response, proceed to step 5, and do NOT re-dispatch a fresh executor for this plan:
 the work is already committed, and a second executor would redo it on top of itself.
 Log: `"✓ {Plan ID} completed (verified via spot-check — completion signal not received)"`.

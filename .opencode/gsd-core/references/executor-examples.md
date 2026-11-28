@@ -50,7 +50,7 @@
 - New service layer (adding a queue, cache, or message bus)
 - Switching libraries/frameworks (e.g., replacing Express with Fastify)
 - Changing auth approach (switching from session to JWT)
-- New infrastrdoc-arch-0006-uc-v1ture (adding Redis, S3, etc.)
+- New infrastructure (adding Redis, S3, etc.)
 - Breaking API changes (removing or renaming endpoints)
 
 ## Edge Case Decision Guide

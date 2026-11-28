@@ -14,7 +14,7 @@ Working directory for the two JSON files: `RELEASE_MAP_DIR="${TMPDIR:-/tmp}/gsd-
    - `status`: `released`, `deployed`, or `unreleased`.
    - `release`: the repository's release version. When a tag is created it becomes the tag name, so it must match `^[A-Za-z0-9][A-Za-z0-9._+-]{0,199}$`; re-ask on a mismatch, never alter or skip it. Leave it empty for an `unreleased` repository and never invent one.
    - `reference`: a commit SHA or pull request reference (free text).
-   - `environment`: free text, for example `proddoc-arch-0006-uc-v1tion`, `npm`, `development`.
+   - `environment`: free text, for example `production`, `npm`, `development`.
    - tag choice: `create` (create an annotated tag named `release`; requires a non-empty `release`) or `skip` (record the repository, create nothing). An `unreleased` repository defaults to `skip`.
 
    Every text field is limited to 200 characters and a map to 256 entries; re-ask when a value is longer. If `git_create_tag` from init is `false`, do not ask the tag choice: every entry is recorded with a `tag` of `none`, no `tags.json` is built, and steps 3, 5 and 6 are skipped (the tag verb and the tag-state update); step 4 asks "Record this release map?" instead. Part 2 does not run.
@@ -37,7 +37,7 @@ _GSD_SHIM_NAME="gsd-tools.cjs"; _GSD_RUNTIME_ROOT="${RUNTIME_DIR:-$(git rev-pars
    Milestone v[X.Y] — [Name]
 
    Repository  Release     Reference   Environment  Tag     Commit
-   dashboard   v5.78.0     PR #412     proddoc-arch-0006-uc-v1tion   create  HEAD (a1b2c3d)
+   dashboard   v5.78.0     PR #412     production   create  HEAD (a1b2c3d)
    composers   unreleased  abc1234     development  skip    —
    ```
 

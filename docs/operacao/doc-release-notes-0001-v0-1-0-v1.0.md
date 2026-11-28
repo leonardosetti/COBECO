@@ -44,7 +44,7 @@ workflow:
 **Branch:** `main`  
 **CI Run:** `#12345` — ✅ Verde (ruff + pytest 83% + mypy + build 4min 12s)  
 **Cobertura Testes:** 83% (unit) + 100% (E2E críticos)  
-**Autor:** Leonardo Setti (Proddoc-arch-0006-uc-v1t Owner)  
+**Autor:** Leonardo Setti (Product Owner)  
 **Aprovado por:** CCB (Gate 3 — 27/10/2026)
 
 ---
@@ -70,7 +70,7 @@ workflow:
 | **Comparação de Preços** | RF12-RF16 / UC03-UC07 | Pré-filtro 11 categorias (checkboxes), seleção fornecedores (mín 2, % disponibilidade), slider disponibilidade 0-100%, motor cálculo flat (cache 5min, timeout 10s), tabela ordenada preço ASC + highlight verde melhor oferta | #21, #22, #23, #24, #25 | Nicholas Anthony + Eduardo Passarelli |
 | **Exportação PDF A4** | RF17 / UC08/UC29 | ReportLab server-side, templates Lista/Comparação, DejaVuSans (acentos PT-BR), A4 margens 20mm, header repeat, < 3.8s (100 itens), funciona visitante + autenticado | #26 | Fabrício Cabral |
 | **Gestão de Perfil** | RF05,RF06 / UC16,UC18 | Visualizar (read-only usuario + email/nome/criado_em), Editar (email unique, nome, senha com validação atual, bcrypt, transação ACID, optimistic lock, invalidação refresh) | #27, #28 | Fabrício Cabral |
-| **UI Feedback Global** | RNF05 | Toast (sdoc-arch-0006-uc-v1esso/erro/info, auto-dismiss 3s), Skeleton loading (tabelas/cards), Modal confirmação (promoção lista, exclusão), LoadingOverlay | #29 | Eduardo Passarelli |
+| **UI Feedback Global** | RNF05 | Toast (sucesso/erro/info, auto-dismiss 3s), Skeleton loading (tabelas/cards), Modal confirmação (promoção lista, exclusão), LoadingOverlay | #29 | Eduardo Passarelli |
 | **Infra & CI/CD** | RNF07 | Docker Compose (nginx + FastAPI + MySQL 8 InnoDB, redes edge/data), GitHub Actions (ruff + pytest --cov≥80 + mypy + build < 5min), ghcr.io images | #10, #11 | Nicholas Anthony |
 
 ---
@@ -145,11 +145,11 @@ workflow:
 | Lint (ruff) | 0 erros | 0 | ✅ Pass |
 | Type Check (mypy) | 0 erros | 0 | ✅ Pass |
 | Segurança (bandit) | 0 achados | 0 | ✅ Pass |
-| Docker Build | Sdoc-arch-0006-uc-v1esso | Sdoc-arch-0006-uc-v1esso | ✅ Pass |
+| Docker Build | Sucesso | Sucesso | ✅ Pass |
 
 ---
 
-## 10. Como Atualizar (Upgrade Instrdoc-arch-0006-uc-v1tions)
+## 10. Como Atualizar (Upgrade Instructions)
 
 ### Desenvolvimento / Homologação
 ```bash

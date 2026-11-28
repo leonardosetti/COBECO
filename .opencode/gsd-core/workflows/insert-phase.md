@@ -147,13 +147,13 @@ Project state updated: .planning/STATE.md
 - Don't commit changes (user decides when to commit)
 </anti_patterns>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 Phase insertion is complete when:
 
-- [ ] `gsd_run query phase.insert` executed sdoc-arch-0006-uc-v1cessfully
+- [ ] `gsd_run query phase.insert` executed successfully
 - [ ] Phase directory created
 - [ ] Roadmap updated with new phase entry (includes "(INSERTED)" marker)
 - [ ] `gsd_run query state.add-roadmap-evolution ...` returned `{ added: true }` or `{ added: false, reason: "duplicate" }`
 - [ ] `gsd_run query state.patch` returned matched next-phase pointer field(s)
 - [ ] User informed of next steps and dependency implications
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

@@ -2,10 +2,7 @@
 
 import pytest
 from unittest.mock import AsyncMock
-from src.domain.usecases import (
-    CadastrarUsuarioUseCase, CriarUsuarioInput,
-    UsuarioJaExiste, DomainError
-)
+from src.domain.usecases import CadastrarUsuarioUseCase, CriarUsuarioInput
 from src.domain.entities import Usuario, Email, SenhaHash
 
 
@@ -22,6 +19,7 @@ def mock_repo():
 def hash_senha_fn():
     def hash_fn(senha: str) -> str:
         return f"hashed_{senha}"
+
     return hash_fn
 
 
@@ -78,15 +76,17 @@ class TestCadastrarUsuarioUseCase:
 
     @pytest.mark.asyncio
     async def test_executar_usuario_ja_existe_nome_usuario(self, usecase, mock_repo):
-        mock_repo.buscar_por_nome_usuario = AsyncMock(return_value=Usuario(
-            id=1,
-            nome_usuario="existente",
-            email=Email("existente@teste.com"),
-            nome="Existente",
-            senha_hash=SenhaHash("hash"),
-            pergunta_seguranca="nome_mae",
-            resposta_seguranca_hash=SenhaHash("hash"),
-        ))
+        mock_repo.buscar_por_nome_usuario = AsyncMock(
+            return_value=Usuario(
+                id=1,
+                nome_usuario="existente",
+                email=Email("existente@teste.com"),
+                nome="Existente",
+                senha_hash=SenhaHash("hash"),
+                pergunta_seguranca="nome_mae",
+                resposta_seguranca_hash=SenhaHash("hash"),
+            )
+        )
 
         input_data = criar_input_valido({"nome_usuario": "existente"})
 
@@ -96,15 +96,17 @@ class TestCadastrarUsuarioUseCase:
     @pytest.mark.asyncio
     async def test_executar_email_ja_existe(self, usecase, mock_repo):
         mock_repo.buscar_por_nome_usuario = AsyncMock(return_value=None)
-        mock_repo.buscar_por_email = AsyncMock(return_value=Usuario(
-            id=1,
-            nome_usuario="outro",
-            email=Email("existente@teste.com"),
-            nome="Outro",
-            senha_hash=SenhaHash("hash"),
-            pergunta_seguranca="nome_mae",
-            resposta_seguranca_hash=SenhaHash("hash"),
-        ))
+        mock_repo.buscar_por_email = AsyncMock(
+            return_value=Usuario(
+                id=1,
+                nome_usuario="outro",
+                email=Email("existente@teste.com"),
+                nome="Outro",
+                senha_hash=SenhaHash("hash"),
+                pergunta_seguranca="nome_mae",
+                resposta_seguranca_hash=SenhaHash("hash"),
+            )
+        )
 
         input_data = criar_input_valido({"email": "existente@teste.com"})
 
@@ -118,15 +120,17 @@ class TestCadastrarUsuarioUseCase:
 
         mock_repo.buscar_por_nome_usuario = AsyncMock(return_value=None)
         mock_repo.buscar_por_email = AsyncMock(return_value=None)
-        mock_repo.criar = AsyncMock(return_value=Usuario(
-            id=1,
-            nome_usuario="novousuario",
-            email=Email("novo@teste.com"),
-            nome="Novo Usuário",
-            senha_hash=SenhaHash("hashed_fraca"),
-            pergunta_seguranca="nome_mae",
-            resposta_seguranca_hash=SenhaHash("hashed_Maria"),
-        ))
+        mock_repo.criar = AsyncMock(
+            return_value=Usuario(
+                id=1,
+                nome_usuario="novousuario",
+                email=Email("novo@teste.com"),
+                nome="Novo Usuário",
+                senha_hash=SenhaHash("hashed_fraca"),
+                pergunta_seguranca="nome_mae",
+                resposta_seguranca_hash=SenhaHash("hashed_Maria"),
+            )
+        )
 
         result = await usecase.executar(input_data)
         assert result.nome_usuario == "novousuario"

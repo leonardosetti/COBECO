@@ -86,9 +86,9 @@ AI_SPEC_FILE=$(ls "${PHASE_DIR}"/*-AI-SPEC.md 2>/dev/null | head -1)
 **Text mode (`workflow.text_mode: true` in config or `--text` flag):** Set `TEXT_MODE=true` if `--text` is present in `$ARGUMENTS` OR `text_mode` from init JSON is `true`. When TEXT_MODE is active, replace every `question` call with a plain-text numbered list and ask the user to type their choice number. This is required for non-the agent runtimes (OpenAI Codex, Antigravity, etc.) where `question` is not available.
 **If exists:**
 
-**If `--auto`:** Auto-select "Skip" — keep the existing AI-SPEC untodoc-arch-0006-uc-v1hed and exit. Log:
+**If `--auto`:** Auto-select "Skip" — keep the existing AI-SPEC untouched and exit. Log:
 `[auto] AI-SPEC exists — reusing as-is.` Skip is the auto choice because it is the only
-non-destrdoc-arch-0006-uc-v1tive one: "Update" re-runs framework selection with the existing spec as baseline,
+non-destructive one: "Update" re-runs framework selection with the existing spec as baseline,
 which can rewrite decisions a person already recorded in it, and nobody is present to notice
 (#4776).
 
@@ -115,7 +115,7 @@ Display:
 
 Spawn `gsd-framework-selector` with:
 ```markdown
-Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-framework-selector.md for instrdoc-arch-0006-uc-v1tions.
+Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-framework-selector.md for instructions.
 
 <objective>
 Select the right AI framework for Phase {phase_number}: {phase_name}
@@ -161,7 +161,7 @@ Display:
 
 Spawn `gsd-ai-researcher` with:
 ```markdown
-Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-ai-researcher.md for instrdoc-arch-0006-uc-v1tions.
+Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-ai-researcher.md for instructions.
 
 **Tool discipline (mandatory):**
 Use the Edit tool exclusively when modifying AI-SPEC.md — NEVER use Write on this file.
@@ -196,7 +196,7 @@ Display:
 
 Spawn `gsd-domain-researcher` with:
 ```markdown
-Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-domain-researcher.md for instrdoc-arch-0006-uc-v1tions.
+Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-domain-researcher.md for instructions.
 
 **Tool discipline (mandatory):**
 Use the Edit tool exclusively when modifying AI-SPEC.md — NEVER use Write on this file.
@@ -229,7 +229,7 @@ Display:
 
 Spawn `gsd-eval-planner` with:
 ```markdown
-Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-eval-planner.md for instrdoc-arch-0006-uc-v1tions.
+Read /lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/agents/gsd-eval-planner.md for instructions.
 
 <objective>
 Design evaluation strategy for Phase {phase_number}: {phase_name}
@@ -290,7 +290,7 @@ Next step:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Framework selected with rationale (Section 2)
 - [ ] AI-SPEC.md created from template
 - [ ] Framework docs + AI best practices researched (Sections 3, 4, 4b populated)
@@ -300,4 +300,4 @@ Next step:
 - [ ] AI-SPEC.md validated (Sections 1b, 2, 3, 4b, 5, 6 all non-empty)
 - [ ] Committed if commit_docs enabled
 - [ ] Next step surfaced to user
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

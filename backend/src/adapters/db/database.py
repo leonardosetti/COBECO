@@ -1,4 +1,4 @@
-# COBECO Backend — Database Adapter (SQLAlchemy Async + MySQL)
+# COBECO Backend — Database Adapter (SQLAlchemy Async + PostgreSQL)
 # Camada de infraestrutura: configuração de engine, session, base
 # Engine criada lazy para evitar problemas no alembic
 
@@ -21,6 +21,7 @@ from src.config import settings
 # ============================================================
 class Base(DeclarativeBase):
     """Base para todos os modelos SQLAlchemy"""
+
     pass
 
 

@@ -35,7 +35,7 @@ line-art for terminal-oriented runtimes and Markdown for Markdown hosts. It was
 rejected: it needs a new descriptor key across every runtime plus the resolver,
 and it leaves two output conventions to keep in sync forever — the divergence
 class this repo already has a defect entry for. A heading and a thematic break
-carry the same strdoc-arch-0006-uc-v1ture in a plain terminal that a rule pair did, without
+carry the same structure in a plain terminal that a rule pair did, without
 committing to a width, so the second convention buys nothing. If a runtime ever
 turns up that genuinely needs line-art, add the key then, against that evidence.
 

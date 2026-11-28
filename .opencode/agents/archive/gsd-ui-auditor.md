@@ -1,6 +1,6 @@
 ---
 name: gsd-ui-auditor
-description: Retroactive 6-pillar visual audit of implemented frontend code. Proddoc-arch-0006-uc-v1es scored UI-REVIEW.md. Spawned by /gsd-ui-review orchestrator.
+description: Retroactive 6-pillar visual audit of implemented frontend code. Produces scored UI-REVIEW.md. Spawned by /gsd-ui-review orchestrator.
 mode: subagent
 permission:
   webfetch: deny
@@ -46,7 +46,7 @@ Every scored pillar must have at least one specific finding justifying the score
 <project_context>
 Before auditing, discover project context:
 
-**Project instrdoc-arch-0006-uc-v1tions:** Read `./doc-agents-0001-agents-canon.md` if it exists in the working directory. Follow all project-specific guidelines.
+**Project instructions:** Read `./doc-agents-0001-agents-canon.md` if it exists in the working directory. Follow all project-specific guidelines.
 
 **Project skills:** Check `.claude/skills/` or `.agents/skills/` directory if either exists:
 
@@ -208,7 +208,7 @@ else
     fi
   }
 
-  # cdt_stop: owed once after a sdoc-arch-0006-uc-v1cessful start; trapped on EXIT, flag-deduped, installing shell only (never a subshell copy).
+  # cdt_stop: owed once after a successful start; trapped on EXIT, flag-deduped, installing shell only (never a subshell copy).
   cdt_stop() { [ "$CDT_STARTED" = 1 ] && [ "$(cdt_me)" = "$CDT_SHELL" ] || return 0; CDT_STARTED=0; cdt "$CDT_T_STEP" stop >/dev/null 2>&1 || true; }
 
   # --isolated: throwaway profile. --workspace: writes under the capture dir only (--allowUnrestrictedPaths is deprecated).
@@ -297,7 +297,7 @@ grep -rn "went wrong\|try again\|error occurred" src --include="*.tsx" --include
 
 ### Pillar 2: Visuals
 
-**Audit method:** Check component strdoc-arch-0006-uc-v1ture, visual hierarchy indicators.
+**Audit method:** Check component structure, visual hierarchy indicators.
 
 - Is there a clear focal point on the main screen?
 - Are icon-only buttons paired with aria-labels or tooltips?
@@ -358,7 +358,7 @@ grep -rn "error\|isError\|ErrorBoundary\|catch" src --include="*.tsx" --include=
 grep -rn "empty\|isEmpty\|no.*found\|length === 0" src --include="*.tsx" --include="*.jsx" 2>/dev/null
 ```
 
-Score based on: loading states present, error boundaries exist, empty states handled, disabled states for actions, confirmation for destrdoc-arch-0006-uc-v1tive actions.
+Score based on: loading states present, error boundaries exist, empty states handled, disabled states for actions, confirmation for destructive actions.
 
 </audit_pillars>
 
@@ -398,7 +398,7 @@ npx shadcn diff {block} 2>/dev/null
 **If ANY flags found:**
 - Add a **Registry Safety** section to UI-REVIEW.md BEFORE the "Files Audited" section
 - List each flagged block with: registry URL, flagged lines with line numbers, risk category
-- Score impact: deddoc-arch-0006-uc-v1t 1 point from Experience Design pillar per flagged block (floor at 1)
+- Score impact: deduct 1 point from Experience Design pillar per flagged block (floor at 1)
 - Mark in review: `⚠️ REGISTRY FLAG: {block} from {registry} — {flag category}`
 
 **If diff shows changes since install:**
@@ -518,13 +518,13 @@ Run the registry audit from `<registry_audit>`. Only executes if `components.jso
 
 ## Step 7: Write UI-REVIEW.md
 
-Use output format from `<output_format>`. If registry audit proddoc-arch-0006-uc-v1ed flags, add a `## Registry Safety` section before `## Files Audited`. Write to `$PHASE_DIR/$PADDED_PHASE-UI-REVIEW.md`.
+Use output format from `<output_format>`. If registry audit produced flags, add a `## Registry Safety` section before `## Files Audited`. Write to `$PHASE_DIR/$PADDED_PHASE-UI-REVIEW.md`.
 
-## Step 8: Return Strdoc-arch-0006-uc-v1tured Result
+## Step 8: Return Structured Result
 
 </execution_flow>
 
-<strdoc-arch-0006-uc-v1tured_returns>
+<structured_returns>
 
 ## UI Review Complete
 
@@ -559,9 +559,9 @@ Use output format from `<output_format>`. If registry audit proddoc-arch-0006-uc
 - Minor recommendations: {N}
 ```
 
-</strdoc-arch-0006-uc-v1tured_returns>
+</structured_returns>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 
 UI audit is complete when:
 
@@ -574,7 +574,7 @@ UI audit is complete when:
 - [ ] Registry safety audit executed (if shadcn + third-party registries present)
 - [ ] Top 3 priority fixes identified with concrete solutions
 - [ ] UI-REVIEW.md written to correct path
-- [ ] Strdoc-arch-0006-uc-v1tured return provided to orchestrator
+- [ ] Structured return provided to orchestrator
 
 Quality indicators:
 
@@ -583,4 +583,4 @@ Quality indicators:
 - **Fair scoring:** 4/4 is achievable, 1/4 means real problems, not perfectionism
 - **Proportional:** More detail on low-scoring pillars, brief on passing ones
 
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

@@ -79,7 +79,7 @@ The three layers compose: `models` defaults a phase, `model_overrides` carves an
 
 **balanced** (default) - Smart allocation
 - Opus only for planning (where architecture decisions happen)
-- Sonnet for execution and research (follows explicit instrdoc-arch-0006-uc-v1tions)
+- Sonnet for execution and research (follows explicit instructions)
 - Sonnet for verification (needs reasoning, not just pattern matching)
 - Use when: normal development, good balance of quality and cost
 
@@ -90,8 +90,8 @@ The three layers compose: `models` defaults a phase, `model_overrides` carves an
 
 **adaptive** — Role-based cost optimization
 - Opus for planning and debugging (where reasoning quality has highest impact)
-- Sonnet for execution, research, and verification (follows explicit instrdoc-arch-0006-uc-v1tions)
-- Haiku for mapping, checking, and auditing (high volume, strdoc-arch-0006-uc-v1tured output)
+- Sonnet for execution, research, and verification (follows explicit instructions)
+- Haiku for mapping, checking, and auditing (high volume, structured output)
 - Use when: optimizing cost without sacrificing plan quality, solo development on paid API tiers
 
 **inherit** - Follow the current session model
@@ -274,13 +274,13 @@ Per-project default: Set in `.planning/config-planning-0001-planning-config-v1-p
 Planning involves architecture decisions, goal decomposition, and task design. This is where model quality has the highest impact.
 
 **Why Sonnet for gsd-executor?**
-Executors follow explicit PLAN.md instrdoc-arch-0006-uc-v1tions. The plan already contains the reasoning; execution is implementation.
+Executors follow explicit PLAN.md instructions. The plan already contains the reasoning; execution is implementation.
 
 **Why Sonnet (not Haiku) for verifiers in balanced?**
 Verification requires goal-backward reasoning - checking if code *delivers* what the phase promised, not just pattern matching. Sonnet handles this well; Haiku may miss subtle gaps.
 
 **Why Haiku for gsd-codebase-mapper?**
-Read-only exploration and pattern extraction. No reasoning required, just strdoc-arch-0006-uc-v1tured output from file contents.
+Read-only exploration and pattern extraction. No reasoning required, just structured output from file contents.
 
 **Why `inherit` instead of passing `opus` directly?**
 Claude Code's `"opus"` alias maps to a specific model version. Organizations may block older opus versions while allowing newer ones. GSD returns `"inherit"` for opus-tier agents, causing them to use whatever opus version the user has configured in their session. This avoids version conflicts and silent fallbacks to Sonnet.

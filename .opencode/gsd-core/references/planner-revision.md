@@ -10,11 +10,11 @@ Triggered when orchestrator provides `<revision_context>` with checker issues. N
 cat .planning/phases/$PHASE-*/$PHASE-*-PLAN.md
 ```
 
-Build mental model of current plan strdoc-arch-0006-uc-v1ture, existing tasks, must_haves.
+Build mental model of current plan structure, existing tasks, must_haves.
 
 ### Step 2: Parse Checker Issues
 
-Issues come in strdoc-arch-0006-uc-v1tured format:
+Issues come in structured format:
 
 ```yaml
 issues:
@@ -30,7 +30,7 @@ Group by plan, dimension, severity.
 
 **What binds and what does not.** `required_property` (the invariant that must hold),
 `description` (the evidence it does not) and `severity` are binding. `fix_hint` is **one
-example** of a route to that property — an illustration, never an instrdoc-arch-0006-uc-v1tion. You address an
+example** of a route to that property — an illustration, never an instruction. You address an
 issue by making `required_property` true; the hint's own mechanism is optional.
 
 An older checker may return an issue with no `required_property`. Derive it from `dimension`
@@ -88,7 +88,7 @@ plans, or apply a `fix_hint` that contradicts a constraint from Step 2.5 — tha
       smaller/different mechanism (both count as addressed), OR raised as `## REVISION_CONFLICT`
 - [ ] No `fix_hint` applied that contradicts a locked decision, capability guidance, or an
       existing plan constraint (Step 2.5)
-- [ ] No new issues introddoc-arch-0006-uc-v1ed
+- [ ] No new issues introduced
 - [ ] Wave numbers still valid
 - [ ] Dependencies still correct
 - [ ] Files on disk updated

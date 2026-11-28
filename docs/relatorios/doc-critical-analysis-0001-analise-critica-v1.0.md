@@ -141,7 +141,7 @@ Dois planos de stack mutuamente exclusivos, nenhum verificado por código:
 **Riscos negociais:**
 - Prazo de documentação (18/09/2026) expirado (hoje é 09/11/2026) — risco de entrega atrasada/reprovada na disciplina.
 - Prazo de software (13/11/2026) a 4 dias — inviável começar do zero agora sem código.
-- Proddoc-arch-0006-uc-v1t Owner, Tech Lead e Arquiteto não nomeados (doc-readme-0001-readme-canon placeholders "[Nome]").
+- Product Owner, Tech Lead e Arquiteto não nomeados (doc-readme-0001-readme-canon placeholders "[Nome]").
 - Nenhum nome de integrante na documentação → wrk_grp.md adverte: sem nome, não há nota.
 - Stack não definida → impossível orçar infra, hospedagem, ou definir time-to-market.
 
@@ -171,7 +171,7 @@ Dois planos de stack mutuamente exclusivos, nenhum verificado por código:
 | ID | Proposição | Escopo | Responsável sugerido | Prazo sugerido |
 |----|------------|--------|----------------------|----------------|
 | A1 | **Decidir stack única** (NestJS+React+PostgreSQL+Prisma OU FastAPI+MySQL+ReportLab) e arquivar o plano não escolhido como ADR | Técnica / Programática | Tech Lead + Arquiteto | Imediato (bloqueia tudo) |
-| A2 | Nomear Proddoc-arch-0006-uc-v1t Owner, Tech Lead e Arquiteto no doc-readme-0001-readme-canon e na monografia | Negocial / Contextual | Grupo | Imediato |
+| A2 | Nomear Product Owner, Tech Lead e Arquiteto no doc-readme-0001-readme-canon e na monografia | Negocial / Contextual | Grupo | Imediato |
 | A3 | Regularizar documentação: entregar PDF atrasado com justificativa ou redefinir prazo com o professor | Negocial / Contextual | Grupo + Professor | Imediato (prazo expirado) |
 | A4 | Revisar DER: incluir tabela de sessão/refresh_tokens OU remover requisito de refresh de RF02 | Técnica / Lógica | Arquiteto | Antes de codificar auth |
 | A5 | Remover `RECOVERY_MODE=log` ou proteger logs contra retenção de tokens | Técnica / Segurança | Backend | Antes de codificar recuperação |

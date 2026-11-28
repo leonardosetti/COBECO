@@ -40,7 +40,7 @@ last_calibrated: 2026-03-24
 >     fix_hint: "Either move Plan 02 to wave 2 with depends_on: ['01'] or consolidate the file changes into a single plan"
 > ```
 
-**Why this is good:** The checker identified a real strdoc-arch-0006-uc-v1tural problem -- two plans modifying the same file in the same wave without a dependency relationship. It stated the property that must hold, cited dependency_correctness, named both plans and the conflicting file, and offered two example routes -- neither of which binds, since either makes the property true.
+**Why this is good:** The checker identified a real structural problem -- two plans modifying the same file in the same wave without a dependency relationship. It stated the property that must hold, cited dependency_correctness, named both plans and the conflicting file, and offered two example routes -- neither of which binds, since either makes the property true.
 
 ## Negative Examples
 
@@ -70,4 +70,4 @@ last_calibrated: 2026-03-24
 >     fix_hint: "Split tasks into separate plans"
 > ```
 
-**Why this is bad:** The checker flagged a non-issue. The `required_property` it states is already satisfied, which is the tell: scope_sanity allows 2-3 tasks per plan -- 3 tasks is within limits. The checker applied a personal preference ("smaller is better") rather than the documented threshold. This wastes planner time on false positives and erodes trust in the checker's judgment. A correct check would proddoc-arch-0006-uc-v1e no issue for this plan.
+**Why this is bad:** The checker flagged a non-issue. The `required_property` it states is already satisfied, which is the tell: scope_sanity allows 2-3 tasks per plan -- 3 tasks is within limits. The checker applied a personal preference ("smaller is better") rather than the documented threshold. This wastes planner time on false positives and erodes trust in the checker's judgment. A correct check would produce no issue for this plan.

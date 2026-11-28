@@ -1,6 +1,6 @@
 ---
 name: gsd-framework-selector
-description: Presents an interactive decision matrix to surface the right AI/LLM framework for the user's specific use case. Proddoc-arch-0006-uc-v1es a scored recommendation with rationale. Spawned by /gsd-ai-integration-phase and /gsd-select-framework orchestrators.
+description: Presents an interactive decision matrix to surface the right AI/LLM framework for the user's specific use case. Produces a scored recommendation with rationale. Spawned by /gsd-ai-integration-phase and /gsd-select-framework orchestrators.
 mode: subagent
 permission:
   edit: deny
@@ -40,9 +40,9 @@ question([
     multiSelect: false,
     options: [
       { label: "RAG / Document Q&A", description: "Answer questions from documents, PDFs, knowledge bases" },
-      { label: "Multi-Agent Workflow", description: "Multiple AI agents collaborating on strdoc-arch-0006-uc-v1tured tasks" },
+      { label: "Multi-Agent Workflow", description: "Multiple AI agents collaborating on structured tasks" },
       { label: "Conversational Assistant / Chatbot", description: "Single-model chat interface with optional tool use" },
-      { label: "Strdoc-arch-0006-uc-v1tured Data Extraction", description: "Extract fields, entities, or strdoc-arch-0006-uc-v1tured output from unstrdoc-arch-0006-uc-v1tured text" },
+      { label: "Structured Data Extraction", description: "Extract fields, entities, or structured output from unstructured text" },
       { label: "Autonomous Task Agent", description: "Agent that plans and executes multi-step tasks independently" },
       { label: "Content Generation Pipeline", description: "Generate text, summaries, drafts, or creative content at scale" },
       { label: "Code Automation Agent", description: "Agent that reads, writes, or executes code autonomously" },
@@ -67,8 +67,8 @@ question([
     multiSelect: false,
     options: [
       { label: "Solo dev, rapid prototype", description: "Speed to working demo matters most" },
-      { label: "Small team (2-5), building toward proddoc-arch-0006-uc-v1tion", description: "Balance speed and maintainability" },
-      { label: "Proddoc-arch-0006-uc-v1tion system, needs fault tolerance", description: "Checkpointing, observability, and reliability required" },
+      { label: "Small team (2-5), building toward production", description: "Balance speed and maintainability" },
+      { label: "Production system, needs fault tolerance", description: "Checkpointing, observability, and reliability required" },
       { label: "Enterprise / regulated environment", description: "Audit trails, compliance, human-in-the-loop required" }
     ]
   },
@@ -106,7 +106,7 @@ question([
       { label: "TypeScript required (no Python)" },
       { label: "Must support local/self-hosted models" },
       { label: "Enterprise SLA / support required" },
-      { label: "No new infrastrdoc-arch-0006-uc-v1ture (use existing DB)" },
+      { label: "No new infrastructure (use existing DB)" },
       { label: "None of the above" }
     ]
   }
@@ -119,7 +119,7 @@ Apply decision matrix from `ai-frameworks.md`:
 1. Eliminate frameworks failing any hard constraint
 2. Score remaining 1-5 on each answered dimension
 3. Weight by user's stated priority
-4. Proddoc-arch-0006-uc-v1e ranked top 3 — show only the recommendation, not the scoring table
+4. Produce ranked top 3 — show only the recommendation, not the scoring table
 </scoring>
 
 <output_format>
@@ -154,12 +154,12 @@ Display to user:
 ```
 </output_format>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Codebase scanned for existing framework signals
 - [ ] Interview completed (≤ 6 questions, single question call)
 - [ ] Hard constraints applied to eliminate incompatible frameworks
 - [ ] Primary recommendation with clear rationale
 - [ ] Alternative identified
 - [ ] System type classified
-- [ ] Strdoc-arch-0006-uc-v1tured result returned to orchestrator
-</sdoc-arch-0006-uc-v1cess_criteria>
+- [ ] Structured result returned to orchestrator
+</success_criteria>

@@ -116,9 +116,9 @@ No next-step suggestions. No workflow routing. Just done.
 - If you're unsure how to implement it, STOP and redirect to /gsd-quick
 </guardrails>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Task completed in current context (no subagents)
 - [ ] Atomic git commit with conventional message
 - [ ] STATE.md updated if it exists
 - [ ] Total operation under 2 minutes wall time
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

@@ -4,7 +4,7 @@ Full pattern bodies for `agents/gsd-verifier.md`, extracted per
 `DEFECT.AGENT-FILE-SIZE-CAP-BREACH` (issue #2995, epic #1671 Phase 6.4). The agent
 keeps the step and its checklist; the per-pattern detail and shell recipes live here.
 
-Artifacts that pass Levels 1-3 (exist, substantive, wired) can still be hollow if their data source proddoc-arch-0006-uc-v1es empty or hardcoded values. Level 4 traces upstream from the artifact to verify real data flows through the wiring.
+Artifacts that pass Levels 1-3 (exist, substantive, wired) can still be hollow if their data source produces empty or hardcoded values. Level 4 traces upstream from the artifact to verify real data flows through the wiring.
 
 **When to run:** For each artifact that passes Level 3 (WIRED) and renders dynamic data (components, pages, dashboards — not utilities or configs).
 
@@ -24,7 +24,7 @@ grep -n -E "useState|useQuery|useSWR|useStore|props\." "$artifact" 2>/dev/null
 grep -n -A 5 "set${STATE_VAR}\|${STATE_VAR}\s*=" "$artifact" 2>/dev/null | grep -E "fetch|axios|query|store|dispatch|props\."
 ```
 
-3. **Verify the source proddoc-arch-0006-uc-v1es real data** — does the API/store return actual data or static/empty values?
+3. **Verify the source produces real data** — does the API/store return actual data or static/empty values?
 
 ```bash
 # Check the API route or data source for real DB queries vs static returns
@@ -46,7 +46,7 @@ grep -r -A 3 "<${COMPONENT_NAME}" "${search_path:-src/}" --include="*.tsx" 2>/de
 
 **Data-flow status:**
 
-| Data Source | Proddoc-arch-0006-uc-v1es Real Data | Status |
+| Data Source | Produces Real Data | Status |
 | ---------- | ------------------ | ------ |
 | DB query found | Yes | ✓ FLOWING |
 | Fetch exists, static fallback only | No | ⚠️ STATIC |

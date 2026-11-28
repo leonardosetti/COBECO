@@ -34,7 +34,7 @@ Emit a section from the full reference for the topic in `$ARGUMENTS`. Read `work
 | `config`, `settings`, `configuration` | `### Configuration` |
 | `cleanup` | The `/gsd-cleanup` block under `### Utility Commands` |
 | `update` | The `/gsd-update` block under `### Utility Commands` |
-| `files`, `strdoc-arch-0006-uc-v1ture`, `layout` | `## Files & Strdoc-arch-0006-uc-v1ture` |
+| `files`, `structure`, `layout` | `## Files & Structure` |
 | `modes`, `interactive`, `yolo` | `## Workflow Modes` |
 | `planning-config` | `## Planning Configuration` |
 | `workflows`, `common-workflows`, `examples` | `## Common Workflows` |

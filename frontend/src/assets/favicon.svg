@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <!-- fundo arredondado -->
+  <rect width="512" height="512" rx="110" fill="#1e1b4b"/>
+  <!-- letra C estilizada -->
+  <path d="M190 160c-30 0-58 14-78 38-20 24-32 56-32 90s12 66 32 90c20 24 48 38 78 38s58-14 78-38c20-24 32-56 32-90s-12-66-32-90c-20-24-48-38-78-38z" fill="url(#g)"/>
+  <!-- carrinho dentro da C -->
+  <path d="M262 276h28l-4 24h-20z" fill="#fff" opacity=".95"/>
+  <path d="M250 300c-6 0-11 5-11 11s5 11 11 11 11-5 11-11-5-11-11-11zM290 300c-6 0-11 5-11 11s5 11 11 11 11-5 11-11-5-11-11-11z" fill="#fff" opacity=".8"/>
+  <!-- alça do carrinho -->
+  <path d="M262 276q12-24 32 0" stroke="#fff" stroke-width="14" stroke-linecap="round" fill="none" opacity=".7"/>
+  <!-- tag de preço -->
+  <path d="M340 170l-14 14-14-14 14-14z" fill="#fbbf24"/>
+  <circle cx="326" cy="184" r="7" fill="#1e1b4b"/>
+</svg>

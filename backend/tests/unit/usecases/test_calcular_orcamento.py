@@ -4,14 +4,11 @@ import pytest
 from unittest.mock import AsyncMock
 from decimal import Decimal
 from datetime import datetime
-from src.domain.usecases import (
-    CalcularOrcamentoUseCase, ComparacaoInput,
-    DomainError
-)
+from src.domain.usecases import CalcularOrcamentoUseCase, ComparacaoInput, DomainError
 from src.domain.entities import (
-    Lista, ItemLista, Produto, UnidadeMedida,
-    FornecedorProduto, Fornecedor, OrcamentoComparacao,
-    FornecedorComparacao, ItemComparacao
+    OrcamentoComparacao,
+    FornecedorComparacao,
+    ItemComparacao,
 )
 
 
@@ -24,10 +21,14 @@ def mock_comparacao_repo():
 
 @pytest.fixture
 def mock_orcamento_result():
-    from src.domain.entities import OrcamentoComparacao, FornecedorComparacao, ItemComparacao
+    from src.domain.entities import (
+        OrcamentoComparacao,
+        FornecedorComparacao,
+        ItemComparacao,
+    )
     from decimal import Decimal
     from datetime import datetime
-    
+
     forn1 = FornecedorComparacao(
         fornecedor_id=1,
         fornecedor_nome="Fornecedor 1",
@@ -36,9 +37,25 @@ def mock_orcamento_result():
         percentual_disponibilidade=100.0,
         preco_total=Decimal("28.00"),
         itens=[
-            ItemComparacao(produto_id=1, produto_nome="Arroz 5kg", unidade="kg", quantidade=2, preco_unitario=Decimal("10.00"), preco_total=Decimal("20.00"), disponivel=True),
-            ItemComparacao(produto_id=2, produto_nome="Feijão 1kg", unidade="kg", quantidade=1, preco_unitario=Decimal("8.00"), preco_total=Decimal("8.00"), disponivel=True),
-        ]
+            ItemComparacao(
+                produto_id=1,
+                produto_nome="Arroz 5kg",
+                unidade="kg",
+                quantidade=2,
+                preco_unitario=Decimal("10.00"),
+                preco_total=Decimal("20.00"),
+                disponivel=True,
+            ),
+            ItemComparacao(
+                produto_id=2,
+                produto_nome="Feijão 1kg",
+                unidade="kg",
+                quantidade=1,
+                preco_unitario=Decimal("8.00"),
+                preco_total=Decimal("8.00"),
+                disponivel=True,
+            ),
+        ],
     )
     forn2 = FornecedorComparacao(
         fornecedor_id=2,
@@ -48,9 +65,25 @@ def mock_orcamento_result():
         percentual_disponibilidade=50.0,
         preco_total=Decimal("24.00"),
         itens=[
-            ItemComparacao(produto_id=1, produto_nome="Arroz 5kg", unidade="kg", quantidade=2, preco_unitario=Decimal("12.00"), preco_total=Decimal("24.00"), disponivel=True),
-            ItemComparacao(produto_id=2, produto_nome="Feijão 1kg", unidade="kg", quantidade=1, preco_unitario=Decimal("0.00"), preco_total=Decimal("0.00"), disponivel=False),
-        ]
+            ItemComparacao(
+                produto_id=1,
+                produto_nome="Arroz 5kg",
+                unidade="kg",
+                quantidade=2,
+                preco_unitario=Decimal("12.00"),
+                preco_total=Decimal("24.00"),
+                disponivel=True,
+            ),
+            ItemComparacao(
+                produto_id=2,
+                produto_nome="Feijão 1kg",
+                unidade="kg",
+                quantidade=1,
+                preco_unitario=Decimal("0.00"),
+                preco_total=Decimal("0.00"),
+                disponivel=False,
+            ),
+        ],
     )
     forn3 = FornecedorComparacao(
         fornecedor_id=3,
@@ -60,11 +93,27 @@ def mock_orcamento_result():
         percentual_disponibilidade=100.0,
         preco_total=Decimal("31.00"),
         itens=[
-            ItemComparacao(produto_id=1, produto_nome="Arroz 5kg", unidade="kg", quantidade=2, preco_unitario=Decimal("11.00"), preco_total=Decimal("22.00"), disponivel=True),
-            ItemComparacao(produto_id=2, produto_nome="Feijão 1kg", unidade="kg", quantidade=1, preco_unitario=Decimal("9.00"), preco_total=Decimal("9.00"), disponivel=True),
-        ]
+            ItemComparacao(
+                produto_id=1,
+                produto_nome="Arroz 5kg",
+                unidade="kg",
+                quantidade=2,
+                preco_unitario=Decimal("11.00"),
+                preco_total=Decimal("22.00"),
+                disponivel=True,
+            ),
+            ItemComparacao(
+                produto_id=2,
+                produto_nome="Feijão 1kg",
+                unidade="kg",
+                quantidade=1,
+                preco_unitario=Decimal("9.00"),
+                preco_total=Decimal("9.00"),
+                disponivel=True,
+            ),
+        ],
     )
-    
+
     return OrcamentoComparacao(
         lista_id=1,
         lista_nome="Compras da Semana",
@@ -133,9 +182,7 @@ class TestCalcularOrcamentoUseCase:
         assert forn2.preco_total == Decimal("24.00")  # apenas produto 1: 12*2
 
     @pytest.mark.asyncio
-    async def test_executar_filtro_disponibilidade_minima(
-        self, usecase, mock_comparacao_repo
-    ):
+    async def test_executar_filtro_disponibilidade_minima(self, usecase, mock_comparacao_repo):
         # Configure mock to return different results based on disponibilidade_minima
         async def mock_calcular_orcamento(lista_id, fornecedor_ids, disponibilidade_minima):
             # Create mock result with 3 suppliers
@@ -147,9 +194,25 @@ class TestCalcularOrcamentoUseCase:
                 percentual_disponibilidade=100.0,
                 preco_total=Decimal("28.00"),
                 itens=[
-                    ItemComparacao(produto_id=1, produto_nome="Arroz 5kg", unidade="kg", quantidade=2, preco_unitario=Decimal("10.00"), preco_total=Decimal("20.00"), disponivel=True),
-                    ItemComparacao(produto_id=2, produto_nome="Feijão 1kg", unidade="kg", quantidade=1, preco_unitario=Decimal("8.00"), preco_total=Decimal("8.00"), disponivel=True),
-                ]
+                    ItemComparacao(
+                        produto_id=1,
+                        produto_nome="Arroz 5kg",
+                        unidade="kg",
+                        quantidade=2,
+                        preco_unitario=Decimal("10.00"),
+                        preco_total=Decimal("20.00"),
+                        disponivel=True,
+                    ),
+                    ItemComparacao(
+                        produto_id=2,
+                        produto_nome="Feijão 1kg",
+                        unidade="kg",
+                        quantidade=1,
+                        preco_unitario=Decimal("8.00"),
+                        preco_total=Decimal("8.00"),
+                        disponivel=True,
+                    ),
+                ],
             )
             forn2 = FornecedorComparacao(
                 fornecedor_id=2,
@@ -159,9 +222,25 @@ class TestCalcularOrcamentoUseCase:
                 percentual_disponibilidade=50.0,
                 preco_total=Decimal("24.00"),
                 itens=[
-                    ItemComparacao(produto_id=1, produto_nome="Arroz 5kg", unidade="kg", quantidade=2, preco_unitario=Decimal("12.00"), preco_total=Decimal("24.00"), disponivel=True),
-                    ItemComparacao(produto_id=2, produto_nome="Feijão 1kg", unidade="kg", quantidade=1, preco_unitario=Decimal("0.00"), preco_total=Decimal("0.00"), disponivel=False),
-                ]
+                    ItemComparacao(
+                        produto_id=1,
+                        produto_nome="Arroz 5kg",
+                        unidade="kg",
+                        quantidade=2,
+                        preco_unitario=Decimal("12.00"),
+                        preco_total=Decimal("24.00"),
+                        disponivel=True,
+                    ),
+                    ItemComparacao(
+                        produto_id=2,
+                        produto_nome="Feijão 1kg",
+                        unidade="kg",
+                        quantidade=1,
+                        preco_unitario=Decimal("0.00"),
+                        preco_total=Decimal("0.00"),
+                        disponivel=False,
+                    ),
+                ],
             )
             forn3 = FornecedorComparacao(
                 fornecedor_id=3,
@@ -171,17 +250,36 @@ class TestCalcularOrcamentoUseCase:
                 percentual_disponibilidade=100.0,
                 preco_total=Decimal("31.00"),
                 itens=[
-                    ItemComparacao(produto_id=1, produto_nome="Arroz 5kg", unidade="kg", quantidade=2, preco_unitario=Decimal("11.00"), preco_total=Decimal("22.00"), disponivel=True),
-                    ItemComparacao(produto_id=2, produto_nome="Feijão 1kg", unidade="kg", quantidade=1, preco_unitario=Decimal("9.00"), preco_total=Decimal("9.00"), disponivel=True),
-                ]
+                    ItemComparacao(
+                        produto_id=1,
+                        produto_nome="Arroz 5kg",
+                        unidade="kg",
+                        quantidade=2,
+                        preco_unitario=Decimal("11.00"),
+                        preco_total=Decimal("22.00"),
+                        disponivel=True,
+                    ),
+                    ItemComparacao(
+                        produto_id=2,
+                        produto_nome="Feijão 1kg",
+                        unidade="kg",
+                        quantidade=1,
+                        preco_unitario=Decimal("9.00"),
+                        preco_total=Decimal("9.00"),
+                        disponivel=True,
+                    ),
+                ],
             )
-            
+
             all_fornecedores = [forn1, forn2, forn3]
             # Filter by both fornecedor_ids AND availability
-            filtered = [f for f in all_fornecedores 
-                       if f.fornecedor_id in fornecedor_ids
-                       and f.percentual_disponibilidade >= disponibilidade_minima]
-            
+            filtered = [
+                f
+                for f in all_fornecedores
+                if f.fornecedor_id in fornecedor_ids
+                and f.percentual_disponibilidade >= disponibilidade_minima
+            ]
+
             return OrcamentoComparacao(
                 lista_id=1,
                 lista_nome="Lista",
@@ -189,7 +287,7 @@ class TestCalcularOrcamentoUseCase:
                 melhor_fornecedor_id=filtered[0].fornecedor_id if filtered else None,
                 calculado_em=datetime.now(),
             )
-        
+
         mock_comparacao_repo.calcular_orcamento = AsyncMock(side_effect=mock_calcular_orcamento)
 
         # Exige 100% disponibilidade
@@ -211,7 +309,9 @@ class TestCalcularOrcamentoUseCase:
         input_data = ComparacaoInput(lista_id=999, fornecedor_ids=[1, 2])
 
         # Mock the repo to raise "not found" error
-        mock_comparacao_repo.calcular_orcamento = AsyncMock(side_effect=DomainError("LISTA_NAO_ENCONTRADA", "Lista não encontrada"))
+        mock_comparacao_repo.calcular_orcamento = AsyncMock(
+            side_effect=DomainError("LISTA_NAO_ENCONTRADA", "Lista não encontrada")
+        )
 
         with pytest.raises(DomainError, match="Lista não encontrada"):
             await usecase.executar(input_data)

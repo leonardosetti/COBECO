@@ -82,7 +82,7 @@ Exceptions: {list any, or "none"}
 | Dominant (60%) | {hex} | Background, surfaces |
 | Secondary (30%) | {hex} | Cards, sidebar, nav |
 | Accent (10%) | {hex} | {list specific elements only} |
-| Destrdoc-arch-0006-uc-v1tive | {hex} | Destrdoc-arch-0006-uc-v1tive actions only |
+| Destructive | {hex} | Destructive actions only |
 
 Accent reserved for: {explicit list — never "all interactive elements"}
 
@@ -96,7 +96,7 @@ Accent reserved for: {explicit list — never "all interactive elements"}
 | Empty state heading | {copy} |
 | Empty state body | {copy + next step} |
 | Error state | {problem + solution path} |
-| Destrdoc-arch-0006-uc-v1tive confirmation | {action name}: {confirmation copy} |
+| Destructive confirmation | {action name}: {confirmation copy} |
 
 ---
 

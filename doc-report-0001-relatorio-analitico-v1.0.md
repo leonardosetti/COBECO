@@ -42,7 +42,7 @@ workflow:
 **Versão:** 3.1 (Final — SSOT)
 **Classificação:** Documento de Governança Técnica
 **Status:** ✅ APROVADO para Implementação
-**Público-Alvo:** Equipe de Desenvolvimento, QA, Proddoc-arch-0006-uc-v1t Owner (Professor), Stakeholders Acadêmicos
+**Público-Alvo:** Equipe de Desenvolvimento, QA, Product Owner (Professor), Stakeholders Acadêmicos
 
 ---
 
@@ -167,14 +167,14 @@ Este documento consolida **todas as decisões arquiteturais** do projeto COBECO 
 ├─────────────────────┤         ├─────────────────────┤
 │ id (PK)             │◄───1:N──┤ id (PK)             │
 │ user_id (FK)        │         │ list_id (FK)        │
-│ name                │         │ proddoc-arch-0006-uc-v1t_id (FK)     │
+│ name                │         │ product_id (FK)     │
 │ created_at          │         │ quantity            │
 │ updated_at          │         │ created_at          │
 │ deleted_at          │         └──────────┬──────────┘
 └─────────────────────┘                    │ N:1
                                            ▼
                                   ┌─────────────────────┐
-                                  │      proddoc-arch-0006-uc-v1ts       │
+                                  │      products       │
                                   ├─────────────────────┤
                                   │ id (PK)             │
                                   │ name                │
@@ -185,10 +185,10 @@ Este documento consolida **todas as decisões arquiteturais** do projeto COBECO 
                                              │ 1:N
                                              ▼
                                   ┌─────────────────────┐
-                                  │ supplier_proddoc-arch-0006-uc-v1ts   │
+                                  │ supplier_products   │
                                   ├─────────────────────┤
                                   │ supplier_id (FK)    ├──┐
-                                  │ proddoc-arch-0006-uc-v1t_id (FK)     │  │
+                                  │ product_id (FK)     │  │
                                   │ price               │  │
                                   │ stock               │  │
                                   │ active              │  │
@@ -230,12 +230,12 @@ Este documento consolida **todas as decisões arquiteturais** do projeto COBECO 
 | ----------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------------- |
 | `users`               | id, username, email, name, password_hash, security_question, security_answer_hash, created_at, updated_at | UNIQUE(username), UNIQUE(email)             | 1 admin                      |
 | `lists`               | id, user_id, name, created_at, updated_at, deleted_at                                                     | FK(user_id) CASCADE, soft delete            | —                           |
-| `list_items`          | id, list_id, proddoc-arch-0006-uc-v1t_id, quantity                                                                         | FK(list_id), FK(proddoc-arch-0006-uc-v1t_id), CHECK(qty > 0) | —                           |
+| `list_items`          | id, list_id, product_id, quantity                                                                         | FK(list_id), FK(product_id), CHECK(qty > 0) | —                           |
 | `categories`          | id, name, description                                                                                     | UNIQUE(name)                                | **5 categorias macro** |
 | `suppliers`           | id, name, cnpj, active, created_at                                                                        | UNIQUE(cnpj)                                | **10 fornecedores**    |
 | `supplier_categories` | supplier_id, category_id                                                                                  | PK(supplier_id, category_id), FKs           | **~20 relações N:N** |
-| `proddoc-arch-0006-uc-v1ts`            | id, name, unit, active, created_at                                                                        | —                                          | **50 produtos**        |
-| `supplier_proddoc-arch-0006-uc-v1ts`   | supplier_id, proddoc-arch-0006-uc-v1t_id, price, stock, active                                                             | PK(supplier_id, proddoc-arch-0006-uc-v1t_id), FKs            | **~300 preços**       |
+| `products`            | id, name, unit, active, created_at                                                                        | —                                          | **50 produtos**        |
+| `supplier_products`   | supplier_id, product_id, price, stock, active                                                             | PK(supplier_id, product_id), FKs            | **~300 preços**       |
 
 ### 2.4 Seed de Dados — Exemplo
 
@@ -261,7 +261,7 @@ suppliers = [
 ]
 
 # Produtos (agnósticos à categoria)
-proddoc-arch-0006-uc-v1ts = [
+products = [
     {"name": "Arroz Tipo 1 5kg", "unit": "un"},
     {"name": "Martelo de Unha 25mm", "unit": "un"},
     {"name": "Notebook i5 8GB", "unit": "un"},
@@ -319,7 +319,7 @@ proddoc-arch-0006-uc-v1ts = [
 │                      │                              │
 │  ┌───────────────────▼───────────────────────────┐  │
 │  │          SQLite3 (cobeco.db + WAL)            │  │
-│  │   users | lists | list_items | proddoc-arch-0006-uc-v1ts |     │  │
+│  │   users | lists | list_items | products |     │  │
 │  │   suppliers | prices | categories |           │  │
 │  │   supplier_categories                         │  │
 │  └───────────────────────────────────────────────┘  │
@@ -364,7 +364,7 @@ cobeco/
 │   ├── config.py               # Settings via pydantic-settings
 │   │
 │   ├── domain/                 # 🟢 Camada de Domínio (pura, sem deps)
-│   │   ├── entities.py         # Dataclasses: User, List, Proddoc-arch-0006-uc-v1t, Supplier
+│   │   ├── entities.py         # Dataclasses: User, List, Product, Supplier
 │   │   ├── rules.py            # Regras de negócio puras
 │   │   └── exceptions.py       # Domain exceptions
 │   │
@@ -384,7 +384,7 @@ cobeco/
 │   │   ├── auth_router.py      # POST /auth/login, /auth/register
 │   │   ├── list_router.py      # CRUD /api/lists
 │   │   ├── compare_router.py   # POST /api/compare
-│   │   └── catalog_router.py   # GET /api/proddoc-arch-0006-uc-v1ts, /api/suppliers
+│   │   └── catalog_router.py   # GET /api/products, /api/suppliers
 │   │
 │   ├── seed.py                 # Script de seed (10 forn + 50 prod + 5 cat)
 │   └── tests/                  # pytest
@@ -582,7 +582,7 @@ cobeco/
 
 | Papel                               | Responsabilidade                             |
 | ----------------------------------- | -------------------------------------------- |
-| **Proddoc-arch-0006-uc-v1t Owner (Professor)** | Aprovar escopo, validar entregas, demo final |
+| **Product Owner (Professor)** | Aprovar escopo, validar entregas, demo final |
 | **Tech Lead**                 | Code review, decisões técnicas, mentoring  |
 | **Arquiteto de Software**     | ADRs, DER, UCD, OpenAPI                      |
 | **Dev Frontend**              | HTML/CSS/JS, módulos ES6, UX                |
@@ -651,7 +651,7 @@ cobeco/
 
 | Papel                                               | Nome                      | Data                 | Status        |
 | --------------------------------------------------- | ------------------------- | -------------------- | ------------- |
-| **Proddoc-arch-0006-uc-v1t Owner (THAIS CRISTINA CASAGRANDE)** | _________________________ | ___/___/2026 | ⏳ Aguardando |
+| **Product Owner (THAIS CRISTINA CASAGRANDE)** | _________________________ | ___/___/2026 | ⏳ Aguardando |
 | **Tech Lead**                                 | _________________________ | ___/___/2026 | ⏳ Aguardando |
 | **Arquiteto de Software**                     | _________________________ | ___/___/2026 | ⏳ Aguardando |
 | **Dev Frontend**                              | _________________________ | ___/___/2026 | ⏳ Aguardando |

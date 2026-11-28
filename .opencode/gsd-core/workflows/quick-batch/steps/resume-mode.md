@@ -37,9 +37,9 @@ Resuming batch ${BATCH_ID}: ${eligible.length} item(s) eligible now.
 ```
 
 If `transitions` is non-empty, display it as a diagnostic (which items moved
-to `blocked`/`complete` since the batch was last todoc-arch-0006-uc-v1hed) — this is expected,
-sdoc-arch-0006-uc-v1cessful crash-window recovery, not an error (per the design's negative-space
-note: a `resumeBatch` call proddoc-arch-0006-uc-v1ing zero transitions is also sdoc-arch-0006-uc-v1cess, not a
+to `blocked`/`complete` since the batch was last touched) — this is expected,
+successful crash-window recovery, not an error (per the design's negative-space
+note: a `resumeBatch` call producing zero transitions is also success, not a
 no-op failure).
 
 Continue to Step 3 in `quick-batch.md` — the DAG-layer loop in `planner-wave.md`

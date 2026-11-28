@@ -94,7 +94,7 @@ gantt
 
 ## Marcos (Milestones) — Datas Chave
 
-| Marco | Descrição | Data Prevista | Critério de Sdoc-arch-0006-uc-v1esso |
+| Marco | Descrição | Data Prevista | Critério de Sucesso |
 |-------|-----------|---------------|---------------------|
 | **M0** | Kick-off + Charter Aprovado | 15/09/2026 | Gate 1: CCB assina Charter + RACI + ADR-001 |
 | **M1** | Fim Sprint 1 (Auth + Docs) | 29/09/2026 | Gate 2: PRD + US + C4 + NFRs + Test Plan + RAID aprovados |

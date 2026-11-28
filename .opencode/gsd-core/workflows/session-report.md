@@ -81,7 +81,7 @@ Write `.planning/reports/SESSION_REPORT.md` (or `.planning/reports/YYYYMMDD-sess
 
 ## Work Performed
 
-### Phases Todoc-arch-0006-uc-v1hed
+### Phases Touched
 [List phases worked on with brief description of what was done]
 
 ### Key Outcomes
@@ -140,10 +140,10 @@ If this is the first report, mention:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Session data gathered from STATE.md, git log, and plan files
 - [ ] Report written to .planning/reports/
 - [ ] Report includes work summary, outcomes, and file changes
 - [ ] Filename includes date to prevent overwrites
 - [ ] Result summary displayed to user
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

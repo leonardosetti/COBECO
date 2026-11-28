@@ -22,30 +22,24 @@ export class CadastroPage extends BasePage {
   readonly submitButton: Locator;
   readonly loginLink: Locator;
 
-  constrdoc-arch-0006-uc-v1tor(page: Page) {
+  constructor(page: Page) {
     super(page);
-    this.nomeUsuarioInput = page.locator('#cad-nome-usuario, input[name="nome_usuario"]');
-    this.emailInput = page.locator('#cad-email, input[name="email"]');
-    this.nomeInput = page.locator('#cad-nome, input[name="nome"]');
-    this.senhaInput = page.locator('#cad-senha, input[name="senha"]');
-    this.confirmarSenhaInput = page.locator('#cad-confirmar-senha, input[name="confirmar_senha"]');
-    this.perguntaSegurancaInput = page.locator('#cad-pergunta, input[name="pergunta_seguranca"]');
-    this.respostaSegurancaInput = page.locator('#cad-resposta, input[name="resposta_seguranca"]');
-    this.submitButton = page.locator('button[type="submit"]');
-    this.loginLink = page.locator('[data-link="/login"], a[href="#/login"]');
+    this.nomeUsuarioInput = page.locator('#c-user');
+    this.emailInput = page.locator('#c-email');
+    this.nomeInput = page.locator('#c-nome');
+    this.senhaInput = page.locator('#c-senha');
+    this.confirmarSenhaInput = page.locator('#c-conf');
+    this.perguntaSegurancaInput = page.locator('#c-perg');
+    this.respostaSegurancaInput = page.locator('#c-resp');
+    this.submitButton = page.locator('button[data-action="cadastrar"]');
+    this.loginLink = page.locator('[data-action="page-login"]');
   }
 
   async goto(): Promise<void> {
     await super.goto('/#/cadastrar');
     await this.nomeUsuarioInput.waitFor({ state: 'visible', timeout: 10000 });
-    // Wait for form submit handler to be attached (router bindEvents)
-    await this.page.waitForFunction(
-      () => {
-        const form = document.querySelector('#form-cadastro');
-        return form && form.onsubmit != null;
-      },
-      { timeout: 15000 }
-    );
+    // Wait for submit button to be ready
+    await this.submitButton.waitFor({ state: 'visible', timeout: 10000 });
   }
 
   async cadastrar(data: CadastroData): Promise<string | null> {
@@ -54,23 +48,19 @@ export class CadastroPage extends BasePage {
     await this.nomeInput.fill(data.nome);
     await this.senhaInput.fill(data.senha);
     await this.confirmarSenhaInput.fill(data.confirmar_senha);
-    await this.perguntaSegurancaInput.fill(data.pergunta_seguranca);
+    await this.perguntaSegurancaInput.selectOption(data.pergunta_seguranca);
     await this.respostaSegurancaInput.fill(data.resposta_seguranca);
     
-    // Submit form via dispatchEvent to trigger onsubmit handler
-    await this.page.evaluate(() => {
-      const form = document.querySelector('#form-cadastro');
-      if (form) {
-        const event = new Event('submit', { cancelable: true, bubbles: true });
-        form.dispatchEvent(event);
-      }
-    });
+    // Click the cadastrar button (triggers handleCadastro via click dispatcher)
+    await this.submitButton.click();
     
-    // Wait for navigation to login (sdoc-arch-0006-uc-v1cess case)
-    await this.page.waitForURL('**/#/login', { timeout: 10000 }).catch(() => {});
-    
-    // Try to get toast message before navigation
+    // Wait for toast to appear first (before navigation)
+    await this.waitForToast();
     const toast = await this.getToastMessage();
+    
+    // Wait for navigation to categorias (success case after registration)
+    await this.page.waitForURL('**/#/categorias', { timeout: 15000 }).catch(() => {});
+    
     await this.page.waitForLoadState('networkidle');
     return toast;
   }
@@ -81,7 +71,7 @@ export class CadastroPage extends BasePage {
     if (data.nome) await this.nomeInput.fill(data.nome);
     if (data.senha) await this.senhaInput.fill(data.senha);
     if (data.confirmar_senha) await this.confirmarSenhaInput.fill(data.confirmar_senha);
-    if (data.pergunta_seguranca) await this.perguntaSegurancaInput.fill(data.pergunta_seguranca);
+    if (data.pergunta_seguranca) await this.perguntaSegurancaInput.selectOption(data.pergunta_seguranca);
     if (data.resposta_seguranca) await this.respostaSegurancaInput.fill(data.resposta_seguranca);
     await this.submitButton.click();
     // Don't wait for toast here - validation may prevent submit

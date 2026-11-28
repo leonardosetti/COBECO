@@ -45,7 +45,7 @@ Write {config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0_dir}
 
 Collect confirmations by reading each config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 agent's `outputFile` once it reports completion — each `run_in_background=true` Agent call returns an `async_launched` result carrying an `outputFile` path (with `canReadOutputFile: true`). Note failures in the final report.
 
-**Fallback when Task tool is unavailable:** Generate per-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 doc-readme-0001-readme-canons sequentially inline after the `sequential_generation` step. For each config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 directory with a `config-npm-0001-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0-v1.0.json`, constrdoc-arch-0006-uc-v1t the equivalent `doc_assignment` block and generate the doc-readme-0001-readme-canon following gsd-doc-writer instrdoc-arch-0006-uc-v1tions.
+**Fallback when Task tool is unavailable:** Generate per-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 doc-readme-0001-readme-canons sequentially inline after the `sequential_generation` step. For each config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 directory with a `config-npm-0001-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0-v1.0.json`, construct the equivalent `doc_assignment` block and generate the doc-readme-0001-readme-canon following gsd-doc-writer instructions.
 
 Continue to commit_docs.
 </step>

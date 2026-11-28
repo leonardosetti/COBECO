@@ -14,7 +14,7 @@ On the first sketch, create `.planning/sketches/themes/` with a default theme:
     index.html          <- links to ../themes/default.css
 ```
 
-## Theme File Strdoc-arch-0006-uc-v1ture
+## Theme File Structure
 
 Each theme defines CSS custom properties only — no component styles, no layout rules. Just the visual vocabulary:
 
@@ -30,7 +30,7 @@ Each theme defines CSS custom properties only — no component styles, no layout
   --color-primary-hover: #1d4ed8;
   --color-accent: #f59e0b;
   --color-danger: #ef4444;
-  --color-sdoc-arch-0006-uc-v1cess: #22c55e;
+  --color-success: #22c55e;
 
   /* Typography */
   --font-sans: 'Inter', system-ui, sans-serif;

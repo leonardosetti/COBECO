@@ -4,9 +4,9 @@ export abstract class BasePage {
   public readonly page: Page;
   protected baseURL: string;
 
-  constrdoc-arch-0006-uc-v1tor(page: Page) {
+  constructor(page: Page) {
     this.page = page;
-    this.baseURL = processconfig-env-0001-env-example-v1.0.BASE_URL || 'http://localhost:8380';
+    this.baseURL = process.env.BASE_URL || 'http://localhost:8380';
   }
 
   async goto(path: string = '/'): Promise<void> {
@@ -17,6 +17,9 @@ export abstract class BasePage {
   async waitForLoad(): Promise<void> {
     await this.page.waitForLoadState('networkidle');
     await this.page.waitForSelector('main', { state: 'visible', timeout: 10000 });
+    // Aguarda o app estar pronto (carregamento inicial + hash routing)
+    await this.page.waitForFunction(() => window.appReady instanceof Promise);
+    await this.page.evaluate(() => window.appReady);
   }
 
   async click(locator: Locator | string): Promise<void> {

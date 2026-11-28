@@ -40,7 +40,7 @@ workflow:
 **Semana:** 1 (15/09/2026 a 19/09/2026)  
 **Sprint Atual:** S0 (Iniciação / Sprint 0) — Dia 1 de 5  
 **Data do Relatório:** 19/09/2026  
-**Autor:** Leonardo Setti (Proddoc-arch-0006-uc-v1t Owner)  
+**Autor:** Leonardo Setti (Product Owner)  
 **Distribuição:** Equipe + Orientador + Coordenação (conforme Plano de Comunicação)  
 **Classificação:** Interno — Dados Sintéticos Apenas (LGPD)
 
@@ -57,7 +57,7 @@ workflow:
 | **Riscos (Risks)** | 🟢 Controlados | ➡️ Estável | RAID Log criado, 10 riscos identificados |
 | **Equipe (Team)** | 🟢 Completa | ➡️ Estável | 5 integrantes ativos, 0 ausências |
 
-**Status Geral:** 🟢 **VERDE** — Iniciação concluída com sdoc-arch-0006-uc-v1esso. Próxima semana: Sprint 1 (Auth + Docs).
+**Status Geral:** 🟢 **VERDE** — Iniciação concluída com sucesso. Próxima semana: Sprint 1 (Auth + Docs).
 
 ---
 
@@ -184,7 +184,7 @@ workflow:
 
 | Papel | Nome | Ciência (✓) | Comentário | Data |
 |-------|------|-------------|------------|------|
-| Proddoc-arch-0006-uc-v1t Owner | Leonardo Setti | ✓ | Iniciação concluída, pronto para Sprint 1 | 19/09/2026 |
+| Product Owner | Leonardo Setti | ✓ | Iniciação concluída, pronto para Sprint 1 | 19/09/2026 |
 | Tech Lead | Leonardo Setti | ✓ | Stack definida, infra validada | 19/09/2026 |
 | Orientador | [Nome] | ✓ | Charter aprovado, aguardando PRD | 19/09/2026 |
 

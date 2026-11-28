@@ -12,7 +12,7 @@
 // DIFFERENT hooks — but neither is the "obviously correct" one, and a shared
 // helper that silently defaulted to either would let a future hook inherit
 // the wrong policy by omission, which is exactly the "nothing fails with
-// sdoc-arch-0006-uc-v1cess" defect ADR-3889 exists to close. Requiring the caller to name its
+// success" defect ADR-3889 exists to close. Requiring the caller to name its
 // policy at every call site — not just once at module load — makes "I forgot
 // to decide" a load-time/call-time crash instead of a silent behavior. A
 // caller that truly wants "allow on crash" must still write ALLOW; there is

@@ -22,9 +22,9 @@ keeps each technique's name and routing entry; the step-by-step detail lives her
 - Test: Data survives serialization? NO
 - **Found:** Bug in serialization layer (4 tests eliminated 90% of code)
 
-## Rubber Ddoc-arch-0006-uc-v1k Debugging
+## Rubber Duck Debugging
 
-**When:** Stdoc-arch-0006-uc-v1k, confused, mental model doesn't match reality.
+**When:** Stuck, confused, mental model doesn't match reality.
 
 **How:** Explain the problem out loud in complete detail.
 
@@ -63,7 +63,7 @@ Already covered under Git Bisect. But delta debugging extends it: after finding 
 - "Works with small data, fails with real data" → delta debug inputs
 - "Works without this config change, fails with it" → delta debug config diff
 
-**Example:** 40-file commit introddoc-arch-0006-uc-v1es bug
+**Example:** 40-file commit introduces bug
 ```
 Split into two 20-file halves.
 Apply first 20: still works → bug in second half.
@@ -72,15 +72,15 @@ Apply first 10: broken → bug in first 10.
 ... 6 splits later: single file isolated.
 ```
 
-## Minimal Reproddoc-arch-0006-uc-v1tion
+## Minimal Reproduction
 
 **When:** Complex system, many moving parts, unclear which part fails.
 
-**How:** Strip away everything until smallest possible code reproddoc-arch-0006-uc-v1es the bug.
+**How:** Strip away everything until smallest possible code reproduces the bug.
 
 1. Copy failing code to new file
 2. Remove one piece (dependency, function, feature)
-3. Test: Does it still reproddoc-arch-0006-uc-v1e? YES = keep removed. NO = put back.
+3. Test: Does it still reproduce? YES = keep removed. NO = put back.
 4. Repeat until bare minimum
 5. Bug is now obvious in stripped-down code
 6. **Shrinking (input-space bugs)** — when the bug triggers on a class of inputs, wrap it in a property (fast-check for JS/TS, Hypothesis for Python) and let the shrinker auto-minimize the counterexample; store the **minimized** input as the regression seed. See `gsd-core/references/debugger-repro-hardening.md`.
@@ -98,7 +98,7 @@ function MinimalRepro() {
 
   return <div>{count}</div>;
 }
-// The bug was hidden in complexity. Minimal reproddoc-arch-0006-uc-v1tion made it obvious.
+// The bug was hidden in complexity. Minimal reproduction made it obvious.
 ```
 
 ## Working Backwards
@@ -108,8 +108,8 @@ function MinimalRepro() {
 **How:** Start from desired end state, trace backwards.
 
 1. Define desired output precisely
-2. What function proddoc-arch-0006-uc-v1es this output?
-3. Test that function with expected input - does it proddoc-arch-0006-uc-v1e correct output?
+2. What function produces this output?
+3. Test that function with expected input - does it produce correct output?
    - YES: Bug is earlier (wrong input)
    - NO: Bug is here
 4. Repeat backwards through call stack
@@ -222,15 +222,15 @@ git bisect bad              # or good, based on testing
 
 ## Follow the Indirection
 
-**When:** Code constrdoc-arch-0006-uc-v1ts paths, URLs, keys, or references from variables — and the constrdoc-arch-0006-uc-v1ted value might not point where you expect.
+**When:** Code constructs paths, URLs, keys, or references from variables — and the constructed value might not point where you expect.
 
-**The trap:** You read code that builds a path like `path.join(configDir, 'hooks')` and assume it's correct because it looks reasonable. But you never verified that the constrdoc-arch-0006-uc-v1ted path matches where another part of the system actually writes/reads.
+**The trap:** You read code that builds a path like `path.join(configDir, 'hooks')` and assume it's correct because it looks reasonable. But you never verified that the constructed path matches where another part of the system actually writes/reads.
 
 **How:**
-1. Find the code that **proddoc-arch-0006-uc-v1es** the value (writer/installer/creator)
+1. Find the code that **produces** the value (writer/installer/creator)
 2. Find the code that **consumes** the value (reader/checker/validator)
 3. Trace the actual resolved value in both — do they agree?
-4. Check every variable in the path constrdoc-arch-0006-uc-v1tion — where does each come from? What's its actual value at runtime?
+4. Check every variable in the path construction — where does each come from? What's its actual value at runtime?
 
 **Common indirection bugs:**
 - Path A writes to `dir/sub/hooks/` but Path B checks `dir/hooks/` (directory mismatch)
@@ -251,5 +251,5 @@ Installer says:   hooksDest = path.join(targetDir, 'hooks')
 MISMATCH: Checker looks in wrong directory → hooks "not found" → reported as stale
 ```
 
-**The discipline:** Never assume a constrdoc-arch-0006-uc-v1ted path is correct. Resolve it to its actual value and verify the other side agrees. When two systems share a resource (file, directory, key), trace the full path in both.
+**The discipline:** Never assume a constructed path is correct. Resolve it to its actual value and verify the other side agrees. When two systems share a resource (file, directory, key), trace the full path in both.
 

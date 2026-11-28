@@ -33,5 +33,5 @@ insert:
 
 This ordering is fail-closed: a later wave is never selected while any
 predecessor is incomplete, because a ready plan's own dependencies are
-complete by constrdoc-arch-0006-uc-v1tion — anything not ready is reported and the run stops
+complete by construction — anything not ready is reported and the run stops
 at the waiting condition.

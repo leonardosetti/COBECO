@@ -1,10 +1,10 @@
 # PRD — COBECO MVP
 
-**Documento:** Proddoc-arch-0006-uc-v1t Requirements Document  
+**Documento:** Product Requirements Document  
 **Versão:** 1.0  
 **Status:** Aprovado (Gate 2 — 29/09/2026)  
 **Data:** 29/09/2026  
-**Autor:** Leonardo Setti (Proddoc-arch-0006-uc-v1t Owner)  
+**Autor:** Leonardo Setti (Product Owner)  
 **Revisores:** Nicholas Anthony (Arquiteto), Nicolas Mallouk (QA), Fabrício Cabral (Dev Backend), Eduardo Passarelli (Dev Frontend)  
 **Base:** req-func-0001-requisitos-funcionais-canon.md v3.2, req-use-case-0001-casos-de-uso-canon.md v3.2, board-roadmap-0001-roadmap-canon.md, Constitution v2.0
 
@@ -22,7 +22,7 @@ Consumidores brasileiros gastam em média **30 minutos** por semana comparando p
 - **Comparação de preços**: Pré-filtro por 11 categorias macro → seleção de fornecedores (com % disponibilidade, mínimo 2) → slider disponibilidade 0-100% → motor de cálculo flat (cache 5min, timeout 10s) → tabela ordenada por preço ASC com highlight verde na melhor oferta.
 - **Exportação PDF A4**: ReportLab server-side, funciona para visitantes e autenticados, nome `lista_YYYYMMDD.pdf`.
 - **Perfil do usuário**: Visualizar (dados read-only + editáveis) + Gerenciar (email, nome, senha com validação atual, transação ACID).
-- **UI Feedback Global**: Toast (sdoc-arch-0006-uc-v1esso/erro), Skeletons (loading), Modais confirmação.
+- **UI Feedback Global**: Toast (sucesso/erro), Skeletons (loading), Modais confirmação.
 
 ### 1.3 Público-alvo e Personas
 | Persona | Descrição | Necessidade Principal | Prioridade |
@@ -39,7 +39,7 @@ Consumidores brasileiros gastam em média **30 minutos** por semana comparando p
 |--------------|-----------------|---------|------|------------|
 | **O1: Entregar MVP funcional** | KR1: 18 RFs implementados | % RFs Done | 100% | GitHub Projects "Done" |
 | | KR2: Cobertura de testes | % cobertura | ≥ 80% | `pytest --cov-fail-under=80` |
-| | KR3: Deploy reproduzível | `docker compose up` | Sdoc-arch-0006-uc-v1esso | Smoke test CI |
+| | KR3: Deploy reproduzível | `docker compose up` | Sucesso | Smoke test CI |
 | **O2: Qualidade técnica** | KR4: Clean Architecture | Code review | Aprovado | Rubrica R-01..R-07 |
 | | KR5: Documentação ABNT | Nota orientador | ≥ 8,0 | Avaliação formal |
 | **O3: Aprendizado da equipe** | KR6: Artefatos SDD | Specs + Handoffs | 100% ratificados | Repo `.ai/` |

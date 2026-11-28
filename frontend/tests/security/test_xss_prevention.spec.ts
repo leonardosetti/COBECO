@@ -125,7 +125,7 @@ test.describe('Segurança Frontend - Prevenção XSS', () => {
       await loginPage.login('testuser', 'Senha@123');
       
       // Trigger toast com XSS
-      await page.evaluate(() => window.showToast('<script>alert("toast XSS")</script>', 'sdoc-arch-0006-uc-v1cess'));
+      await page.evaluate(() => window.showToast('<script>alert("toast XSS")</script>', 'success'));
       
       const toast = page.locator('.toast').first();
       await expect(toast).toBeVisible({ timeout: 3000 });

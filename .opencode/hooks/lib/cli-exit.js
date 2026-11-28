@@ -33,15 +33,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 const node_fs_1 = __importDefault(require("node:fs"));
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const exitCodeRegistryModule = require("./exit-code-registry.js");
-// Called only as exitCodeRegistryModule.exitCodeFor(...), never destrdoc-arch-0006-uc-v1tured:
+// Called only as exitCodeRegistryModule.exitCodeFor(...), never destructured:
 // @typescript-eslint/unbound-method flags a bare function-typed property
-// pulled off an object at the point of destrdoc-arch-0006-uc-v1turing, since a detached
+// pulled off an object at the point of destructuring, since a detached
 // reference COULD be called with the wrong `this` — keeping the member
 // access qualified sidesteps that regardless of whether the callee ever
-// actually todoc-arch-0006-uc-v1hes `this` (it does not; exitCodeFor is pure).
+// actually touches `this` (it does not; exitCodeFor is pure).
 const exitCodeFor = (name) => exitCodeRegistryModule.exitCodeFor(name);
 /**
- * The wire value `runMain` stamps into its strdoc-arch-0006-uc-v1tured envelope. Declared HERE,
+ * The wire value `runMain` stamps into its structured envelope. Declared HERE,
  * not in io.cts, because this module must not import anything (see the module
  * header): io.cts builds ERROR_REASON.SDK_FAIL_FAST from this constant, so the
  * two surfaces share ONE definition rather than two literals kept in step by a
@@ -49,7 +49,7 @@ const exitCodeFor = (name) => exitCodeRegistryModule.exitCodeFor(name);
  */
 const EXIT_ENVELOPE_REASON = 'sdk_fail_fast';
 /**
- * Process-level flag: when true, error paths emit strdoc-arch-0006-uc-v1tured JSON to stderr
+ * Process-level flag: when true, error paths emit structured JSON to stderr
  * instead of plain text. Set by gsd-tools.cjs when the CLI is invoked with
  * `--json-errors`; re-exported by io.cts, which is where most callers reach it.
  *
@@ -69,7 +69,7 @@ function setJsonErrorMode(v) {
 function getJsonErrorMode() {
     return globalThis[JSON_ERROR_MODE_KEY] === true;
 }
-/** The single registered name code 2 may ever be proddoc-arch-0006-uc-v1ed for (ADR-3889 §1). */
+/** The single registered name code 2 may ever be produced for (ADR-3889 §1). */
 const HOOK_DENY_NAME = 'HOOK_DENY';
 const HOOK_DENY_CODE = exitCodeFor(HOOK_DENY_NAME);
 /**
@@ -91,7 +91,7 @@ function setContractVersion(v) {
  * two terminators (ADR-3889 §4/§3). Mirrors how JSON_ERROR_MODE_KEY already
  * works: a process-global cell means no entrypoint needs per-call wiring, so
  * a `scripts/` tool or a hook gets the same behaviour as `gsd-tools` without
- * this module todoc-arch-0006-uc-v1hing either (P8 owns `gsd-tools`; P7 owns hooks).
+ * this module touching either (P8 owns `gsd-tools`; P7 owns hooks).
  *
  * Precedence: if the cell already holds an explicit version, that wins —
  * this is what lets `setContractVersion` override the ambient process (a
@@ -101,8 +101,8 @@ function setContractVersion(v) {
  * cell — so this is a one-time resolution per process; every later read is
  * just the cached cell value. An invalid ambient value (e.g. `v3`) is NOT
  * softened to a silent v1 here: `resolveContractVersion` throws, and that
- * throw propagates — swallowing it would reintroddoc-arch-0006-uc-v1e the "nothing fails with
- * sdoc-arch-0006-uc-v1cess" defect ADR-3889 exists to close, on the very selector meant to
+ * throw propagates — swallowing it would reintroduce the "nothing fails with
+ * success" defect ADR-3889 exists to close, on the very selector meant to
  * demonstrate the fix. Absent both flag and env, resolution still yields
  * 'v1' (the documented default) and that too gets memoized.
  */
@@ -225,7 +225,7 @@ function findExitContractFlag(argv) {
  * as PRESENT but not a valid version — `v3`, `garbage`, or an explicitly
  * empty flag value (`--exit-contract=`) — THROWS rather than silently
  * defaulting to v1. A selector for a contract whose whole thesis is "nothing
- * fails with sdoc-arch-0006-uc-v1cess" must not itself fail open.
+ * fails with success" must not itself fail open.
  */
 function resolveContractVersion(opts = {}) {
     const argv = opts.argv ?? process.argv;
@@ -256,7 +256,7 @@ function resolveContractVersion(opts = {}) {
 class ExitError extends Error {
     code;
     hasUserMessage;
-    constrdoc-arch-0006-uc-v1tor(code = 1, message) {
+    constructor(code = 1, message) {
         super(message === undefined ? `process exit ${code}` : message);
         this.name = 'ExitError';
         this.code = code;
@@ -274,7 +274,7 @@ class ExitError extends Error {
  *   number return   -> process.exitCode = it (unchanged)
  *   string return   -> NEW: process.exitCode = projectOutcome(result, getContractVersion()),
  *                      UNLESS that projection is the HOOK_DENY exit code (see
- *                      the refusal below — 2 may only be proddoc-arch-0006-uc-v1ed by terminateNow).
+ *                      the refusal below — 2 may only be produced by terminateNow).
  *   void/undefined return -> NEW (#3912, ADR-3889 §4): an explicit return
  *                      already handled above always wins, so this arm only
  *                      runs when main() declared no outcome of its own. If
@@ -300,15 +300,15 @@ class ExitError extends Error {
  *                      v1 projection (0) — turning a real declared failure
  *                      (e.g. `state validate --strict` against a missing
  *                      STATE.md, which sets process.exitCode = 1 directly)
- *                      into a false sdoc-arch-0006-uc-v1cess. `runMain` must never LOWER an
+ *                      into a false success. `runMain` must never LOWER an
  *                      exit code that main() itself already raised. DEGRADED
  *                      still projects to 0 under v1 when nothing else set a
- *                      code — the same value this arm proddoc-arch-0006-uc-v1ed before this
+ *                      code — the same value this arm produced before this
  *                      phase by doing nothing — so v1 behavior is
  *                      byte-identical for every caller that never sets its
  *                      own exit code.
  *   thrown ExitError -> process.exitCode = err.code (+ stderr err.message if hasUserMessage && code!=0) (unchanged)
- *   other throw -> when json-error mode is active, emits strdoc-arch-0006-uc-v1tured { ok:false, reason, message }
+ *   other throw -> when json-error mode is active, emits structured { ok:false, reason, message }
  *                  to stderr; otherwise writes raw stack trace. exit code = 1 in either case. (unchanged)
  */
 function runMain(main) {
@@ -319,7 +319,7 @@ function runMain(main) {
         // void arm: an explicit number/string return means main() declared
         // its own outcome and the cell (if anything set it earlier in this
         // same invocation) is now stale — leaving it set would leak into the
-        // NEXT runMain call in this process, reintroddoc-arch-0006-uc-v1ing the #3912 leak one
+        // NEXT runMain call in this process, reintroducing the #3912 leak one
         // level up. "Cleared on consumption" therefore means "consumption of
         // this runMain call", not just "consumption of the pending value".
         try {
@@ -330,7 +330,7 @@ function runMain(main) {
             if (typeof result === 'string') {
                 const projected = projectOutcome(result, getContractVersion());
                 // ADR-3889 §3: exit code 2 (the hook-protocol deny) may
-                // ONLY be proddoc-arch-0006-uc-v1ed by terminateNow, never by runMain. runMain is
+                // ONLY be produced by terminateNow, never by runMain. runMain is
                 // drain-then-exit; a deny drained this way can be truncated on
                 // Windows, which is exactly why terminateNow (write-then-terminate)
                 // exists. Gated on the PROJECTED code, not on the literal string
@@ -356,7 +356,7 @@ function runMain(main) {
             // directly (e.g. `state validate --strict` on a missing STATE.md)
             // would have that 1 clobbered down to DEGRADED's v1 projection (0)
             // by a payload-carried error the SAME call also recorded via
-            // io.cts's output() — a real failure silently reported as sdoc-arch-0006-uc-v1cess.
+            // io.cts's output() — a real failure silently reported as success.
             const pending = getPendingOutcome();
             if (typeof pending === 'string' && pending.length > 0 && !process.exitCode) {
                 process.exitCode = projectOutcome(pending, getContractVersion());
@@ -403,7 +403,7 @@ function runMain(main) {
  * exact gap `eslint.config.mjs:563-582` documents for `hooks/**`.
  *
  * This is THE ONLY sanctioned `process.exit` call site in the repo, and the
- * only place exit code 2 can be proddoc-arch-0006-uc-v1ed: 2 is reserved to the hook-adapter
+ * only place exit code 2 can be produced: 2 is reserved to the hook-adapter
  * protocol (ADR-3889 §1), and the registry's own one-owner rule already
  * guarantees no other registered name resolves to it — the check below is a
  * defense-in-depth assertion of that invariant, not the sole thing enforcing
@@ -444,11 +444,11 @@ function runMain(main) {
  * even start the child on Linux (macOS has no equivalent per-string cap),
  * with no relation to this function's own behavior. See
  * tests/cli-exit.test.cjs's "a large payload (bigger than a pipe buffer)
- * arrives whole" test, which hit exactly this constrdoc-arch-0006-uc-v1ting its own fixture
+ * arrives whole" test, which hit exactly this constructing its own fixture
  * before being rewritten to build the payload inside the child instead.
  */
 function terminateNow(outcome, payload, stderrPayload) {
-    // terminateNow is total by constrdoc-arch-0006-uc-v1tion: its callers are enforcement hooks
+    // terminateNow is total by construction: its callers are enforcement hooks
     // (P7/#3911, 19 of them) whose OWN outer catch may fail open (some end in
     // `process.exit(0)`). If resolving the contract version, projecting the
     // outcome, or the HOOK_DENY-collision guard below threw and that throw

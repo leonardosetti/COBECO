@@ -1,7 +1,7 @@
 @/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/response-language-directive.md
 
 <purpose>
-Add a new integer phase to the end of the current milestone in the roadmap. Automatically calculates next phase number, creates phase directory, and updates roadmap strdoc-arch-0006-uc-v1ture.
+Add a new integer phase to the end of the current milestone in the roadmap. Automatically calculates next phase number, creates phase directory, and updates roadmap structure.
 </purpose>
 
 <required_reading>
@@ -113,10 +113,10 @@ Roadmap updated: .planning/ROADMAP.md
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
-- [ ] `gsd_run query phase.add` executed sdoc-arch-0006-uc-v1cessfully
+<success_criteria>
+- [ ] `gsd_run query phase.add` executed successfully
 - [ ] Phase directory created
 - [ ] Roadmap updated with new phase entry
 - [ ] STATE.md updated with roadmap evolution note
 - [ ] User informed of next steps
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

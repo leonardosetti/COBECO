@@ -1,7 +1,7 @@
 @/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/response-language-directive.md
 
 <purpose>
-Extract decisions, lessons learned, patterns discovered, and surprises encountered from completed phase artifacts into a strdoc-arch-0006-uc-v1tured LEARNINGS.md file. Captures institutional knowledge that would otherwise be lost between phases.
+Extract decisions, lessons learned, patterns discovered, and surprises encountered from completed phase artifacts into a structured LEARNINGS.md file. Captures institutional knowledge that would otherwise be lost between phases.
 </purpose>
 
 <required_reading>
@@ -9,7 +9,7 @@ Read all files referenced by the invoking prompt's execution_context before star
 </required_reading>
 
 <objective>
-Analyze completed phase artifacts (PLAN.md, SUMMARY.md, VERIFICATION.md, UAT.md, STATE.md) and extract strdoc-arch-0006-uc-v1tured learnings into 4 categories: decisions, lessons, patterns, and surprises. Each extracted item includes source attribution. The output is a LEARNINGS.md file with YAML frontmatter containing metadata about the extraction.
+Analyze completed phase artifacts (PLAN.md, SUMMARY.md, VERIFICATION.md, UAT.md, STATE.md) and extract structured learnings into 4 categories: decisions, lessons, patterns, and surprises. Each extracted item includes source attribution. The output is a LEARNINGS.md file with YAML frontmatter containing metadata about the extraction.
 </objective>
 
 <process>
@@ -80,7 +80,7 @@ Each lesson entry must include:
 
 ### 3. Patterns
 Reusable patterns, approaches, or techniques discovered. Look for:
-- Sdoc-arch-0006-uc-v1cessful implementation patterns in SUMMARY.md
+- Successful implementation patterns in SUMMARY.md
 - Testing patterns from VERIFICATION.md or UAT.md
 - Workflow patterns that worked well
 - Code organization patterns from PLAN.md
@@ -104,7 +104,7 @@ Each surprise entry must include:
 </step>
 
 <step name="capture_thought_integration">
-**What this step is:** `capture_thought` is an **optional convention**, not a bundled GSD tool. GSD does not ship one and does not require one. The step is a hook for users who run a memory / knowledge-base MCP server (for example ExoCortex-style servers, `claude-mem`, or `mem0`-style servers) that exposes a tool with this exact name. If any MCP server in the current session provides a `capture_thought` tool with the signature below, each extracted learning is routed through it with metadata. If no sdoc-arch-0006-uc-v1h tool is present, the step is a silent no-op — `LEARNINGS.md` is always the primary output.
+**What this step is:** `capture_thought` is an **optional convention**, not a bundled GSD tool. GSD does not ship one and does not require one. The step is a hook for users who run a memory / knowledge-base MCP server (for example ExoCortex-style servers, `claude-mem`, or `mem0`-style servers) that exposes a tool with this exact name. If any MCP server in the current session provides a `capture_thought` tool with the signature below, each extracted learning is routed through it with metadata. If no such tool is present, the step is a silent no-op — `LEARNINGS.md` is always the primary output.
 
 **Detection:** Check whether a tool named `capture_thought` is available in the current session. Do not assume any specific MCP server is connected.
 
@@ -150,7 +150,7 @@ Individual items may carry an optional `graduated:` annotation (added by `gradua
 ```
 This annotation is appended after the item's existing fields and prevents the item from being re-surfaced in future graduation scans. Do not add this field during extraction — it is written only by the graduation workflow.
 
-The body follows this strdoc-arch-0006-uc-v1ture:
+The body follows this structure:
 ```markdown
 # Phase {PHASE_NUMBER} Learnings: {PHASE_NAME}
 
@@ -250,8 +250,8 @@ Next steps:
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
-- [ ] Phase artifacts located and read sdoc-arch-0006-uc-v1cessfully
+<success_criteria>
+- [ ] Phase artifacts located and read successfully
 - [ ] All 4 categories extracted: decisions, lessons, patterns, surprises
 - [ ] Each extracted item has source attribution
 - [ ] LEARNINGS.md written with correct YAML frontmatter
@@ -259,7 +259,7 @@ Next steps:
 - [ ] capture_thought integration attempted if tool available
 - [ ] STATE.md updated with extraction activity
 - [ ] User receives summary report
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>
 
 <critical_rules>
 - PLAN.md and SUMMARY.md are required — exit with clear error if missing

@@ -2,7 +2,7 @@
 
 **Versão:** 1.0  
 **Data:** 14/11/2026  
-**Autor:** Leonardo Setti (Proddoc-arch-0006-uc-v1t Owner)  
+**Autor:** Leonardo Setti (Product Owner)  
 **Base:** PRD v1.0, Constitution v2.0  
 **Status:** Ratificado pelo CCB (Gate 2)
 

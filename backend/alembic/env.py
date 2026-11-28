@@ -1,5 +1,5 @@
 # COBECO Backend — Alembic Environment
-# Configuração para migrations síncronas com MySQL (pymysql)
+# Configuração para migrations síncronas com PostgreSQL (psycopg)
 # Inclui retry para aguardar DB ficar pronto
 
 import os
@@ -21,8 +21,8 @@ from src.config import settings
 config = context.config
 
 # Override sqlalchemy.url from settings
-# Para migrations, usar driver síncrono (pymysql)
-sync_db_url = settings.DATABASE_URL.replace("mysql+asyncmy://", "mysql+pymysql://")
+# Para migrations, usar driver síncrono (psycopg)
+sync_db_url = settings.DATABASE_URL.replace("postgresql+asyncpg://", "postgresql+psycopg://")
 config.set_main_option("sqlalchemy.url", sync_db_url)
 
 # Logging
@@ -43,7 +43,7 @@ def create_engine_with_retry(url: str, max_retries: int = 30, retry_interval: in
             # Testa a conexão
             with engine.connect() as conn:
                 conn.execute(text("SELECT 1"))
-            print(f"Database connection sdoc-arch-0006-uc-v1cessful on attempt {attempt + 1}")
+            print(f"Database connection successful on attempt {attempt + 1}")
             return engine
         except OperationalError as e:
             last_exception = e

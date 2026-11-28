@@ -236,11 +236,11 @@ CSP permite `'unsafe-inline'` em `style-src` para suportar Tailwind JIT ou estil
 
 ---
 
-### BUG-007: Frontend - `showToast` não escapa HTML em mensagens de sdoc-arch-0006-uc-v1esso
+### BUG-007: Frontend - `showToast` não escapa HTML em mensagens de sucesso
 | Campo | Valor |
 |-------|-------|
 | **ID** | BUG-007 |
-| **Título** | Toast de sdoc-arch-0006-uc-v1esso pode executar XSS se mensagem vier de API |
+| **Título** | Toast de sucesso pode executar XSS se mensagem vier de API |
 | **Severidade** | **MÉDIO** |
 | **Prioridade** | **P1 - Alto** |
 | **Módulo** | Frontend - `app.js` (`showToast`) |

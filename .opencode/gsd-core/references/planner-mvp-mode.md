@@ -12,7 +12,7 @@
 - "Wire up the UI" as a final integration task
 
 **Required** under tracer-first:
-- The leading `tracer` task proddoc-arch-0006-uc-v1es a working end-to-end path — proddoc-arch-0006-uc-v1tion-quality, not a prototype. Stubs are allowed ONLY where they can later be filled without an architectural change; the happy path must be real.
+- The leading `tracer` task produces a working end-to-end path — production-quality, not a prototype. Stubs are allowed ONLY where they can later be filled without an architectural change; the happy path must be real.
 - Each subsequent expansion task either adds a new slice OR refines an existing slice (validation, error states, edge cases).
 - *(MVP enrichment, `MVP_MODE=true`)* The phase goal is framed as a user story: "**As a** [user], **I want to** [do X], **so that** [Y]."
 
@@ -20,10 +20,10 @@
 
 For a feature `F`:
 
-1. **Tracer slice** — the thinnest end-to-end path (UI form → API endpoint → DB read/write), wired through every layer with a real runnable `<verify>`. This task is always `type="tracer"`; proddoc-arch-0006-uc-v1tion-quality, not a prototype; stubs only where later-fillable without an architectural change. Under `--tdd` it *also* starts red — its first move is a failing end-to-end test for the happy path of `F`.
+1. **Tracer slice** — the thinnest end-to-end path (UI form → API endpoint → DB read/write), wired through every layer with a real runnable `<verify>`. This task is always `type="tracer"`; production-quality, not a prototype; stubs only where later-fillable without an architectural change. Under `--tdd` it *also* starts red — its first move is a failing end-to-end test for the happy path of `F`.
 2. **Real data layer** — replace any stubs from the tracer with real queries.
 3. **Validation + error states** — invalid input, network failure, empty states.
-4. **Proddoc-arch-0006-uc-v1tion polish** — loading indicators, edge cases, accessibility checks.
+4. **Production polish** — loading indicators, edge cases, accessibility checks.
 
 Tasks 2-4 are not always all needed; gate by the phase's acceptance criteria.
 
@@ -37,7 +37,7 @@ When the orchestrator sets `WALKING_SKELETON=true` (Phase 1 of a new project und
   - One real DB read/write
   - One real UI interaction wired to the API
   - Deployment to a dev environment (or a documented local-run command that exercises the full stack)
-- The plan **must proddoc-arch-0006-uc-v1e** `SKELETON.md` in the phase directory alongside `PLAN.md`. Use the template at `@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/skeleton-template.md`. `SKELETON.md` records the architectural decisions that subsequent phases will build on (chosen framework, DB, deployment target, auth approach, directory layout).
+- The plan **must produce** `SKELETON.md` in the phase directory alongside `PLAN.md`. Use the template at `@/lab/FATEC/202602/ger_proj/COGME/.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/gsd-core/references/skeleton-template.md`. `SKELETON.md` records the architectural decisions that subsequent phases will build on (chosen framework, DB, deployment target, auth approach, directory layout).
 
 `SKELETON.md` is the architectural backbone for every later vertical slice; treat it as a contract, not a scratchpad.
 
@@ -49,4 +49,4 @@ When the orchestrator sets `WALKING_SKELETON=true` (Phase 1 of a new project und
 
 ## Acceptance Test for Your Plan
 
-Before emitting the plan, ask: **after Task N completes, can a real user *do* something they could not do after Task N-1?** If the answer is "no, but the foundation is laid", you have a horizontal task disguised as a slice. Restrdoc-arch-0006-uc-v1ture.
+Before emitting the plan, ask: **after Task N completes, can a real user *do* something they could not do after Task N-1?** If the answer is "no, but the foundation is laid", you have a horizontal task disguised as a slice. Restructure.

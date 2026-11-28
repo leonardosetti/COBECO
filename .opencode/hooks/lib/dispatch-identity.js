@@ -39,7 +39,7 @@ const DISPATCH_PHASE_TOKEN_SOURCE = '\\d+[A-Za-z]?(?:\\.\\d+)*';
 //   that long; this is purely a backstop against pathological input.
 // - Values bounded to {0,200} and forbidden from containing `"`, `]`, or any
 //   control character that could either close the marker early or forge a
-//   sibling key — enforced strdoc-arch-0006-uc-v1turally by the negated character class, not
+//   sibling key — enforced structurally by the negated character class, not
 //   by a separate validation pass.
 // Global flag so `findMarker` can scan forward through a large prompt.
 const MARKER_RE = /\[gsd:dispatch((?:\s+[A-Za-z][A-Za-z0-9_-]{0,31}="[^"\]\r\n]{0,200}")*)\s*\]/g;
@@ -60,11 +60,11 @@ const PROSE_RE = new RegExp(
 );
 
 /**
- * Render the `[gsd:dispatch phase="…" plan="…"]` marker for a proddoc-arch-0006-uc-v1er to
+ * Render the `[gsd:dispatch phase="…" plan="…"]` marker for a producer to
  * embed verbatim in a dispatch description/prompt. Never throws.
  *
  * Emits only keys whose value is a non-empty string not containing `"`, `]`,
- * `\r`, or `\n` — sdoc-arch-0006-uc-v1h a value is UNUSABLE and that key is omitted entirely,
+ * `\r`, or `\n` — such a value is UNUSABLE and that key is omitted entirely,
  * because embedding it could close the marker early and forge a second,
  * attacker-controlled field. Key order is always `phase` then `plan`.
  * Returns `''` when neither key is usable (nothing worth emitting).

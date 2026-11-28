@@ -55,6 +55,10 @@ ENV/
 # Node.js / Frontend
 # ============================================================
 node_modules/
+
+# Artefatos de teste E2E (não commitar)
+frontend/tests/e2e/test-results/
+frontend/tests/e2e/playwright-report/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -118,9 +122,6 @@ Thumbs.db
 !.ai/handoffs/INDEX.md
 .ai/agents/config-ledger-0001-ledger-v1.0-*.yaml
 .ai/agents/mcp_usage.jsonl
-.ai/specs/requisitos.md
-.ai/specs/tap.md
-.ai/specs/eap.md
 
 # ============================================================
 # OS & Editor
@@ -154,4 +155,4 @@ site/
 # ============================================================
 # Keep these directories (gitkeep)
 # ============================================================
-!**/.gitkeep
+!**/.gitkeepfrontend/tests/e2e/test-results/

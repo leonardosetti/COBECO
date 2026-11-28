@@ -7,7 +7,7 @@
       "verification": null,
       "resolution": null,
       "reason": null,
-      "probe": "When two things are exactly equal or just todoc-arch-0006-uc-v1h, do they merge, collide, or separate?"
+      "probe": "When two things are exactly equal or just touch, do they merge, collide, or separate?"
     },
     {
       "requirement_id": "R1",

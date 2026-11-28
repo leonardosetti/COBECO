@@ -1,5 +1,5 @@
 <purpose>
-Generate, update, and verify all project documentation — both canonical doc types and existing hand-written docs. The orchestrator detects the project's doc strdoc-arch-0006-uc-v1ture, assembles a work manifest tracking every item, dispatches parallel doc-writer and doc-verifier agents across waves, reviews existing docs for accuracy, identifies documentation gaps, and fixes inaccuracies via a bounded fix loop. All state is persisted in a work manifest so no work item is lost between steps. Output: Complete, strdoc-arch-0006-uc-v1ture-aware documentation verified against the live codebase.
+Generate, update, and verify all project documentation — both canonical doc types and existing hand-written docs. The orchestrator detects the project's doc structure, assembles a work manifest tracking every item, dispatches parallel doc-writer and doc-verifier agents across waves, reviews existing docs for accuracy, identifies documentation gaps, and fixes inaccuracies via a bounded fix loop. All state is persisted in a work manifest so no work item is lost between steps. Output: Complete, structure-aware documentation verified against the live codebase.
 </purpose>
 
 <available_agent_types>
@@ -147,7 +147,7 @@ After assembling the canonical and review queues, analyze the codebase to identi
 1. **Scan the codebase for undocumented areas:**
    - Use Glob/Grep to discover significant source directories (e.g., `src/components/`, `src/pages/`, `src/services/`, `src/api/`, `lib/`, `routes/`)
    - Compare against existing docs: for each major source directory, check if corresponding documentation exists in the docs tree
-   - Look at the project's existing doc strdoc-arch-0006-uc-v1ture for patterns — if the project has `docs/frontend/components/`, `docs/services/`, etc., these indicate the project's documentation conventions
+   - Look at the project's existing doc structure for patterns — if the project has `docs/frontend/components/`, `docs/services/`, etc., these indicate the project's documentation conventions
 
 2. **Identify gaps based on project conventions:**
    - If the project has a `docs/` directory with grouped subdirectories, each source module area that has a corresponding docs subdirectory but is missing documentation files represents a gap
@@ -171,7 +171,7 @@ question([{
 
 4. For each gap the user selects:
    - Add to the generation queue with mode = `"create"`
-   - Set the output path to match the project's existing doc directory strdoc-arch-0006-uc-v1ture
+   - Set the output path to match the project's existing doc directory structure
    - The gsd-doc-writer will receive a `doc_assignment` with `type: "custom"` and a description of what to document, using the project's source files as content discovery targets
 
 If no gaps are detected, omit this section entirely.
@@ -229,17 +229,17 @@ For each doc in the assembled queue, determine whether to create (new file) or u
 | `deployment` | `docs/DEPLOYMENT.md` | `DEPLOYMENT.md` |
 | `contributing` | `CONTRIBUTING.md` | — |
 
-**Strdoc-arch-0006-uc-v1ture-aware path resolution:**
+**Structure-aware path resolution:**
 
-Before applying the default path table, inspect the project's existing docs directory strdoc-arch-0006-uc-v1ture to detect whether the project uses **grouped subdirectories** or **flat files**. This determines how ALL new docs are placed.
+Before applying the default path table, inspect the project's existing docs directory structure to detect whether the project uses **grouped subdirectories** or **flat files**. This determines how ALL new docs are placed.
 
 **Step 1: Detect the project's docs organization pattern.**
 
-List subdirectories under `docs/` from the `existing_docs` paths. If the project has 2+ subdirectories (e.g., `docs/architecture/`, `docs/api/`, `docs/guides/`, `docs/frontend/`), the project uses a **grouped strdoc-arch-0006-uc-v1ture**. If docs are only flat files directly in `docs/` (e.g., `docs/ARCHITECTURE.md`), it uses a **flat strdoc-arch-0006-uc-v1ture**.
+List subdirectories under `docs/` from the `existing_docs` paths. If the project has 2+ subdirectories (e.g., `docs/architecture/`, `docs/api/`, `docs/guides/`, `docs/frontend/`), the project uses a **grouped structure**. If docs are only flat files directly in `docs/` (e.g., `docs/ARCHITECTURE.md`), it uses a **flat structure**.
 
 **Step 2: Resolve paths based on the detected pattern.**
 
-**If GROUPED strdoc-arch-0006-uc-v1ture detected:**
+**If GROUPED structure detected:**
 
 Every doc type MUST be placed in an appropriate subdirectory — no doc should be left flat in `docs/` when the project organizes into groups. Use the following resolution logic:
 
@@ -257,7 +257,7 @@ For each type, check the resolution chain left-to-right. Use the first existing 
 
 The filename within the subdirectory should be contextual — e.g., `docs/guides/getting-started.md`, `docs/architecture/overview.md`, `docs/api/reference.md` — rather than `docs/architecture/ARCHITECTURE.md`. Match the naming style of existing files in that subdirectory (lowercase-kebab, UPPERCASE, etc.).
 
-**If FLAT strdoc-arch-0006-uc-v1ture detected (or no docs/ directory):**
+**If FLAT structure detected (or no docs/ directory):**
 
 Use the default path table above as-is (e.g., `docs/ARCHITECTURE.md`, `docs/TESTING.md`).
 
@@ -366,7 +366,7 @@ Present the following choice using `question` if available, or inline prompt oth
 
 How should this file be handled?
   [1] preserve    -- Skip entirely. Leave unchanged.
-  [2] supplement  -- Append only missing sections. Existing content untodoc-arch-0006-uc-v1hed.
+  [2] supplement  -- Append only missing sections. Existing content untouched.
   [3] regenerate  -- Overwrite with a fresh GSD-generated doc.
 ```
 
@@ -462,7 +462,7 @@ mode: {create|update|supplement}
 preservation_mode: {preserve|supplement|regenerate|null}
 project_context: {INIT JSON}
 {existing_content: | (include full file content here if mode is update or supplement, else omit this line)}
-note: Apply VERIFY markers to any infrastrdoc-arch-0006-uc-v1ture claim not discoverable from the repository.
+note: Apply VERIFY markers to any infrastructure claim not discoverable from the repository.
 </doc_assignment>
 
 {AGENT_SKILLS}
@@ -471,7 +471,7 @@ Write the doc file directly. Return confirmation only — do not return doc cont
 )
 ```
 
-**CRITICAL:** Agent prompts must contain ONLY the `<doc_assignment>` block, the `${AGENT_SKILLS}` variable, and the return instrdoc-arch-0006-uc-v1tion. Do not include project planning context, workflow prose, or any internal tooling references in agent prompts.
+**CRITICAL:** Agent prompts must contain ONLY the `<doc_assignment>` block, the `${AGENT_SKILLS}` variable, and the return instruction. Do not include project planning context, workflow prose, or any internal tooling references in agent prompts.
 
 > **ORCHESTRATOR RULE — CODEX RUNTIME**: After calling all Wave 1 Agent() calls above with `run_in_background=true`, do NOT generate any documentation independently while the subagents are active. Wait for all Wave 1 agents to complete before proceeding. This prevents duplicate work and wasted context.
 
@@ -514,7 +514,7 @@ ls -la {resolved_path_1} {resolved_path_2} {resolved_path_3} 2>/dev/null
 
 If any agent failed or its file is missing:
 - Note the failure
-- Continue with the sdoc-arch-0006-uc-v1cessful docs (do NOT halt Wave 2 for a single failure)
+- Continue with the successful docs (do NOT halt Wave 2 for a single failure)
 - The missing doc will be noted in the final report
 
 Continue to dispatch_wave_2.
@@ -647,7 +647,7 @@ mode: {create|update|supplement}
 preservation_mode: {preserve|supplement|regenerate|null}
 project_context: {INIT JSON}
 {existing_content: | (include full file content here if mode is update or supplement, else omit this line)}
-note: Apply VERIFY markers to any infrastrdoc-arch-0006-uc-v1ture claim not discoverable from the repository.
+note: Apply VERIFY markers to any infrastructure claim not discoverable from the repository.
 wave_1_outputs:
   - doc-readme-0001-readme-canon.md
   - docs/ARCHITECTURE.md
@@ -686,7 +686,7 @@ Write the doc file directly. Return confirmation only — do not return doc cont
 )
 ```
 
-**CRITICAL:** Agent prompts must contain ONLY the `<doc_assignment>` block, the `${AGENT_SKILLS}` variable, and the return instrdoc-arch-0006-uc-v1tion. Do not include project planning context, workflow prose, or any internal tooling references in agent prompts.
+**CRITICAL:** Agent prompts must contain ONLY the `<doc_assignment>` block, the `${AGENT_SKILLS}` variable, and the return instruction. Do not include project planning context, workflow prose, or any internal tooling references in agent prompts.
 
 > **ORCHESTRATOR RULE — CODEX RUNTIME**: After calling all Wave 2 Agent() calls above with `run_in_background=true`, do NOT generate any documentation independently while the subagents are active. Wait for all Wave 2 agents to complete before proceeding. This prevents duplicate work and wasted context.
 
@@ -728,9 +728,9 @@ Continue to dispatch_monorepo_config-npm-0001-config-npm-0001-config-npm-0001-pa
 If `section_manifest` (from `INIT_DOCS_UPDATE`) is `null` or `"dispatch-monorepo-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0s"` is in its `included` list: read and execute `gsd-core/workflows/docs-update/steps/dispatch-monorepo-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0s.md`. Otherwise skip — do not read the file; continue to commit_docs.
 
 <step name="sequential_generation" condition="Task tool is NOT available (e.g. Antigravity, Codex, Copilot)">
-When the `Task` tool is unavailable, generate all queued docs sequentially in the current context instead of spawning subagents — this step replaces dispatch_wave_1, collect_wave_1, dispatch_wave_2, and collect_wave_2. Read `agents/gsd-doc-writer.md` once, then for each queued doc (Wave 1: doc-readme-0001-readme-canon/ARCHITECTURE/CONFIGURATION, complete before Wave 2; Wave 2: GETTING-STARTED/DEVELOPMENT/TESTING plus any queued conditional docs, referencing Wave 1 outputs) constrdoc-arch-0006-uc-v1t the same doc_assignment fields the parallel path uses and write the file inline, using only file system tools (never browser-based tools). If `monorepo_workspaces` is non-empty, generate per-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 doc-readme-0001-readme-canons sequentially afterward. Continue to verify_docs.
+When the `Task` tool is unavailable, generate all queued docs sequentially in the current context instead of spawning subagents — this step replaces dispatch_wave_1, collect_wave_1, dispatch_wave_2, and collect_wave_2. Read `agents/gsd-doc-writer.md` once, then for each queued doc (Wave 1: doc-readme-0001-readme-canon/ARCHITECTURE/CONFIGURATION, complete before Wave 2; Wave 2: GETTING-STARTED/DEVELOPMENT/TESTING plus any queued conditional docs, referencing Wave 1 outputs) construct the same doc_assignment fields the parallel path uses and write the file inline, using only file system tools (never browser-based tools). If `monorepo_workspaces` is non-empty, generate per-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 doc-readme-0001-readme-canons sequentially afterward. Continue to verify_docs.
 
-Exact per-doc constrdoc-arch-0006-uc-v1tion and the monorepo per-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 loop: `gsd-core/workflows/docs-update/detail/elaboration.md` § 1.
+Exact per-doc construction and the monorepo per-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0 loop: `gsd-core/workflows/docs-update/detail/elaboration.md` § 1.
 </step>
 
 <step name="verify_docs">
@@ -748,7 +748,7 @@ Extract `canonical_queue` (items with `status: "completed"`) and `review_queue` 
 
 **Result file contract (#5050).** The verifier does not choose where its result goes; the orchestrator assigns it. For each doc, compute once:
 
-- `doc_key`: the doc's path relative to `project_root`, `/`-separated, with `%` → `%25` first and then `/` → `%2F` (so `doc-readme-0001-readme-canon.md` → `doc-readme-0001-readme-canon.md`, `docs/proddoc-arch-0006-uc-v1t/doc-readme-0001-readme-canon.md` → `docs%2Fproddoc-arch-0006-uc-v1t%2Fdoc-readme-0001-readme-canon.md`). Escaping `%` first makes the key reversible, so two different paths can never share one.
+- `doc_key`: the doc's path relative to `project_root`, `/`-separated, with `%` → `%25` first and then `/` → `%2F` (so `doc-readme-0001-readme-canon.md` → `doc-readme-0001-readme-canon.md`, `docs/product/doc-readme-0001-readme-canon.md` → `docs%2Fproduct%2Fdoc-readme-0001-readme-canon.md`). Escaping `%` first makes the key reversible, so two different paths can never share one.
 - `result_path`: `{project_root}/.planning/tmp/verify-{doc_key}.json`, absolute under `project_root`. A subagent's working directory is not guaranteed to be `project_root` (a run inside a `git worktree` is the common case), so every read of a result file and the final cleanup use this same absolute path — never a bare `.planning/tmp/...`.
 
 Pass `result_path` in the verifier's assignment block (the XML below) and read the result back from it.
@@ -763,7 +763,7 @@ Spawn the verifiers in batches of at most `DISPATCH_CAPACITY`, and wait for a ba
 
 **Phase 1: Verify canonical docs (generated/updated docs)**
 
-For each doc in `canonical_queue` that was sdoc-arch-0006-uc-v1cessfully written to disk:
+For each doc in `canonical_queue` that was successfully written to disk:
 
 1. Print: `◆ Spawning doc verifier for {doc_path}... (runs in a subagent — no output until it returns, ~1–5 min; expected, not a freeze)`
    Spawn the `gsd-doc-verifier` agent (or invoke sequentially if Task tool is unavailable) with a `<verify_assignment>` block:
@@ -790,7 +790,7 @@ For each doc in `review_queue` from the manifest:
 2. Read the result JSON from its `result_path`.
 3. Update the manifest: set `status: "verified"` for each review_queue doc processed.
 
-Non-canonical docs with failures ARE eligible for the fix_loop. When a non-canonical doc has `claims_failed > 0`, dispatch it to gsd-doc-writer in `fix` mode with the failures array — the writer's fix mode does surgical corrections on specific lines regardless of doc type (no template needed). The writer MUST NOT restrdoc-arch-0006-uc-v1ture, rephrase, or reformat any content beyond the failing claims.
+Non-canonical docs with failures ARE eligible for the fix_loop. When a non-canonical doc has `claims_failed > 0`, dispatch it to gsd-doc-writer in `fix` mode with the failures array — the writer's fix mode does surgical corrections on specific lines regardless of doc type (no template needed). The writer MUST NOT restructure, rephrase, or reformat any content beyond the failing claims.
 
 **Phase 3: Present combined verification summary**
 
@@ -825,7 +825,7 @@ If any doc (canonical OR non-canonical) has `claims_failed > 0`: continue to fix
 <step name="fix_loop">
 **Skip condition:** if every doc passed verification (no `claims_failed > 0`), skip this step entirely.
 
-Otherwise, correct flagged inaccuracies by re-sending failing docs to `gsd-doc-writer` in `fix` mode (one spawn per doc, never batched), for at most 2 iterations (D-06). Each spawn carries a `<doc_assignment>` block: `type` (the doc's original type), `mode: fix`, `doc_path`, `project_context`, `existing_content` (current file content), and `failures:` — a strdoc-arch-0006-uc-v1tured array of `{line, claim, expected, actual}` objects, one per failed claim.
+Otherwise, correct flagged inaccuracies by re-sending failing docs to `gsd-doc-writer` in `fix` mode (one spawn per doc, never batched), for at most 2 iterations (D-06). Each spawn carries a `<doc_assignment>` block: `type` (the doc's original type), `mode: fix`, `doc_path`, `project_context`, `existing_content` (current file content), and `failures:` — a structured array of `{line, claim, expected, actual}` objects, one per failed claim.
 
 For each doc with a failure, per iteration:
    a. Read the current file content from disk. Record the pre-fix line count:
@@ -922,7 +922,7 @@ gsd_run query commit "docs: generate project documentation" \
 # --files ... config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0s/core/doc-readme-0001-readme-canon.md config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0s/cli/doc-readme-0001-readme-canon.md
 ```
 
-Only include files that were sdoc-arch-0006-uc-v1cessfully written to disk. Do not include failed or skipped docs.
+Only include files that were successfully written to disk. Do not include failed or skipped docs.
 
 Continue to report.
 </step>
@@ -966,7 +966,7 @@ Preservation decisions:
   - {filename}: {preserve|supplement|regenerate}
 
 {If docs/DEPLOYMENT.md or docs/CONFIGURATION.md were generated:}
-VERIFY markers: {N} markers placed in docs/DEPLOYMENT.md and/or docs/CONFIGURATION.md for infrastrdoc-arch-0006-uc-v1ture claims that require manual verification.
+VERIFY markers: {N} markers placed in docs/DEPLOYMENT.md and/or docs/CONFIGURATION.md for infrastructure claims that require manual verification.
 
 {If review_queue was non-empty:}
 
@@ -994,7 +994,7 @@ End workflow.
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] docs-init JSON loaded and all fields extracted
 - [ ] Project type correctly classified from project_type signals
 - [ ] Doc queue contains all always-on docs plus only the conditional docs matching project signals
@@ -1012,4 +1012,4 @@ End workflow.
 - [ ] fix_loop ran at most 2 iterations and halted on regression
 - [ ] scan_for_secrets ran before commit and blocked on detected patterns
 - [ ] --verify-only invokes gsd-doc-verifier for full fact-checking (not just VERIFY marker count)
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

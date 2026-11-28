@@ -15,7 +15,7 @@ from pathlib import Path
 # Padrões de segredos (regex compilados)
 SECRET_PATTERNS = [
     # Arquivos de ambiente e segredos
-    (r'\config-env-0001-env-example-v1.0(\.local|\.prod|\.dev)?$', 'Arquivo config-env-0001-env-example-v1.0'),
+    (r'config-env-0001-env-example-v1.0(\.local|\.prod|\.dev)?$', 'Arquivo config-env-0001-env-example-v1.0'),
     (r'secrets/', 'Diretório secrets/'),
     (r'\.pem$', 'Chave privada .pem'),
     (r'\.key$', 'Chave .key'),

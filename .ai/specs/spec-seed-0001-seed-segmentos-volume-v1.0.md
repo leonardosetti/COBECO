@@ -4,14 +4,14 @@ type: spec-seed
 title: SPEC SEED — Seed Segmentos Volume
 version: v1.0
 status: ratificado
-canonical: false
+canonical: true
 canonical_slug: seed-segmentos-volume
 created: '2026-11-14'
-updated: '2026-11-14'
+updated: '2026-11-16'
 author: Leonardo Setti (@leonardosetti)
 owner: CCB
-ratified_by: null
-ratified_at: null
+ratified_by: gh-sig:owner:leonardosetti:14863508
+ratified_at: '2026-11-16T04:58:00-03:00'
 supersedes: null
 superseded_by: null
 trace:

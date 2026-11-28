@@ -44,7 +44,7 @@ executor's cwd (the project root)? Format sanity above asks whether the *pattern
 this asks whether the command can *run at all*.
 
 **Do not hand-reason the filesystem.** #2401 is precisely the failure of doing so: this
-checker flagged a bad `cd ../../frontend` (correct), then prescribed two sdoc-arch-0006-uc-v1cessively-wrong
+checker flagged a bad `cd ../../frontend` (correct), then prescribed two successively-wrong
 replacement paths — the second citing a `config-npm-0001-config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0-v1.0.json` that did not exist. Consume the
 deterministic probe result, never re-derive it yourself.
 

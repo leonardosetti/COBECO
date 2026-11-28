@@ -8,8 +8,8 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from src.adapters.api import auth, catalogo, comparacao, exportacao, listas, perfil
-from src.adapters.db.database import close_db, init_db
+from src.adapters.api import auth, catalogo, comparacao, exportacao, listas, perfil, produtos
+from src.adapters.db.database import close_db
 from src.config import settings
 
 # ============================================================
@@ -26,27 +26,15 @@ structlog.configure(
 
 logger = structlog.get_logger()
 
+
 # ============================================================
 # Security Headers Middleware
 # ============================================================
 async def security_headers_middleware(request: Request, call_next):
-    """Adiciona headers de segurança (CSP, HSTS, etc.)"""
+    """Adiciona headers de segurança (exceto CSP — gerenciado pelo nginx proxy)"""
     response = await call_next(request)
 
-    # Content Security Policy
-    response.headers["Content-Security-Policy"] = (
-        "default-src 'self'; "
-        "script-src 'self'; "
-        "style-src 'self' 'unsafe-inline'; "
-        "img-src 'self' data:; "
-        "font-src 'self'; "
-        "connect-src 'self'; "
-        "frame-ancestors 'none'; "
-        "base-uri 'self'; "
-        "form-action 'self'"
-    )
-
-    # Security Headers
+    # Security Headers (sem CSP — nginx proxy gerencia)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"
@@ -68,9 +56,9 @@ async def lifespan(app: FastAPI):
     """Gerencia ciclo de vida da aplicação"""
     logger.info("starting_application", app_name=settings.APP_NAME, version=settings.APP_VERSION)
 
-    # Startup: Inicializa DB
-    await init_db()
-    logger.info("database_initialized")
+    # Startup: DB já foi migrado pelo serviço migrate (Alembic)
+    # init_db() com create_all() removido — usa migrations em produção
+    logger.info("database_ready")
 
     yield
 
@@ -90,6 +78,7 @@ app = FastAPI(
     redoc_url="/redoc" if settings.DEBUG else None,
     openapi_url="/openapi.json" if settings.DEBUG else None,
     lifespan=lifespan,
+    root_path="/v1",
 )
 
 # CORS Middleware (apenas se configurado)
@@ -113,6 +102,7 @@ app.middleware("http")(security_headers_middleware)
 async def log_requests(request: Request, call_next):
     """Log estruturado de requisições"""
     import time
+
     start_time = time.perf_counter()
 
     logger.info(
@@ -186,6 +176,7 @@ async def health_check():
 app.include_router(auth.router, prefix="/auth", tags=["Autenticação"])
 app.include_router(listas.router, prefix="/listas", tags=["Listas"])
 app.include_router(catalogo.router, prefix="/catalogo", tags=["Catálogo"])
+app.include_router(produtos.router, prefix="", tags=["Produtos"])
 app.include_router(comparacao.router, prefix="/comparacao", tags=["Comparação"])
 app.include_router(exportacao.router, prefix="/export", tags=["Exportação"])
 app.include_router(perfil.router, prefix="/perfil", tags=["Perfil"])
@@ -205,6 +196,7 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(
         "src.main:app",
         host="0.0.0.0",

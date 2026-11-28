@@ -17,11 +17,11 @@ Canonical gate types used across GSD workflows. Every validation checkpoint maps
 
 ### Revision Gate
 **Purpose:** Evaluates output quality and routes to revision if insufficient.
-**Behavior:** Loops back to proddoc-arch-0006-uc-v1er with specific feedback. Bounded by iteration cap.
-**Recovery:** Proddoc-arch-0006-uc-v1er addresses feedback; checker re-evaluates. The loop also escalates early if issue count does not decrease between consecutive iterations (stall detection). After max iterations, escalates unconditionally.
+**Behavior:** Loops back to producer with specific feedback. Bounded by iteration cap.
+**Recovery:** Producer addresses feedback; checker re-evaluates. The loop also escalates early if issue count does not decrease between consecutive iterations (stall detection). After max iterations, escalates unconditionally.
 **Examples:**
 - Plan-checker reviewing PLAN.md (max 3 iterations)
-- Verifier checking phase deliverables against sdoc-arch-0006-uc-v1cess criteria
+- Verifier checking phase deliverables against success criteria
 
 ### Escalation Gate
 **Purpose:** Surfaces unresolvable issues to the developer for a decision.
@@ -63,8 +63,8 @@ Canonical gate types used across GSD workflows. Every validation checkpoint maps
 Use this taxonomy when designing or auditing workflow validation points:
 
 - **Pre-flight** gates belong at workflow entry points. They are cheap, deterministic checks that prevent wasted work. If you can verify a precondition with a file-existence check or a config read, use a pre-flight gate.
-- **Revision** gates belong after a proddoc-arch-0006-uc-v1er step where quality varies. Always pair them with an iteration cap to prevent infinite loops. The cap should reflect the cost of each iteration -- expensive operations get fewer retries.
+- **Revision** gates belong after a producer step where quality varies. Always pair them with an iteration cap to prevent infinite loops. The cap should reflect the cost of each iteration -- expensive operations get fewer retries.
 - **Escalation** gates belong wherever automated resolution is impossible or ambiguous. They are the safety valve between revision loops and abort. Present the developer with clear options and enough context to decide.
-- **Abort** gates belong at points where continuing would cause damage, waste significant resources, or proddoc-arch-0006-uc-v1e meaningless output. They should preserve state so work can resume after the root cause is fixed.
+- **Abort** gates belong at points where continuing would cause damage, waste significant resources, or produce meaningless output. They should preserve state so work can resume after the root cause is fixed.
 
-**Selection heuristic:** Start with pre-flight. If the check happens after work is proddoc-arch-0006-uc-v1ed, it is a revision gate. If the revision loop cannot resolve the issue, escalate. If continuing is dangerous, abort.
+**Selection heuristic:** Start with pre-flight. If the check happens after work is produced, it is a revision gate. If the revision loop cannot resolve the issue, escalate. If continuing is dangerous, abort.

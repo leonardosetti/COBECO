@@ -27,5 +27,5 @@ When you need library or framework documentation, check in this order:
    ```
 
 Do not skip documentation lookups because MCP tools are unavailable — the CLI fallback
-works via Bash and proddoc-arch-0006-uc-v1es equivalent output. Do NOT use `npx --yes` to auto-download
+works via Bash and produces equivalent output. Do NOT use `npx --yes` to auto-download
 ctx7 — this silently executes unverified config-npm-0001-config-npm-0001-config-npm-0001-package-v1-v1.0-v1.0s from the registry.

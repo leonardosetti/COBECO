@@ -116,7 +116,7 @@ function readEventName(data) {
   // fallback: under GEMINI_API_KEY it means AfterTool and still emits. A name
   // that is PRESENT but not a string is a malformed payload and must not
   // inherit that fallback — at the merge-base it threw on `.trim()` after the
-  // side effects, so no envelope was ever proddoc-arch-0006-uc-v1ed, and collapsing both onto ''
+  // side effects, so no envelope was ever produced, and collapsing both onto ''
   // silently turned `42`, `{}` and `['PreCompact']` into emitting AfterTool
   // events. Measured: base silent, head emitted, for both `42` and
   // `['PreCompact']`. null keeps them distinguishable while staying unequal to
@@ -142,7 +142,7 @@ function readEventName(data) {
 // #3808, round 7): two concurrent invocations can read the same state and race
 // through unlink/create, so one invocation's accounting can be lost — the same
 // lost-update race the bare writeFileSync already had, not a class this change
-// introddoc-arch-0006-uc-v1es. What a lost write leaves behind is whatever the competing writer
+// introduces. What a lost write leaves behind is whatever the competing writer
 // wrote, which may be a perfectly valid sentinel; it does not reliably mean
 // "defaults on the next call". Advisory debounce bookkeeping is the right place
 // to accept that.
@@ -242,7 +242,7 @@ const handleStdinEnd = () => {
     }
 
     // Reject session IDs that contain path traversal sequences or path separators.
-    // session_id is used to constrdoc-arch-0006-uc-v1t file paths in /tmp — an unsanitized value
+    // session_id is used to construct file paths in /tmp — an unsanitized value
     // could escape the temp directory and read or write arbitrary files.
     if (/[/\\]|\.\./.test(sessionId)) {
       allow(undefined);
@@ -394,7 +394,7 @@ const handleStdinEnd = () => {
     // give-up the planted object survived and every later invocation followed
     // it. In a shared sticky os.tmpdir() that is a mute primitive (a planted
     // recent watermark suppresses monitoring) and a stall primitive (a symlink
-    // to a FIFO blocks this synchronous read indefinitely; measured: sdoc-arch-0006-uc-v1h a
+    // to a FIFO blocks this synchronous read indefinitely; measured: such a
     // read is still running after 300ms). The same lstat + O_NOFOLLOW pair the
     // sentinel path uses, plus a size bound, applied to the file this PR adds.
     // Every refusal degrades to "no watermark", never throws.
@@ -446,7 +446,7 @@ const handleStdinEnd = () => {
     // the debounce arm below taken so no warning is ever emitted — and a
     // symlink to a FIFO stalls this synchronous read, the same two primitives
     // measured on the watermark. Same lstat + O_NOFOLLOW + size bound; every
-    // refusal degrades to the default warnData this catch already proddoc-arch-0006-uc-v1es,
+    // refusal degrades to the default warnData this catch already produces,
     // so a normal regular file behaves exactly as before.
     try {
       warnData = JSON.parse(readSentinel(warnPath));

@@ -1,9 +1,7 @@
 export const PERGUNTAS_SEGURANCA = [
-  { value: 'nome_mae', label: 'Nome da sua mãe?' },
-  { value: 'primeiro_pet', label: 'Nome do seu primeiro animal de estimação?' },
-  { value: 'cidade_natal', label: 'Cidade onde nasceu?' },
-  { value: 'escola_primaria', label: 'Nome da sua escola primária?' },
-  { value: 'carro_primeiro', label: 'Modelo do seu primeiro carro?' },
+  { value: 'pet', label: 'Qual seu pet?' },
+  { value: 'cidade', label: 'Cidade natal?' },
+  { value: 'escola', label: 'Escola?' },
 ] as const;
 
 export const VALID_USER_DATA = {
@@ -12,8 +10,8 @@ export const VALID_USER_DATA = {
   nome: 'Usuário Válido',
   senha: 'Senha@123',
   confirmar_senha: 'Senha@123',
-  pergunta_seguranca: 'nome_mae' as const,
-  resposta_seguranca: 'Maria Silva',
+  pergunta_seguranca: 'cidade' as const,
+  resposta_seguranca: 'São Paulo',
 };
 
 export const INVALID_EMAILS = [
@@ -45,8 +43,8 @@ export const STRONG_PASSWORDS = [
 export const TEST_USER_BASE = {
   senha: 'Senha@123',
   confirmar_senha: 'Senha@123',
-  pergunta_seguranca: 'nome_mae' as const,
-  resposta_seguranca: 'Maria Silva',
+  pergunta_seguranca: 'cidade' as const,
+  resposta_seguranca: 'São Paulo',
 };
 
 interface TestUserOverrides {
@@ -61,10 +59,11 @@ interface TestUserOverrides {
 
 export function createTestUser(overrides: TestUserOverrides = {}) {
   const timestamp = Date.now();
+  const random = Math.random().toString(36).substring(2, 8);
   return {
-    nome_usuario: overrides.nome_usuario || `user${timestamp}`,
-    email: overrides.email || `user${timestamp}@test.com`,
-    nome: overrides.nome || `User ${timestamp}`,
+    nome_usuario: overrides.nome_usuario || `user${timestamp}${random}`,
+    email: overrides.email || `user${timestamp}${random}@test.com`,
+    nome: overrides.nome || `User ${timestamp}${random}`,
     senha: overrides.senha || TEST_USER_BASE.senha,
     confirmar_senha: overrides.confirmar_senha || TEST_USER_BASE.confirmar_senha,
     pergunta_seguranca: overrides.pergunta_seguranca || TEST_USER_BASE.pergunta_seguranca,

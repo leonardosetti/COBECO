@@ -153,11 +153,11 @@ Would you like to:
 - Don't modify completed phase directories
 </anti_patterns>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 Phase removal is complete when:
 
 - [ ] Target phase validated as future/unstarted
-- [ ] `gsd_run query phase.remove` executed sdoc-arch-0006-uc-v1cessfully
+- [ ] `gsd_run query phase.remove` executed successfully
 - [ ] Changes committed with descriptive message
 - [ ] User informed of changes
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>

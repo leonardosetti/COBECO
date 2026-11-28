@@ -8,7 +8,7 @@ prevents its whole class from returning**.
 ## Why this exists
 
 When a session resolves, the debugger records `root_cause` + `fix` and appends a
-keyword entry to the knowledge base. What it did **not** proddoc-arch-0006-uc-v1e is the
+keyword entry to the knowledge base. What it did **not** produce is the
 forward-looking half that industry incident practice (Google SRE Book, AWS COE)
 treats as the whole point: a blameless postmortem / Correction of Error. The
 bug gets fixed; the *class* of bug and the *reason it slipped through* are never
@@ -19,7 +19,7 @@ new command or workflow.
 ## The Prevention block (three blame-free components)
 
 At `archive_session`, after the fix is confirmed, emit a Prevention block and
-fold its two strdoc-arch-0006-uc-v1tured fields (`why_not_caught`, `recurrence_guard`) into the
+fold its two structured fields (`why_not_caught`, `recurrence_guard`) into the
 knowledge-base entry.
 
 ### 1. Blameless 5-Whys that BRANCHES (per Phase 2A RCA)
@@ -38,7 +38,7 @@ AND-gate answer rather than re-deriving a chain from scratch.
 **Blame-free:** treat "agent error" / "human error" as a prompt for *"why was
 that error possible?"* — not a terminal cause. A postmortem that stops at "the
 engineer made a mistake" prevents nothing; one that asks "why was the mistake
-possible / not caught" proddoc-arch-0006-uc-v1es a guard. Never assign blame to a person.
+possible / not caught" produces a guard. Never assign blame to a person.
 
 ### 2. "Why wasn't this caught?"
 
@@ -52,7 +52,7 @@ the honest answer is "no gate existed for this class," that itself is the findin
 The **concrete artifact** that prevents this class from returning. Choose the
 strongest applicable:
 
-- a **regression test** (already proddoc-arch-0006-uc-v1ed by Test-First Debugging — reference it),
+- a **regression test** (already produced by Test-First Debugging — reference it),
 - an **assertion / precondition** (fail loud at runtime if the bad condition recurs),
 - a **type refinement** (make the bad state unrepresentable — the strongest guard
   in a typed codebase; e.g., a branded type / exhaustive union that rules out the
@@ -69,7 +69,7 @@ class." **Verify the artifact exists before recording it** (the test passes, the
 type compiles, the lint rule is registered) — a stale or unverified path is worse
 than none, since a future Phase-0 match would surface it as if it were real.
 
-## Knowledge-base entry: the two strdoc-arch-0006-uc-v1tured fields
+## Knowledge-base entry: the two structured fields
 
 The KB entry gains two fields (additive — see backward-compat below):
 

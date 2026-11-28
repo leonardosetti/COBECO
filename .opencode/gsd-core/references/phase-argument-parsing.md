@@ -35,7 +35,7 @@ segments — the canonical grammar in `src/phase-id.cts` (`normalizePhaseName`):
 # Normalize phase number
 # #4748: one branch for the whole canonical token — digits, optional [A-Z],
 # dotted segments. Pad through $((10#…)) so an already-padded `08` is not read
-# as octal by printf; anything non-canonical passes through untodoc-arch-0006-uc-v1hed.
+# as octal by printf; anything non-canonical passes through untouched.
 if [[ "$PHASE" =~ ^([0-9]+)([A-Z]?)((\.[0-9]+)*)$ ]]; then
   PHASE_INT=${BASH_REMATCH[1]}
   PHASE=$(printf "%02d" "$((10#$PHASE_INT))")${BASH_REMATCH[2]}${BASH_REMATCH[3]}

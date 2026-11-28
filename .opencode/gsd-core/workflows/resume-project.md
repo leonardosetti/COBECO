@@ -34,10 +34,10 @@ if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
 
 Parse JSON for: `state_exists`, `roadmap_exists`, `project_exists`, `planning_exists`, `requirements_exists`, `init_incomplete`, `has_interrupted_agent`, `interrupted_agent_id`, `commit_docs`.
 
-**If `init_incomplete` is true (#4040 — interrupted bootstrap):** `.planning/` exists but initialization never finished — one or more of `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md` were never created. This is NOT a STATE.md-reconstrdoc-arch-0006-uc-v1tion case (there is no project history to reconstrdoc-arch-0006-uc-v1t from). Route to initialization recovery: resume `/gsd-new-project`, which continues from the first missing artifact and keeps the existing PROJECT.md and any already-created artifacts. Do not proceed to load_state.
+**If `init_incomplete` is true (#4040 — interrupted bootstrap):** `.planning/` exists but initialization never finished — one or more of `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md` were never created. This is NOT a STATE.md-reconstruction case (there is no project history to reconstruct from). Route to initialization recovery: resume `/gsd-new-project`, which continues from the first missing artifact and keeps the existing PROJECT.md and any already-created artifacts. Do not proceed to load_state.
 
 **If `state_exists` is true:** Proceed to load_state
-**If `state_exists` is false but `roadmap_exists` or `project_exists` is true (and `init_incomplete` is false):** Offer to reconstrdoc-arch-0006-uc-v1t STATE.md
+**If `state_exists` is false but `roadmap_exists` or `project_exists` is true (and `init_incomplete` is false):** Offer to reconstruct STATE.md
 **If `planning_exists` is false:** This is a new project - route to /gsd-new-project
 </step>
 
@@ -76,7 +76,7 @@ Look for incomplete work that needs attention:
 # #2962: zsh aborts the block on an unmatched for-list glob (nomatch); bash passes it through. nullglob both.
 shopt -s nullglob 2>/dev/null; setopt NULL_GLOB 2>/dev/null
 
-# Check for strdoc-arch-0006-uc-v1tured handoff (preferred — machine-readable)
+# Check for structured handoff (preferred — machine-readable)
 cat .planning/HANDOFF.json 2>/dev/null || true
 
 # Check for continue-here files (phase + non-phase + legacy fallback), three levels below .planning.
@@ -115,14 +115,14 @@ fi
 
 **If HANDOFF.json exists:**
 
-- This is the primary resumption source — strdoc-arch-0006-uc-v1tured data from `/gsd-pause-work`
+- This is the primary resumption source — structured data from `/gsd-pause-work`
 - Parse `status`, `phase`, `plan`, `task`, `total_tasks`, `next_action`
 - Check `blockers` and `human_actions_pending` — surface these immediately
 - Check `completed_tasks` for `in_progress` items — these need attention first
 - Validate `uncommitted_files` against `git status` — flag divergence
 - Use `context_notes` to restore mental model
-- Flag: "Found strdoc-arch-0006-uc-v1tured handoff — resuming from task {task}/{total_tasks}"
-- **After sdoc-arch-0006-uc-v1cessful resumption, delete HANDOFF.json** (it's a one-shot artifact)
+- Flag: "Found structured handoff — resuming from task {task}/{total_tasks}"
+- **After successful resumption, delete HANDOFF.json** (it's a one-shot artifact)
 
 **If .continue-here file exists (phase/non-phase/legacy fallback):**
 
@@ -188,7 +188,7 @@ Based on project state, determine the most logical next action:
 - Outstanding external jobs are the primary resume context — surface them first.
 - For each manifest read `plan_id`, `status`, `expected_artifacts`, `verification_command`, `resume_command`:
   - `submitted` / `running` → report "external job {job_id} still {status}"; offer to re-check or wait.
-  - `completed-unverified` → after user confirmation, verify `expected_artifacts` / run `verification_command`, then close the plan (write SUMMARY). Do NOT close before verification sdoc-arch-0006-uc-v1ceeds.
+  - `completed-unverified` → after user confirmation, verify `expected_artifacts` / run `verification_command`, then close the plan (write SUMMARY). Do NOT close before verification succeeds.
   - `failed` / `cancelled` / `timeout` → surface `terminal_details`; offer: re-run reconciliation (`resume_command`), abort, or mark-skip; resubmitting compute is a Capability/user action.
 - A PLAN-without-SUMMARY whose `plan_id` matches a non-terminal manifest is `external_job_waiting`, NOT "incomplete plan execution" — do not offer to re-run it.
 
@@ -197,7 +197,7 @@ Based on project state, determine the most logical next action:
 → Option: Start fresh (abandon agent work)
 
 **If HANDOFF.json exists:**
-→ Primary: Resume from strdoc-arch-0006-uc-v1tured handoff (highest priority — specific task/blocker context)
+→ Primary: Resume from structured handoff (highest priority — specific task/blocker context)
 → Option: Discard handoff and reassess from files
 
 **If .continue-here file exists:**
@@ -319,10 +319,10 @@ This ensures if session ends unexpectedly, next resume knows the state.
 
 </process>
 
-<reconstrdoc-arch-0006-uc-v1tion>
+<reconstruction>
 If STATE.md is missing but other artifacts exist:
 
-"STATE.md missing. Reconstrdoc-arch-0006-uc-v1ting from artifacts..."
+"STATE.md missing. Reconstructing from artifacts..."
 
 1. Read PROJECT.md → Extract "What This Is" and Core Value
 2. Read ROADMAP.md → Determine phases, find current position
@@ -330,14 +330,14 @@ If STATE.md is missing but other artifacts exist:
 4. Count pending todos in .planning/todos/pending/
 5. Check for .continue-here files → Session continuity
 
-Reconstrdoc-arch-0006-uc-v1t and write STATE.md, then proceed normally.
+Reconstruct and write STATE.md, then proceed normally.
 
 This handles cases where:
 
-- Project predates STATE.md introddoc-arch-0006-uc-v1tion
+- Project predates STATE.md introduction
 - File was accidentally deleted
 - Cloning repo without full .planning/ state
-  </reconstrdoc-arch-0006-uc-v1tion>
+  </reconstruction>
 
 <quick_resume>
 If user says "continue" or "go":
@@ -348,13 +348,13 @@ If user says "continue" or "go":
 "Continuing from [state]... [action]"
 </quick_resume>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 Resume is complete when:
 
-- [ ] STATE.md loaded (or reconstrdoc-arch-0006-uc-v1ted)
+- [ ] STATE.md loaded (or reconstructed)
 - [ ] Incomplete work detected and flagged
 - [ ] Clear status presented to user
 - [ ] Contextual next actions offered
 - [ ] User knows exactly where project stands
 - [ ] Session continuity updated
-      </sdoc-arch-0006-uc-v1cess_criteria>
+      </success_criteria>

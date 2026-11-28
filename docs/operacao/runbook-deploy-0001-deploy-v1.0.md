@@ -63,11 +63,11 @@ workflow:
 
 ## 2. Pré-requisitos e Verificações
 
-| # | Pré-requisito | Comando de Verificação | Critério de Sdoc-arch-0006-uc-v1esso |
+| # | Pré-requisito | Comando de Verificação | Critério de Sucesso |
 |---|---------------|------------------------|---------------------|
 | 1 | Tag release criada e pushed | `git tag -l "v*" | tail -1` | Tag `vX.Y.Z` existe no remote |
-| 2 | CI/CD passou (GitHub Actions) | `gh run list --limit 1 --workflow=CI` | Último run: sdoc-arch-0006-uc-v1cess (verde) |
-| 3 | Imagens publicadas no ghcr.io | `docker pull ghcr.io/leonardosetti/cobeco/backend:vX.Y.Z` | Pull bem-sdoc-arch-0006-uc-v1edido |
+| 2 | CI/CD passou (GitHub Actions) | `gh run list --limit 1 --workflow=CI` | Último run: success (verde) |
+| 3 | Imagens publicadas no ghcr.io | `docker pull ghcr.io/leonardosetti/cobeco/backend:vX.Y.Z` | Pull bem-sucedido |
 | 4 | `config-env-0001-env-example-v1.0.prod` configurado no servidor | `ls -la /opt/cobeco/config-env-0001-env-example-v1.0.prod` | Arquivo existe + secrets preenchidos |
 | 5 | Backup DB recente (< 24h) | `ls -la /opt/cobeco/backups/` | Arquivo `.sql.gz` < 24h |
 | 6 | Health check endpoint responde | `curl -f https://cobeco.prod/v1/health` | HTTP 200 + JSON `{"status":"healthy"}` |
@@ -202,7 +202,7 @@ make health-prod
 | L1 | Deployer de Plantão | Nicholas Anthony | Discord @nathony + Phone | Imediato |
 | L2 | Tech Lead | Leonardo Setti | Discord @leosetti + Phone | 15 min |
 | L3 | CCB Chair / PO | Leonardo Setti | Discord @leosetti + Phone | 30 min |
-| L4 | Orientador (se impacto demo) | [Nome] | Email institdoc-arch-0006-uc-v1ional | 1h |
+| L4 | Orientador (se impacto demo) | [Nome] | Email institucional | 1h |
 
 ---
 

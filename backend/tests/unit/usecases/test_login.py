@@ -4,8 +4,11 @@ import pytest
 from unittest.mock import AsyncMock
 from datetime import timedelta
 from src.domain.usecases import (
-    LoginUseCase, LoginInput, LoginOutput,
-    CredenciaisInvalidas, RateLimitExcedido
+    LoginUseCase,
+    LoginInput,
+    LoginOutput,
+    CredenciaisInvalidas,
+    RateLimitExcedido,
 )
 from src.domain.entities import Usuario, Email, SenhaHash
 
@@ -21,6 +24,7 @@ def mock_repo():
 def verificar_senha_fn():
     def fn(senha: str, hash: str) -> bool:
         return hash == f"hashed_{senha}"
+
     return fn
 
 
@@ -28,6 +32,7 @@ def verificar_senha_fn():
 def criar_token_fn():
     def fn(sub: str, expires_delta: timedelta, token_type: str = "access") -> str:
         return f"{token_type}_token_for_{sub}"
+
     return fn
 
 
@@ -35,6 +40,7 @@ def criar_token_fn():
 def rate_limiter_fn():
     async def fn(nome_usuario: str):
         pass  # No rate limiting in tests
+
     return fn
 
 

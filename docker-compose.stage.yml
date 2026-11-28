@@ -1,0 +1,89 @@
+version: '3.8'
+
+# COBECO MVP — Docker Compose Staging (Homologação)
+# Porta: 8480 (evita conflito com dev 8380)
+# Uso: docker compose -f docker-compose.stage.yml up -d
+# Para parar: docker compose -f docker-compose.stage.yml down
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: cobeco-db-stage
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --max-connections=100
+    environment:
+      MYSQL_DATABASE: cobeco_stage
+      MYSQL_USER: cobeco
+      MYSQL_PASSWORD: cobeco
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - cobeco-db-stage-data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - cobeco-stage-data
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: config-docker-0003-backend-dockerfile-v1.0
+    container_name: cobeco-backend-stage
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000
+    environment:
+      DATABASE_URL: mysql+asyncmy://cobeco:cobeco@cobeco-db-stage:3306/cobeco_stage
+      SECRET_KEY: cobeco-secret-key-min-32-chars-for-jwt-signing-stage
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 15
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+      PYTHONPATH: /app
+      DEBUG: "false"
+    networks:
+      - cobeco-stage-data
+      - cobeco-stage-edge
+    expose:
+      - "8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: config-docker-0004-frontend-dockerfile-v1.0
+    container_name: cobeco-frontend-stage
+    command: nginx -g "daemon off;"
+    networks:
+      - cobeco-stage-edge
+    expose:
+      - "80"
+
+  proxy:
+    image: nginx:alpine
+    container_name: cobeco-proxy-stage
+    ports:
+      - "8480:8380"
+    volumes:
+      - ./proxy/config-nginx-0003-proxy-nginx-v1.0.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - cobeco-stage-edge
+
+networks:
+  cobeco-stage-data:
+    name: cobeco-stage-data
+    driver: bridge
+  cobeco-stage-edge:
+    name: cobeco-stage-edge
+    driver: bridge
+
+volumes:
+  cobeco-db-stage-data:
+    name: cobeco-db-stage-data

@@ -65,7 +65,7 @@ ${DISCUSS_MODE ? '- Context compliance: Does the plan honor locked decisions fro
 
 <expected_output>
 - ## VERIFICATION PASSED — all checks pass
-- ## ISSUES FOUND — strdoc-arch-0006-uc-v1tured issue list
+- ## ISSUES FOUND — structured issue list
 </expected_output>
 ```
 
@@ -82,7 +82,7 @@ Agent(
 
 **Handle checker return:**
 
-- **`## VERIFICATION PASSED`:** If the return lists an entry whose severity is BLOCKER or WARNING, in the YAML issues block or listed in prose (a mention sdoc-arch-0006-uc-v1h as "no warnings" or a zero count is not an entry), handle it as `## ISSUES FOUND` below, counting the prose entries as BLOCKER/WARNING entries; the sentinel never decides alone, and an entry with a missing or unrecognized severity counts as a BLOCKER (#5578). Otherwise display confirmation, proceed to step 6.
+- **`## VERIFICATION PASSED`:** If the return lists an entry whose severity is BLOCKER or WARNING, in the YAML issues block or listed in prose (a mention such as "no warnings" or a zero count is not an entry), handle it as `## ISSUES FOUND` below, counting the prose entries as BLOCKER/WARNING entries; the sentinel never decides alone, and an entry with a missing or unrecognized severity counts as a BLOCKER (#5578). Otherwise display confirmation, proceed to step 6.
 - **`## ISSUES FOUND`:** Count BLOCKER + WARNING entries in the YAML issues block; an entry whose severity is missing or unrecognized counts as a BLOCKER (fail closed). If zero — every entry is explicitly INFO — display `ℹ advisory — {dimension}: {description}` per entry and proceed to step 6; INFO is advisory and never enters the loop (#3724). Otherwise display issues, check iteration count, enter revision loop.
 
 **Revision loop (max 2 iterations):**
@@ -109,11 +109,11 @@ ${AGENT_SKILLS_PLANNER}
 
 {For each active entry in `PLAN_PRE_HOOKS_JSON` where `kind == "contribution"` and `into == "planner"` (in array order): inject the entry's `fragment.inline` verbatim here, plus its resolved `configValues` when the entry carries them. If no active planner contributions exist, omit this block entirely.}
 
-**Checker issues:** ${strdoc-arch-0006-uc-v1tured_issues_from_checker}
+**Checker issues:** ${structured_issues_from_checker}
 
 </revision_context>
 
-<instrdoc-arch-0006-uc-v1tions>
+<instructions>
 Make targeted updates to address checker issues.
 
 `required_property` + evidence + severity BIND. `fix_hint` is ONE non-binding example route: a
@@ -126,7 +126,7 @@ the alternatives rather than applying or working around it. Full contract:
 
 Do NOT replan from scratch unless issues are fundamental.
 Return what changed.
-</instrdoc-arch-0006-uc-v1tions>
+</instructions>
 ```
 
 ```
@@ -156,7 +156,7 @@ Re-spawn the planner with the chosen resolution, then **re-evaluate its return f
 this handler** — do not fall through to the checker spawn below. A second conflict is still a
 conflict, not a revised plan.
 
-**Bounded:** A conflict naming the SAME `required_property` twice in a row (no sdoc-arch-0006-uc-v1cessful revision in between) is a stall, and so is the
+**Bounded:** A conflict naming the SAME `required_property` twice in a row (no successful revision in between) is a stall, and so is the
 THIRD conflict return of this loop whatever property it names — alternating property names
 would otherwise never trip the repeat rule and the path would be unbounded. Stop re-spawning and
 route it to the same iteration-count check below, so declining to spend an iteration cannot make

@@ -119,10 +119,10 @@ For each design-area group, write a reference file at `references/[design-area-n
 [For each validated decision: what was chosen, why it won over alternatives, the key visual properties (colors, spacing, border radius, typography)]
 
 ## CSS Patterns
-[Key CSS snippets from winning variants — layout strdoc-arch-0006-uc-v1tures, component patterns, animation patterns. Extracted and cleaned up for reference.]
+[Key CSS snippets from winning variants — layout structures, component patterns, animation patterns. Extracted and cleaned up for reference.]
 
-## HTML Strdoc-arch-0006-uc-v1tures
-[Key HTML patterns from winning variants — page layout, component markup, navigation strdoc-arch-0006-uc-v1tures.]
+## HTML Structures
+[Key HTML patterns from winning variants — page layout, component markup, navigation structures.]
 
 ## What to Avoid
 [Design directions that were tried and rejected. Why they didn't work.]
@@ -269,14 +269,14 @@ The sketch-findings skill will auto-load when building the UI.
 
 </process>
 
-<sdoc-arch-0006-uc-v1cess_criteria>
+<success_criteria>
 - [ ] Every unprocessed sketch presented for individual curation
 - [ ] Design-area grouping proposed and approved
 - [ ] Sketch-findings skill exists at `./.config-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-0001-config-config-opencode-0001-opencode-v1-0001-config-opencode-0001-opencode-v1-v1.0-v1.0/skills/` with SKILL.md, references/, sources/
 - [ ] Winning theme.css copied into skill sources
-- [ ] Reference files contain design decisions, CSS patterns, HTML strdoc-arch-0006-uc-v1tures, anti-patterns
+- [ ] Reference files contain design decisions, CSS patterns, HTML structures, anti-patterns
 - [ ] `.planning/sketches/WRAP-UP-SUMMARY.md` written for project history
 - [ ] Project doc-agents-0001-agents-canon.md has auto-load routing line
 - [ ] Summary presented
 - [ ] Next-step options presented (including frontier sketch exploration via `/gsd-sketch`)
-</sdoc-arch-0006-uc-v1cess_criteria>
+</success_criteria>
