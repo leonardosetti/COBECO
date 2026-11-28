@@ -7,7 +7,7 @@ import os
 # a primeira chamada congela os valores; sem isso, DEBUG fica False e
 # openapi_url=None, quebrando testes de contrato quando rodados juntos).
 os.environ.setdefault("SECRET_KEY", "test-secret-key-for-ci-only-32chars")
-os.environ.setdefault("DATABASE_URL", "mysql+asyncmy://cobeco:cobeco@cobeco-db-stage:3306/cobeco_stage")
+os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://cobeco:cobeco@cobeco-db-stage:5432/cobeco_stage")
 os.environ.setdefault("JWT_ALGORITHM", "HS256")
 os.environ.setdefault("ACCESS_TOKEN_EXPIRE_MINUTES", "15")
 os.environ.setdefault("REFRESH_TOKEN_EXPIRE_DAYS", "7")
@@ -220,16 +220,15 @@ async def test_app():
     from sqlalchemy import text as sql_text
 
     sync_engine = create_engine(
-        settings.DATABASE_URL.replace("asyncmy", "pymysql"),
+        settings.DATABASE_URL.replace("asyncpg", "psycopg"),
         pool_pre_ping=True,
     )
     with sync_engine.begin() as conn:
-        # Disable foreign key checks, truncate tables in FK order, reset auto_increment, re-enable
-        conn.execute(sql_text("SET FOREIGN_KEY_CHECKS = 0"))
+        # Truncate tables in FK order, restart identity (PostgreSQL)
         for table in reversed(Base.metadata.sorted_tables):
-            conn.execute(sql_text(f"TRUNCATE TABLE `{table.name}`"))
-            conn.execute(sql_text(f"ALTER TABLE `{table.name}` AUTO_INCREMENT = 1"))
-        conn.execute(sql_text("SET FOREIGN_KEY_CHECKS = 1"))
+            conn.execute(
+                sql_text(f'TRUNCATE TABLE "{table.name}" RESTART IDENTITY CASCADE')
+            )
     sync_engine.dispose()
     await test_engine.dispose()
     await asyncio.sleep(0.1)  # Brief pause to ensure connections close
