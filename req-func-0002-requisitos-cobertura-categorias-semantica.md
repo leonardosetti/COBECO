@@ -79,9 +79,9 @@ Condição ótima para prosseguir: sim. Os três gaps são ortogonais, bem delim
 |-------|----------|
 | ID | **RF20** |
 | Requisito | Busca semântica de categorias por termo com sinônimos |
-| Descrição | Endpoint de busca de categorias que relaciona termos do usuário a categorias mesmo sem correspondência literal no nome. Ex.: "roupas" ou "camiseta" → Vestuário; "pá" ou "rastelo" → Jardinagem e Ferramentas. |
-| Guard-Rails | Endpoint `GET /catalogo/categorias/busca?q=...` (min 1 char). Combina ILIKE no nome + mapa de sinônimos (gatilhos). Resultado ordenado por nome, com campo `match_por` ("nome" ou "sinonimo"). UI: campo de busca no Passo 1 que filtra as categorias exibidas; limpar busca restaura a lista completa. |
-| Prioridade | P0 |
+| Descrição | **REMOVIDA do escopo ativo (ADR-0003).** Endpoint de busca de categorias que relaciona termos do usuário a categorias mesmo sem correspondência literal no nome. Ex.: "roupas" ou "camiseta" → Vestuário; "pá" ou "rastelo" → Jardinagem e Ferramentas. Guardado em `.stash/semantic-cat-search-20261127/` para trabalho futuro. |
+| Guard-Rails | Não implementado no MVP. Campo de busca por nome não existe no Passo 1; navegação apenas por grandes áreas + checkboxes diretos. |
+| Prioridade | P0 → **adiada (futuro)** |
 
 ### RF21 — Organização e Consolidação de Categorias (IA / Taxonomia) (NOVO)
 
@@ -124,7 +124,7 @@ Condição ótima para prosseguir: sim. Os três gaps são ortogonais, bem delim
 |-------|----|--------|--------|----------|
 | 1 | RF14 | Omitir 0% de cobertura + piso de disponibilidade na listagem de fornecedores (sem desabilitar card: não renderizar) | Implementado + testado (E2E de BUG-0001 já valida cobertura real) | `frontend/src/app.js` |
 | 2 | RF19 | Produtos do Passo 2 + autocomplete restritos às categorias selecionadas (derivação fornecedor↔categoria + fornecedor↔produto, sem migração) | Implementado + testes unitários | `backend/src/adapters/api/catalogo.py`, `frontend/src/app.js` |
-| 3 | RF20 | Busca semântica de categorias (`/catalogo/categorias/busca?q=`) com mapa de gatilhos; UI de busca no Passo 1 | Implementado + testes unitários | `backend/src/adapters/api/catalogo.py`, `frontend/src/app.js` |
+| 3 | RF20 | Busca semântica de categorias (`/catalogo/categorias/busca?q=`) com mapa de gatilhos; UI de busca no Passo 1 | **Removida — adiada para trabalho futuro (ADR-0003).** Código guardado em `.stash/semantic-cat-search-20261127/` | `backend/src/adapters/api/catalogo.py`, `frontend/src/app.js` |
 | 4 | RF21 | Design de IA/taxonomia: consolidar categorias semelhantes, hierarquia, breadcrumb, findability (Nielsen/Gestalt) | Pendente (especificado, não implementado) | design / SPECS |
 
 **Critério de aceitação por ronde:** `pytest backend/tests/unit` verde; `node --check frontend/src/app.js` válido; fluxo Home → Categorias → Lista → Fornecedores → Comparação executa sem login.
