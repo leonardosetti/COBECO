@@ -9,15 +9,16 @@ FROM python:3.11-slim AS base
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2 \
+    EMBEDDING_DIM=384
 
 WORKDIR /app
 
-# Dependências de sistema para MySQL client e build
+# Dependências de sistema para PostgreSQL client e build
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
-    default-libmysqlclient-dev \
-    default-mysql-client \
+    libpq-dev \
     pkg-config \
     curl \
     && rm -rf /var/lib/apt/lists/*
@@ -27,8 +28,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # ============================================================
 FROM base AS runtime
 
-COPY config-python-0001-requirements-v1.0.txt requirements.txt
-RUN pip install --no-warn-script-location -r requirements.txt
+COPY pyproject.toml .
+RUN pip install --no-warn-script-location -e ".[dev]"
 ENV PATH=/usr/local/bin:$PATH
 
 # Copia código da aplicação
