@@ -19,6 +19,7 @@ if TYPE_CHECKING:
         Usuario,
     )
 
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
     DECIMAL,
     Boolean,
@@ -36,6 +37,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.adapters.db.database import Base
+from src.config import settings
 
 
 # ============================================================
@@ -298,11 +300,24 @@ class ProdutoModel(Base):
     )
     categoria: Mapped["CategoriaModel"] = relationship("CategoriaModel")
 
+    nome_tsv: Mapped[str | None] = mapped_column(Text, nullable=True)
+    marca_tsv: Mapped[str | None] = mapped_column(Text, nullable=True)
+    embedding: Mapped[list[float] | None] = mapped_column(
+        Vector(settings.EMBEDDING_DIM), nullable=True
+    )
+
     __table_args__ = (
         Index("ix_produto_nome", "nome"),
         Index("ix_produto_marca", "marca"),
-        Index("ix_produto_nome_fulltext", "nome", mysql_prefix="FULLTEXT"),
+        Index("ix_produto_nome_tsv", "nome_tsv", postgresql_using="gin"),
+        Index("ix_produto_marca_tsv", "marca_tsv", postgresql_using="gin"),
         Index("ix_produto_categoria", "categoria_id"),
+        Index(
+            "ix_produto_embedding",
+            "embedding",
+            postgresql_using="hnsw",
+            postgresql_with={"m": 16, "ef_construction": 64},
+        ),
     )
 
     def to_domain(self) -> "Produto":
@@ -329,15 +344,28 @@ class ProdutoClasseModel(Base):
     termos_busca: Mapped[list[str]] = mapped_column(JSON, nullable=False)
     marcas_referencia: Mapped[list[str]] = mapped_column(JSON, nullable=False)
     categoria_macro: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    termos_busca_tsv: Mapped[str | None] = mapped_column(Text, nullable=True)
+    marcas_referencia_tsv: Mapped[str | None] = mapped_column(Text, nullable=True)
     ativo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     criado_em: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
     atualizado_em: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=func.now(), onupdate=func.now()
     )
+    embedding: Mapped[list[float] | None] = mapped_column(
+        Vector(settings.EMBEDDING_DIM), nullable=True
+    )
 
     __table_args__ = (
         Index("ix_produto_classes_ativo", "ativo"),
         Index("ix_produto_classes_categoria_macro", "categoria_macro"),
+        Index("ix_produto_classes_termos_tsv", "termos_busca_tsv", postgresql_using="gin"),
+        Index("ix_produto_classes_marcas_tsv", "marcas_referencia_tsv", postgresql_using="gin"),
+        Index(
+            "ix_produto_classes_embedding",
+            "embedding",
+            postgresql_using="hnsw",
+            postgresql_with={"m": 16, "ef_construction": 64},
+        ),
     )
 
 

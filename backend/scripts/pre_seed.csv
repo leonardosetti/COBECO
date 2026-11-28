@@ -1,0 +1,53 @@
+produto_id,produto_nome,marca,categoria,categoria_macro,unidade,ativo_produto,fornecedor_id,fornecedor_nome,fornecedor_cnpj,fornecedor_ativo,atende_categoria,preco,estoque,disponivel
+1,Arroz Tipo 1 5kg,Tio João,Mercado,Mercado,un,S,1,Carrefour,99.000.111/0001-22,S,S,25.50,9999,S
+1,Arroz Tipo 1 5kg,Tio João,Mercado,Mercado,un,S,2,Extra,00.111.222/0001-33,S,S,24.80,9999,S
+1,Arroz Tipo 1 5kg,Tio João,Mercado,Mercado,un,S,3,Pão de Açúcar,66.777.888/0001-99,S,S,28.90,12,S
+2,Feijão Preto 1kg,Camil,Mercado,Mercado,un,S,1,Carrefour,99.000.111/0001-22,S,S,8.30,9999,S
+2,Feijão Preto 1kg,Camil,Mercado,Mercado,un,S,2,Extra,00.111.222/0001-33,S,S,7.70,9999,S
+2,Feijão Preto 1kg,Camil,Mercado,Mercado,un,S,3,Pão de Açúcar,66.777.888/0001-99,S,S,9.10,0,N
+3,Óleo de Soja 900ml,Liza,Mercado,Mercado,un,S,1,Carrefour,99.000.111/0001-22,S,S,7.05,9999,S
+3,Óleo de Soja 900ml,Liza,Mercado,Mercado,un,S,2,Extra,00.111.222/0001-33,S,S,6.30,9999,S
+3,Óleo de Soja 900ml,Liza,Mercado,Mercado,un,S,3,Pão de Açúcar,66.777.888/0001-99,S,S,7.75,45,S
+4,Café Torrado e Moído 500g,Pilão,Mercado,Mercado,un,S,1,Carrefour,99.000.111/0001-22,S,S,17.55,9999,S
+4,Café Torrado e Moído 500g,Pilão,Mercado,Mercado,un,S,2,Extra,00.111.222/0001-33,S,S,16.90,8,S
+4,Café Torrado e Moído 500g,Pilão,Mercado,Mercado,un,S,3,Pão de Açúcar,66.777.888/0001-99,S,S,20.20,0,N
+5,Açúcar Refinado 1kg,União,Mercado,Mercado,un,S,1,Carrefour,99.000.111/0001-22,S,S,4.30,9999,S
+5,Açúcar Refinado 1kg,União,Mercado,Mercado,un,S,2,Extra,00.111.222/0001-33,S,S,4.00,9999,S
+5,Açúcar Refinado 1kg,União,Mercado,Mercado,un,S,3,Pão de Açúcar,66.777.888/0001-99,S,S,5.15,100,S
+6,Leite Integral UHT 1L,Parmalat,Mercado,Mercado,un,S,1,Carrefour,99.000.111/0001-22,S,S,4.90,9999,S
+6,Leite Integral UHT 1L,Parmalat,Mercado,Mercado,un,S,2,Extra,00.111.222/0001-33,S,S,4.78,9999,S
+6,Leite Integral UHT 1L,Parmalat,Mercado,Mercado,un,S,3,Pão de Açúcar,66.777.888/0001-99,S,S,5.95,3,S
+7,Macarrão Espaguete 500g,Massako,Mercado,Mercado,un,S,1,Carrefour,99.000.111/0001-22,S,S,4.65,9999,S
+7,Macarrão Espaguete 500g,Massako,Mercado,Mercado,un,S,2,Extra,00.111.222/0001-33,S,S,4.58,9999,S
+7,Macarrão Espaguete 500g,Massako,Mercado,Mercado,un,S,3,Pão de Açúcar,66.777.888/0001-99,S,S,5.45,50,S
+8,Molho de Tomate 340g,Hemmer,Mercado,Mercado,un,S,1,Carrefour,99.000.111/0001-22,S,S,3.90,9999,S
+8,Molho de Tomate 340g,Hemmer,Mercado,Mercado,un,S,2,Extra,00.111.222/0001-33,S,S,3.70,9999,S
+8,Molho de Tomate 340g,Hemmer,Mercado,Mercado,un,S,3,Pão de Açúcar,66.777.888/0001-99,S,S,4.35,0,N
+9,Farinha de Trigo 1kg,Dona Benta,Mercado,Mercado,un,S,1,Carrefour,99.000.111/0001-22,S,S,5.60,9999,S
+9,Farinha de Trigo 1kg,Dona Benta,Mercado,Mercado,un,S,2,Extra,00.111.222/0001-33,S,S,5.10,9999,S
+9,Farinha de Trigo 1kg,Dona Benta,Mercado,Mercado,un,S,3,Pão de Açúcar,66.777.888/0001-99,S,S,6.10,20,S
+10,Ovos Brancos (dúzia),Avícola,Mercado,Mercado,dz,S,1,Carrefour,99.000.111/0001-22,S,S,10.05,9999,S
+10,Ovos Brancos (dúzia),Avícola,Mercado,Mercado,dz,S,2,Extra,00.111.222/0001-33,S,S,8.98,9999,S
+10,Ovos Brancos (dúzia),Avícola,Mercado,Mercado,dz,S,3,Pão de Açúcar,66.777.888/0001-99,S,S,11.25,2,N
+11,Camiseta Algodão M,C&A,Vestuário,Vestuário,un,S,8,C&A,33.444.555/0001-66,S,S,40.30,9999,S
+11,Camiseta Algodão M,C&A,Vestuário,Vestuário,un,S,9,Renner,44.555.666/0001-77,S,S,39.65,15,S
+11,Camiseta Algodão M,C&A,Vestuário,Vestuário,un,S,10,Hering,55.666.777/0001-88,S,S,42.70,0,N
+12,Calça Jeans 40,Renner,Vestuário,Vestuário,un,S,8,C&A,33.444.555/0001-66,S,S,110.60,8,S
+12,Calça Jeans 40,Renner,Vestuário,Vestuário,un,S,9,Renner,44.555.666/0001-77,S,S,122.30,9999,S
+12,Calça Jeans 40,Renner,Vestuário,Vestuário,un,S,10,Hering,55.666.777/0001-88,S,S,117.90,3,S
+13,Notebook i5 8GB,Dell,Informática,Informática,un,S,4,Magazine Luiza,77.888.999/0001-00,S,S,2834.50,4,S
+13,Notebook i5 8GB,Dell,Informática,Informática,un,S,5,Casas Bahia,88.999.000/0001-11,S,S,3133.90,0,N
+19,Smartphone Galaxy S23,Samsung,Informática,Informática,un,S,4,Magazine Luiza,77.888.999/0001-00,S,S,3450.00,2,S
+14,Liquidificador 2 Velocidades,Arno,Eletrodomésticos,Eletrodomésticos,un,S,1,Carrefour,99.000.111/0001-22,S,S,124.80,9999,S
+14,Liquidificador 2 Velocidades,Arno,Eletrodomésticos,Eletrodomésticos,un,S,4,Magazine Luiza,77.888.999/0001-00,S,S,120.95,7,S
+14,Liquidificador 2 Velocidades,Arno,Eletrodomésticos,Eletrodomésticos,un,S,5,Casas Bahia,88.999.000/0001-11,S,S,138.18,0,N
+20,Geladeira Frost Free 400L,Brastemp,Eletrodomésticos,Eletrodomésticos,un,S,1,Carrefour,99.000.111/0001-22,S,S,4400.00,2,S
+20,Geladeira Frost Free 400L,Brastemp,Eletrodomésticos,Eletrodomésticos,un,S,4,Magazine Luiza,77.888.999/0001-00,S,S,4190.00,0,N
+20,Geladeira Frost Free 400L,Brastemp,Eletrodomésticos,Eletrodomésticos,un,S,5,Casas Bahia,88.999.000/0001-11,S,S,4825.20,1,S
+15,Martelo de Unha 25mm,Tramontina,Ferramentas,Ferramentas,un,S,6,Leroy Merlin,11.222.333/0001-44,S,S,31.00,9999,S
+16,Parafuso Philips 5mm (cx),Fischer,Materiais de Construção e Ferragens,Materiais de Construção e Ferragens,cx,S,6,Leroy Merlin,11.222.333/0001-44,S,S,11.85,9999,S
+17,Vaso de Barro 20cm,Etna,Decoração,Decoração,un,S,6,Leroy Merlin,11.222.333/0001-44,S,S,45.80,9999,S
+17,Vaso de Barro 20cm,Etna,Decoração,Decoração,un,S,7,Etna,22.333.444/0001-55,S,S,49.45,3,S
+18,Cadeira de Escritório,Etna,Móveis,Móveis,un,S,4,Magazine Luiza,77.888.999/0001-00,S,S,440.50,4,S
+18,Cadeira de Escritório,Etna,Móveis,Móveis,un,S,5,Casas Bahia,88.999.000/0001-11,S,S,480.18,0,N
+18,Cadeira de Escritório,Etna,Móveis,Móveis,un,S,7,Etna,22.333.444/0001-55,S,S,480.18,2,S

@@ -1,4 +1,4 @@
-# COBECO Backend — Database Adapter (SQLAlchemy Async + MySQL)
+# COBECO Backend — Database Adapter (SQLAlchemy Async + PostgreSQL)
 # Camada de infraestrutura: configuração de engine, session, base
 # Engine criada lazy para evitar problemas no alembic
 
@@ -43,7 +43,6 @@ def get_engine() -> AsyncEngine:
             max_overflow=settings.DATABASE_MAX_OVERFLOW,
             pool_pre_ping=False,
             pool_recycle=3600,
-            connect_args={"ssl": False},  # Desabilita SSL para conexão local
         )
     return _engine
 

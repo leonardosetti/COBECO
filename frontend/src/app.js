@@ -285,7 +285,6 @@ const state = {
   categorias: [],
   categoriasDisponiveis: [],
   categoriasVisiveis: [],
-  categoriaBusca: '',
   categoriasSort: 'alfabetico', // 'alfabetico' | 'area' | 'frequencia'
   areasSelecionadas: [], // pré-filtro de grandes áreas (multi-seleção)
   areasGrandes: [],      // grandes áreas carregadas do backend
@@ -307,17 +306,34 @@ let readyResolve;
 state.readyPromise = new Promise((resolve) => { readyResolve = resolve; });
 
 class ApiClient {
+  static accessToken = null;
+  
+  static setAccessToken(token) {
+    this.accessToken = token;
+  }
+  
+  static clearAccessToken() {
+    this.accessToken = null;
+  }
+  
   static async request(endpoint, options = {}) {
     const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    if (this.accessToken) {
+      headers['Authorization'] = 'Bearer ' + this.accessToken;
+    }
     const response = await fetch(API_BASE + endpoint, { ...options, headers, credentials: 'include' });
-    if (response.status === 401) { showToast('Sessão expirada.', 'warning'); return null; }
+    if (response.status === 401) { 
+      showToast('Sessão expirada.', 'warning'); 
+      this.clearAccessToken();
+      state.user = null;
+      return null; 
+    }
     const data = await response.json().catch(() => ({}));
     if (!response.ok) { throw new Error(data.detail || 'Erro ' + response.status); }
     return data;
   }
   static listarCategorias() { return this.request('/catalogo/categorias'); }
   static listarAreasGrandes() { return this.request('/catalogo/areas-grandes'); }
-  static buscarCategorias(q) { return this.request('/catalogo/categorias/busca?q=' + encodeURIComponent(q)); }
   static listarProdutos(categorias = []) {
     const q = categorias.length ? '?categorias=' + categorias.join(',') : '';
     return this.request('/catalogo/produtos' + q);
@@ -340,9 +356,10 @@ class ApiClient {
     });
   }
   static exportarPDFVencedora(data) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (this.accessToken) headers['Authorization'] = 'Bearer ' + this.accessToken;
     return fetch(API_BASE + '/export/pdf/vencedora', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      credentials: 'include', body: JSON.stringify(data),
+      method: 'POST', headers, credentials: 'include', body: JSON.stringify(data),
     }).then((r) => { if (!r.ok) throw new Error('Erro ao gerar PDF'); return r.blob(); });
   }
 }
@@ -627,15 +644,12 @@ function vCategorias() {
           <button class="btn btn-ghost btn-sm" data-action="cat-none">Limpar</button>
         </div>
       </div>
-      <div class="search-box"><label>Buscar categoria (semântica)</label>
-        <input type="text" id="busca-cat" value="${esc(state.categoriaBusca)}" placeholder="Ex.: roupas, camiseta, pá, rastelo" autocomplete="off" role="combobox">
-      </div>
       <div class="cat-grid" role="group" aria-label="Categorias macro" id="cat-grid">
         ${(state.categoriasVisiveis.length ? state.categoriasVisiveis : []).map(c => `<label class="cat-card ${state.categorias.includes(c.id) ? 'sel' : ''}" data-catcard="${c.id}">
           <input type="checkbox" class="cat-cb" value="${c.id}" ${state.categorias.includes(c.id) ? 'checked' : ''}>
           <span class="ci">${c.ic}</span><span class="cn">${esc(c.nome)}</span></label>`).join('')}
       </div>
-      <div class="tip">ℹ️ <b>Como funciona:</b> os fornecedores exibidos na próxima etapa pertencem às categorias selecionadas. Categorias já escolhidas permanecem visíveis mesmo durante a busca (RF26).</div>
+      <div class="tip">ℹ️ <b>Como funciona:</b> os fornecedores exibidos na próxima etapa pertencem às categorias selecionadas.</div>
       <div class="row-between mt">
         <button class="btn btn-ghost" data-action="nav-home">← Voltar</button>
         <div>
@@ -677,16 +691,12 @@ function recalcularVisiveis(baseCats) {
   }[state.categoriasSort] || ((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
   
   state.categoriasVisiveis = mescladas.sort(sortFn);
-  // Atualiza apenas o grid de categorias e barra de áreas sem full render (preserva foco no input)
+  // Atualiza apenas o grid de categorias e barra de áreas sem full render
   atualizarCategoriasVisiveis();
 }
 
 // Atualiza apenas DOM das categorias visíveis e áreas — sem full render
-function atualizarCategoriasVisiveis(preserveFocus = true) {
-  // Salva referência ao input de busca se precisar preservar foco
-  const buscaInput = preserveFocus ? document.getElementById('busca-cat') : null;
-  const hadFocus = buscaInput && document.activeElement === buscaInput;
-
+function atualizarCategoriasVisiveis() {
   // Atualiza contador
   const countEl = document.getElementById('cat-count');
   if (countEl) {
@@ -695,7 +705,7 @@ function atualizarCategoriasVisiveis(preserveFocus = true) {
     countEl.className = `count-chip ${state.categorias.length ? 'ok' : ''}`;
   }
 
-  // Atualiza grid de categorias (fallback para busca)
+  // Atualiza grid de categorias
   const grid = document.getElementById('cat-grid');
   if (grid) {
     grid.innerHTML = (state.categoriasVisiveis.length ? state.categoriasVisiveis : []).map(c => `
@@ -738,13 +748,6 @@ function atualizarCategoriasVisiveis(preserveFocus = true) {
   // Atualiza botão continuar
   const btn = document.getElementById('btn-to-lista');
   if (btn) btn.disabled = !state.categorias.length;
-
-  // Restaura foco no input de busca se estava focado
-  if (hadFocus && buscaInput) {
-    buscaInput.focus();
-    const len = buscaInput.value.length;
-    buscaInput.setSelectionRange(len, len);
-  }
 }
 
 function areasParaCategorias(areaIds) {
@@ -956,7 +959,7 @@ function vCadastro() {
       <div class="field"><label>Email</label><input type="email" id="c-email" placeholder="email@exemplo.com"></div>
       <div class="field"><label>Senha</label><input type="password" id="c-senha" placeholder="mín. 8 · 1 maiúscula · 1 número · 1 especial"></div>
       <div class="field"><label>Confirmar senha</label><input type="password" id="c-conf"></div>
-      <div class="field"><label>Pergunta de segurança</label><select id="c-perg"><option value="">Selecione…</option><option value="pet">Qual seu pet?</option><option value="cidade">Cidade natal?</option><option value="escola">Escola?</option></select></div>
+      <div class="field"><label>Pergunta de segurança</label><select id="c-perg"><option value="">Selecione…</option><option value="meu_pet">Qual seu pet?</option><option value="cidade_natal">Cidade natal?</option><option value="escola_primaria">Escola?</option></select></div>
       <div class="field"><label>Resposta</label><input type="text" id="c-resp" placeholder="mín. 3"></div>
       <button class="btn btn-pri btn-lg btn-block" data-action="cadastrar" data-primary>Criar conta</button>
     </form><div class="auth-foot">Já tem conta? <button class="linklike" data-action="page-login">Entrar</button></div></div></div>`;
@@ -1002,6 +1005,7 @@ async function handleCadastro() {
       body: JSON.stringify(data),
     });
     if (res?.access_token) {
+      ApiClient.setAccessToken(res.access_token);
       state.user = { nome_usuario: data.nome_usuario };
       showToast('Conta criada e login automático realizado!', 'success');
       await promoverListaSeHouverRascunho();
@@ -1037,6 +1041,7 @@ async function handleLogin() {
       body: JSON.stringify(data),
     });
     if (res?.access_token) {
+      ApiClient.setAccessToken(res.access_token);
       state.user = { nome_usuario: data.nome_usuario };
       showToast('Login realizado com sucesso!', 'success');
       await promoverListaSeHouverRascunho();
@@ -1222,7 +1227,7 @@ document.addEventListener('click', (e) => {
       render();
       window.scrollTo({ top: 0 });
     } break;
-    case 'sair': state.user = null; showToast('Saiu.', 'info'); go('home'); break;
+    case 'sair': ApiClient.clearAccessToken(); state.user = null; showToast('Saiu.', 'info'); go('home'); break;
     case 'cat-all': state.categorias = state.categoriasDisponiveis.map(c => c.id); render(); break;
     case 'cat-none': state.categorias = []; render(); break;
     case 'cat-sort': state.categoriasSort = el.value; recalcularVisiveis(areasParaCategorias(state.areasSelecionadas)); break;
@@ -1277,7 +1282,6 @@ document.addEventListener('input', (e) => {
   const t = e.target;
   if (t.id === 'nome-lista') { state.lista.nome = t.value; persistJornada(); }
   else if (t.id === 'busca') { state.busca = t.value; updateSugestoes(); }
-  else if (t.id === 'busca-cat') { state.categoriaBusca = t.value; buscarCategoriasUI(); }
   else if (t.id === 'slider-disp') { state.filtroDisp = +t.value; document.getElementById('slider-out').textContent = t.value + '%'; refreshFornecedores(); }
 });
 
@@ -1305,29 +1309,6 @@ async function updateSugestoes() {
   }, 300);
 }
 
-let catTimer = null;
-async function buscarCategoriasUI() {
-  const q = norm(state.categoriaBusca);
-  clearTimeout(catTimer);
-  if (!q.length) {
-    recalcularVisiveis(areasParaCategorias(state.areasSelecionadas));
-    return;
-  }
-  catTimer = setTimeout(async () => {
-    try {
-      const res = await ApiClient.buscarCategorias(q);
-      const base = (res || []).map(c => ({ id: c.id, nome: c.nome, ic: '📂' }));
-      // RF26: busca nunca esconde categorias já selecionadas
-      const baseIds = new Set(base.map(c => c.id));
-      const selecionadas = state.categoriasDisponiveis.filter(c => state.categorias.includes(c.id));
-      const mescladas = [...base];
-      selecionadas.forEach(s => { if (!baseIds.has(s.id)) mescladas.push(s); });
-      state.categoriasVisiveis = mescladas;
-      // Atualização parcial do DOM — preserva foco no input de busca
-      atualizarCategoriasVisiveis(true);
-    } catch (e) { recalcularVisiveis(areasParaCategorias(state.areasSelecionadas)); }
-  }, 300);
-}
 
 document.addEventListener('click', (e) => {
   const s = e.target.closest('[data-action-add]');
@@ -1392,10 +1373,15 @@ async function handleHash() {
   const viewMap = {
     '/login': 'login',
     '/cadastrar': 'cadastro',
-    '/recuperar-senha': 'cadastro', // usa cadastro para recuperação
+    '/recuperar-senha': 'cadastro',
     '/recuperar-senha/confirmar': 'cadastro',
     '/criar-lista': 'categorias',
     '/comparar': 'categorias',
+    '/categorias': 'categorias',
+    '/lista': 'lista',
+    '/fornecedores': 'fornecedores',
+    '/resultados': 'resultados',
+    '/vencedora': 'vencedora',
     '/dashboard': 'dashboard',
     '/perfil': 'perfil',
     '/': 'home',
@@ -1404,9 +1390,9 @@ async function handleHash() {
   const view = viewMap[path] || 'home';
   if (state.view !== view) {
     state.view = view;
-    render();
-    window.scrollTo({ top: 0 });
   }
+  render();
+  window.scrollTo({ top: 0 });
 }
 
 window.addEventListener('hashchange', handleHash);

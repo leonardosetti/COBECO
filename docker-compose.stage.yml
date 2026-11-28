@@ -7,26 +7,21 @@ version: '3.8'
 
 services:
   db:
-    image: mysql:8.0
+    image: pgvector/pgvector:pg15
     container_name: cobeco-db-stage
-    command:
-      - --default-authentication-plugin=mysql_native_password
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-      - --max-connections=100
     environment:
-      MYSQL_DATABASE: cobeco_stage
-      MYSQL_USER: cobeco
-      MYSQL_PASSWORD: cobeco
-      MYSQL_ROOT_PASSWORD: root
+      POSTGRES_DB: cobeco_stage
+      POSTGRES_USER: cobeco
+      POSTGRES_PASSWORD: cobeco
+      POSTGRES_ROOT_PASSWORD: root
     volumes:
-      - cobeco-db-stage-data:/var/lib/mysql
+      - cobeco-db-stage-data:/var/lib/postgresql/data
     ports:
-      - "3307:3306"
+      - "5433:5432"
     networks:
       - cobeco-stage-data
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      test: ["CMD-SHELL", "pg_isready -U cobeco -d cobeco_stage"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -39,7 +34,9 @@ services:
     container_name: cobeco-backend-stage
     command: uvicorn src.main:app --host 0.0.0.0 --port 8000
     environment:
-      DATABASE_URL: mysql+asyncmy://cobeco:cobeco@cobeco-db-stage:3306/cobeco_stage
+      DATABASE_URL: postgresql+asyncpg://cobeco:cobeco@cobeco-db-stage:5432/cobeco_stage
+      EMBEDDING_MODEL: sentence-transformers/all-MiniLM-L6-v2
+      EMBEDDING_DIM: "384"
       SECRET_KEY: cobeco-secret-key-min-32-chars-for-jwt-signing-stage
       JWT_ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 15
