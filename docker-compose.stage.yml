@@ -35,6 +35,8 @@ services:
     command: uvicorn src.main:app --host 0.0.0.0 --port 8000
     environment:
       DATABASE_URL: postgresql+asyncpg://cobeco:cobeco@cobeco-db-stage:5432/cobeco_stage
+      EMBEDDING_MODEL: sentence-transformers/all-MiniLM-L6-v2
+      EMBEDDING_DIM: "384"
       SECRET_KEY: cobeco-secret-key-min-32-chars-for-jwt-signing-stage
       JWT_ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 15

@@ -6,13 +6,13 @@ name: CI
 
 on:
   push:
-    branches: [main, stage]
+    branches: [main, stage, feature/*]
   pull_request:
-    branches: [main, stage]
+    branches: [main, stage, feature/*]
   workflow_dispatch:
 
 env:
-  DATABASE_URL: mysql+pymysql://test:test@localhost:3306/cobeco_test
+  DATABASE_URL: postgresql+asyncpg://cobeco:cobeco@localhost:5432/cobeco_test
   SECRET_KEY: test-secret-key-for-ci-only-32chars
   JWT_ALGORITHM: HS256
   ACCESS_TOKEN_EXPIRE_MINUTES: 15
@@ -26,20 +26,19 @@ jobs:
     timeout-minutes: 10
 
     services:
-      mysql:
-        image: mysql:8.0
+      db:
+        image: pgvector/pgvector:pg15
         env:
-          MYSQL_DATABASE: cobeco_test
-          MYSQL_USER: test
-          MYSQL_PASSWORD: test
-          MYSQL_ROOT_PASSWORD: root
+          POSTGRES_DB: cobeco_test
+          POSTGRES_USER: cobeco
+          POSTGRES_PASSWORD: cobeco
         ports:
-          - 3306:3306
+          - 5432:5432
         options: >-
-          --health-cmd="mysqladmin ping -h localhost -u root -proot"
-          --health-interval=5s
-          --health-timeout=3s
-          --health-retries=10
+          --health-cmd "pg_isready -U cobeco -d cobeco_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
 
     steps:
       # --- Checkout ---
@@ -58,17 +57,17 @@ jobs:
         working-directory: ./backend
         run: |
           pip install --upgrade pip
-          pip install -r config-python-0001-requirements-v1.0.txt
+          pip install -e ".[dev]"
 
-      # --- Wait for MySQL ---
-      - name: Wait for MySQL to be ready
+      # --- Wait for PostgreSQL ---
+      - name: Wait for PostgreSQL to be ready
         run: |
           for i in {1..30}; do
-            if docker exec $(docker ps -q -f "name=mysql") mysqladmin ping -h localhost -u root -proot --silent 2>/dev/null; then
-              echo "MySQL is ready!"
+            if docker exec $(docker ps -q -f "ancestor=pgvector/pgvector:pg15") pg_isready -U cobeco -d cobeco_test --silent 2>/dev/null; then
+              echo "PostgreSQL is ready!"
               break
             fi
-            echo "Waiting for MySQL... ($i/30)"
+            echo "Waiting for PostgreSQL... ($i/30)"
             sleep 2
           done
 
