@@ -213,10 +213,10 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         return list(result.scalars().all())
 
     async def autocomplete(self, query: str, limit: int = 10, categoria_ids: list[int] | None = None):
-        """Busca híbrida Full-Text Search: FULLTEXT (nome) + marca (FULLTEXT) + expansão semântica via produto_classes (FULLTEXT).
+        """Busca textual via tsvector + índice GIN (português).
 
-        Retorna resultados ordenados por relevância (score do MATCH/AGAINST, BOOLEAN MODE).
-        Todas as buscas usam índices FULLTEXT do MySQL — nenhuma busca por LIKE.
+        Retorna resultados ordenados por relevância (ts_rank_cd).
+        Todas as buscas usam índices GIN sobre colunas tsvector — nenhuma busca por LIKE/ILIKE.
         Se categoria_ids fornecido, filtra produtos apenas dessas categorias.
         """
         from sqlalchemy import text
@@ -225,7 +225,7 @@ class ProdutoRepositoryImpl(ProdutoRepository):
         if not q:
             return []
 
-        # Sanitiza termo para BOOLEAN MODE (escapa caracteres especiais)
+        # Sanitiza termo para plainto_tsquery (remove caracteres que quebram a sintaxe)
         q_sanitized = "".join(ch for ch in q if ch.isalnum() or ch.isspace()).strip()
         if not q_sanitized:
             return []
@@ -237,126 +237,32 @@ class ProdutoRepositoryImpl(ProdutoRepository):
             cat_where = " AND categoria_id IN :categoria_ids"
             cat_params = {"categoria_ids": tuple(categoria_ids)}
 
-        # 1. FULLTEXT search no nome (MySQL MATCH AGAINST) — ordenado por relevância
-        fulltext_sql = text(f"""
+        # Busca textual combinada: nome_tsv e marca_tsv com tsvector
+        sql = text(f"""
             SELECT id, nome, marca, unidade, ativo, criado_em,
-                   MATCH(nome) AGAINST(:query IN BOOLEAN MODE) AS relevancia
-            FROM produtos
-            WHERE ativo = TRUE
-              AND MATCH(nome) AGAINST(:query IN BOOLEAN MODE)
+                   ts_rank_cd(nome_tsv, query) AS relevancia_nome,
+                   ts_rank_cd(marca_tsv, query) AS relevancia_marca
+            FROM produtos,
+                 plainto_tsquery('portuguese', :query) AS query
+            WHERE ativo = true
+              AND (nome_tsv @@ query OR marca_tsv @@ query)
               {cat_where}
-            ORDER BY relevancia DESC
+            ORDER BY
+                (COALESCE(ts_rank_cd(nome_tsv, query), 0) +
+                 COALESCE(ts_rank_cd(marca_tsv, query), 0)) DESC
             LIMIT :limit
         """)
-        params = {"query": f"+{q_sanitized}*", "limit": limit, **cat_params}
-        result = await self.session.execute(fulltext_sql, params)
+        params = {"query": q_sanitized, "limit": limit, **cat_params}
+        result = await self.session.execute(sql, params)
         rows = result.mappings().all()
-        produtos = [ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows]
+        produtos = [
+            ProdutoModel(**{k: v for k, v in dict(r).items() if k not in ("relevancia_nome", "relevancia_marca")})
+            for r in rows
+        ]
         for p, r in zip(produtos, rows):
-            p.relevancia = float(r["relevancia"])
-
-        if len(produtos) >= limit:
-            return produtos[:limit]
-
-        # 2. FULLTEXT search em marca (MySQL MATCH AGAINST)
-        remaining = limit - len(produtos)
-        marca_ids = {p.id for p in produtos}
-        marca_sql = text(f"""
-            SELECT id, nome, marca, unidade, ativo, criado_em,
-                   MATCH(marca) AGAINST(:query IN BOOLEAN MODE) AS relevancia
-            FROM produtos
-            WHERE ativo = TRUE
-              AND id NOT IN :excluded_ids
-              AND MATCH(marca) AGAINST(:query IN BOOLEAN MODE)
-              {cat_where}
-            ORDER BY relevancia DESC
-            LIMIT :limit
-        """)
-        excluded = tuple(marca_ids) if marca_ids else (0,)
-        params = {"excluded_ids": excluded, "query": f"+{q_sanitized}*", "limit": remaining, **cat_params}
-        result = await self.session.execute(marca_sql, params)
-        rows = result.mappings().all()
-        produtos.extend(ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows)
-        for p, r in zip(produtos[len(produtos) - len(rows):], rows):
-            p.relevancia = float(r["relevancia"])
-
-        if len(produtos) >= limit:
-            return produtos[:limit]
-
-        # 3. Expansão semântica via produto_classes (FULLTEXT nas colunas geradas)
-        remaining = limit - len(produtos)
-        if remaining > 0:
-            classe_sql = text("""
-                SELECT termos_busca, marcas_referencia
-                FROM produto_classes
-                WHERE ativo = TRUE
-                  AND (
-                    MATCH(termos_busca_texto) AGAINST(:query IN BOOLEAN MODE)
-                    OR MATCH(marcas_referencia_texto) AGAINST(:query IN BOOLEAN MODE)
-                  )
-            """)
-            result = await self.session.execute(classe_sql, {"query": f"+{q_sanitized}*"})
-            classe_rows = result.mappings().all()
-
-            import json
-
-            related_terms = set()
-            related_brands = set()
-            for row in classe_rows:
-                related_terms.update(json.loads(row["termos_busca"]))
-                related_brands.update(json.loads(row["marcas_referencia"]))
-
-            if related_brands:
-                brand_ids = {p.id for p in produtos}
-                brand_placeholders = ", ".join([f":brand{i}" for i in range(len(related_brands))])
-                marca_sql = text(f"""
-                    SELECT id, nome, marca, unidade, ativo, criado_em
-                    FROM produtos
-                    WHERE ativo = TRUE
-                      AND id NOT IN :excluded_ids
-                      AND (marca IN ({brand_placeholders}))
-                      {cat_where}
-                    LIMIT :limit
-                """)
-                params = {
-                    "excluded_ids": tuple(brand_ids) if brand_ids else (0,),
-                    "limit": remaining,
-                    **cat_params
-                }
-                for i, brand in enumerate(related_brands):
-                    params[f"brand{i}"] = brand
-                result = await self.session.execute(marca_sql, params)
-                rows = result.mappings().all()
-                produtos.extend(ProdutoModel(**dict(r)) for r in rows)
-
-            if len(produtos) < limit and related_terms:
-                remaining = limit - len(produtos)
-                term_ids = {p.id for p in produtos}
-                simple_terms = [
-                    t for t in related_terms if t.replace(" ", "").isalnum() and len(t) >= 2
-                ]
-                if simple_terms:
-                    ft_query = " ".join(f"+{t}*" for t in simple_terms[:5])
-                    ft_sql = text(f"""
-                        SELECT id, nome, marca, unidade, ativo, criado_em,
-                               MATCH(nome) AGAINST(:query IN BOOLEAN MODE) AS relevancia
-                        FROM produtos
-                        WHERE ativo = TRUE
-                          AND id NOT IN :excluded_ids
-                          AND MATCH(nome) AGAINST(:query IN BOOLEAN MODE)
-                          {cat_where}
-                        ORDER BY relevancia DESC
-                        LIMIT :limit
-                    """)
-                    excluded = tuple(term_ids) if term_ids else (0,)
-                    result = await self.session.execute(
-                        ft_sql, {"excluded_ids": excluded, "query": ft_query, "limit": remaining, **cat_params}
-                    )
-                    rows = result.mappings().all()
-                    novos = [ProdutoModel(**{k: v for k, v in dict(r).items() if k != "relevancia"}) for r in rows]
-                    for p, r in zip(novos, rows):
-                        p.relevancia = float(r["relevancia"])
-                    produtos.extend(novos)
+            rn = float(r["relevancia_nome"] or 0)
+            rm = float(r["relevancia_marca"] or 0)
+            p.relevancia = rn + rm
 
         return produtos[:limit]
 
